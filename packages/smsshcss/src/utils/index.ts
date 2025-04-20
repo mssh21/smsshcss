@@ -20,9 +20,15 @@ import {
   fontSize,
   fontWeight
 } from './typography';
+import {
+  createUtilityClass,
+  createUtilityClasses,
+  mergeUtilityClasses
+} from './helpers';
 
 import { UtilityDefinition } from '../types';
 
+// Export utility definitions
 export const utilities: UtilityDefinition = {
   display,
   flex,
@@ -37,4 +43,11 @@ export const utilities: UtilityDefinition = {
   'text-align': textAlign,
   'font-size': fontSize,
   'font-weight': fontWeight
+};
+
+// Export utility helper functions
+export {
+  createUtilityClass,
+  createUtilityClasses,
+  mergeUtilityClasses
 }; 

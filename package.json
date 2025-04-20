@@ -7,12 +7,30 @@
     "lint": "prettier --check . && turbo lint",
     "build": "turbo build",
     "dev": "turbo dev",
-    "test": "vitest run",
-    "clean": "turbo clean && rm -rf node_modules"
+    "test": "turbo test",
+    "clean": "turbo clean && rm -rf node_modules",
+    "type-check": "turbo type-check",
+    "prepare": "husky install",
+    "preinstall": "npx only-allow yarn",
+    "clean:all": "yarn clean && rm -rf .turbo .yarn/cache",
+    "clean:install": "yarn clean:all && yarn install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@types/node": "^20.14.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "postcss": "^8.4.35",
     "prettier": "^3.0.0",
     "tsup": "^8.0.2",
