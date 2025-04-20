@@ -1,49 +1,28 @@
 /**
- * smsshcss メインエントリーポイント
+ * smsshcss main entry point
  */
 import { SmsshcssConfig, defaultConfig, mergeConfig } from './config';
-import { 
-  utilities, 
-  createUtilityClass, 
-  createUtilityClasses, 
-  mergeUtilityClasses 
-} from './utilities';
+import { utilities } from './utils';
+import type { UtilityValue, UtilityCategory, UtilityDefinition } from './types';
 
-// 型のエクスポート
-import type { UtilityValue, UtilityCategory, UtilityDefinition } from './utilities';
-
-/**
- * 全てのエクスポート
- */
-// 型のエクスポート
-export type { 
+// Export types
+export type {
   SmsshcssConfig,
   UtilityValue,
   UtilityCategory,
   UtilityDefinition
 };
 
-// 値のエクスポート
+// Export values
 export {
-  // 設定関連
   defaultConfig,
   mergeConfig,
-  
-  // ユーティリティ関連
-  utilities,
-  createUtilityClass,
-  createUtilityClasses,
-  mergeUtilityClasses
+  utilities
 };
 
-/**
- * デフォルトエクスポート
- */
+// Default export
 export default {
   utilities,
   config: defaultConfig,
-  mergeConfig,
-  createUtilityClass,
-  createUtilityClasses,
-  mergeUtilityClasses
+  mergeConfig
 }; 
