@@ -1,0 +1,20 @@
+{
+  "name": "smsshcss-playground",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "postcss src/styles.css -o dist/styles.css",
+    "dev": "postcss src/styles.css -o dist/styles.css --watch",
+    "serve": "http-server . -o"
+  },
+  "dependencies": {
+    "@smsshcss/postcss": "workspace:*",
+    "smsshcss": "workspace:*"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "http-server": "^14.1.1",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0"
+  }
+}

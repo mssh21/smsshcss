@@ -1,0 +1,28 @@
+{
+  "name": "@smsshcss/root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "prettier --check . && turbo lint",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "test": "vitest run",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "postcss": "^8.4.35",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.2",
+    "turbo": "^1.10.16",
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6"
+  },
+  "workspaces": [
+    "packages/*",
+    "packages/@smsshcss/*",
+    "playground/*"
+  ]
+}
