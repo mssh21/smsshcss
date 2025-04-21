@@ -2,6 +2,7 @@
  * Typography utilities
  */
 import { UtilityCategory } from '../types';
+import { colors } from '../tokens';
 
 export const textAlign: UtilityCategory = {
   'text-left': 'text-align: left',
@@ -30,4 +31,4 @@ export const fontWeight: UtilityCategory = {
   'font-bold': 'font-weight: 700',
   'font-extrabold': 'font-weight: 800',
   'font-black': 'font-weight: 900'
-}; 
+};

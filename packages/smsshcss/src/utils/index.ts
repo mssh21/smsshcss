@@ -18,8 +18,13 @@ import { position } from './position';
 import {
   textAlign,
   fontSize,
-  fontWeight
+  fontWeight,
 } from './typography';
+import {
+  textColor,
+  backgroundColor,
+  borderColor
+} from './colors';
 import {
   createUtilityClass,
   createUtilityClasses,
@@ -42,7 +47,10 @@ export const utilities: UtilityDefinition = {
   position,
   'text-align': textAlign,
   'font-size': fontSize,
-  'font-weight': fontWeight
+  'font-weight': fontWeight,
+  'color': textColor,
+  'background-color': backgroundColor,
+  'border-color': borderColor,
 };
 
 // Export utility helper functions
