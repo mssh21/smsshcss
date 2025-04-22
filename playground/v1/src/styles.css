@@ -2,8 +2,7 @@
  * smsshcss テスト用スタイルシート
  */
 
-/* smsshcssユーティリティクラスのインポート */
-@import "smsshcss";
+/* smsshcssユーティリティクラスは自動的に追加されます */
 
 /* 基本スタイル */
 body {
