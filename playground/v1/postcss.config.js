@@ -6,15 +6,11 @@ module.exports = {
   plugins: [
     // @smsshcss/postcssプラグインを使用
     require('@smsshcss/postcss')({
-      // スキャン対象のファイル
-      content: [
-        './index.html',
-        './src/**/*.{js,ts,jsx,tsx}',
-      ],
-      // 常に含めるクラス
-      safelist: [
-        'flex', 'items-center', 'justify-between', 'grow'
-      ]
+      // 設定ファイルのパスを指定（省略可能）
+      // configFile: './smsshcss.config.js'
+      
+      // 以下の設定はsmsshcss.config.jsに移動しました
+      // content, safelist
     }),
     
     // 他のプラグイン

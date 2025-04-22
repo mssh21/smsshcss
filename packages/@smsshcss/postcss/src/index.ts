@@ -17,15 +17,58 @@ import { utilities } from 'smsshcss';
  */
 interface SmsshcssPluginOptions {
   /** スキャン対象のファイルパターン */
-  content: string[];
+  content?: string[];
   /** 常に含めるユーティリティクラス */
   safelist?: string[];
   /** デバッグモード */
   debug?: boolean;
+  /** 設定ファイルパス */
+  configFile?: string;
 }
 
 // クラス検出用の正規表現
 const CLASS_PATTERN = /class(?:Name)?=["|']([^"|']+)["|']/g;
+
+/**
+ * 設定ファイルを読み込む関数
+ */
+function loadConfigFile(configFilePath?: string): any {
+  const defaultConfigPaths = [
+    'smsshcss.config.js',
+    'smsshcss.config.cjs',
+    'smsshcss.config.mjs',
+  ];
+  
+  // 明示的に設定ファイルが指定されている場合
+  if (configFilePath) {
+    try {
+      const resolvedPath = path.resolve(process.cwd(), configFilePath);
+      // ファイルが存在するか確認
+      if (fs.existsSync(resolvedPath)) {
+        // 設定ファイルを読み込む
+        return require(resolvedPath);
+      }
+      console.warn(`Specified config file not found: ${configFilePath}`);
+    } catch (error) {
+      console.error(`Error loading config file ${configFilePath}:`, error);
+    }
+  }
+  
+  // デフォルトの設定ファイルを探す
+  for (const configPath of defaultConfigPaths) {
+    try {
+      const resolvedPath = path.resolve(process.cwd(), configPath);
+      if (fs.existsSync(resolvedPath)) {
+        return require(resolvedPath);
+      }
+    } catch (error) {
+      // エラーは無視して次のパスを試す
+    }
+  }
+  
+  // 設定ファイルが見つからない場合は空のオブジェクトを返す
+  return {};
+}
 
 /**
  * ファイルから使用されているクラスを抽出する関数
@@ -110,10 +153,15 @@ function generateCSSFromClasses(classes: Set<string>, safelist: string[] = []): 
  * HTML内で使用されているクラスを抽出し、対応するCSSを生成します
  */
 const smsshcssPlugin: PluginCreator<SmsshcssPluginOptions> = (opts: any) => {
+  // 設定ファイルを読み込む
+  const configFileOptions = loadConfigFile(opts?.configFile);
+  
+  // PostCSSの設定と設定ファイルのオプションをマージする
+  // 設定ファイルよりもPostCSS設定の方が優先される
   const options = {
-    content: opts?.content || [],
-    safelist: opts?.safelist || [],
-    debug: opts?.debug || false
+    content: opts?.content || configFileOptions.content || [],
+    safelist: opts?.safelist || configFileOptions.safelist || [],
+    debug: opts?.debug !== undefined ? opts.debug : configFileOptions.debug || false
   };
   
   return {
@@ -125,7 +173,7 @@ const smsshcssPlugin: PluginCreator<SmsshcssPluginOptions> = (opts: any) => {
         if (atRule.params.includes('"smsshcss"') || atRule.params.includes("'smsshcss'")) {
           try {
             if (options.content.length === 0) {
-              console.warn('@smsshcss/postcss: No content files specified. Please provide the content option.');
+              console.warn('@smsshcss/postcss: No content files specified. Please provide the content option in postcss.config.js or smsshcss.config.js.');
               return;
             }
             
