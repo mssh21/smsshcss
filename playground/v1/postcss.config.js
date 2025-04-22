@@ -10,7 +10,7 @@ module.exports = {
       // configFile: './smsshcss.config.js'
       
       // 以下の設定はsmsshcss.config.jsに移動しました
-      // content, safelist
+      // content, safelist, legacyMode
     }),
     
     // 他のプラグイン

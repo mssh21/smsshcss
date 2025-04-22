@@ -24,6 +24,8 @@ interface SmsshcssPluginOptions {
   debug?: boolean;
   /** 設定ファイルパス */
   configFile?: string;
+  /** 従来の@importを使用するモード（後方互換性のため） */
+  legacyMode?: boolean;
 }
 
 // クラス検出用の正規表現
@@ -161,44 +163,73 @@ const smsshcssPlugin: PluginCreator<SmsshcssPluginOptions> = (opts: any) => {
   const options = {
     content: opts?.content || configFileOptions.content || [],
     safelist: opts?.safelist || configFileOptions.safelist || [],
-    debug: opts?.debug !== undefined ? opts.debug : configFileOptions.debug || false
+    debug: opts?.debug !== undefined ? opts.debug : configFileOptions.debug || false,
+    legacyMode: opts?.legacyMode !== undefined ? opts.legacyMode : configFileOptions.legacyMode || false
   };
   
   return {
     postcssPlugin: '@smsshcss/postcss',
     
     Once(root: Root) {
-      // @import "smsshcss"を検索
-      root.walkAtRules('import', (atRule: AtRule) => {
-        if (atRule.params.includes('"smsshcss"') || atRule.params.includes("'smsshcss'")) {
-          try {
-            if (options.content.length === 0) {
-              console.warn('@smsshcss/postcss: No content files specified. Please provide the content option in postcss.config.js or smsshcss.config.js.');
-              return;
+      // contentの設定が存在するか確認
+      if (options.content.length === 0) {
+        console.warn('@smsshcss/postcss: No content files specified. Please provide the content option in postcss.config.js or smsshcss.config.js.');
+        return;
+      }
+      
+      try {
+        // レガシーモードの場合は@importを検索
+        if (options.legacyMode) {
+          let importFound = false;
+          
+          root.walkAtRules('import', (atRule: AtRule) => {
+            if (atRule.params.includes('"smsshcss"') || atRule.params.includes("'smsshcss'")) {
+              importFound = true;
+              
+              // 使用されているクラスを抽出
+              const usedClasses = extractClassesFromFiles(options.content, options.debug);
+              
+              // 抽出されたクラスからCSSを生成
+              const generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+              
+              // @importを生成したCSSに置き換え
+              if (generatedCSS) {
+                // @ts-ignore
+                const parsedCSS = require('postcss').parse(generatedCSS);
+                atRule.replaceWith(parsedCSS);
+              } else {
+                // 生成するCSSがなければ@importを削除
+                atRule.remove();
+              }
             }
+          });
+          
+          // @importが見つからなかった場合は処理しない
+          if (!importFound && options.debug) {
+            console.log('@smsshcss/postcss: No @import "smsshcss" found. Legacy mode requires this import.');
+          }
+        } else {
+          // 新しいモード: @importなしで自動的にCSSを生成
+          // 使用されているクラスを抽出
+          const usedClasses = extractClassesFromFiles(options.content, options.debug);
+          
+          // 抽出されたクラスからCSSを生成
+          const generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+          
+          // 生成したCSSがある場合、CSS末尾に追加
+          if (generatedCSS) {
+            // @ts-ignore
+            const parsedCSS = require('postcss').parse(generatedCSS);
+            root.append(parsedCSS);
             
-            // 使用されているクラスを抽出
-            const usedClasses = extractClassesFromFiles(options.content, options.debug);
-            
-            // 抽出されたクラスからCSSを生成
-            const generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
-            
-            // @importを生成したCSSに置き換え
-            if (generatedCSS) {
-              // @ts-ignore
-              const parsedCSS = require('postcss').parse(generatedCSS);
-              atRule.replaceWith(parsedCSS);
-            } else {
-              // 生成するCSSがなければ@importを削除
-              atRule.remove();
+            if (options.debug) {
+              console.log('@smsshcss/postcss: Generated CSS and appended to the end of the file.');
             }
-          } catch (error) {
-            console.error('Error in @smsshcss/postcss plugin:', error);
-            // エラーが発生した場合は@importを削除
-            atRule.remove();
           }
         }
-      });
+      } catch (error) {
+        console.error('Error in @smsshcss/postcss plugin:', error);
+      }
     }
   };
 };

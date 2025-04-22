@@ -1,6 +1,6 @@
 # smsshcss 設定ファイルの使用方法
 
-## 新機能: smsshcss.config.js
+## 新機能 1: smsshcss.config.js
 
 このアップデートでは、`smsshcss.config.js` ファイルを使用して smsshcss の設定を定義できるようになりました。これにより、PostCSS の設定ファイルとは別に smsshcss 固有の設定を管理できます。
 
@@ -50,6 +50,42 @@ module.exports = {
 require('@smsshcss/postcss')({
   configFile: './path/to/smsshcss.config.js'
 })
+```
+
+## 新機能 2: @importなしの自動生成モード
+
+従来は `@import "smsshcss";` の記述が必要でしたが、このアップデートでは自動的にCSSを生成できるようになりました。
+
+### 使用方法
+
+1. smsshcss.config.js で legacyMode を false に設定します。
+
+```js
+module.exports = {
+  // ...他の設定...
+  
+  // レガシーモードを無効化（@importが不要になります）
+  legacyMode: false
+};
+```
+
+2. CSSファイルから `@import "smsshcss";` の記述を削除できます。
+
+**変更前:**
+```css
+/* smsshcssユーティリティクラスのインポート */
+@import "smsshcss";
+
+/* 他のスタイル */
+body { /* ... */ }
+```
+
+**変更後:**
+```css
+/* smsshcssユーティリティクラスは自動的に追加されます */
+
+/* 他のスタイル */
+body { /* ... */ }
 ```
 
 ### 設定の優先順位
