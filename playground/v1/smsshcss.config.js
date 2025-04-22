@@ -10,7 +10,8 @@ module.exports = {
   ],
   // 常に含めるクラス
   safelist: [
-    'flex', 'items-center', 'justify-between', 'grow'
+    'flex', 'items-center', 'justify-between', 'grow',
+    'text-center', 'p-4', 'bg-gray-100' // テスト用に追加
   ],
   // デバッグモード (オプション)
   debug: false
