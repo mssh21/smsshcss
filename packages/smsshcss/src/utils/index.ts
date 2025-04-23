@@ -21,37 +21,68 @@ import {
   fontWeight,
 } from './typography';
 import {
-  textColor,
-  backgroundColor,
+  textColor
+} from './color';
+import {
+  backgroundColor
+} from './backgroundColor';
+import {
   borderColor
-} from './colors';
+} from './borderColor';
 import {
   createUtilityClass,
   createUtilityClasses,
   mergeUtilityClasses
 } from './helpers';
 
-import { UtilityDefinition } from '../types';
+import { UtilityDefinition, UtilityCategory } from '../types';
 
-// Export utility definitions
-export const utilities: UtilityDefinition = {
+// Import all utility modules
+const utilityModules = {
   display,
   flex,
-  'flex-direction': flexDirection,
-  'flex-wrap': flexWrap,
-  'justify-content': justifyContent,
-  'align-items': alignItems,
-  'align-self': alignSelf,
-  'grid-template-columns': gridTemplateColumns,
-  'grid-template-rows': gridTemplateRows,
+  flexDirection,
+  flexWrap,
+  justifyContent,
+  alignItems,
+  alignSelf,
+  gridTemplateColumns,
+  gridTemplateRows,
   position,
-  'text-align': textAlign,
-  'font-size': fontSize,
-  'font-weight': fontWeight,
-  'color': textColor,
-  'background-color': backgroundColor,
-  'border-color': borderColor,
+  textAlign,
+  fontSize,
+  fontWeight,
+  textColor,
+  backgroundColor,
+  borderColor,
 };
+
+// Utility name mapping (if different from import variable name)
+const utilityNameMap: Record<string, string> = {
+  'flexDirection': 'flex-direction',
+  'flexWrap': 'flex-wrap',
+  'justifyContent': 'justify-content',
+  'alignItems': 'align-items',
+  'alignSelf': 'align-self',
+  'gridTemplateColumns': 'grid-template-columns',
+  'gridTemplateRows': 'grid-template-rows',
+  'textAlign': 'text-align',
+  'fontSize': 'font-size',
+  'fontWeight': 'font-weight',
+  'textColor': 'color',
+  'backgroundColor': 'background-color',
+  'borderColor': 'border-color',
+};
+
+// Export utility definitions - dynamically built
+export const utilities: UtilityDefinition = Object.entries(utilityModules).reduce(
+  (acc, [key, value]) => {
+    const cssPropertyName = utilityNameMap[key] || key;
+    acc[cssPropertyName] = value as UtilityCategory;
+    return acc;
+  },
+  {} as UtilityDefinition
+);
 
 // Export utility helper functions
 export {
