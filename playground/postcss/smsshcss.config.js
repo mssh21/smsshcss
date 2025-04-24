@@ -20,5 +20,5 @@ module.exports = {
   // レガシーモードを無効化（@importが不要になります）
   legacyMode: false,
   // デバッグモード (オプション)
-  debug: true
+  debug: true,
 }; 

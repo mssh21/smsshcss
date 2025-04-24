@@ -2,9 +2,11 @@
  * Colors Token
  */
 
-import { backgroundColor } from "../utils/color";
+import { SmsshcssConfig } from '../config';
+import { resolveTokens } from './utils';
 
-export const colors = {
+// ベースとなる色のトークン
+const baseColors = {
   primary: 'hsl(248, 75%, 45%, 100%)',
   secondary: 'hsl(216, 20%, 45%, 100%)',
   accent: 'hsl(35, 95%, 45%, 100%)',
@@ -44,7 +46,6 @@ export const colors = {
   borderInfo: 'hsl(216, 75%, 25%, 100%)',
   borderTransparent: 'hsl(0, 0%, 0%, 0%)',
   
-  
   // Background Colors
   backgroundBase: 'hsl(0, 0%, 100%, 100%)',
   backgroundSurface: 'hsl(0, 0%, 95%, 100%)',
@@ -55,3 +56,11 @@ export const colors = {
   backgroundInfo: 'hsl(216, 75%, 95%, 100%)',
   backgroundTransparent: 'hsl(0, 0%, 0%, 0%)',
 } as const;
+
+// 設定から色のトークンを解決する関数
+export function resolveColors(config?: SmsshcssConfig) {
+  return resolveTokens('colors', baseColors, config?.theme);
+}
+
+// デフォルトの色のトークン
+export const colors = { ...baseColors } as const;

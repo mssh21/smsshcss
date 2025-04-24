@@ -154,7 +154,7 @@ function loadResetCSS() {
  * baseスタイルのCSSを取得する関数
  * @returns {string} baseスタイルのCSS
  */
-function getBaseStyles(debug = false) {
+function getBaseStyles(debug = false, config = {}) {
   try {
     // baseStylesToCssの存在確認
     if (typeof smsshcss.baseStylesToCss !== 'function') {
@@ -164,8 +164,8 @@ function getBaseStyles(debug = false) {
       return '';
     }
     
-    // baseStylesToCss関数を使用して直接CSSを生成
-    const css = smsshcss.baseStylesToCss();
+    // baseStylesToCss関数を使用して直接CSSを生成（設定を渡す）
+    const css = smsshcss.baseStylesToCss(config);
     
     if (debug) {
       console.log('@smsshcss/postcss: Generated base styles:', css ? 'success' : 'empty');
@@ -227,7 +227,8 @@ const smsshcssPlugin = (opts = {}) => {
     debug: opts.debug !== undefined ? opts.debug : configFileOptions.debug || false,
     legacyMode: opts.legacyMode !== undefined ? opts.legacyMode : configFileOptions.legacyMode || false,
     includeResetCSS: opts.includeResetCSS !== undefined ? opts.includeResetCSS : configFileOptions.includeResetCSS !== false,
-    includeBaseCSS: opts.includeBaseCSS !== undefined ? opts.includeBaseCSS : configFileOptions.includeBaseCSS !== false
+    includeBaseCSS: opts.includeBaseCSS !== undefined ? opts.includeBaseCSS : configFileOptions.includeBaseCSS !== false,
+    theme: opts.theme || configFileOptions.theme || {}
   };
   
   return {
@@ -257,7 +258,7 @@ const smsshcssPlugin = (opts = {}) => {
               
               // baseスタイルを含める（トークンを直接参照）
               if (options.includeBaseCSS) {
-                const baseCSS = getBaseStyles(options.debug);
+                const baseCSS = getBaseStyles(options.debug, configFileOptions);
                 if (baseCSS) {
                   generatedCSS = baseCSS + '\n' + generatedCSS;
                   if (options.debug) {
@@ -302,7 +303,7 @@ const smsshcssPlugin = (opts = {}) => {
           
           // 順序として、先にbaseスタイルを含める（ユーティリティがbaseスタイルを上書きできるように）
           if (options.includeBaseCSS) {
-            const baseCSS = getBaseStyles(options.debug);
+            const baseCSS = getBaseStyles(options.debug, configFileOptions);
             if (baseCSS) {
               generatedCSS = baseCSS + '\n' + generatedCSS;
               if (options.debug) {

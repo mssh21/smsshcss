@@ -2,6 +2,46 @@
  * smsshcss 設定ファイルの型定義
  */
 
+/**
+ * トークンのカスタマイズを定義するテーマの型
+ */
+export interface ThemeConfig {
+  /**
+   * カラートークンのカスタマイズ
+   */
+  colors?: Record<string, string>;
+  
+  /**
+   * フォントサイズトークンのカスタマイズ
+   */
+  fontSize?: Record<string, string>;
+  
+  /**
+   * 行の高さトークンのカスタマイズ
+   */
+  lineHeight?: Record<string, string>;
+  
+  /**
+   * フォントの太さトークンのカスタマイズ
+   */
+  fontWeight?: Record<string, string>;
+  
+  /**
+   * スペーシングトークンのカスタマイズ
+   */
+  spacing?: Record<string, string>;
+  
+  /**
+   * ボーダー半径トークンのカスタマイズ
+   */
+  borderRadius?: Record<string, string>;
+  
+  /**
+   * シャドウトークンのカスタマイズ
+   */
+  shadow?: Record<string, string>;
+}
+
 export interface SmsshcssConfig {
   /**
    * パージ処理を有効にするかどうか
@@ -44,6 +84,23 @@ export interface SmsshcssConfig {
    * @default true
    */
   includeBaseCSS?: boolean;
+
+  /**
+   * トークンをカスタマイズするためのテーマ設定
+   * @example
+   * theme: {
+   *   colors: {
+   *     primary: '#3490dc',
+   *     secondary: '#ffed4a'
+   *   },
+   *   fontSize: {
+   *     base: '16px',
+   *     xl: '1.5rem'
+   *   }
+   * }
+   * @default {}
+   */
+  theme?: ThemeConfig;
 }
 
 /**
@@ -56,7 +113,8 @@ export const defaultConfig: SmsshcssConfig = {
   exclude: [],
   utilities: {},
   includeResetCSS: true,
-  includeBaseCSS: true
+  includeBaseCSS: true,
+  theme: {}
 };
 
 /**
@@ -69,6 +127,10 @@ export function mergeConfig(userConfig: SmsshcssConfig = {}): SmsshcssConfig {
     utilities: {
       ...defaultConfig.utilities,
       ...(userConfig.utilities || {})
+    },
+    theme: {
+      ...defaultConfig.theme,
+      ...(userConfig.theme || {})
     }
   };
 } 
