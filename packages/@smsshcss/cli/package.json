@@ -1,5 +1,5 @@
 {
-  "name": "@smsshcss/cli",
+  "name": "smsshcss-cli",
   "version": "1.0.0",
   "description": "SmsshCSS CLI",
   "main": "dist/index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "@smsshcss/postcss",
+  "name": "smsshcss-postcss",
   "version": "1.0.0",
   "description": "PostCSS plugin for smsshcss to generate CSS only for classes used in HTML",
   "license": "MIT",

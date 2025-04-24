@@ -1,5 +1,5 @@
 {
-  "name": "smsshcss-postcss",
+  "name": "smsshcss-postcss-playground",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,8 @@
     "serve": "http-server . -o"
   },
   "dependencies": {
-    "@smsshcss/postcss": "workspace:*",
-    "smsshcss": "workspace:*"
+    "smsshcss": "workspace:*",
+    "smsshcss-postcss": "workspace:*"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
