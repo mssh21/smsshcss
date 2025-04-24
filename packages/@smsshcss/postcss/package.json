@@ -1,6 +1,6 @@
 {
-  "name": "@smsshcss/postcss",
-  "version": "1.0.0",
+  "name": "smsshcss-postcss",
+  "version": "1.0.1",
   "description": "PostCSS plugin for smsshcss to generate CSS only for classes used in HTML",
   "license": "MIT",
   "main": "dist/index.js",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "fast-glob": "^3.3.2",
-    "smsshcss": "workspace:*"
+    "smsshcss": "^1.0.0"
   },
   "peerDependencies": {
     "postcss": "^8.0.0"

@@ -827,21 +827,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smsshcss/postcss@workspace:*, @smsshcss/postcss@workspace:packages/@smsshcss/postcss":
-  version: 0.0.0-use.local
-  resolution: "@smsshcss/postcss@workspace:packages/@smsshcss/postcss"
-  dependencies:
-    "@types/node": "npm:^22.14.1"
-    fast-glob: "npm:^3.3.2"
-    postcss: "npm:^8.4.35"
-    smsshcss: "workspace:*"
-    tsup: "npm:^8.0.2"
-    typescript: "npm:^5.3.3"
-  peerDependencies:
-    postcss: ^8.0.0
-  languageName: unknown
-  linkType: soft
-
 "@smsshcss/root@workspace:.":
   version: 0.0.0-use.local
   resolution: "@smsshcss/root@workspace:."
@@ -892,6 +877,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/fs-extra@npm:^11.0.4":
+  version: 11.0.4
+  resolution: "@types/fs-extra@npm:11.0.4"
+  dependencies:
+    "@types/jsonfile": "npm:*"
+    "@types/node": "npm:*"
+  checksum: 10c0/9e34f9b24ea464f3c0b18c3f8a82aefc36dc524cc720fc2b886e5465abc66486ff4e439ea3fb2c0acebf91f6d3f74e514f9983b1f02d4243706bdbb7511796ad
+  languageName: node
+  linkType: hard
+
+"@types/jsonfile@npm:*":
+  version: 6.1.4
+  resolution: "@types/jsonfile@npm:6.1.4"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/b12d068b021e4078f6ac4441353965769be87acf15326173e2aea9f3bf8ead41bd0ad29421df5bbeb0123ec3fc02eb0a734481d52903704a1454a1845896b9eb
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:^22.14.1":
   version: 22.14.1
   resolution: "@types/node@npm:22.14.1"
@@ -901,7 +905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.24, @types/node@npm:^20.14.8":
+"@types/node@npm:^20.11.24, @types/node@npm:^20.11.5, @types/node@npm:^20.14.8":
   version: 20.17.30
   resolution: "@types/node@npm:20.17.30"
   dependencies:
@@ -1381,6 +1385,13 @@ __metadata:
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 10c0/e94116ff33b0ff56f3b83b9ace895e5bf87c2a7a47b3401b8c3f3226e050d5ef76cf4072fb3325f9dc24d1698f9b730baf4e05eeaf861d74a1883073f4c98a40
+  languageName: node
+  linkType: hard
+
+"commander@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "commander@npm:11.1.0"
+  checksum: 10c0/13cc6ac875e48780250f723fb81c1c1178d35c5decb1abb1b628b3177af08a8554e76b2c0f29de72d69eef7c864d12613272a71fabef8047922bc622ab75a179
   languageName: node
   linkType: hard
 
@@ -1967,7 +1978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^11.0.0":
+"fs-extra@npm:^11.0.0, fs-extra@npm:^11.2.0":
   version: 11.3.0
   resolution: "fs-extra@npm:11.3.0"
   dependencies:
@@ -3651,16 +3662,53 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smsshcss-postcss@workspace:playground/postcss":
+"smsshcss-cli-playground@workspace:playground/v1.0.0":
   version: 0.0.0-use.local
-  resolution: "smsshcss-postcss@workspace:playground/postcss"
+  resolution: "smsshcss-cli-playground@workspace:playground/v1.0.0"
+  languageName: unknown
+  linkType: soft
+
+"smsshcss-cli@workspace:packages/@smsshcss/cli":
+  version: 0.0.0-use.local
+  resolution: "smsshcss-cli@workspace:packages/@smsshcss/cli"
   dependencies:
-    "@smsshcss/postcss": "workspace:*"
+    "@types/fs-extra": "npm:^11.0.4"
+    "@types/node": "npm:^20.11.5"
+    chalk: "npm:^4.1.2"
+    commander: "npm:^11.1.0"
+    fs-extra: "npm:^11.2.0"
+    tsup: "npm:^8.0.1"
+    typescript: "npm:^5.3.3"
+  bin:
+    smsshcss: ./bin/smsshcss.js
+  languageName: unknown
+  linkType: soft
+
+"smsshcss-postcss-playground@workspace:playground/postcss":
+  version: 0.0.0-use.local
+  resolution: "smsshcss-postcss-playground@workspace:playground/postcss"
+  dependencies:
     autoprefixer: "npm:^10.4.16"
     http-server: "npm:^14.1.1"
     postcss: "npm:^8.4.32"
     postcss-cli: "npm:^11.0.0"
     smsshcss: "workspace:*"
+    smsshcss-postcss: "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"smsshcss-postcss@workspace:*, smsshcss-postcss@workspace:packages/@smsshcss/postcss":
+  version: 0.0.0-use.local
+  resolution: "smsshcss-postcss@workspace:packages/@smsshcss/postcss"
+  dependencies:
+    "@types/node": "npm:^22.14.1"
+    fast-glob: "npm:^3.3.2"
+    postcss: "npm:^8.4.35"
+    smsshcss: "workspace:*"
+    tsup: "npm:^8.0.2"
+    typescript: "npm:^5.3.3"
+  peerDependencies:
+    postcss: ^8.0.0
   languageName: unknown
   linkType: soft
 
@@ -3974,7 +4022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^8.0.2":
+"tsup@npm:^8.0.1, tsup@npm:^8.0.2":
   version: 8.4.0
   resolution: "tsup@npm:8.4.0"
   dependencies:
