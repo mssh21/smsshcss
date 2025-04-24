@@ -12,5 +12,12 @@ export const color: UtilityCategory = {
   'text-error': `color: ${colors.textError};`,
   'text-info': `color: ${colors.textInfo};`,
   'text-success': `color: ${colors.textSuccess};`,
-  'text-inverse': `color: ${colors.inverse};`,
+  'text-inverse': `color: ${colors.textInverse};`,
+  'text-link': `color: ${colors.textLink};`,
+  'text-link-hover': `color: ${colors.textLinkHover};`,
+  'text-link-pressed': `color: ${colors.textLinkPressed};`,
+  'text-link-visited': `color: ${colors.textLinkVisited};`,
+  'text-link-focus': `color: ${colors.textLinkFocus};`,
+  'text-link-disabled': `color: ${colors.textLinkDisabled};`,
+  'text-placeholder': `color: ${colors.textPlaceholder};`,
 };

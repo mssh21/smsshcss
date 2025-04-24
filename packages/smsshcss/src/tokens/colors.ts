@@ -33,6 +33,7 @@ export const colors = {
   textInfo: 'hsl(216, 75%, 25%, 100%)',
   textSuccess: 'hsl(160, 75%, 25%, 100%)',
   textPlaceholder: 'hsl(0, 0%, 35%, 100%)',
+  textInverse: 'hsl(0, 0%, 100%, 100%)',
 
   // Border Colors
   borderDefault: 'hsl(0, 0%, 75%, 100%)',
