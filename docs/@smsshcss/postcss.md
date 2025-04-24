@@ -18,21 +18,18 @@
 ```js
 module.exports = {
   spacing: {
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '2rem',
+    base: 8;
   },
   colors: {
-    white: '#fff',
-    primary: '#0055ff',
-    black: '#000',
+    primary: '#fff',
+    secondary: '#0055ff',
+    textPrimary: '#000',
   },
   borderRadius: {
     md: '0.5rem',
   },
   fontSize: {
-    base: '1rem',
-    xl: '2rem',
+    base: '14',
   },
 };
 ```

@@ -24,17 +24,6 @@ h1, h2 {
   margin-top: 0;
 }
 
-.card {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
-  width: 45%;
-  border-width: 1px;
-  border-style: solid;
-}
-
 footer {
   margin-top: 2rem;
   padding-top: 1rem;

@@ -1,7 +1,31 @@
 /**
  * Export all utilities
  */
-import { display } from './display';
+import { 
+  margin,
+  marginBlock,
+  marginBlockStart,
+  marginBlockEnd,
+  marginInline,
+  marginInlineStart,
+  marginInlineEnd } from './margin';
+import { 
+  padding,
+  paddingBlock,
+  paddingBlockStart,
+  paddingBlockEnd,
+  paddingInline,
+  paddingInlineStart,
+  paddingInlineEnd
+ } from './padding';
+import { 
+  gap,
+  rowGap,
+  columnGap
+ } from './gap';
+import {
+  display
+} from './display';
 import {
   flex,
   flexDirection,
@@ -16,19 +40,26 @@ import {
 } from './grid';
 import { position } from './position';
 import {
-  textAlign,
-  fontSize,
-  fontWeight,
-} from './typography';
-import {
-  textColor
+  color
 } from './color';
 import {
   backgroundColor
 } from './backgroundColor';
 import {
+  textAlign
+} from './textAlign';
+import {
+  fontSize
+} from './fontSize';
+import {
+  fontWeight
+} from './fontWeight';
+import {
   borderColor
 } from './borderColor';
+import {
+  borderRadius
+} from './borderRadius';
 import {
   createUtilityClass,
   createUtilityClasses,
@@ -39,6 +70,23 @@ import { UtilityDefinition, UtilityCategory } from '../types';
 
 // Import all utility modules
 const utilityModules = {
+  margin,
+  marginBlock,
+  marginBlockStart,
+  marginBlockEnd,
+  marginInline,
+  marginInlineStart,
+  marginInlineEnd,
+  padding,
+  paddingBlock,
+  paddingBlockStart,
+  paddingBlockEnd,
+  paddingInline,
+  paddingInlineStart,
+  paddingInlineEnd,
+  gap,
+  rowGap,
+  columnGap,
   display,
   flex,
   flexDirection,
@@ -52,13 +100,28 @@ const utilityModules = {
   textAlign,
   fontSize,
   fontWeight,
-  textColor,
+  color,
   backgroundColor,
   borderColor,
+  borderRadius
 };
 
 // Utility name mapping (if different from import variable name)
 const utilityNameMap: Record<string, string> = {
+  'marginBlock': 'margin-block',
+  'marginBlockStart': 'margin-block-start',
+  'marginBlockEnd': 'margin-block-end',
+  'marginInline': 'margin-inline',
+  'marginInlineStart': 'margin-inline-start',
+  'marginInlineEnd': 'margin-inline-end',
+  'paddingBlock': 'padding-block',
+  'paddingBlockStart': 'padding-block-start',
+  'paddingBlockEnd': 'padding-block-end',
+  'paddingInline': 'padding-inline',
+  'paddingInlineStart': 'padding-inline-start',
+  'paddingInlineEnd': 'padding-inline-end',
+  'rowGap': 'row-gap',
+  'columnGap': 'column-gap',
   'flexDirection': 'flex-direction',
   'flexWrap': 'flex-wrap',
   'justifyContent': 'justify-content',
@@ -69,9 +132,10 @@ const utilityNameMap: Record<string, string> = {
   'textAlign': 'text-align',
   'fontSize': 'font-size',
   'fontWeight': 'font-weight',
-  'textColor': 'color',
+  'color': 'color',
   'backgroundColor': 'background-color',
   'borderColor': 'border-color',
+  'borderRadius': 'border-radius'
 };
 
 // Export utility definitions - dynamically built
