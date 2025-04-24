@@ -13,6 +13,8 @@ module.exports = {
     'flex', 'items-center', 'justify-between', 'grow',
     'text-center', 'p-4', 'bg-gray-100' // テスト用に追加
   ],
+  // reset.cssを含めるかどうか (デフォルトはtrue)
+  includeResetCSS: false,
   // レガシーモードを無効化（@importが不要になります）
   legacyMode: false,
   // デバッグモード (オプション)

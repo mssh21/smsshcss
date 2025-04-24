@@ -8,7 +8,7 @@ const path = require('path');
 const fastGlob = require('fast-glob');
 const postcss = require('postcss');
 // smsshcssからユーティリティをインポート
-const { utilities } = require('smsshcss');
+const { utilities, RESET_CSS_PATH } = require('smsshcss');
 
 /**
  * PostCSSプラグインの設定オプション
@@ -18,6 +18,7 @@ const { utilities } = require('smsshcss');
  * @property {boolean} [debug] - デバッグモード
  * @property {string} [configFile] - 設定ファイルパス
  * @property {boolean} [legacyMode] - 従来の@importを使用するモード（後方互換性のため）
+ * @property {boolean} [includeResetCSS] - reset.cssを含めるかどうか
  */
 
 // クラス検出用の正規表現
@@ -121,6 +122,26 @@ function extractClassesFromFiles(contentPatterns, debug = false) {
 }
 
 /**
+ * reset.cssの内容を読み込む関数
+ * @returns {string|null} reset.cssの内容またはnull
+ */
+function loadResetCSS() {
+  try {
+    // パッケージのディレクトリを取得
+    const packageDir = path.dirname(require.resolve('smsshcss'));
+    // reset.cssのパスを解決
+    const resetCssPath = path.resolve(packageDir, RESET_CSS_PATH);
+    // ファイルの存在確認
+    if (fs.existsSync(resetCssPath)) {
+      return fs.readFileSync(resetCssPath, 'utf-8');
+    }
+  } catch (error) {
+    console.error('Error loading reset.css:', error);
+  }
+  return null;
+}
+
+/**
  * 使用されているクラスからCSSを生成する関数
  * @param {Set<string>} classes - 使用されているクラス
  * @param {string[]} [safelist=[]] - 常に含めるクラス
@@ -167,7 +188,8 @@ const smsshcssPlugin = (opts = {}) => {
     content: opts.content || configFileOptions.content || [],
     safelist: opts.safelist || configFileOptions.safelist || [],
     debug: opts.debug !== undefined ? opts.debug : configFileOptions.debug || false,
-    legacyMode: opts.legacyMode !== undefined ? opts.legacyMode : configFileOptions.legacyMode || false
+    legacyMode: opts.legacyMode !== undefined ? opts.legacyMode : configFileOptions.legacyMode || false,
+    includeResetCSS: opts.includeResetCSS !== undefined ? opts.includeResetCSS : configFileOptions.includeResetCSS !== false
   };
   
   return {
@@ -193,7 +215,15 @@ const smsshcssPlugin = (opts = {}) => {
               const usedClasses = extractClassesFromFiles(options.content, options.debug);
               
               // 抽出されたクラスからCSSを生成
-              const generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+              let generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+              
+              // reset.cssを含める
+              if (options.includeResetCSS) {
+                const resetCSS = loadResetCSS();
+                if (resetCSS) {
+                  generatedCSS = resetCSS + '\n' + generatedCSS;
+                }
+              }
               
               // @importを生成したCSSに置き換え
               if (generatedCSS) {
@@ -216,7 +246,18 @@ const smsshcssPlugin = (opts = {}) => {
           const usedClasses = extractClassesFromFiles(options.content, options.debug);
           
           // 抽出されたクラスからCSSを生成
-          const generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+          let generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
+          
+          // reset.cssを含める
+          if (options.includeResetCSS) {
+            const resetCSS = loadResetCSS();
+            if (resetCSS) {
+              generatedCSS = resetCSS + '\n' + generatedCSS;
+              if (options.debug) {
+                console.log('@smsshcss/postcss: Reset CSS included');
+              }
+            }
+          }
           
           // 生成したCSSがある場合、CSS末尾に追加
           if (generatedCSS) {

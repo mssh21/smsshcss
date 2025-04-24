@@ -6,9 +6,14 @@ import {
   utilities,
   createUtilityClass,
   createUtilityClasses,
-  mergeUtilityClasses
+  mergeUtilityClasses,
+  getResetCssPath,
+  applyResetCss
 } from './utils';
 import type { UtilityValue, UtilityCategory, UtilityDefinition } from './types';
+
+// Path to reset.css
+export const RESET_CSS_PATH = './reset.css';
 
 // Export types
 export type {
@@ -25,7 +30,9 @@ export {
   utilities,
   createUtilityClass,
   createUtilityClasses,
-  mergeUtilityClasses
+  mergeUtilityClasses,
+  getResetCssPath,
+  applyResetCss
 };
 
 // Default export
@@ -35,5 +42,8 @@ export default {
   mergeConfig,
   createUtilityClass,
   createUtilityClasses,
-  mergeUtilityClasses
+  mergeUtilityClasses,
+  resetCssPath: RESET_CSS_PATH,
+  getResetCssPath,
+  applyResetCss
 }; 

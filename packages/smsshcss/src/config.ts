@@ -32,6 +32,12 @@ export interface SmsshcssConfig {
    * @default {}
    */
   utilities?: Record<string, Record<string, string>>;
+
+  /**
+   * reset.cssを含めるかどうか
+   * @default true
+   */
+  includeResetCSS?: boolean;
 }
 
 /**
@@ -42,7 +48,8 @@ export const defaultConfig: SmsshcssConfig = {
   content: [],
   safelist: [],
   exclude: [],
-  utilities: {}
+  utilities: {},
+  includeResetCSS: true
 };
 
 /**

@@ -65,6 +65,10 @@ import {
   createUtilityClasses,
   mergeUtilityClasses
 } from './helpers';
+import {
+  getResetCssPath,
+  applyResetCss
+} from './reset';
 
 import { UtilityDefinition, UtilityCategory } from '../types';
 
@@ -152,5 +156,7 @@ export const utilities: UtilityDefinition = Object.entries(utilityModules).reduc
 export {
   createUtilityClass,
   createUtilityClasses,
-  mergeUtilityClasses
+  mergeUtilityClasses,
+  getResetCssPath,
+  applyResetCss
 }; 
