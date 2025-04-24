@@ -8,7 +8,15 @@ const path = require('path');
 const fastGlob = require('fast-glob');
 const postcss = require('postcss');
 // smsshcssからユーティリティをインポート
-const { utilities, RESET_CSS_PATH } = require('smsshcss');
+let smsshcss;
+try {
+  smsshcss = require('smsshcss');
+} catch (error) {
+  console.error('Error importing smsshcss:', error);
+  smsshcss = { utilities: {}, RESET_CSS_PATH: './reset.css' };
+}
+
+const { utilities, RESET_CSS_PATH } = smsshcss;
 
 /**
  * PostCSSプラグインの設定オプション
@@ -19,6 +27,7 @@ const { utilities, RESET_CSS_PATH } = require('smsshcss');
  * @property {string} [configFile] - 設定ファイルパス
  * @property {boolean} [legacyMode] - 従来の@importを使用するモード（後方互換性のため）
  * @property {boolean} [includeResetCSS] - reset.cssを含めるかどうか
+ * @property {boolean} [includeBaseCSS] - base.cssを含めるかどうか
  */
 
 // クラス検出用の正規表現
@@ -142,6 +151,34 @@ function loadResetCSS() {
 }
 
 /**
+ * baseスタイルのCSSを取得する関数
+ * @returns {string} baseスタイルのCSS
+ */
+function getBaseStyles(debug = false) {
+  try {
+    // baseStylesToCssの存在確認
+    if (typeof smsshcss.baseStylesToCss !== 'function') {
+      if (debug) {
+        console.error('@smsshcss/postcss: baseStylesToCss is not a function:', typeof smsshcss.baseStylesToCss);
+      }
+      return '';
+    }
+    
+    // baseStylesToCss関数を使用して直接CSSを生成
+    const css = smsshcss.baseStylesToCss();
+    
+    if (debug) {
+      console.log('@smsshcss/postcss: Generated base styles:', css ? 'success' : 'empty');
+    }
+    
+    return css || '';
+  } catch (error) {
+    console.error('Error generating base styles:', error);
+    return '';
+  }
+}
+
+/**
  * 使用されているクラスからCSSを生成する関数
  * @param {Set<string>} classes - 使用されているクラス
  * @param {string[]} [safelist=[]] - 常に含めるクラス
@@ -189,7 +226,8 @@ const smsshcssPlugin = (opts = {}) => {
     safelist: opts.safelist || configFileOptions.safelist || [],
     debug: opts.debug !== undefined ? opts.debug : configFileOptions.debug || false,
     legacyMode: opts.legacyMode !== undefined ? opts.legacyMode : configFileOptions.legacyMode || false,
-    includeResetCSS: opts.includeResetCSS !== undefined ? opts.includeResetCSS : configFileOptions.includeResetCSS !== false
+    includeResetCSS: opts.includeResetCSS !== undefined ? opts.includeResetCSS : configFileOptions.includeResetCSS !== false,
+    includeBaseCSS: opts.includeBaseCSS !== undefined ? opts.includeBaseCSS : configFileOptions.includeBaseCSS !== false
   };
   
   return {
@@ -217,11 +255,25 @@ const smsshcssPlugin = (opts = {}) => {
               // 抽出されたクラスからCSSを生成
               let generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
               
+              // baseスタイルを含める（トークンを直接参照）
+              if (options.includeBaseCSS) {
+                const baseCSS = getBaseStyles(options.debug);
+                if (baseCSS) {
+                  generatedCSS = baseCSS + '\n' + generatedCSS;
+                  if (options.debug) {
+                    console.log('@smsshcss/postcss: Base styles included');
+                  }
+                }
+              }
+              
               // reset.cssを含める
               if (options.includeResetCSS) {
                 const resetCSS = loadResetCSS();
                 if (resetCSS) {
                   generatedCSS = resetCSS + '\n' + generatedCSS;
+                  if (options.debug) {
+                    console.log('@smsshcss/postcss: Reset CSS included');
+                  }
                 }
               }
               
@@ -248,7 +300,18 @@ const smsshcssPlugin = (opts = {}) => {
           // 抽出されたクラスからCSSを生成
           let generatedCSS = generateCSSFromClasses(usedClasses, options.safelist);
           
-          // reset.cssを含める
+          // 順序として、先にbaseスタイルを含める（ユーティリティがbaseスタイルを上書きできるように）
+          if (options.includeBaseCSS) {
+            const baseCSS = getBaseStyles(options.debug);
+            if (baseCSS) {
+              generatedCSS = baseCSS + '\n' + generatedCSS;
+              if (options.debug) {
+                console.log('@smsshcss/postcss: Base styles included');
+              }
+            }
+          }
+          
+          // 次にreset.cssを含める（reset.cssがbaseスタイルを上書きできるように）
           if (options.includeResetCSS) {
             const resetCSS = loadResetCSS();
             if (resetCSS) {

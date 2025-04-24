@@ -38,6 +38,12 @@ export interface SmsshcssConfig {
    * @default true
    */
   includeResetCSS?: boolean;
+
+  /**
+   * base.cssを含めるかどうか
+   * @default true
+   */
+  includeBaseCSS?: boolean;
 }
 
 /**
@@ -49,7 +55,8 @@ export const defaultConfig: SmsshcssConfig = {
   safelist: [],
   exclude: [],
   utilities: {},
-  includeResetCSS: true
+  includeResetCSS: true,
+  includeBaseCSS: true
 };
 
 /**

@@ -8,11 +8,14 @@ import {
   createUtilityClasses,
   mergeUtilityClasses,
   getResetCssPath,
-  applyResetCss
+  applyResetCss,
+  baseStyles,
+  baseStylesToCss,
+  applyBaseCSS
 } from './utils';
 import type { UtilityValue, UtilityCategory, UtilityDefinition } from './types';
 
-// Path to reset.css
+// Path to CSS files
 export const RESET_CSS_PATH = './reset.css';
 
 // Export types
@@ -32,7 +35,10 @@ export {
   createUtilityClasses,
   mergeUtilityClasses,
   getResetCssPath,
-  applyResetCss
+  applyResetCss,
+  baseStyles,
+  baseStylesToCss,
+  applyBaseCSS
 };
 
 // Default export
@@ -45,5 +51,8 @@ export default {
   mergeUtilityClasses,
   resetCssPath: RESET_CSS_PATH,
   getResetCssPath,
-  applyResetCss
+  applyResetCss,
+  baseStyles,
+  baseStylesToCss,
+  applyBaseCSS
 }; 

@@ -1,6 +1,10 @@
 /**
  * Export all utilities
  */
+import {
+  getResetCssPath,
+  applyResetCss
+} from './reset';
 import { 
   margin,
   marginBlock,
@@ -61,14 +65,18 @@ import {
   borderRadius
 } from './borderRadius';
 import {
+  boxShadow
+} from './boxShadow';
+import {
   createUtilityClass,
   createUtilityClasses,
   mergeUtilityClasses
 } from './helpers';
 import {
-  getResetCssPath,
-  applyResetCss
-} from './reset';
+  applyBaseCSS,
+  baseStyles,
+  baseStylesToCss
+} from './base';
 
 import { UtilityDefinition, UtilityCategory } from '../types';
 
@@ -107,7 +115,8 @@ const utilityModules = {
   color,
   backgroundColor,
   borderColor,
-  borderRadius
+  borderRadius,
+  boxShadow
 };
 
 // Utility name mapping (if different from import variable name)
@@ -139,7 +148,8 @@ const utilityNameMap: Record<string, string> = {
   'color': 'color',
   'backgroundColor': 'background-color',
   'borderColor': 'border-color',
-  'borderRadius': 'border-radius'
+  'borderRadius': 'border-radius',
+  'boxShadow': 'box-shadow'
 };
 
 // Export utility definitions - dynamically built
@@ -158,5 +168,8 @@ export {
   createUtilityClasses,
   mergeUtilityClasses,
   getResetCssPath,
-  applyResetCss
+  applyResetCss,
+  applyBaseCSS,
+  baseStyles,
+  baseStylesToCss
 }; 

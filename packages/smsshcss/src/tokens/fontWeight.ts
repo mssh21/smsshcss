@@ -3,12 +3,12 @@
  */
 
 export const fontWeight = {
-    thin: 'font-weight: 100',
-    light: 'font-weight: 300',
-    normal: 'font-weight: 400',
-    medium: 'font-weight: 500',
-    semibold: 'font-weight: 600',
-    bold: 'font-weight: 700',
-    extrabold: 'font-weight: 800',
-    black: 'font-weight: 900'
+    thin: '100',
+    light: '300',
+    normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+    extrabold: '800',
+    black: '900'
 } as const;

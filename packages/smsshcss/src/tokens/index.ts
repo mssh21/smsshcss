@@ -8,3 +8,4 @@ export * from './lineHeight';
 export * from './fontSize';
 export * from './borderRadius';
 export * from './fontWeight';
+export * from './shadow';
