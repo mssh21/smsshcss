@@ -7,8 +7,6 @@ const ratio = 1.25;
 
 export const fontSize = {
   base,
-
-  tokens: {
     xs: `${Math.round(base * ratio ** 0)}px`,  // 12
     sm: `${Math.round(base * ratio ** 1)}px`,  // 15
     md: `${Math.round(base * ratio ** 2)}px`,  // 19
@@ -21,5 +19,4 @@ export const fontSize = {
     '6xl': `${Math.round(base * ratio ** 9)}px`, // 100
     '7xl': `${Math.round(base * ratio ** 10)}px`, // 128
     '8xl': `${Math.round(base * ratio ** 11)}px`, // 160
-  }
 } as const;

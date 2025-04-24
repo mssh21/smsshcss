@@ -7,7 +7,6 @@ const base = 4;
 export const borderRadius = {
   base,
 
-  tokens: {
     none: '0px',
     xs: `${base / 2}px`, // 2
     sm: `${base}px`, // 4
@@ -22,5 +21,4 @@ export const borderRadius = {
     '7xl': `${base * 9}px`, // 36
     '8xl': `${base * 10}px`, // 40
     full: '9999px',
-  }
 } as const;

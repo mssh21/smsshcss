@@ -8,7 +8,6 @@ const ratio = 1.618;
 export const spacing = {
   base,
 
-  tokens: {
     none: `${0}px`,
     auto: `auto`,
     xs: `${base}px`, // 4 * 1.618^0 ≒ 4
@@ -23,5 +22,4 @@ export const spacing = {
     '6xl': `${Math.round(base * ratio ** 9)}px`, // 6 * 1.618^9 ≒ 1280.000
     '7xl': `${Math.round(base * ratio ** 10)}px`, // 7 * 1.618^10 ≒ 1280.000
     '8xl': `${Math.round(base * ratio ** 11)}px`, // 8 * 1.618^11 ≒ 797.373
-  }
 } as const;

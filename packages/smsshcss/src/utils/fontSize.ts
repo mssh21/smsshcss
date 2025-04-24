@@ -5,16 +5,16 @@ import { UtilityCategory } from '../types';
 import { fontSize as fontSizeToken } from '../tokens';
 
 export const fontSize: UtilityCategory = {
-  'text-xs': fontSizeToken.tokens.xs,
-  'text-sm': fontSizeToken.tokens.sm,
-  'text-base': fontSizeToken.tokens.base,
-  'text-lg': fontSizeToken.tokens.lg,
-  'text-xl': fontSizeToken.tokens.xl,
-  'text-2xl': fontSizeToken.tokens['2xl'],
-  'text-3xl': fontSizeToken.tokens['3xl'],
-  'text-4xl': fontSizeToken.tokens['4xl'],
-  'text-5xl': fontSizeToken.tokens['5xl'],
-  'text-6xl': fontSizeToken.tokens['6xl'],
-  'text-7xl': fontSizeToken.tokens['7xl'],
-  'text-8xl': fontSizeToken.tokens['8xl'],
+  'text-xs': fontSizeToken.xs,
+  'text-sm': fontSizeToken.sm,
+  'text-base': fontSizeToken.base,
+  'text-lg': fontSizeToken.lg,
+  'text-xl': fontSizeToken.xl,
+  'text-2xl': fontSizeToken['2xl'],
+  'text-3xl': fontSizeToken['3xl'],
+  'text-4xl': fontSizeToken['4xl'],
+  'text-5xl': fontSizeToken['5xl'],
+  'text-6xl': fontSizeToken['6xl'],
+  'text-7xl': fontSizeToken['7xl'],
+  'text-8xl': fontSizeToken['8xl'],
 };

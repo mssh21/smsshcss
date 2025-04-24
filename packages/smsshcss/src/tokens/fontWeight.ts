@@ -3,7 +3,6 @@
  */
 
 export const fontWeight = {
-  tokens: {
     thin: 'font-weight: 100',
     light: 'font-weight: 300',
     normal: 'font-weight: 400',
@@ -11,6 +10,5 @@ export const fontWeight = {
     semibold: 'font-weight: 600',
     bold: 'font-weight: 700',
     extrabold: 'font-weight: 800',
-    black: 'font-weight: 900',
-  }
+    black: 'font-weight: 900'
 } as const;

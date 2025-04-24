@@ -3651,9 +3651,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smsshcss-playground@workspace:playground/v1":
+"smsshcss-postcss@workspace:playground/postcss":
   version: 0.0.0-use.local
-  resolution: "smsshcss-playground@workspace:playground/v1"
+  resolution: "smsshcss-postcss@workspace:playground/postcss"
   dependencies:
     "@smsshcss/postcss": "workspace:*"
     autoprefixer: "npm:^10.4.16"
