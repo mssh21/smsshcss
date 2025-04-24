@@ -1,6 +1,6 @@
-# smsshcss PostCSSプラグイン
+# SmsshCSS PostCSSプラグイン
 
-smsshcssは、軽量なユーティリティファーストCSSフレームワークです。HTMLファイル内で使用されるクラスのみを生成し、最適化されたCSSを提供します。
+SmsshCSSは、軽量なユーティリティファーストCSSフレームワークです。HTMLファイル内で使用されるクラスのみを生成し、最適化されたCSSを提供します。
 
 ## 特徴
 
@@ -35,7 +35,7 @@ module.exports = {
 };
 ```
 
-### 2. smsshcss設定ファイルの作成
+### 2. SmsshCSS設定ファイルの作成
 
 プロジェクトのルートに`smsshcss.config.js`ファイルを作成して、スタイルとトークンをカスタマイズできます:
 
@@ -110,7 +110,7 @@ module.exports = {
 
 ```html
 <div class="flex items-center justify-between">
-  <h1 class="text-2xl font-bold text-primary">Hello, smsshcss!</h1>
+  <h1 class="text-2xl font-bold text-primary">Hello, SmsshCSS!</h1>
   <button class="bg-primary text-white p-md rounded-sm">Click me</button>
 </div>
 ```
