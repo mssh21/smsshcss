@@ -1,14 +1,18 @@
 {
   "name": "smsshcss-cli",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "SmsshCSS CLI",
   "main": "dist/index.js",
   "bin": {
     "smsshcss": "./bin/smsshcss.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "templates"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs --tsconfig tsconfig.json && mkdir -p dist/templates && cp src/templates/* dist/templates/",

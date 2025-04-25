@@ -3260,7 +3260,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.32, postcss@npm:^8.4.35, postcss@npm:^8.4.43":
+"postcss@npm:^8.4.32, postcss@npm:^8.4.35, postcss@npm:^8.4.43, postcss@npm:^8.5.3":
   version: 8.5.3
   resolution: "postcss@npm:8.5.3"
   dependencies:
@@ -3662,12 +3662,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smsshcss-cli-playground@workspace:playground/v1.0.0":
-  version: 0.0.0-use.local
-  resolution: "smsshcss-cli-playground@workspace:playground/v1.0.0"
-  languageName: unknown
-  linkType: soft
-
 "smsshcss-cli@workspace:packages/@smsshcss/cli":
   version: 0.0.0-use.local
   resolution: "smsshcss-cli@workspace:packages/@smsshcss/cli"
@@ -3697,14 +3691,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"smsshcss-postcss@workspace:*, smsshcss-postcss@workspace:packages/@smsshcss/postcss":
+"smsshcss-postcss@workspace:*, smsshcss-postcss@workspace:^, smsshcss-postcss@workspace:packages/@smsshcss/postcss":
   version: 0.0.0-use.local
   resolution: "smsshcss-postcss@workspace:packages/@smsshcss/postcss"
   dependencies:
     "@types/node": "npm:^22.14.1"
     fast-glob: "npm:^3.3.2"
     postcss: "npm:^8.4.35"
-    smsshcss: "workspace:*"
+    smsshcss: "npm:^1.0.0"
     tsup: "npm:^8.0.2"
     typescript: "npm:^5.3.3"
   peerDependencies:
@@ -3712,7 +3706,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"smsshcss@workspace:*, smsshcss@workspace:packages/smsshcss":
+"smsshcss@npm:^1.0.0, smsshcss@workspace:*, smsshcss@workspace:^, smsshcss@workspace:packages/smsshcss":
   version: 0.0.0-use.local
   resolution: "smsshcss@workspace:packages/smsshcss"
   dependencies:
@@ -4243,6 +4237,16 @@ __metadata:
   checksum: 10c0/ac65e2c7c562d7b49b68edddcf55385d3e922bc1dd5d90419ea40b53b6de1607d1e45ceb71efb9d60da02c681d13c6cb3a1aa8b13fc0c989dfc219df97ee992d
   languageName: node
   linkType: hard
+
+"v1@workspace:playground/v1":
+  version: 0.0.0-use.local
+  resolution: "v1@workspace:playground/v1"
+  dependencies:
+    postcss: "npm:^8.5.3"
+    smsshcss: "workspace:^"
+    smsshcss-postcss: "workspace:^"
+  languageName: unknown
+  linkType: soft
 
 "vite-node@npm:0.34.6":
   version: 0.34.6
