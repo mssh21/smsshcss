@@ -1,35 +1,47 @@
 {
   "name": "smsshcss",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A utility-first CSS framework for rapid UI development",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
-    "dist/**"
+    "dist/**",
+    "bin/**",
+    "templates/**"
   ],
+  "bin": "./bin/smsshcss.js",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts && cp src/reset.css dist/",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch && cp src/reset.css dist/",
+    "build": "tsup src/index.ts src/cli.ts --format cjs --tsconfig tsconfig.json && cp src/reset.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/",
+    "dev": "tsup src/index.ts src/cli.ts --format cjs --watch --tsconfig tsconfig.json && cp src/reset.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
     "./reset.css": "./dist/reset.css"
   },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0"
+  },
   "devDependencies": {
-    "@types/node": "^20.11.24",
-    "tsup": "^8.0.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.5",
+    "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   },
   "keywords": [
     "css",
     "utility",
     "framework"
-  ]
+  ],
+  "packageManager": "yarn@4.5.0"
 }
