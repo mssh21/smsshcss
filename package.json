@@ -17,11 +17,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "npx prettier --write",
-      "npx eslint --fix"
+      "yarn prettier --write",
+      "yarn eslint --fix"
     ],
     "*.{json,md}": [
-      "npx prettier --write"
+      "yarn prettier --write"
     ]
   },
   "license": "MIT",
@@ -29,9 +29,9 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@types/node": "^20.14.8",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "postcss": "^8.4.35",
