@@ -14,16 +14,11 @@
  */
 module.exports = {
   // スキャン対象のファイル
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   // 常に含めるクラス
-  safelist: [
-    'flex', 'items-center', 'justify-between', 'grow'
-  ],
+  safelist: ['flex', 'items-center', 'justify-between', 'grow'],
   // デバッグモード (オプション)
-  debug: false
+  debug: false,
 };
 ```
 
@@ -37,10 +32,10 @@ module.exports = {
   plugins: [
     // @smsshcss/postcssプラグインを使用
     require('@smsshcss/postcss')(),
-    
+
     // 他のプラグイン
-    require('autoprefixer')
-  ]
+    require('autoprefixer'),
+  ],
 };
 ```
 
@@ -48,8 +43,8 @@ module.exports = {
 
 ```js
 require('@smsshcss/postcss')({
-  configFile: './path/to/smsshcss.config.js'
-})
+  configFile: './path/to/smsshcss.config.js',
+});
 ```
 
 ## 新機能 2: @importなしの自動生成モード
@@ -63,29 +58,35 @@ require('@smsshcss/postcss')({
 ```js
 module.exports = {
   // ...他の設定...
-  
+
   // レガシーモードを無効化（@importが不要になります）
-  legacyMode: false
+  legacyMode: false,
 };
 ```
 
 2. CSSファイルから `@import "smsshcss";` の記述を削除できます。
 
 **変更前:**
+
 ```css
 /* smsshcssユーティリティクラスのインポート */
-@import "smsshcss";
+@import 'smsshcss';
 
 /* 他のスタイル */
-body { /* ... */ }
+body {
+  /* ... */
+}
 ```
 
 **変更後:**
+
 ```css
 /* smsshcssユーティリティクラスは自動的に追加されます */
 
 /* 他のスタイル */
-body { /* ... */ }
+body {
+  /* ... */
+}
 ```
 
 ### 設定の優先順位
@@ -98,4 +99,4 @@ body { /* ... */ }
 
 - `smsshcss.config.js` (CommonJS)
 - `smsshcss.config.cjs` (CommonJS)
-- `smsshcss.config.mjs` (ES Modules) 
+- `smsshcss.config.mjs` (ES Modules)
