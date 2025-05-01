@@ -5,7 +5,7 @@
 module.exports = {
   plugins: [
     // @smsshcss/postcssプラグインを使用
-    require('smsshcss-postcss')(),
+    require('@smsshcss/postcss')(),
 
     // 他のプラグイン
     require('autoprefixer'),

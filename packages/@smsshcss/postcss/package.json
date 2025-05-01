@@ -1,6 +1,6 @@
 {
-  "name": "smsshcss-postcss",
-  "version": "1.0.2",
+  "name": "@smsshcss/postcss",
+  "version": "2.0.0",
   "description": "PostCSS plugin for smsshcss to generate CSS only for classes used in HTML",
   "license": "MIT",
   "main": "dist/index.js",

@@ -113,7 +113,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
   let cache = '';
 
   return {
-    name: 'smsshcss-vite',
+    name: '@smsshcss/vite',
 
     configResolved(): void {
       // Load config file if it exists
@@ -130,7 +130,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
         }
 
         if (mergedOptions.debug) {
-          console.log('[smsshcss] Config loaded:', mergedOptions);
+          console.log('[@smsshcss/vite] Config loaded:', mergedOptions);
         }
       }
     },
@@ -166,7 +166,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
           }
 
           if (mergedOptions.debug) {
-            console.log('[smsshcss] Config reloaded:', mergedOptions);
+            console.log('[@smsshcss/vite] Config reloaded:', mergedOptions);
           }
           server.restart();
           return;
@@ -188,7 +188,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
 
         if (shouldRegenerate) {
           if (mergedOptions.debug) {
-            console.log(`[smsshcss] File changed: ${relativePath}, regenerating CSS...`);
+            console.log(`[@smsshcss/vite] File changed: ${relativePath}, regenerating CSS...`);
           }
           server.restart();
         }
@@ -211,7 +211,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
         cache = css;
 
         if (mergedOptions.debug) {
-          console.log(`[smsshcss] Generated CSS (${css.length} bytes)`);
+          console.log(`[@smsshcss/vite] Generated CSS (${css.length} bytes)`);
         }
 
         // Write to virtual output file for dev mode

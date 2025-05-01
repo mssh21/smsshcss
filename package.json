@@ -44,7 +44,6 @@
   "workspaces": [
     "packages/*",
     "packages/@smsshcss/*",
-    "packages/@smsshcss/cli/*",
     "playground/*"
   ],
   "volta": {
