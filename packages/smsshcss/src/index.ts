@@ -14,6 +14,7 @@ import {
   applyBaseCSS,
 } from './utils';
 import type { UtilityValue, UtilityCategory, UtilityDefinition } from './types';
+import { TokenLoader } from './tokens/loader';
 
 // Path to CSS files
 export const RESET_CSS_PATH = './reset.css';
@@ -37,6 +38,15 @@ export async function generateCSS(options: {
   theme?: Record<string, Record<string, string>>;
 }): Promise<string> {
   try {
+    // デバッグモードの場合、受け取った設定を出力
+    if (options.debug) {
+      console.log('generateCSS - received options:', {
+        theme: options.theme,
+        includeBaseCSS: options.includeBaseCSS,
+        includeResetCSS: options.includeResetCSS
+      });
+    }
+
     // Initialize CSS parts
     let cssContent = '';
 
@@ -46,29 +56,49 @@ export async function generateCSS(options: {
       cssContent += '\n\n';
     }
 
-    // Add base CSS if enabled
+    // Add base CSS if enabled - テーマ設定を完全に渡す
     if (options.includeBaseCSS !== false) {
-      cssContent += applyBaseCSS();
+      // SmsshcssConfig形式に変換して渡す
+      const config: SmsshcssConfig = {
+        includeBaseCSS: options.includeBaseCSS,
+        includeResetCSS: options.includeResetCSS,
+        theme: options.theme || {},
+        debug: options.debug
+      };
+
+      cssContent += baseStylesToCss(config);
       cssContent += '\n\n';
     }
 
-    // テーマ設定からカラーのカスタマイズを適用
-    const colors = options.theme?.colors || {};
-    Object.entries(colors).forEach(([name, value]) => {
+    // トークンを使用して新しいTokenLoaderインスタンスを作成
+    const tokenLoader = new TokenLoader({
+      theme: options.theme || {},
+      debug: options.debug
+    });
+
+    // デバッグ情報としてトークンの状態を出力
+    if (options.debug) {
+      console.log('TokenLoader created with resolved tokens', {
+        fontSize: tokenLoader.fontSize,
+        colors: tokenLoader.colors,
+        spacing: tokenLoader.spacing
+      });
+    }
+
+    // フォントサイズユーティリティの生成
+    Object.entries(tokenLoader.fontSize).forEach(([name, value]) => {
+      cssContent += `.text-${name} { font-size: ${value}; }\n`;
+    });
+
+    // テキストカラーユーティリティの生成
+    Object.entries(tokenLoader.colors).forEach(([name, value]) => {
       cssContent += `.text-${name} { color: ${value}; }\n`;
       cssContent += `.bg-${name} { background-color: ${value}; }\n`;
       cssContent += `.border-${name} { border-color: ${value}; }\n`;
     });
 
     // スペーシング設定を適用
-    const spacing = options.theme?.spacing || {
-      xs: '4px',
-      sm: '8px',
-      md: '16px',
-      lg: '24px',
-      xl: '32px',
-      '2xl': '48px',
-    };
+    const spacing = tokenLoader.spacing;
 
     // パディング
     Object.entries(spacing).forEach(([name, value]) => {
@@ -93,6 +123,16 @@ export async function generateCSS(options: {
       cssContent += `.gap-${name} { gap: ${value}; }\n`;
     });
 
+    // フォントウェイト
+    Object.entries(tokenLoader.fontWeight).forEach(([name, value]) => {
+      cssContent += `.font-${name} { font-weight: ${value}; }\n`;
+    });
+
+    // ボーダー半径
+    Object.entries(tokenLoader.borderRadius).forEach(([name, value]) => {
+      cssContent += `.rounded-${name} { border-radius: ${value}; }\n`;
+    });
+
     // フレックスボックスユーティリティ
     cssContent += `.flex { display: flex; }\n`;
     cssContent += `.items-center { align-items: center; }\n`;
@@ -108,20 +148,15 @@ export async function generateCSS(options: {
     cssContent += `.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }\n`;
     cssContent += `.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }\n`;
 
-    // フォントウェイト設定
-    const fontWeights = options.theme?.fontWeight || {
-      normal: '400',
-      bold: '700',
-    };
-
-    Object.entries(fontWeights).forEach(([name, value]) => {
-      cssContent += `.font-${name} { font-weight: ${value}; }\n`;
-    });
-
     // Add custom CSS if provided
     if (options.customCSS) {
       cssContent += '\n\n';
       cssContent += options.customCSS;
+    }
+
+    // デバッグモードの場合、生成されたCSSの長さを出力
+    if (options.debug) {
+      console.log(`Generated CSS: ${cssContent.length} bytes`);
     }
 
     return cssContent;

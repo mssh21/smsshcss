@@ -41,9 +41,33 @@ export function resolveTokens<T extends Record<string, any>>(
   baseTokens: T,
   theme?: ThemeConfig
 ): T {
+  // デバッグ用ログ - テーマ設定の検証
+  console.log(`[resolveTokens] Resolving ${tokenName}:`, {
+    hasTheme: !!theme,
+    hasTokenInTheme: theme && !!theme[tokenName],
+    themeValue: theme && theme[tokenName]
+  });
+
   if (!theme || !theme[tokenName]) {
+    console.log(`[resolveTokens] No theme settings for ${tokenName}, using defaults`);
     return { ...baseTokens };
   }
 
-  return mergeTokens(baseTokens, theme[tokenName] as Record<string, any>);
-} 
+  // マージしたトークン
+  const merged = mergeTokens(baseTokens, theme[tokenName] as Record<string, any>);
+
+  // テーマとデフォルト値の違いを確認
+  const differences: Record<string, { default: any, themed: any }> = {};
+  for (const key in merged) {
+    if (baseTokens[key] !== merged[key]) {
+      differences[key] = { default: baseTokens[key], themed: merged[key] };
+    }
+  }
+
+  console.log(`[resolveTokens] Merged tokens for ${tokenName}:`, {
+    differences,
+    result: merged
+  });
+
+  return merged;
+}

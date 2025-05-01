@@ -171,8 +171,12 @@ function getBaseStyles(debug = false, config: Record<string, unknown> = {}): str
       return '';
     }
 
-    // baseStylesToCss関数を使用して直接CSSを生成（設定を渡す）
-    const css = smsshcss.baseStylesToCss(config);
+    // baseStylesToCss関数を使用して直接CSSを生成（完全な設定オブジェクトを渡す）
+    const css = smsshcss.baseStylesToCss({
+      includeBaseCSS: true,
+      includeResetCSS: config.includeResetCSS !== false,
+      theme: config.theme || {}
+    });
 
     if (debug) {
       console.log('@smsshcss/postcss: Generated base styles:', css ? 'success' : 'empty');
