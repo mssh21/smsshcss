@@ -1,8 +1,10 @@
 /**
  * SmsshCSS 設定ファイル
+ * ESMとCJSの両方のモジュール形式に対応
  */
 
-module.exports = {
+// 共通の設定オブジェクト
+const config = {
   // スキャン対象のファイル
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   // 常に含めるクラス
@@ -59,3 +61,16 @@ module.exports = {
     },
   },
 };
+
+// 共有テーマオブジェクトのみをエクスポート（ESM形式で使用する場合）
+export const sharedTheme = config.theme;
+
+// 設定全体をエクスポート（ESM形式で使用する場合）
+export default config;
+
+// CommonJS形式でのエクスポート
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = config;
+  // 共有テーマオブジェクトもエクスポート
+  module.exports.sharedTheme = config.theme;
+}

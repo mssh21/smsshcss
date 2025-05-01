@@ -1,8 +1,10 @@
 /**
  * SmsshCSS 設定ファイル
+ * ESMとCJSの両方のモジュール形式に対応
  */
 
-module.exports = {
+// 共通の設定オブジェクト
+const config = {
   // スキャン対象のファイル
   content: [
     './index.html',
@@ -18,7 +20,7 @@ module.exports = {
   legacyMode: false,
   // デバッグモード (オプション)
   debug: false,
-  
+
   // テーマ設定 - トークンのカスタマイズ
   theme: {
     // カラーのカスタマイズ
@@ -61,4 +63,17 @@ module.exports = {
       md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
     }
   }
-}; 
+};
+
+// 共有テーマオブジェクトのみをエクスポート（ESM形式で使用する場合）
+export const sharedTheme = config.theme;
+
+// 設定全体をエクスポート（ESM形式で使用する場合）
+export default config;
+
+// CommonJS形式でのエクスポート
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = config;
+  // 共有テーマオブジェクトもエクスポート
+  module.exports.sharedTheme = config.theme;
+}

@@ -67,7 +67,7 @@ yarn add smsshcss @smsshcss/vite
 
 - コンポーネントセットを提供
 - スタイル上書きによる柔軟なカスタマイズが可能
-- smsshcss.config.jsによる拡張性
+- テーマ設定による拡張性
 - ユーティリティクラス自動生成（Spacing, Colorsなど）
 - JIT（Just-In-Time）方式のCSS生成で爆速ビルド
 - ビルド時にクラス抽出:使われてるクラスだけをCSSに含められる
@@ -84,22 +84,12 @@ npx smsshcss init
 
 これにより、プロジェクトルートに `smsshcss.config.js` ファイルが作成されます。
 
-### 2. 設定ファイルのカスタマイズ
+### 2. テーマ設定ファイルの作成方法
 
-`smsshcss.config.js`（ESモジュール形式）または`smsshcss.config.cjs`（CommonJS形式）で以下のオプションをカスタマイズできます：
-
-#### ESモジュール形式 (smsshcss.config.js)
 
 ```js
-export default {
-  // 設定オプション...
-};
-```
-
-#### CommonJS形式 (smsshcss.config.cjs)
-
-```js
-module.exports = {
+// smsshcss.config.js - 複数プロジェクト間で共有するテーマ設定
+export const smsshcssTheme = {
   // スキャン対象のファイル
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   // 常に含めるクラス
@@ -178,7 +168,28 @@ module.exports = {
 };
 ```
 
-#### Viteプラグインとして使用する場合
+#### Viteプラグインとして使用する場合（2つのアプローチ）
+
+**アプローチ1: 共有テーマモジュールを使用（推奨）**
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
+import { smsshcssTheme } from './smsshcss.config.js'; // 共有テーマをインポート
+
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      smsshcssTheme
+    }),
+  ],
+});
+```
+
+**アプローチ2: 設定ファイルを使用**
+
+現時点ではCJS形式の設定ファイルの読み込みにいくつかの制限があります。ESM形式の設定ファイルをご使用ください。
 
 ```js
 // vite.config.js
@@ -187,7 +198,34 @@ import smsshcss from '@smsshcss/vite';
 
 export default defineConfig({
   plugins: [
-    smsshcss(), // smsshcss.config.js または smsshcss.config.cjs を自動的に読み込みます
+    smsshcss({
+      configFile: 'smsshcss.config.js', // ESM形式の設定ファイルパス
+    }),
+  ],
+});
+```
+
+**アプローチ3: 直接テーマを定義**
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
+
+const theme = {
+  colors: {
+    primary: '#3366FF',
+    // その他のカラー設定...
+  },
+  // その他のテーマ設定...
+};
+
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+      theme: theme,
+    }),
   ],
 });
 ```
@@ -212,20 +250,7 @@ body {
 }
 ```
 
-これらのディレクティブはビルド時に、設定ファイル (`smsshcss.config.js` または `smsshcss.config.cjs`) のオプションに基づいて以下のように置き換えられます：
-
-- **@smsshcss base** - `includeResetCSS` と `includeBaseCSS` の設定に基づいてリセットCSSとベースCSSを展開します。これにより、一貫したブラウザレンダリングのためのリセットスタイルと、テーマ設定に基づいた基本的なタイポグラフィや要素スタイリングが提供されます。
-
-- **@smsshcss utilities** - 設定ファイルの `theme` セクションで定義されたトークンに基づいてすべてのユーティリティクラス（余白、色、フォントサイズなど）を展開します。
-
-- **@smsshcss** - 上記2つのディレクティブを組み合わせた効果を持ち、ベーススタイルとユーティリティの両方を一度にインポートします。
-
-**注意事項**:
-
-- これらのディレクティブは、Viteプラグイン（`@smsshcss/vite`）またはPostCSSプラグイン（`@smsshcss/postcss`）を使用している場合にのみ機能します。
-- `legacyMode: false` が設定されている場合、これらのディレクティブが必要です。
-- `includeResetCSS: false` を設定すると、`@smsshcss base` ディレクティブはリセットCSSを含まなくなります。
-- `includeBaseCSS: false` を設定すると、`@smsshcss base` ディレクティブはベースCSSを含まなくなります。
+これらのディレクティブはビルド時に、設定ファイルの内容またはプラグインオプションに基づいて展開されます。
 
 ## ⚡ JIT(Just-In-Time)方式の動作
 
@@ -238,7 +263,7 @@ SmsshCSSは、Just-In-Time方式でCSSを生成します：
 ## 🔧 ビルド時の流れ
 
 1. 設定された`content`パスのソースファイルをスキャン
-2. `smsshcss.config.js`または`smsshcss.config.cjs` をパースしてトークン情報を取得
+2. テーマ設定を解析（プラグインオプションまたは設定ファイル）
 3. 抽出したクラス名に対しユーティリティまたはコンポーネントのCSSを展開
 4. 変換後のCSSを生成・出力
 
@@ -272,3 +297,48 @@ process.env.DEBUG = '1';
 // 詳細デバッグモード（ファイルパス情報など含む）
 process.env.DEBUG = 'verbose';
 ```
+
+## 💡 複数プロジェクト間でのテーマ共有のベストプラクティス
+
+複数のプロジェクト（ViteプロジェクトとPostCSSプロジェクトなど）間で一貫したテーマを共有するには、共有テーマモジュールの作成をお勧めします：
+
+```js
+// shared-theme.js
+export const sharedTheme = {
+  colors: {
+    primary: '#3366FF',
+    // 他のカラー設定...
+  },
+  // 他のテーマ設定...
+};
+```
+
+そして、各プラグインの設定で直接このモジュールを参照します：
+
+```js
+// postcss.config.js
+const { sharedTheme } = require('./path/to/shared-theme.js');
+
+module.exports = {
+  plugins: [
+    require('@smsshcss/postcss')({
+      theme: sharedTheme
+    })
+  ]
+};
+
+// vite.config.js
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
+import { sharedTheme } from './path/to/shared-theme.js';
+
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      theme: sharedTheme
+    })
+  ]
+});
+```
+
+この方法により、すべてのプロジェクトで一貫したスタイリングを確保しながら、特定のプロジェクト固有の設定も柔軟に追加できます.
