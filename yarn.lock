@@ -894,9 +894,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smsshcss/postcss-playground@workspace:playground/smsshcss-postcss":
+"@smsshcss/postcss-playground@workspace:playground/@smsshcss/postcss-playground":
   version: 0.0.0-use.local
-  resolution: "@smsshcss/postcss-playground@workspace:playground/smsshcss-postcss"
+  resolution: "@smsshcss/postcss-playground@workspace:playground/@smsshcss/postcss-playground"
   dependencies:
     "@smsshcss/postcss": "workspace:*"
     autoprefixer: "npm:^10.4.16"
@@ -946,7 +946,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@smsshcss/vite@workspace:packages/@smsshcss/vite":
+"@smsshcss/vite-playground@workspace:playground/@smsshcss/vite-playground":
+  version: 0.0.0-use.local
+  resolution: "@smsshcss/vite-playground@workspace:playground/@smsshcss/vite-playground"
+  dependencies:
+    "@smsshcss/vite": "workspace:*"
+    smsshcss: "workspace:*"
+    vite: "npm:^5.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@smsshcss/vite@workspace:*, @smsshcss/vite@workspace:packages/@smsshcss/vite":
   version: 0.0.0-use.local
   resolution: "@smsshcss/vite@workspace:packages/@smsshcss/vite"
   dependencies:
@@ -1954,9 +1964,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.73":
-  version: 1.5.147
-  resolution: "electron-to-chromium@npm:1.5.147"
-  checksum: 10c0/35d164193fe1cdbe1c57517257692fe32320b6d3879ac19300dc8b57b75bf3d45713cc547cb50bef2dbe358f2363cf1ef371446a4b8633b2c6977a5cc5d4d4d6
+  version: 1.5.148
+  resolution: "electron-to-chromium@npm:1.5.148"
+  checksum: 10c0/e6de6bf2f632775ef426d346f0453ff9551c321a5d0e0a336e6c646e43b723ec0d2ce95199f3f3ab5ccb8a9c1996a409eaae056954366c491113928c66f60173
   languageName: node
   linkType: hard
 
@@ -4031,7 +4041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.32, postcss@npm:^8.4.35, postcss@npm:^8.4.43, postcss@npm:^8.5.3":
+"postcss@npm:^8.4.32, postcss@npm:^8.4.35, postcss@npm:^8.4.43":
   version: 8.5.3
   resolution: "postcss@npm:8.5.3"
   dependencies:
@@ -4474,7 +4484,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"smsshcss@npm:^1.0.0, smsshcss@workspace:*, smsshcss@workspace:^, smsshcss@workspace:packages/smsshcss":
+"smsshcss@npm:^1.0.0, smsshcss@workspace:*, smsshcss@workspace:packages/smsshcss":
   version: 0.0.0-use.local
   resolution: "smsshcss@workspace:packages/smsshcss"
   dependencies:
@@ -5068,16 +5078,6 @@ __metadata:
   checksum: 10c0/ac65e2c7c562d7b49b68edddcf55385d3e922bc1dd5d90419ea40b53b6de1607d1e45ceb71efb9d60da02c681d13c6cb3a1aa8b13fc0c989dfc219df97ee992d
   languageName: node
   linkType: hard
-
-"v1@workspace:playground/v1":
-  version: 0.0.0-use.local
-  resolution: "v1@workspace:playground/v1"
-  dependencies:
-    "@smsshcss/postcss": "workspace:*"
-    postcss: "npm:^8.5.3"
-    smsshcss: "workspace:^"
-  languageName: unknown
-  linkType: soft
 
 "vite-node@npm:0.34.6":
   version: 0.34.6

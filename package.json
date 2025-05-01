@@ -44,7 +44,8 @@
   "workspaces": [
     "packages/*",
     "packages/@smsshcss/*",
-    "playground/*"
+    "playground/*",
+    "playground/@smsshcss/*"
   ],
   "volta": {
     "node": "20.18.0",

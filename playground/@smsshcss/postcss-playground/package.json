@@ -8,8 +8,8 @@
     "serve": "http-server . -o"
   },
   "dependencies": {
-    "smsshcss": "workspace:*",
-    "@smsshcss/postcss": "workspace:*"
+    "@smsshcss/postcss": "workspace:*",
+    "smsshcss": "workspace:*"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
