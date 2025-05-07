@@ -1,14 +1,8 @@
-/**
- * SmsshCSS 設定ファイル
- * ESMとCJSの両方のモジュール形式に対応
- */
-
-// 共通の設定オブジェクト
-const config = {
+module.exports = {
   // スキャン対象のファイル
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   // 常に含めるクラス
-  safelist: [],
+  safelist: ['flex', 'items-center', 'justify-between'],
   // reset.cssを含めるかどうか (デフォルトはtrue)
   includeResetCSS: true,
   // base.cssを含めるかどうか (デフォルトはtrue)
@@ -24,7 +18,7 @@ const config = {
     colors: {
       primary: '#3366FF',
       textPrimary: '#333333',
-      backgroundBase: '#FFFFFF',
+      backgroundBase: '#ff0000',
     },
     // フォントウェイトのカスタマイズ
     fontWeight: {
@@ -61,16 +55,3 @@ const config = {
     },
   },
 };
-
-// 共有テーマオブジェクトのみをエクスポート（ESM形式で使用する場合）
-export const sharedTheme = config.theme;
-
-// 設定全体をエクスポート（ESM形式で使用する場合）
-export default config;
-
-// CommonJS形式でのエクスポート
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = config;
-  // 共有テーマオブジェクトもエクスポート
-  module.exports.sharedTheme = config.theme;
-}

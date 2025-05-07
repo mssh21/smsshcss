@@ -1,6 +1,6 @@
 {
   "name": "@smsshcss/vite",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Vite plugin for smsshcss to generate CSS only for classes used in HTML",
   "license": "MIT",
   "main": "dist/index.js",
