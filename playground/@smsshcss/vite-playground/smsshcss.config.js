@@ -10,15 +10,14 @@ export const smsshcssTheme = {
   // レガシーモードを無効化（@importが不要になります）
   legacyMode: false,
   // デバッグモード (オプション)
-  debug: false,
+  debug: true,
 
   // テーマ設定 - トークンのカスタマイズ
   theme: {
     // カラーのカスタマイズ
     colors: {
-      primary: '#3366FF',
       textPrimary: '#333333',
-      backgroundBase: '#FFFFFF',
+      backgroundBase: '#fff',
     },
     // フォントウェイトのカスタマイズ
     fontWeight: {

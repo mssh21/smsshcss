@@ -12,4 +12,8 @@ export const borderColor: UtilityCategory = {
   'border-error': `border-color: ${colors.borderError};`,
   'border-info': `border-color: ${colors.borderInfo};`,
   'border-transparent': `border-color: ${colors.borderTransparent};`,
-}
+};
+
+export const arbitraryBorderColor: UtilityCategory = {
+  'border-\\[(.+)\\]': 'border-color: $1;',
+};

@@ -1,8 +1,8 @@
-module.exports = {
+export const smsshcssTheme = {
   // スキャン対象のファイル
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   // 常に含めるクラス
-  safelist: ['flex', 'items-center', 'justify-between'],
+  safelist: [],
   // reset.cssを含めるかどうか (デフォルトはtrue)
   includeResetCSS: true,
   // base.cssを含めるかどうか (デフォルトはtrue)
@@ -10,15 +10,14 @@ module.exports = {
   // レガシーモードを無効化（@importが不要になります）
   legacyMode: false,
   // デバッグモード (オプション)
-  debug: false,
+  debug: true,
 
   // テーマ設定 - トークンのカスタマイズ
   theme: {
     // カラーのカスタマイズ
     colors: {
-      primary: '#3366FF',
       textPrimary: '#333333',
-      backgroundBase: '#ff0000',
+      backgroundBase: '#fff',
     },
     // フォントウェイトのカスタマイズ
     fontWeight: {

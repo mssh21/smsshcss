@@ -15,4 +15,8 @@ export const backgroundColor: UtilityCategory = {
   'bg-warning': `background-color: ${colors.backgroundWarning};`,
   'bg-error': `background-color: ${colors.backgroundError};`,
   'bg-info': `background-color: ${colors.backgroundInfo};`,
-}
+};
+
+export const arbitraryBackgroundColor: UtilityCategory = {
+  'bg-\\[(.+)\\]': 'background-color: $1;',
+};

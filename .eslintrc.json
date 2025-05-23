@@ -23,5 +23,6 @@
         "@typescript-eslint/no-require-imports": "off"
       }
     }
-  ]
+  ],
+  "ignorePatterns": ["postcss.config.js"]
 }

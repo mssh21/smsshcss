@@ -21,3 +21,7 @@ export const color: UtilityCategory = {
   'text-link-disabled': `color: ${colors.textLinkDisabled};`,
   'text-placeholder': `color: ${colors.textPlaceholder};`,
 };
+
+export const arbitraryColor: UtilityCategory = {
+  'text-\\[(.+)\\]': 'color: $1;',
+};

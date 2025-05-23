@@ -38,7 +38,6 @@ export const marginInline: UtilityCategory = {
   'm-inline-8xl': `margin-inline: ${spacing['8xl']};`,
 };
 
-
 export const marginInlineStart: UtilityCategory = {
   'm-inline-start-none': `margin-inline-start: ${spacing.none};`,
   'm-inline-start-auto': `margin-inline-start: ${spacing.auto};`,
@@ -122,4 +121,32 @@ export const marginBlockEnd: UtilityCategory = {
   'm-block-end-6xl': `margin-block-end: ${spacing['6xl']};`,
   'm-block-end-7xl': `margin-block-end: ${spacing['7xl']};`,
   'm-block-end-8xl': `margin-block-end: ${spacing['8xl']};`,
+};
+
+export const arbitraryMargin: UtilityCategory = {
+  'm-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'margin: $1;',
+  'm-inline-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'margin-inline: $1;',
+  'm-inline-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'margin-inline-start: $1;',
+  'm-inline-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'margin-inline-end: $1;',
+  'm-block-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'margin-block: $1;',
+  'm-block-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'margin-block-start: $1;',
+  'm-block-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'margin-block-end: $1;',
+  'last\\:m-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin: $1; }',
+  'last\\:m-inline-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-inline: $1; }',
+  'last\\:m-inline-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-inline-start: $1; }',
+  'last\\:m-inline-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-inline-end: $1; }',
+  'last\\:m-block-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-block: $1; }',
+  'last\\:m-block-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-block-start: $1; }',
+  'last\\:m-block-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { margin-block-end: $1; }',
 };

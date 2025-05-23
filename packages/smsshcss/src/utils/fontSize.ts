@@ -20,3 +20,7 @@ export const fontSize: UtilityCategory = {
   'text-7xl': `font-size: ${fontSizeToken['7xl']};`,
   'text-8xl': `font-size: ${fontSizeToken['8xl']};`,
 };
+
+export const arbitraryFontSize: UtilityCategory = {
+  'text-\\[(.+)\\(\\d+(?:\\.\\d+)?(?:px|rem|em)?)\\]': 'font-size: $1;',
+};

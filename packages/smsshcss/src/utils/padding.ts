@@ -36,7 +36,6 @@ export const paddingInline: UtilityCategory = {
   'p-inline-8xl': `padding-inline: ${spacing['8xl']};`,
 };
 
-
 export const paddingInlineStart: UtilityCategory = {
   'p-inline-start-none': `padding-inline-start: ${spacing.none};`,
   'p-inline-start-xs': `padding-inline-start: ${spacing.xs};`,
@@ -115,4 +114,32 @@ export const paddingBlockEnd: UtilityCategory = {
   'p-block-end-6xl': `padding-block-end: ${spacing['6xl']};`,
   'p-block-end-7xl': `padding-block-end: ${spacing['7xl']};`,
   'p-block-end-8xl': `padding-block-end: ${spacing['8xl']};`,
+};
+
+export const arbitraryPadding: UtilityCategory = {
+  'p-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'padding: $1;',
+  'p-inline-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'padding-inline: $1;',
+  'p-inline-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'padding-inline-start: $1;',
+  'p-inline-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'padding-inline-end: $1;',
+  'p-block-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'padding-block: $1;',
+  'p-block-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'padding-block-start: $1;',
+  'p-block-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    'padding-block-end: $1;',
+  'last\\:p-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding: $1; }',
+  'last\\:p-inline-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-inline: $1; }',
+  'last\\:p-inline-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-inline-start: $1; }',
+  'last\\:p-inline-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-inline-end: $1; }',
+  'last\\:p-block-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-block: $1; }',
+  'last\\:p-block-start-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-block-start: $1; }',
+  'last\\:p-block-end-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]':
+    ':last-child { padding-block-end: $1; }',
 };

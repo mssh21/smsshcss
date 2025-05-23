@@ -36,7 +36,6 @@ export const rowGap: UtilityCategory = {
   'row-gap-8xl': `row-gap: ${spacing['8xl']};`,
 };
 
-
 export const columnGap: UtilityCategory = {
   'column-gap-none': `column-gap: ${spacing.none};`,
   'column-gap-xs': `column-gap: ${spacing.xs};`,
@@ -51,4 +50,10 @@ export const columnGap: UtilityCategory = {
   'column-gap-6xl': `column-gap: ${spacing['6xl']};`,
   'column-gap-7xl': `column-gap: ${spacing['7xl']};`,
   'column-gap-8xl': `column-gap: ${spacing['8xl']};`,
+};
+
+export const arbitraryGap: UtilityCategory = {
+  'gap-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'gap: $1;',
+  'row-gap-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'row-gap: $1;',
+  'column-gap-\\[(\\d+(?:\\.\\d+)?(?:px|rem|em|vh|vw|%|ch|ex|vmin|vmax)?)\\]': 'column-gap: $1;',
 };

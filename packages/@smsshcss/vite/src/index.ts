@@ -115,7 +115,7 @@ function loadConfigFile(configPath: string): Record<string, unknown> {
             console.error(`[@smsshcss/vite] Error parsing config file:`, e);
 
             // プロパティを個別に抽出する代替アプローチ
-            const config: Record<string, any> = {};
+            const config: Record<string, unknown> = {};
 
             // テーマ設定を抽出
             const themeRegex = /theme\s*:\s*({[\s\S]*?}),?\s*(?:\/\/.*)?$/m;
@@ -321,7 +321,7 @@ async function processSmsshcssDirectives(css: string, options: SMSSHCSSOptions):
       ? baseStylesToCss({
           includeBaseCSS: options.includeBaseCSS,
           includeResetCSS: options.includeResetCSS,
-          theme: options.theme || {}
+          theme: options.theme || {},
         })
       : '';
 
@@ -349,13 +349,34 @@ async function processSmsshcssDirectives(css: string, options: SMSSHCSSOptions):
  */
 async function generateUtilitiesCSS(options: SMSSHCSSOptions): Promise<string> {
   try {
-    // Only generate utility classes without base or reset
-    const utilitiesOnlyOptions = {
+    // Ensure content patterns are properly set
+    const contentPatterns = options.content || ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'];
+
+    // Pass the full options object to generateCSS with explicit content patterns
+    const css = await generateCSS({
       ...options,
       includeBaseCSS: false,
       includeResetCSS: false,
-    };
-    const css = await generateCSS(utilitiesOnlyOptions);
+      debug: options.debug || false,
+      content: contentPatterns,
+      safelist: options.safelist || [],
+      theme: options.theme || {},
+      legacyMode: false, // Ensure legacy mode is disabled for arbitrary values
+      customCSS: options.customCSS || '',
+      outputFile: options.outputFile || 'smsshcss.css',
+    });
+
+    if (options.debug) {
+      console.log('[@smsshcss/vite] Generated utilities CSS:', {
+        size: css.length,
+        hasArbitraryClasses: css.includes('['),
+        content: contentPatterns,
+        theme: options.theme,
+        legacyMode: false,
+        customCSS: options.customCSS ? 'defined' : 'undefined',
+      });
+    }
+
     return css;
   } catch (error) {
     console.error('Error generating utilities CSS:', error);
@@ -405,7 +426,7 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
           console.log('[@smsshcss/vite] Config file loaded:', {
             path: configPath,
             hasContent: !!configFileContent,
-            hasTheme: !!(configFileContent && configFileContent.theme)
+            hasTheme: !!(configFileContent && configFileContent.theme),
           });
         }
 
@@ -417,26 +438,36 @@ export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
           // 設定ファイルのテーマ設定を優先する
           mergedOptions.theme = {
             ...mergedOptions.theme,
-            ...configFileContent.theme
+            ...configFileContent.theme,
           };
 
           if (mergedOptions.debug) {
             console.log('[@smsshcss/vite] Theme merged:', {
               colors: mergedOptions.theme?.colors ? 'defined' : 'undefined',
               fontSize: mergedOptions.theme?.fontSize ? 'defined' : 'undefined',
-              theme: mergedOptions.theme
+              theme: mergedOptions.theme,
             });
           }
         }
 
         if (mergedOptions.debug) {
-          console.log('[@smsshcss/vite] Config loaded:', JSON.stringify({
-            debug: mergedOptions.debug,
-            includeBaseCSS: mergedOptions.includeBaseCSS,
-            includeResetCSS: mergedOptions.includeResetCSS,
-            hasTheme: !!mergedOptions.theme
-          }, null, 2));
-          console.log('[@smsshcss/vite] Theme settings:', JSON.stringify(mergedOptions.theme, null, 2));
+          console.log(
+            '[@smsshcss/vite] Config loaded:',
+            JSON.stringify(
+              {
+                debug: mergedOptions.debug,
+                includeBaseCSS: mergedOptions.includeBaseCSS,
+                includeResetCSS: mergedOptions.includeResetCSS,
+                hasTheme: !!mergedOptions.theme,
+              },
+              null,
+              2
+            )
+          );
+          console.log(
+            '[@smsshcss/vite] Theme settings:',
+            JSON.stringify(mergedOptions.theme, null, 2)
+          );
         }
       }
     },

@@ -2466,7 +2466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2, fast-glob@npm:^3.3.3":
   version: 3.3.3
   resolution: "fast-glob@npm:3.3.3"
   dependencies:
@@ -4565,6 +4565,7 @@ __metadata:
     "@types/node": "npm:^20.11.5"
     chalk: "npm:^4.1.2"
     commander: "npm:^11.1.0"
+    fast-glob: "npm:^3.3.3"
     fs-extra: "npm:^11.2.0"
     tsup: "npm:^8.0.1"
     typescript: "npm:^5.3.3"

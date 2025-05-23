@@ -15,12 +15,45 @@ import {
 } from './utils';
 import type { UtilityValue, UtilityCategory, UtilityDefinition } from './types';
 import { TokenLoader } from './tokens/loader';
+import fg from 'fast-glob';
+import fs from 'fs';
 
 // Path to CSS files
 export const RESET_CSS_PATH = './reset.css';
 
 // Export types
 export type { SmsshcssConfig, UtilityValue, UtilityCategory, UtilityDefinition };
+
+function extractClassesFromFiles(contentPatterns: string[] = [], debug = false): Set<string> {
+  const usedClasses = new Set<string>();
+  for (const pattern of contentPatterns) {
+    const files = fg.sync(pattern);
+    if (debug) console.log('Matched files for pattern', pattern, files);
+    for (const file of files) {
+      try {
+        const content = fs.readFileSync(file, 'utf-8');
+        // class="..." や className="..." からクラス名を抽出
+        const regex = /class(?:Name)?=["']([^"']+)["']/g;
+        let match;
+        while ((match = regex.exec(content)) !== null) {
+          match[1].split(/\s+/).forEach((cls) => {
+            if (cls) usedClasses.add(cls.trim());
+          });
+        }
+      } catch (e) {
+        if (debug) console.warn('Failed to read', file, e);
+      }
+    }
+  }
+  return usedClasses;
+}
+
+// CSSセレクタ用エスケープ関数（Tailwind風）
+function escapeClassSelector(className: string): string {
+  // CSS特殊文字をバックスラッシュでエスケープ
+  // https://developer.mozilla.org/ja/docs/Web/CSS/Identifier#escaping
+  return className.replace(/([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g, '\\$1');
+}
 
 /**
  * Generate CSS based on configuration
@@ -43,7 +76,9 @@ export async function generateCSS(options: {
       console.log('generateCSS - received options:', {
         theme: options.theme,
         includeBaseCSS: options.includeBaseCSS,
-        includeResetCSS: options.includeResetCSS
+        includeResetCSS: options.includeResetCSS,
+        legacyMode: options.legacyMode,
+        content: options.content,
       });
     }
 
@@ -63,7 +98,7 @@ export async function generateCSS(options: {
         includeBaseCSS: options.includeBaseCSS,
         includeResetCSS: options.includeResetCSS,
         theme: options.theme || {},
-        debug: options.debug
+        debug: options.debug,
       };
 
       cssContent += baseStylesToCss(config);
@@ -73,7 +108,7 @@ export async function generateCSS(options: {
     // トークンを使用して新しいTokenLoaderインスタンスを作成
     const tokenLoader = new TokenLoader({
       theme: options.theme || {},
-      debug: options.debug
+      debug: options.debug,
     });
 
     // デバッグ情報としてトークンの状態を出力
@@ -81,72 +116,44 @@ export async function generateCSS(options: {
       console.log('TokenLoader created with resolved tokens', {
         fontSize: tokenLoader.fontSize,
         colors: tokenLoader.colors,
-        spacing: tokenLoader.spacing
+        spacing: tokenLoader.spacing,
       });
     }
 
-    // フォントサイズユーティリティの生成
-    Object.entries(tokenLoader.fontSize).forEach(([name, value]) => {
-      cssContent += `.text-${name} { font-size: ${value}; }\n`;
-    });
+    // --- ここから「使われているクラス名」ごとにCSSを生成 ---
+    const usedClasses = extractClassesFromFiles(options.content, options.debug);
+    if (options.safelist) {
+      options.safelist.forEach((cls) => usedClasses.add(cls));
+    }
+    if (options.debug) {
+      console.log('Used classes:', Array.from(usedClasses));
+    }
 
-    // テキストカラーユーティリティの生成
-    Object.entries(tokenLoader.colors).forEach(([name, value]) => {
-      cssContent += `.text-${name} { color: ${value}; }\n`;
-      cssContent += `.bg-${name} { background-color: ${value}; }\n`;
-      cssContent += `.border-${name} { border-color: ${value}; }\n`;
-    });
-
-    // スペーシング設定を適用
-    const spacing = tokenLoader.spacing;
-
-    // パディング
-    Object.entries(spacing).forEach(([name, value]) => {
-      cssContent += `.p-${name} { padding: ${value}; }\n`;
-      cssContent += `.p-block-start-${name} { padding-block-start: ${value}; }\n`;
-      cssContent += `.p-block-end-${name} { padding-block-end: ${value}; }\n`;
-      cssContent += `.p-inline-start-${name} { padding-inline-start: ${value}; }\n`;
-      cssContent += `.p-inline-end-${name} { padding-inline-end: ${value}; }\n`;
-    });
-
-    // マージン
-    Object.entries(spacing).forEach(([name, value]) => {
-      cssContent += `.m-${name} { margin: ${value}; }\n`;
-      cssContent += `.m-block-start-${name} { margin-block-start: ${value}; }\n`;
-      cssContent += `.m-block-end-${name} { margin-block-end: ${value}; }\n`;
-      cssContent += `.m-inline-start-${name} { margin-inline-start: ${value}; }\n`;
-      cssContent += `.m-inline-end-${name} { margin-inline-end: ${value}; }\n`;
-    });
-
-    // ギャップ
-    Object.entries(spacing).forEach(([name, value]) => {
-      cssContent += `.gap-${name} { gap: ${value}; }\n`;
-    });
-
-    // フォントウェイト
-    Object.entries(tokenLoader.fontWeight).forEach(([name, value]) => {
-      cssContent += `.font-${name} { font-weight: ${value}; }\n`;
-    });
-
-    // ボーダー半径
-    Object.entries(tokenLoader.borderRadius).forEach(([name, value]) => {
-      cssContent += `.rounded-${name} { border-radius: ${value}; }\n`;
-    });
-
-    // フレックスボックスユーティリティ
-    cssContent += `.flex { display: flex; }\n`;
-    cssContent += `.items-center { align-items: center; }\n`;
-    cssContent += `.justify-between { justify-content: space-between; }\n`;
-    cssContent += `.justify-center { justify-content: center; }\n`;
-    cssContent += `.flex-col { flex-direction: column; }\n`;
-    cssContent += `.flex-row { flex-direction: row; }\n`;
-    cssContent += `.flex-wrap { flex-wrap: wrap; }\n`;
-
-    // グリッドユーティリティ
-    cssContent += `.grid { display: grid; }\n`;
-    cssContent += `.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }\n`;
-    cssContent += `.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }\n`;
-    cssContent += `.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }\n`;
+    // 各クラス名について
+    for (const className of usedClasses) {
+      let found = false;
+      for (const [, utils] of Object.entries(utilities)) {
+        for (const [pattern, style] of Object.entries(utils)) {
+          // パターンを正規表現に変換
+          let regexPattern = pattern.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+          regexPattern = regexPattern.replace(/\[(.+?)\]/g, '\\[(.+?)\\]');
+          const regex = new RegExp('^' + regexPattern + '$');
+          const match = className.match(regex);
+          if (match) {
+            let cssRule = style;
+            cssRule = cssRule.replace(/\$(\d+)/g, (_, n) => match[parseInt(n)]);
+            cssContent += `.${escapeClassSelector(className)} { ${cssRule} }\n`;
+            if (options.debug) {
+              console.log('DEBUG: matched', { className, pattern, regexPattern, cssRule, match });
+            }
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+    }
+    // --- ここまで ---
 
     // Add custom CSS if provided
     if (options.customCSS) {
@@ -157,6 +164,7 @@ export async function generateCSS(options: {
     // デバッグモードの場合、生成されたCSSの長さを出力
     if (options.debug) {
       console.log(`Generated CSS: ${cssContent.length} bytes`);
+      console.log('Content patterns:', options.content);
     }
 
     return cssContent;
