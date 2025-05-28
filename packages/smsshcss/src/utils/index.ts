@@ -181,4 +181,4 @@ export function applyBaseCss(css: string): string {
 }
 
 // ディスプレイとスペーシングのユーティリティをエクスポート
-export { generateDisplayClasses, generateAllSpacingClasses }; 
+export { generateDisplayClasses, generateAllSpacingClasses };

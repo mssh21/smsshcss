@@ -24,4 +24,4 @@ export interface SmsshCSSViteOptions {
   };
 }
 
-export default function smsshcss(options?: SmsshCSSViteOptions): Plugin; 
+export default function smsshcss(options?: SmsshCSSViteOptions): Plugin;

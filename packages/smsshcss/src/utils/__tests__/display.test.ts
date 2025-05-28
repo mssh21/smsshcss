@@ -4,7 +4,7 @@ describe('Display Utilities', () => {
   describe('generateDisplayClasses', () => {
     it('should generate basic display classes', () => {
       const result = generateDisplayClasses();
-      
+
       // 基本的なレイアウトクラス
       expect(result).toContain('.block { display: block; }');
       expect(result).toContain('.inline { display: inline; }');
@@ -20,7 +20,7 @@ describe('Display Utilities', () => {
 
     it('should generate additional layout classes', () => {
       const result = generateDisplayClasses();
-      
+
       // 追加のレイアウトクラス
       expect(result).toContain('.flow-root { display: block flow-root; }');
       expect(result).toContain('.list-item { display: block flow list-item; }');
@@ -36,9 +36,9 @@ describe('Display Utilities', () => {
         custom: 'block',
         'custom-inline': 'inline',
       };
-      
+
       const result = generateDisplayClasses(customConfig);
-      
+
       expect(result).toContain('.custom { display: block; }');
       expect(result).toContain('.custom-inline { display: inline; }');
     });
@@ -47,11 +47,11 @@ describe('Display Utilities', () => {
       const customConfig = {
         custom: 'block',
       };
-      
+
       const result = generateDisplayClasses(customConfig);
-      
+
       expect(result).not.toContain('.block { display: block; }');
       expect(result).not.toContain('.inline { display: inline; }');
     });
   });
-}); 
+});

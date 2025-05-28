@@ -92,7 +92,6 @@ npx smsshcss init
 
 ### 2. テーマ設定ファイルの作成方法
 
-
 ```js
 // smsshcss.config.js - 複数プロジェクト間で共有するテーマ設定
 export const smsshcssTheme = {
@@ -187,12 +186,11 @@ import { smsshcssTheme } from './smsshcss.config.js'; // 共有テーマをイ�
 export default defineConfig({
   plugins: [
     smsshcss({
-      smsshcssTheme
+      smsshcssTheme,
     }),
   ],
 });
 ```
-
 
 ### 4. CSSディレクティブの使用
 

@@ -16,15 +16,16 @@
 1. GitHubリポジトリの Settings → Secrets and variables → Actions
 2. 以下のシークレットを追加：
 
-| Name | Value | Description |
-|------|-------|-------------|
-| `NPM_TOKEN` | npmで生成したトークン | npm公開用 |
+| Name        | Value                 | Description |
+| ----------- | --------------------- | ----------- |
+| `NPM_TOKEN` | npmで生成したトークン | npm公開用   |
 
 ### 3. ワークフローの動作
 
 #### CI ワークフロー (`.github/workflows/ci.yml`)
+
 - **トリガー**: すべてのブランチへのpush、PRの作成
-- **実行内容**: 
+- **実行内容**:
   - Lint チェック
   - 型チェック
   - テスト実行
@@ -32,6 +33,7 @@
   - プレイグラウンドのビルドテスト
 
 #### Release ワークフロー (`.github/workflows/release.yml`)
+
 - **トリガー**: masterブランチへのpush
 - **実行内容**:
   1. CI チェック（lint, type-check, test, build）
@@ -77,14 +79,17 @@ git commit -m "docs: update README [skip ci]"
 ## トラブルシューティング
 
 ### NPM公開エラー
+
 - NPM_TOKENが正しく設定されているか確認
 - トークンの権限が適切か確認（Automation権限が必要）
 - パッケージ名が既存のものと重複していないか確認
 
 ### バージョン重複エラー
+
 - 既に同じバージョンが公開されていないか確認
 - package.jsonのバージョンを適切に更新
 
 ### GitHub Release作成エラー
+
 - GITHUB_TOKENの権限を確認
-- リポジトリの設定でActionsの権限を確認 
+- リポジトリの設定でActionsの権限を確認

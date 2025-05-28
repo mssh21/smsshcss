@@ -6,4 +6,4 @@ export declare function mergeUtilityClasses(...classes: string[]): string;
 export declare function applyResetCss(css: string): string;
 export declare function applyBaseCss(css: string): string;
 export declare function generateDisplayClasses(config?: Record<string, string>): string;
-export declare function generateAllSpacingClasses(config?: Record<string, string>): string; 
+export declare function generateAllSpacingClasses(config?: Record<string, string>): string;

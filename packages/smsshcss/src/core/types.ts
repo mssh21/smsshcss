@@ -28,4 +28,4 @@ export type SpacingProperty = 'margin' | 'padding';
 
 export type DisplayConfig = {
   [key: string]: string;
-}; 
+};
