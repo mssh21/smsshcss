@@ -71,4 +71,4 @@ vite-plugin/
 ```html
 <div class="m-[20px] p-[1.5rem]">カスタムマージンとパディング</div>
 <div class="mt-[30px] mb-[15px]">カスタム上下マージン</div>
-``` 
+```

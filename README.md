@@ -29,8 +29,8 @@ yarn add smsshcss　@smsshcss/vite
 `vite.config.js`または`vite.config.ts`にプラグインを追加：
 
 ```javascript
-import { defineConfig } from 'vite'
-import smsshcss from '@smsshcss/vite'
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
 
 export default defineConfig({
   plugins: [
@@ -38,9 +38,9 @@ export default defineConfig({
       content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
       includeResetCSS: true,
       includeBaseCSS: true,
-    })
-  ]
-})
+    }),
+  ],
+});
 ```
 
 HTMLでユーティリティクラスを使用：
@@ -57,15 +57,15 @@ Viteプラグインが自動的に使用されたクラスを検出し、必要�
 ### 2. プログラマティックに使用する場合
 
 ```javascript
-import { generateCSS } from 'smsshcss'
+import { generateCSS } from 'smsshcss';
 
 const css = generateCSS({
   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   includeResetCSS: true,
   includeBaseCSS: true,
-})
+});
 
-console.log(css)
+console.log(css);
 ```
 
 ## 利用可能なユーティリティクラス
@@ -75,6 +75,7 @@ console.log(css)
 黄金比（1:1.618）と白銀比（1:1.414）を考慮したスペーシングシステム：
 
 #### サイズ
+
 - `2xs`: 0.125rem (2px)
 - `xs`: 0.25rem (4px)
 - `sm`: 0.5rem (8px)
@@ -90,6 +91,7 @@ console.log(css)
 - `4xl`: 6rem (96px)
 
 #### Margin
+
 ```html
 <!-- 全方向 -->
 <div class="m-md">margin: 1rem</div>
@@ -110,6 +112,7 @@ console.log(css)
 ```
 
 #### Padding
+
 ```html
 <!-- 全方向 -->
 <div class="p-md">padding: 1rem</div>
@@ -129,6 +132,7 @@ console.log(css)
 ```
 
 #### Gap（Flexbox/Grid）
+
 ```html
 <div class="flex gap-md">
   <div>Item 1</div>
@@ -172,21 +176,21 @@ console.log(css)
 smsshcss({
   // HTMLファイルのパターン（必須）
   content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
-  
+
   // Reset CSSを含めるか（デフォルト: true）
   includeResetCSS: true,
-  
+
   // Base CSSを含めるか（デフォルト: true）
   includeBaseCSS: true,
-  
+
   // カスタムテーマ設定
   theme: {
     spacing: {
-      'custom': '10px',
-      'large': '5rem'
-    }
-  }
-})
+      custom: '10px',
+      large: '5rem',
+    },
+  },
+});
 ```
 
 ## サンプルプロジェクト
@@ -212,5 +216,3 @@ MIT License
 ## 貢献
 
 プルリクエストやイシューの報告を歓迎します。詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
-
-

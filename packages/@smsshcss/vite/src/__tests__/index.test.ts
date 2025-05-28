@@ -42,7 +42,7 @@ describe('smsshcss', () => {
   it('should include spacing and display utilities', () => {
     const plugin = smsshcss();
     const result = plugin.transform('', 'file.css');
-    
+
     expect(result?.code).toContain('.m-md { margin: 1rem; }');
     expect(result?.code).toContain('.p-md { padding: 1rem; }');
     expect(result?.code).toContain('.flex { display: block flex; }');
@@ -52,14 +52,14 @@ describe('smsshcss', () => {
   it('should respect includeReset option', () => {
     const plugin = smsshcss({ includeReset: false });
     const result = plugin.transform('', 'file.css');
-    
+
     expect(result?.code).not.toContain('/* Reset CSS */');
   });
 
   it('should respect includeBase option', () => {
     const plugin = smsshcss({ includeBase: false });
     const result = plugin.transform('', 'file.css');
-    
+
     expect(result?.code).not.toContain('/* Base CSS */');
   });
 
@@ -75,7 +75,7 @@ describe('smsshcss', () => {
       },
     });
     const result = plugin.transform('', 'file.css');
-    
+
     expect(result?.code).toContain('.m-custom { margin: 2rem; }');
     expect(result?.code).toContain('.p-custom { padding: 2rem; }');
     expect(result?.code).toContain('.custom { display: block; }');
@@ -85,16 +85,16 @@ describe('smsshcss', () => {
     const originalCSS = 'body { color: red; }';
     const plugin = smsshcss();
     const result = plugin.transform(originalCSS, 'file.css');
-    
+
     expect(result?.code).toContain(originalCSS);
   });
 
   it('should handle empty CSS content', () => {
     const plugin = smsshcss();
     const result = plugin.transform('', 'file.css');
-    
+
     expect(result).toBeDefined();
     expect(result?.code).toBeDefined();
     expect(result?.code).not.toBe('');
   });
-}); 
+});

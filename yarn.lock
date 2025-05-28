@@ -924,7 +924,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": "npm:^19.8.0"
     "@commitlint/config-conventional": "npm:^19.8.0"
-    "@types/node": "npm:^20.14.8"
+    "@types/node": "npm:^22.15.23"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     eslint: "npm:^8.56.0"
@@ -934,7 +934,7 @@ __metadata:
     prettier: "npm:^3.0.0"
     tsup: "npm:^8.0.2"
     turbo: "npm:^2.5.3"
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.8.3"
     vitest: "npm:^0.34.6"
   languageName: unknown
   linkType: soft
@@ -1039,12 +1039,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.5, @types/node@npm:^20.14.8":
+"@types/node@npm:^20.11.5":
   version: 20.17.32
   resolution: "@types/node@npm:20.17.32"
   dependencies:
     undici-types: "npm:~6.19.2"
   checksum: 10c0/2461df36f67704f68db64d33abc5ad00b4b35ac94e996adff88c7322f9572e3e60ddaeed7e9f34ae203120d2ba36cc931fd3a8ddddf0c63943e8600c365c6396
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.15.23":
+  version: 22.15.23
+  resolution: "@types/node@npm:22.15.23"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/e3ae0629dfb4357dad2a7838c481656abf089d852d83f0d0f14368f03ad21ce276cbecfdf62be2276ef39920db6b114e5bc8d87c37714bbab9aefb0ce1eb1473
   languageName: node
   linkType: hard
 
@@ -4461,7 +4470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.3.3":
+"typescript@npm:^5.3.3, typescript@npm:^5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -4471,7 +4480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=8c6c40"
   bin:

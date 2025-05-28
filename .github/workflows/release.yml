@@ -44,13 +44,13 @@ jobs:
         run: |
           # Get current version from package.json
           CURRENT_VERSION=$(node -p "require('./packages/smsshcss/package.json').version")
-          
+
           # Get published version from npm
           PUBLISHED_VERSION=$(npm view smsshcss version 2>/dev/null || echo "0.0.0")
-          
+
           echo "Current version: $CURRENT_VERSION"
           echo "Published version: $PUBLISHED_VERSION"
-          
+
           if [ "$CURRENT_VERSION" != "$PUBLISHED_VERSION" ]; then
             echo "version-changed=true" >> $GITHUB_OUTPUT
             echo "new-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
@@ -101,7 +101,7 @@ jobs:
           else
             COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
           fi
-          
+
           # Create changelog content
           CHANGELOG="## Changes in v${{ steps.version-check.outputs.new-version }}
 
@@ -121,7 +121,7 @@ jobs:
           # yarn
           yarn add smsshcss @smsshcss/vite
           \`\`\`"
-          
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -144,4 +144,4 @@ jobs:
           echo "✅ Successfully released v${{ steps.version-check.outputs.new-version }}"
           echo "📦 Packages published to npm"
           echo "🏷️ Git tag created"
-          echo "📝 GitHub release created" 
+          echo "📝 GitHub release created"

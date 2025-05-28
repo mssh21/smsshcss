@@ -15,17 +15,11 @@ export class CSSGenerator {
   }
 
   private loadResetCSS(): string {
-    return fs.readFileSync(
-      path.join(__dirname, '../styles/reset.css'),
-      'utf-8'
-    );
+    return fs.readFileSync(path.join(__dirname, '../styles/reset.css'), 'utf-8');
   }
 
   private loadBaseCSS(): string {
-    return fs.readFileSync(
-      path.join(__dirname, '../styles/base.css'),
-      'utf-8'
-    );
+    return fs.readFileSync(path.join(__dirname, '../styles/base.css'), 'utf-8');
   }
 
   public generate(): GeneratedCSS {
@@ -42,8 +36,6 @@ export class CSSGenerator {
 
   public generateFullCSS(): string {
     const { utilities, components, base, reset } = this.generate();
-    return [reset, base, utilities, components]
-      .filter(Boolean)
-      .join('\n\n');
+    return [reset, base, utilities, components].filter(Boolean).join('\n\n');
   }
-} 
+}

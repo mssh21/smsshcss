@@ -5,7 +5,7 @@ const defaultDisplay: DisplayConfig = {
   // 基本的なレイアウト
   block: 'block',
   inline: 'inline',
-  'inline-block': 'inline flow-root',  // より明確な形式
+  'inline-block': 'inline flow-root', // より明確な形式
   flex: 'block flex',
   'inline-flex': 'inline flex',
   grid: 'block grid',
@@ -15,13 +15,13 @@ const defaultDisplay: DisplayConfig = {
   hidden: 'none', // Tailwind互換のhidden
 
   // 追加のレイアウト
-  'flow-root': 'block flow-root',      // 新しいブロック整形コンテキストを作成
+  'flow-root': 'block flow-root', // 新しいブロック整形コンテキストを作成
   'list-item': 'block flow list-item', // リストアイテムとして表示
-  'inline-table': 'inline table',      // インラインの表として表示
-  'table': 'block table',             // 表として表示
-  'table-cell': 'table-cell',         // 表のセルとして表示
-  'table-row': 'table-row',           // 表の行として表示
-  'table-caption': 'table-caption'    // 表のキャプションとして表示
+  'inline-table': 'inline table', // インラインの表として表示
+  table: 'block table', // 表として表示
+  'table-cell': 'table-cell', // 表のセルとして表示
+  'table-row': 'table-row', // 表の行として表示
+  'table-caption': 'table-caption', // 表のキャプションとして表示
 };
 
 export function generateDisplayClasses(config: DisplayConfig = defaultDisplay): string {
@@ -33,4 +33,4 @@ export function generateDisplayClasses(config: DisplayConfig = defaultDisplay): 
   });
 
   return classes.join('\n');
-} 
+}
