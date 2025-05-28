@@ -1,0 +1,9 @@
+export declare function getResetCss(): string;
+export declare function getBaseCss(): string;
+export declare function createUtilityClass(name: string, value: string): string;
+export declare function createUtilityClasses(classes: Record<string, string>): string;
+export declare function mergeUtilityClasses(...classes: string[]): string;
+export declare function applyResetCss(css: string): string;
+export declare function applyBaseCss(css: string): string;
+export declare function generateDisplayClasses(config?: Record<string, string>): string;
+export declare function generateAllSpacingClasses(config?: Record<string, string>): string; 

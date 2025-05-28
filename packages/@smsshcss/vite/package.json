@@ -1,0 +1,30 @@
+{
+  "name": "@smsshcss/vite",
+  "version": "2.1.0",
+  "description": "Vite plugin for SmsshCSS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --external vite,smsshcss && cp src/index.d.ts dist/",
+    "dev": "tsup src/index.ts --format esm --external vite,smsshcss --watch && cp src/index.d.ts dist/",
+    "clean": "rm -rf dist",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "smsshcss": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0",
+    "vitest": "^0.34.6"
+  },
+  "peerDependencies": {
+    "vite": "^5.0.0"
+  }
+}

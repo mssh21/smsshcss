@@ -1,9 +1,0 @@
-{
-  "name": "v1",
-  "packageManager": "yarn@4.5.0",
-  "dependencies": {
-    "postcss": "^8.5.3",
-    "smsshcss": "workspace:^",
-    "smsshcss-postcss": "workspace:^"
-  }
-}

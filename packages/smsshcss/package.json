@@ -1,6 +1,6 @@
 {
   "name": "smsshcss",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "A utility-first CSS framework for rapid UI development",
   "license": "MIT",
   "main": "dist/index.js",
@@ -16,27 +16,50 @@
   ],
   "bin": "./bin/smsshcss.js",
   "scripts": {
-    "build": "tsup src/index.ts src/cli.ts --format cjs --tsconfig tsconfig.json && cp src/reset.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/",
-    "dev": "tsup src/index.ts src/cli.ts --format cjs --watch --tsconfig tsconfig.json && cp src/reset.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "build": "tsup src/index.ts src/cli.ts src/utils/index.ts --format cjs,esm --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/ && cp src/utils/index.d.ts dist/utils/",
+    "dev": "tsup src/index.ts src/cli.ts src/utils/index.ts --format cjs,esm --watch --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/ && cp src/utils/index.d.ts dist/utils/",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./reset.css": "./dist/reset.css"
+    "./reset.css": "./dist/reset.css",
+    "./base.css": "./dist/base.css",
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.js"
+    },
+    "./src/utils/spacing": {
+      "types": "./dist/utils/spacing.d.ts",
+      "import": "./dist/utils/spacing.js",
+      "require": "./dist/utils/spacing.cjs"
+    },
+    "./src/utils/display": {
+      "types": "./dist/utils/display.d.ts",
+      "import": "./dist/utils/display.js",
+      "require": "./dist/utils/display.cjs"
+    }
   },
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
+    "fast-glob": "^3.3.3",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.5",
+    "@vitest/coverage-v8": "^0.34.6",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6"
   },
   "keywords": [
     "css",
