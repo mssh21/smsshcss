@@ -1,10 +1,11 @@
 import { SmsshCSSConfig, GeneratedCSS, PurgeReport } from './types';
-import { generateAllSpacingClasses } from '../utils/spacing';
+import { generateAllSpacingClasses, extractCustomClasses } from '../utils/spacing';
 import { generateDisplayClasses } from '../utils/display';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { glob } from 'glob';
 
 // CJS環境での__dirnameの型宣言
 declare const __dirname: string;
@@ -128,6 +129,12 @@ export class CSSGenerator {
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
     let reset = this.config.includeResetCSS ? this.resetCSS : '';
 
+    // カスタムクラスを動的に抽出して追加
+    const customClasses = await this.extractCustomClassesFromFiles(this.config.content);
+    if (customClasses.length > 0) {
+      utilities = `${utilities}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
+    }
+
     // パージ処理を実行
     if (this.purger) {
       const fileAnalysis = await this.purger.analyzeSourceFiles();
@@ -148,6 +155,46 @@ export class CSSGenerator {
       base,
       reset,
     };
+  }
+
+  // ファイルからカスタムクラスを非同期で抽出
+  private async extractCustomClassesFromFiles(content: string[]): Promise<string[]> {
+    const allCustomClasses: string[] = [];
+    const seenClasses = new Set<string>();
+
+    try {
+      for (const pattern of content) {
+        try {
+          const files = glob.sync(pattern, {
+            cwd: process.cwd(),
+            ignore: ['node_modules/**', 'dist/**', 'build/**'],
+          });
+
+          for (const file of files) {
+            try {
+              const filePath = path.resolve(process.cwd(), file);
+              const fileContent = fs.readFileSync(filePath, 'utf-8');
+              const fileCustomClasses = extractCustomClasses(fileContent);
+
+              for (const cssClass of fileCustomClasses) {
+                if (!seenClasses.has(cssClass)) {
+                  seenClasses.add(cssClass);
+                  allCustomClasses.push(cssClass);
+                }
+              }
+            } catch (error) {
+              // ファイル読み込みエラーは無視
+            }
+          }
+        } catch (error) {
+          // globエラーは無視
+        }
+      }
+    } catch (error) {
+      console.warn('[smsshcss] Failed to scan files for custom classes:', error);
+    }
+
+    return allCustomClasses;
   }
 
   public async generateFullCSS(): Promise<string> {

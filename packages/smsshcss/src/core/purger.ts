@@ -87,8 +87,10 @@ export class CSSPurger {
       /className\s*=\s*["']([^"']*?)["']/g,
       // CSS-in-JS パターン
       /css\s*`[^`]*?\.([a-zA-Z][\w-]*)/g,
-      // Tailwind風のクラス名
+      // Tailwind風のクラス名（通常のクラス名）
       /['"]\s*([a-zA-Z][\w-]*(?:\s+[a-zA-Z][\w-]*)*)\s*['"]/g,
+      // カスタム値クラス（任意の値）- [...]形式
+      /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g,
       // 動的クラス名パターン
       /\$\{[^}]*\}/g,
     ];
@@ -97,9 +99,16 @@ export class CSSPurger {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         if (match[1]) {
-          // スペースで区切られたクラス名を分割
-          const classNames = match[1].split(/\s+/).filter(Boolean);
-          classes.push(...classNames);
+          // カスタム値クラスの場合は特別処理
+          if (pattern.source.includes('\\[')) {
+            // カスタム値クラス全体をクラス名として追加
+            const fullClassName = `${match[1]}-[${match[2]}]`;
+            classes.push(fullClassName);
+          } else {
+            // スペースで区切られたクラス名を分割
+            const classNames = match[1].split(/\s+/).filter(Boolean);
+            classes.push(...classNames);
+          }
         }
       }
     });
@@ -143,11 +152,22 @@ export class CSSPurger {
    * CSSを解析して全てのクラス名を抽出
    */
   extractAllClasses(css: string): void {
+    // 通常のクラス名パターン
     const classPattern = /\.([a-zA-Z][\w-]*)/g;
+    // カスタム値クラスパターン（エスケープされた文字を含む）
+    const customClassPattern = /\.([mp][trlbxy]?|gap(?:-[xy])?)-\\?\[([^\]\\]+)\\?\]/g;
+
     let match;
 
+    // 通常のクラス名を抽出
     while ((match = classPattern.exec(css)) !== null) {
       this.allClasses.add(match[1]);
+    }
+
+    // カスタム値クラスを抽出
+    while ((match = customClassPattern.exec(css)) !== null) {
+      const fullClassName = `${match[1]}-[${match[2]}]`;
+      this.allClasses.add(fullClassName);
     }
   }
 

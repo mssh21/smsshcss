@@ -3985,6 +3985,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^0.34.6"
     fast-glob: "npm:^3.3.3"
     fs-extra: "npm:^11.2.0"
+    glob: "npm:^10.3.10"
     tsup: "npm:^8.0.1"
     typescript: "npm:^5.3.3"
     vitest: "npm:^0.34.6"

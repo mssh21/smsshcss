@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
