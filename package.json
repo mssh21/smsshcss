@@ -20,7 +20,7 @@
       "yarn prettier --write",
       "yarn eslint --fix"
     ],
-    "*.{json,md}": [
+    "*.{json,md,yml,yaml,css}": [
       "yarn prettier --write"
     ]
   },
