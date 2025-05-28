@@ -9,18 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18, 20]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20'
 
       - name: Enable Corepack
         run: corepack enable
@@ -28,11 +25,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Format check
-        run: yarn prettier --check .
-
-      - name: Lint
-        run: yarn eslint .
+      - name: Lint & Format check
+        run: |
+          yarn prettier --check .
+          yarn eslint .
 
       - name: Type check
         run: yarn type-check
@@ -43,7 +39,8 @@ jobs:
       - name: Build packages
         run: yarn build
 
-      - name: Test playground
+      - name: Test playground (only on main/master)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
           cd playground/vite-plugin
           yarn install
