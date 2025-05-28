@@ -73,8 +73,12 @@ function extractCustomClasses(content: string): string[] {
 
 // カスタムスペーシングクラスを生成
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
-  // CSS値内の特殊文字をエスケープ
+  // CSS値内の特殊文字をエスケープ（クラス名用）
   const escapeValue = (val: string): string => {
+    // calc関数の場合は特別処理 - 既にスペースは除去済み
+    if (val.includes('calc(')) {
+      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+    }
     // CSS変数（var(--name)）の場合は特別処理
     if (val.includes('var(--')) {
       return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
@@ -83,19 +87,30 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
     return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
   };
 
+  // 元の値を復元（CSS値用）- calc関数の場合はスペースを復元
+  const originalValue = value.includes('calc(')
+    ? value.replace(/calc\(([^)]+)\)/, (match, inner) => {
+        // calc関数内の演算子の前後にスペースを追加
+        return `calc(${inner
+          .replace(/([+\-*/])/g, ' $1 ')
+          .replace(/\s+/g, ' ')
+          .trim()})`;
+      })
+    : value;
+
   // gap プロパティの処理
   if (prefix === 'gap') {
-    return `.gap-\\[${escapeValue(value)}\\] { gap: ${value}; }`;
+    return `.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`;
   }
 
   // gap-x (column-gap) プロパティの処理
   if (prefix === 'gap-x') {
-    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${value}; }`;
+    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`;
   }
 
   // gap-y (row-gap) プロパティの処理
   if (prefix === 'gap-y') {
-    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${value}; }`;
+    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`;
   }
 
   const property = prefix.startsWith('m') ? 'margin' : 'padding';
@@ -117,9 +132,9 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       cssProperty = `${property}-left`;
       break;
     case 'x':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${value}; ${property}-right: ${value}; }`;
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`;
     case 'y':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${value}; ${property}-bottom: ${value}; }`;
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`;
     case '':
       // 全方向
       break;
@@ -127,7 +142,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       return null;
   }
 
-  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${value}; }`;
+  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${originalValue}; }`;
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {

@@ -162,7 +162,7 @@ describe('Custom Value Classes Integration', () => {
     it('should handle complex custom values', async () => {
       const htmlContent = `
         <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px]">
-          <span class="m-[calc(100% - 20px)] p-[var(--spacing)]">Complex</span>
+          <span class="m-[calc(100%-20px)] p-[var(--spacing)]">Complex</span>
         </div>
       `;
       fs.writeFileSync(path.join(tempDir, 'complex.html'), htmlContent);
@@ -179,8 +179,11 @@ describe('Custom Value Classes Integration', () => {
         expect(result?.code).toContain('.gap-\\[2rem\\] { gap: 2rem; }');
         expect(result?.code).toContain('.gap-x-\\[1\\.5em\\] { column-gap: 1.5em; }');
         expect(result?.code).toContain('.gap-y-\\[24px\\] { row-gap: 24px; }');
-        // calc()とvar()の複雑な値もサポートされている
-        expect(result?.code).toMatch(/\.m-\\\[calc\\\(.*?\\\)\\\]/);
+        // calc()の場合、HTMLではスペースなし、CSSではスペースあり
+        expect(result?.code).toContain(
+          '.m-\\[calc\\(100\\%\\-20px\\)\\] { margin: calc(100% - 20px); }'
+        );
+        // var()の複雑な値もサポートされている
         expect(result?.code).toMatch(/\.p-\\\[var\\\(.*?\\\)\\\]/);
       } else {
         // カスタム値クラスが生成されていない場合でも、基本機能は動作している
@@ -309,6 +312,34 @@ describe('Custom Value Classes Integration', () => {
         expect(result?.code).toContain('.mt-\\[50vh\\] { margin-top: 50vh; }');
         expect(result?.code).toContain('.ml-\\[25vw\\] { margin-left: 25vw; }');
         expect(result?.code).toContain('.pr-\\[10ch\\] { padding-right: 10ch; }');
+      }
+    });
+
+    it('should handle calc functions with various operators', async () => {
+      const htmlContent = `
+        <div class="p-[calc(1rem+10px)] m-[calc(100%-20px)]">
+          <span class="gap-[calc(2em*3)] mt-[calc(50vh/2)]">Calc functions</span>
+        </div>
+      `;
+      fs.writeFileSync(path.join(tempDir, 'calc.html'), htmlContent);
+
+      const result = await plugin.transform('', 'calc.css');
+
+      expect(result?.code).toContain('/* Custom Value Classes */');
+
+      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
+      if (customValueSection && customValueSection.trim() !== '') {
+        // calc関数：HTMLではスペースなし、CSSではスペースあり
+        expect(result?.code).toContain(
+          '.p-\\[calc\\(1rem\\+10px\\)\\] { padding: calc(1rem + 10px); }'
+        );
+        expect(result?.code).toContain(
+          '.m-\\[calc\\(100\\%\\-20px\\)\\] { margin: calc(100% - 20px); }'
+        );
+        expect(result?.code).toContain('.gap-\\[calc\\(2em\\*3\\)\\] { gap: calc(2em * 3); }');
+        expect(result?.code).toContain(
+          '.mt-\\[calc\\(50vh\\/2\\)\\] { margin-top: calc(50vh / 2); }'
+        );
       }
     });
   });
