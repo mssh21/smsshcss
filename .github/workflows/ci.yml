@@ -28,8 +28,11 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Format check
+        run: yarn prettier --check .
+
       - name: Lint
-        run: yarn lint
+        run: yarn eslint .
 
       - name: Type check
         run: yarn type-check
@@ -44,4 +47,4 @@ jobs:
         run: |
           cd playground/vite-plugin
           yarn install
-          yarn build 
+          yarn build
