@@ -43,15 +43,39 @@ describe('Display Utilities', () => {
       expect(result).toContain('.custom-inline { display: inline; }');
     });
 
-    it('should not include default classes when custom config is provided', () => {
+    it('should merge custom config with default classes', () => {
       const customConfig = {
         custom: 'block',
+        'custom-inline': 'inline',
       };
 
       const result = generateDisplayClasses(customConfig);
 
-      expect(result).not.toContain('.block { display: block; }');
-      expect(result).not.toContain('.inline { display: inline; }');
+      // カスタムクラスが含まれる
+      expect(result).toContain('.custom { display: block; }');
+      expect(result).toContain('.custom-inline { display: inline; }');
+
+      // デフォルトクラスも含まれる（マージされる）
+      expect(result).toContain('.block { display: block; }');
+      expect(result).toContain('.inline { display: inline; }');
+      expect(result).toContain('.flex { display: block flex; }');
+    });
+
+    it('should override default classes when custom config has same key', () => {
+      const customConfig = {
+        block: 'inline-block', // デフォルトの'block'を上書き
+        custom: 'grid',
+      };
+
+      const result = generateDisplayClasses(customConfig);
+
+      // 上書きされたクラス
+      expect(result).toContain('.block { display: inline-block; }');
+      // カスタムクラス
+      expect(result).toContain('.custom { display: grid; }');
+      // その他のデフォルトクラスは残る
+      expect(result).toContain('.inline { display: inline; }');
+      expect(result).toContain('.flex { display: block flex; }');
     });
   });
 });

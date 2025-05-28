@@ -10,14 +10,11 @@
     "access": "public"
   },
   "files": [
-    "dist/**",
-    "bin/**",
-    "templates/**"
+    "dist/**"
   ],
-  "bin": "./bin/smsshcss.js",
   "scripts": {
-    "build": "tsup src/index.ts src/cli.ts src/utils/index.ts --format cjs,esm --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/ && cp src/utils/index.d.ts dist/utils/",
-    "dev": "tsup src/index.ts src/cli.ts src/utils/index.ts --format cjs,esm --watch --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && mkdir -p dist/templates && cp templates/* dist/templates/ && cp src/utils/index.d.ts dist/utils/",
+    "build": "tsup src/index.ts src/utils/index.ts --format cjs,esm --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && cp src/utils/index.d.ts dist/utils/",
+    "dev": "tsup src/index.ts src/utils/index.ts --format cjs,esm --watch --tsconfig tsconfig.json && cp src/styles/reset.css dist/ && cp src/styles/base.css dist/ && cp src/utils/index.d.ts dist/utils/",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "vitest",
     "test:watch": "vitest watch",
@@ -48,8 +45,6 @@
     }
   },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "commander": "^11.1.0",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.2.0"
   },
