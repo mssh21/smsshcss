@@ -1521,7 +1521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.1.2":
+"chalk@npm:^4.0.0":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -1613,13 +1613,6 @@ __metadata:
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 10c0/e94116ff33b0ff56f3b83b9ace895e5bf87c2a7a47b3401b8c3f3226e050d5ef76cf4072fb3325f9dc24d1698f9b730baf4e05eeaf861d74a1883073f4c98a40
-  languageName: node
-  linkType: hard
-
-"commander@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "commander@npm:11.1.0"
-  checksum: 10c0/13cc6ac875e48780250f723fb81c1c1178d35c5decb1abb1b628b3177af08a8554e76b2c0f29de72d69eef7c864d12613272a71fabef8047922bc622ab75a179
   languageName: node
   linkType: hard
 
@@ -3989,15 +3982,11 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.4"
     "@types/node": "npm:^20.11.5"
     "@vitest/coverage-v8": "npm:^0.34.6"
-    chalk: "npm:^4.1.2"
-    commander: "npm:^11.1.0"
     fast-glob: "npm:^3.3.3"
     fs-extra: "npm:^11.2.0"
     tsup: "npm:^8.0.1"
     typescript: "npm:^5.3.3"
     vitest: "npm:^0.34.6"
-  bin:
-    smsshcss: ./bin/smsshcss.js
   languageName: unknown
   linkType: soft
 
