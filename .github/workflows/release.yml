@@ -55,13 +55,13 @@ jobs:
           echo "Published smsshcss version: $PUBLISHED_SMSSHCSS_VERSION"
           echo "Published @smsshcss/vite version: $PUBLISHED_VITE_VERSION"
 
-          # Check if versions match
-          if [ "$SMSSHCSS_VERSION" != "$VITE_VERSION" ]; then
-            echo "Error: Version mismatch between smsshcss ($SMSSHCSS_VERSION) and @smsshcss/vite ($VITE_VERSION)"
-            exit 1
-          fi
-
+          # Check if versions match published versions
           if [ "$SMSSHCSS_VERSION" != "$PUBLISHED_SMSSHCSS_VERSION" ] || [ "$VITE_VERSION" != "$PUBLISHED_VITE_VERSION" ]; then
+            # If either version is different from published, check if they match each other
+            if [ "$SMSSHCSS_VERSION" != "$VITE_VERSION" ]; then
+              echo "Error: Version mismatch between smsshcss ($SMSSHCSS_VERSION) and @smsshcss/vite ($VITE_VERSION)"
+              exit 1
+            fi
             echo "version-changed=true" >> $GITHUB_OUTPUT
             echo "new-version=$SMSSHCSS_VERSION" >> $GITHUB_OUTPUT
           else
