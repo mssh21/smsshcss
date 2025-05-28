@@ -25,7 +25,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Lint
         run: yarn lint
@@ -65,6 +65,14 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Update @smsshcss/vite dependencies for publishing
+        if: steps.version-check.outputs.version-changed == 'true'
+        run: |
+          cd packages/@smsshcss/vite
+          # Replace workspace:* with actual version
+          sed -i 's/"smsshcss": "workspace:\*"/"smsshcss": "^${{ steps.version-check.outputs.new-version }}"/g' package.json
+          cat package.json
 
       - name: Publish @smsshcss/vite to npm
         if: steps.version-check.outputs.version-changed == 'true'
