@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite';
+import type { Plugin, ViteDevServer } from 'vite';
 import {
   applyResetCss,
   applyBaseCss,
@@ -7,12 +7,14 @@ import {
 } from 'smsshcss/utils';
 import fs from 'fs';
 import path from 'path';
+import { glob } from 'glob';
 
 export interface SmsshCSSViteOptions {
   /**
-   * 生成するCSSの内容をカスタマイズ
+   * スキャンするファイルパターン
+   * @default ['index.html', 'src/files.{html,js,ts,jsx,tsx,vue,svelte,astro}']
    */
-  content?: string;
+  content?: string[];
   /**
    * リセットCSSを含めるかどうか
    * @default true
@@ -89,24 +91,76 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
-  const { includeReset = true, includeBase = true, theme = {} } = options;
-
-  let customClasses: string[] = [];
+  const {
+    includeReset = true,
+    includeBase = true,
+    theme = {},
+    content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
+  } = options;
 
   return {
     name: 'smsshcss',
-    buildStart(): void {
-      // HTMLファイルをスキャンしてカスタムクラスを抽出
-      try {
-        const htmlPath = path.join(process.cwd(), 'index.html');
-        if (fs.existsSync(htmlPath)) {
-          const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
-          customClasses = extractCustomClasses(htmlContent);
+
+    configureServer(devServer: ViteDevServer): void {
+      // ファイルの変更を監視
+      devServer.watcher.on('change', async (file) => {
+        // 監視対象のファイルが変更された場合
+        const shouldReload = content.some((pattern) => {
+          // シンプルなパターンマッチング（globパターンを正規表現に変換）
+          const regex = new RegExp(
+            pattern
+              .replace(/\*\*/g, '.*')
+              .replace(/\*/g, '[^/]*')
+              .replace(/\{([^}]+)\}/g, '($1)')
+              .replace(/,/g, '|')
+          );
+          return regex.test(file.replace(/\\/g, '/'));
+        });
+
+        if (shouldReload) {
+          console.log(`[smsshcss] File changed: ${file}, regenerating CSS...`);
+
+          // CSSモジュールを見つけて無効化
+          const cssModules = Array.from(devServer.moduleGraph.idToModuleMap.values()).filter(
+            (module) => module.id?.endsWith('.css')
+          );
+
+          // CSSモジュールをリロード
+          for (const cssModule of cssModules) {
+            devServer.moduleGraph.invalidateModule(cssModule);
+            devServer.reloadModule(cssModule);
+          }
         }
-      } catch (error) {
-        console.warn('Failed to scan HTML for custom classes:', error);
-      }
+      });
+
+      // 新しいファイルが追加された場合も監視
+      devServer.watcher.on('add', async (file) => {
+        const shouldReload = content.some((pattern) => {
+          const regex = new RegExp(
+            pattern
+              .replace(/\*\*/g, '.*')
+              .replace(/\*/g, '[^/]*')
+              .replace(/\{([^}]+)\}/g, '($1)')
+              .replace(/,/g, '|')
+          );
+          return regex.test(file.replace(/\\/g, '/'));
+        });
+
+        if (shouldReload) {
+          console.log(`[smsshcss] New file added: ${file}, regenerating CSS...`);
+
+          const cssModules = Array.from(devServer.moduleGraph.idToModuleMap.values()).filter(
+            (module) => module.id?.endsWith('.css')
+          );
+
+          for (const cssModule of cssModules) {
+            devServer.moduleGraph.invalidateModule(cssModule);
+            devServer.reloadModule(cssModule);
+          }
+        }
+      });
     },
+
     transform(code: string, id: string): { code: string; map: null } | null {
       if (!id.endsWith('.css')) return null;
 
@@ -129,6 +183,46 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
       // ユーティリティクラスを追加
       css = `${css}\n\n/* SmsshCSS Utility Classes */\n${utilityClasses}`;
+
+      // 複数のファイルからカスタムクラスを動的に抽出
+      let customClasses: string[] = [];
+      try {
+        // 同期版の実装（パフォーマンスのため）
+        const allCustomClasses: string[] = [];
+        const seenClasses = new Set<string>();
+
+        for (const pattern of content) {
+          try {
+            const files = glob.sync(pattern, {
+              cwd: process.cwd(),
+              ignore: ['node_modules/**', 'dist/**', 'build/**'],
+            });
+
+            for (const file of files) {
+              try {
+                const filePath = path.resolve(process.cwd(), file);
+                const fileContent = fs.readFileSync(filePath, 'utf-8');
+                const fileCustomClasses = extractCustomClasses(fileContent);
+
+                for (const cssClass of fileCustomClasses) {
+                  if (!seenClasses.has(cssClass)) {
+                    seenClasses.add(cssClass);
+                    allCustomClasses.push(cssClass);
+                  }
+                }
+              } catch (error) {
+                // ファイル読み込みエラーは無視
+              }
+            }
+          } catch (error) {
+            // globエラーは無視
+          }
+        }
+
+        customClasses = allCustomClasses;
+      } catch (error) {
+        console.warn('Failed to scan files for custom classes:', error);
+      }
 
       // カスタムクラスを追加
       if (customClasses.length > 0) {

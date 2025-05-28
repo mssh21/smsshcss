@@ -955,6 +955,7 @@ __metadata:
   resolution: "@smsshcss/vite@workspace:packages/@smsshcss/vite"
   dependencies:
     "@types/node": "npm:^20.11.5"
+    glob: "npm:^10.3.10"
     smsshcss: "workspace:*"
     tsup: "npm:^8.0.2"
     typescript: "npm:^5.3.3"
