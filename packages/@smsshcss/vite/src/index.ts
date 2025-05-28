@@ -1,10 +1,9 @@
 import type { Plugin, ViteDevServer } from 'vite';
 import {
-  applyResetCss,
-  applyBaseCss,
-  generateAllSpacingClasses,
-  generateDisplayClasses,
-} from 'smsshcss/utils';
+  SmsshCSSConfig,
+  generateCSS as smsshGenerateCSS,
+  generateCSSSync as smsshGenerateCSSSync,
+} from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
@@ -12,7 +11,7 @@ import { glob } from 'glob';
 export interface SmsshCSSViteOptions {
   /**
    * スキャンするファイルパターン
-   * @default ['index.html', 'src/files.{html,js,ts,jsx,tsx,vue,svelte,astro}']
+   * @default ['index.html', 'src/all-subdirs/all-files.{html,js,ts,jsx,tsx,vue,svelte,astro}']
    */
   content?: string[];
   /**
@@ -26,12 +25,28 @@ export interface SmsshCSSViteOptions {
    */
   includeBase?: boolean;
   /**
+   * パージ設定
+   */
+  purge?: {
+    enabled?: boolean;
+    safelist?: (string | RegExp)[];
+    blocklist?: (string | RegExp)[];
+    keyframes?: boolean;
+    fontFace?: boolean;
+    variables?: boolean;
+  };
+  /**
    * テーマのカスタマイズ
    */
   theme?: {
     spacing?: Record<string, string>;
     display?: Record<string, string>;
   };
+  /**
+   * 開発時にパージレポートを表示するかどうか
+   * @default false
+   */
+  showPurgeReport?: boolean;
 }
 
 // カスタム値クラスを検出する正規表現
@@ -121,10 +136,18 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
     includeBase = true,
     theme = {},
     content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
+    purge = { enabled: true },
+    showPurgeReport = false,
   } = options;
+
+  let isProduction = false;
 
   return {
     name: 'smsshcss',
+
+    configResolved(config): void {
+      isProduction = config.command === 'build';
+    },
 
     configureServer(devServer: ViteDevServer): void {
       // ファイルの変更を監視
@@ -186,105 +209,143 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
       });
     },
 
-    transform(code: string, id: string): { code: string; map: null } | null {
+    async transform(code: string, id: string): Promise<{ code: string } | null> {
       if (!id.endsWith('.css')) return null;
 
       let css = code;
 
-      // SmsshCSSのユーティリティクラスを生成
-      const spacingClasses = generateAllSpacingClasses(theme.spacing);
-      const displayClasses = generateDisplayClasses(theme.display);
-      const utilityClasses = `${spacingClasses}\n${displayClasses}`;
+      // SmsshCSSの設定を構築
+      const smsshConfig: SmsshCSSConfig = {
+        content,
+        includeResetCSS: includeReset,
+        includeBaseCSS: includeBase,
+        theme,
+        purge: {
+          enabled: isProduction ? purge.enabled : false, // 開発時はパージを無効化
+          content,
+          ...purge,
+        },
+      };
 
-      // リセットCSSを追加
-      if (includeReset) {
-        css = applyResetCss(css);
-      }
-
-      // ベースCSSを追加
-      if (includeBase) {
-        css = applyBaseCss(css);
-      }
-
-      // ユーティリティクラスを追加
-      css = `${css}\n\n/* SmsshCSS Utility Classes */\n${utilityClasses}`;
-
-      // 複数のファイルからカスタムクラスを動的に抽出
-      let customClasses: string[] = [];
       try {
-        // 同期版の実装（パフォーマンスのため）
-        const allCustomClasses: string[] = [];
-        const seenClasses = new Set<string>();
+        let generatedCSS: string;
 
-        for (const pattern of content) {
-          try {
-            const files = glob.sync(pattern, {
-              cwd: process.cwd(),
-              ignore: ['node_modules/**', 'dist/**', 'build/**'],
-            });
+        if (isProduction && purge.enabled) {
+          // プロダクションビルド時はパージ機能を使用
+          generatedCSS = await smsshGenerateCSS(smsshConfig);
 
-            for (const file of files) {
-              try {
-                const filePath = path.resolve(process.cwd(), file);
-                const fileContent = fs.readFileSync(filePath, 'utf-8');
-                const fileCustomClasses = extractCustomClasses(fileContent);
+          if (showPurgeReport) {
+            // パージレポートを表示
+            const { generatePurgeReport } = await import('smsshcss');
+            const report = await generatePurgeReport(smsshConfig);
+            if (report) {
+              console.log('\n🎯 SmsshCSS Purge Report (Vite Plugin)');
+              console.log('=====================================');
+              console.log(`📊 Total classes: ${report.totalClasses}`);
+              console.log(`✅ Used classes: ${report.usedClasses}`);
+              console.log(`🗑️  Purged classes: ${report.purgedClasses}`);
+              console.log(`⏱️  Build time: ${report.buildTime}ms`);
 
-                for (const cssClass of fileCustomClasses) {
-                  if (!seenClasses.has(cssClass)) {
-                    seenClasses.add(cssClass);
-                    allCustomClasses.push(cssClass);
-                  }
-                }
-              } catch (error) {
-                // ファイル読み込みエラーは無視
+              if (report.purgedClasses > 0) {
+                const reductionPercentage = (
+                  (report.purgedClasses / report.totalClasses) *
+                  100
+                ).toFixed(1);
+                console.log(`📉 Size reduction: ${reductionPercentage}%`);
               }
             }
-          } catch (error) {
-            // globエラーは無視
           }
+        } else {
+          // 開発時は同期版を使用（パフォーマンス重視）
+          generatedCSS = smsshGenerateCSSSync(smsshConfig);
         }
 
-        customClasses = allCustomClasses;
-      } catch (error) {
-        console.warn('Failed to scan files for custom classes:', error);
-      }
+        // 生成されたCSSを追加
+        css = `${css}\n\n/* SmsshCSS Generated Styles */\n${generatedCSS}`;
 
-      // カスタムクラスを追加
-      if (customClasses.length > 0) {
-        css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
+        // カスタムクラスを動的に抽出して追加
+        const customClasses = await extractCustomClassesFromFiles(content);
+        if (customClasses.length > 0) {
+          css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
+        }
+      } catch (error) {
+        console.error('[smsshcss] Error generating CSS:', error);
+        // エラー時はフォールバック処理
+        css = `${css}\n\n/* SmsshCSS Error: ${error} */`;
       }
 
       return {
         code: css,
-        map: null,
       };
     },
   };
 }
 
-export function generateCSS(options: SmsshCSSViteOptions = {}): string {
-  const { includeReset = true, includeBase = true, theme = {} } = options;
-  let css = '';
+// ファイルからカスタムクラスを非同期で抽出
+async function extractCustomClassesFromFiles(content: string[]): Promise<string[]> {
+  const allCustomClasses: string[] = [];
+  const seenClasses = new Set<string>();
 
-  // SmsshCSSのユーティリティクラスを生成
-  const spacingClasses = generateAllSpacingClasses(theme.spacing);
-  const displayClasses = generateDisplayClasses(theme.display);
-  const utilityClasses = `${spacingClasses}\n${displayClasses}`;
+  try {
+    for (const pattern of content) {
+      try {
+        const files = glob.sync(pattern, {
+          cwd: process.cwd(),
+          ignore: ['node_modules/**', 'dist/**', 'build/**'],
+        });
 
-  // リセットCSSを追加
-  if (includeReset) {
-    css = applyResetCss(css);
+        for (const file of files) {
+          try {
+            const filePath = path.resolve(process.cwd(), file);
+            const fileContent = fs.readFileSync(filePath, 'utf-8');
+            const fileCustomClasses = extractCustomClasses(fileContent);
+
+            for (const cssClass of fileCustomClasses) {
+              if (!seenClasses.has(cssClass)) {
+                seenClasses.add(cssClass);
+                allCustomClasses.push(cssClass);
+              }
+            }
+          } catch (error) {
+            // ファイル読み込みエラーは無視
+          }
+        }
+      } catch (error) {
+        // globエラーは無視
+      }
+    }
+  } catch (error) {
+    console.warn('[smsshcss] Failed to scan files for custom classes:', error);
   }
 
-  // ベースCSSを追加
-  if (includeBase) {
-    css = applyBaseCss(css);
-  }
+  return allCustomClasses;
+}
 
-  // ユーティリティクラスを追加
-  css = `${css}\n\n/* SmsshCSS Utility Classes */\n${utilityClasses}`;
+export async function generateCSSWithPurge(options: SmsshCSSViteOptions = {}): Promise<string> {
+  const {
+    includeReset = true,
+    includeBase = true,
+    theme = {},
+    content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
+    purge = { enabled: true },
+  } = options;
 
-  return css;
+  const smsshConfig: SmsshCSSConfig = {
+    content,
+    includeResetCSS: includeReset,
+    includeBaseCSS: includeBase,
+    theme,
+    purge: {
+      enabled: purge.enabled,
+      content,
+      ...purge,
+    },
+  };
+
+  return await smsshGenerateCSS(smsshConfig);
 }
 
 export default smsshcss;
+
+// 互換性のためのエイリアス
+export { smsshcss as smsshcssVite };

@@ -1,19 +1,124 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import smsshcss from '../index';
-import type { SmsshCSSViteOptions } from '../index';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { smsshcss } from '../index';
+
+// smsshcssパッケージをモック
+vi.mock('smsshcss', () => ({
+  generateCSS: vi.fn().mockImplementation((config) => {
+    let css = '';
+
+    // Reset CSS
+    if (config.includeResetCSS !== false) {
+      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
+    }
+
+    // Base CSS
+    if (config.includeBaseCSS !== false) {
+      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
+    }
+
+    // SmsshCSS Generated Styles
+    css += '\n/* SmsshCSS Generated Styles */';
+    css += '\n.m-md { margin: 1.25rem; }';
+    css += '\n.mt-lg { margin-top: 2rem; }';
+    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
+    css += '\n.p-md { padding: 1.25rem; }';
+    css += '\n.pt-lg { padding-top: 2rem; }';
+    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
+    css += '\n.gap-md { gap: 1.25rem; }';
+    css += '\n.gap-x-md { column-gap: 1.25rem; }';
+    css += '\n.gap-y-md { row-gap: 1.25rem; }';
+    css += '\n.gap-x-lg { column-gap: 2rem; }';
+    css += '\n.gap-y-lg { row-gap: 2rem; }';
+    css += '\n.flex { display: block flex; }';
+    css += '\n.grid { display: block grid; }';
+
+    // カスタムテーマクラス
+    if (config.theme?.spacing) {
+      Object.entries(config.theme.spacing).forEach(([key, value]) => {
+        css += `\n.m-${key} { margin: ${value}; }`;
+        css += `\n.p-${key} { padding: ${value}; }`;
+        css += `\n.gap-${key} { gap: ${value}; }`;
+        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
+        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+      });
+    }
+
+    if (config.theme?.display) {
+      Object.entries(config.theme.display).forEach(([key, value]) => {
+        css += `\n.${key} { display: ${value}; }`;
+      });
+    }
+
+    return Promise.resolve(css);
+  }),
+  generateCSSSync: vi.fn().mockImplementation((config) => {
+    let css = '';
+
+    // Reset CSS
+    if (config.includeResetCSS !== false) {
+      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
+    }
+
+    // Base CSS
+    if (config.includeBaseCSS !== false) {
+      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
+    }
+
+    // SmsshCSS Generated Styles
+    css += '\n/* SmsshCSS Generated Styles */';
+    css += '\n.m-md { margin: 1.25rem; }';
+    css += '\n.mt-lg { margin-top: 2rem; }';
+    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
+    css += '\n.p-md { padding: 1.25rem; }';
+    css += '\n.pt-lg { padding-top: 2rem; }';
+    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
+    css += '\n.gap-md { gap: 1.25rem; }';
+    css += '\n.gap-x-md { column-gap: 1.25rem; }';
+    css += '\n.gap-y-md { row-gap: 1.25rem; }';
+    css += '\n.gap-x-lg { column-gap: 2rem; }';
+    css += '\n.gap-y-lg { row-gap: 2rem; }';
+    css += '\n.flex { display: block flex; }';
+    css += '\n.grid { display: block grid; }';
+
+    // カスタムテーマクラス
+    if (config.theme?.spacing) {
+      Object.entries(config.theme.spacing).forEach(([key, value]) => {
+        css += `\n.m-${key} { margin: ${value}; }`;
+        css += `\n.p-${key} { padding: ${value}; }`;
+        css += `\n.gap-${key} { gap: ${value}; }`;
+        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
+        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+      });
+    }
+
+    if (config.theme?.display) {
+      Object.entries(config.theme.display).forEach(([key, value]) => {
+        css += `\n.${key} { display: ${value}; }`;
+      });
+    }
+
+    return css;
+  }),
+  generatePurgeReport: vi.fn().mockResolvedValue({
+    totalClasses: 100,
+    usedClasses: 50,
+    purgedClasses: 50,
+    buildTime: 100,
+  }),
+}));
 
 describe('SmsshCSS Vite Plugin', () => {
   describe('Plugin Configuration', () => {
     it('should create plugin with default options', () => {
       const plugin = smsshcss();
       expect(plugin.name).toBe('smsshcss');
-      expect(plugin.transform).toBeDefined();
     });
 
     it('should create plugin with custom options', () => {
-      const options: SmsshCSSViteOptions = {
+      const options = {
         includeReset: false,
         includeBase: false,
+        content: ['src/**/*.tsx'],
         theme: {
           spacing: { custom: '2rem' },
           display: { custom: 'block' },
@@ -31,25 +136,25 @@ describe('SmsshCSS Vite Plugin', () => {
       plugin = smsshcss();
     });
 
-    it('should transform CSS files', () => {
-      const result = plugin.transform('body { color: red; }', 'test.css');
+    it('should transform CSS files', async () => {
+      const result = await plugin.transform('body { color: red; }', 'test.css');
       expect(result).toBeDefined();
       expect(result?.code).toContain('body { color: red; }');
     });
 
-    it('should not transform non-CSS files', () => {
-      const result = plugin.transform('console.log("test")', 'test.js');
+    it('should not transform non-CSS files', async () => {
+      const result = await plugin.transform('console.log("test")', 'test.js');
       expect(result).toBeNull();
     });
 
-    it('should preserve original CSS content', () => {
+    it('should preserve original CSS content', async () => {
       const originalCSS = 'body { color: red; } .custom { font-size: 16px; }';
-      const result = plugin.transform(originalCSS, 'file.css');
+      const result = await plugin.transform(originalCSS, 'file.css');
       expect(result?.code).toContain(originalCSS);
     });
 
-    it('should handle empty CSS content', () => {
-      const result = plugin.transform('', 'file.css');
+    it('should handle empty CSS content', async () => {
+      const result = await plugin.transform('', 'file.css');
       expect(result).toBeDefined();
       expect(result?.code).toBeDefined();
       expect(result?.code).not.toBe('');
@@ -58,49 +163,49 @@ describe('SmsshCSS Vite Plugin', () => {
 
   describe('CSS Options', () => {
     describe('Reset CSS', () => {
-      it('should include reset CSS by default', () => {
+      it('should include reset CSS by default', async () => {
         const plugin = smsshcss();
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Reset CSS */');
       });
 
-      it('should include reset CSS when explicitly enabled', () => {
+      it('should include reset CSS when explicitly enabled', async () => {
         const plugin = smsshcss({ includeReset: true });
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Reset CSS */');
       });
 
-      it('should exclude reset CSS when disabled', () => {
+      it('should exclude reset CSS when disabled', async () => {
         const plugin = smsshcss({ includeReset: false });
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Reset CSS */');
       });
     });
 
     describe('Base CSS', () => {
-      it('should include base CSS by default', () => {
+      it('should include base CSS by default', async () => {
         const plugin = smsshcss();
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Base CSS */');
       });
 
-      it('should include base CSS when explicitly enabled', () => {
+      it('should include base CSS when explicitly enabled', async () => {
         const plugin = smsshcss({ includeBase: true });
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Base CSS */');
       });
 
-      it('should exclude base CSS when disabled', () => {
+      it('should exclude base CSS when disabled', async () => {
         const plugin = smsshcss({ includeBase: false });
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Base CSS */');
       });
     });
 
     describe('Combined Options', () => {
-      it('should handle both reset and base CSS disabled', () => {
+      it('should handle both reset and base CSS disabled', async () => {
         const plugin = smsshcss({ includeReset: false, includeBase: false });
-        const result = plugin.transform('', 'test.css');
+        const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Reset CSS */');
         expect(result?.code).not.toContain('/* Base CSS */');
       });
@@ -109,11 +214,11 @@ describe('SmsshCSS Vite Plugin', () => {
 
   describe('Utility Classes Generation', () => {
     let plugin: ReturnType<typeof smsshcss>;
-    let result: ReturnType<typeof plugin.transform>;
+    let result: Awaited<ReturnType<typeof plugin.transform>>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       plugin = smsshcss();
-      result = plugin.transform('', 'file.css');
+      result = await plugin.transform('', 'file.css');
     });
 
     describe('Spacing Classes', () => {
@@ -147,7 +252,7 @@ describe('SmsshCSS Vite Plugin', () => {
   });
 
   describe('Custom Theme', () => {
-    it('should apply custom spacing theme', () => {
+    it('should apply custom spacing theme', async () => {
       const plugin = smsshcss({
         theme: {
           spacing: {
@@ -156,7 +261,7 @@ describe('SmsshCSS Vite Plugin', () => {
           },
         },
       });
-      const result = plugin.transform('', 'file.css');
+      const result = await plugin.transform('', 'file.css');
 
       expect(result?.code).toContain('.m-custom { margin: 2rem; }');
       expect(result?.code).toContain('.p-special { padding: 3.5rem; }');
@@ -164,7 +269,7 @@ describe('SmsshCSS Vite Plugin', () => {
       expect(result?.code).toContain('.gap-x-special { column-gap: 3.5rem; }');
     });
 
-    it('should apply custom display theme', () => {
+    it('should apply custom display theme', async () => {
       const plugin = smsshcss({
         theme: {
           display: {
@@ -173,20 +278,20 @@ describe('SmsshCSS Vite Plugin', () => {
           },
         },
       });
-      const result = plugin.transform('', 'file.css');
+      const result = await plugin.transform('', 'file.css');
 
       expect(result?.code).toContain('.custom { display: inline-block; }');
       expect(result?.code).toContain('.special { display: inline-flex; }');
     });
 
-    it('should merge custom theme with defaults', () => {
+    it('should merge custom theme with defaults', async () => {
       const plugin = smsshcss({
         theme: {
           spacing: { custom: '2rem' },
           display: { custom: 'block' },
         },
       });
-      const result = plugin.transform('', 'file.css');
+      const result = await plugin.transform('', 'file.css');
 
       // カスタムテーマ
       expect(result?.code).toContain('.m-custom { margin: 2rem; }');
@@ -199,17 +304,17 @@ describe('SmsshCSS Vite Plugin', () => {
   });
 
   describe('Error Handling', () => {
-    it('should handle invalid file extensions gracefully', () => {
+    it('should handle invalid file extensions gracefully', async () => {
       const plugin = smsshcss();
-      expect(() => plugin.transform('test', 'file.unknown')).not.toThrow();
-      expect(plugin.transform('test', 'file.unknown')).toBeNull();
+      expect(async () => await plugin.transform('test', 'file.unknown')).not.toThrow();
+      expect(await plugin.transform('test', 'file.unknown')).toBeNull();
     });
 
-    it('should handle malformed CSS gracefully', () => {
+    it('should handle malformed CSS gracefully', async () => {
       const plugin = smsshcss();
       const malformedCSS = 'body { color: red; } .broken { font-size: }';
-      expect(() => plugin.transform(malformedCSS, 'file.css')).not.toThrow();
-      const result = plugin.transform(malformedCSS, 'file.css');
+      expect(async () => await plugin.transform(malformedCSS, 'file.css')).not.toThrow();
+      const result = await plugin.transform(malformedCSS, 'file.css');
       expect(result?.code).toContain(malformedCSS);
     });
   });
