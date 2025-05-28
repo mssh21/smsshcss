@@ -43,8 +43,8 @@ describe('smsshcss', () => {
     const plugin = smsshcss();
     const result = plugin.transform('', 'file.css');
 
-    expect(result?.code).toContain('.m-md { margin: 1rem; }');
-    expect(result?.code).toContain('.p-md { padding: 1rem; }');
+    expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+    expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
     expect(result?.code).toContain('.flex { display: block flex; }');
     expect(result?.code).toContain('.grid { display: block grid; }');
   });

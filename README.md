@@ -72,39 +72,38 @@ console.log(css);
 
 ### スペーシング（Margin/Padding）
 
-黄金比（1:1.618）と白銀比（1:1.414）を考慮したスペーシングシステム：
+フィボナッチ数列ベースのスペーシングシステム（直感的な命名）：
 
 #### サイズ
 
-- `2xs`: 0.125rem (2px)
-- `xs`: 0.25rem (4px)
-- `sm`: 0.5rem (8px)
-- `sm+`: 0.707rem (11.3px) - 白銀比
-- `md`: 1rem (16px)
-- `md+`: 1.618rem (25.9px) - 黄金比
-- `lg`: 1.5rem (24px)
-- `lg+`: 2.121rem (33.9px) - 白銀比
-- `xl`: 2rem (32px)
-- `xl+`: 3.236rem (51.8px) - 黄金比
-- `2xl`: 3rem (48px)
-- `3xl`: 4rem (64px)
-- `4xl`: 6rem (96px)
+フィボナッチ数列（1, 2, 3, 5, 8, 13, 21, 34, 55, 89...）を基準に、4pxを基本単位として計算：
+
+- `2xs`: 0.25rem (4px) - フィボナッチ: 1
+- `xs`: 0.5rem (8px) - フィボナッチ: 2
+- `sm`: 0.75rem (12px) - フィボナッチ: 3
+- `md`: 1.25rem (20px) - フィボナッチ: 5
+- `lg`: 2rem (32px) - フィボナッチ: 8
+- `xl`: 3.25rem (52px) - フィボナッチ: 13
+- `2xl`: 5.25rem (84px) - フィボナッチ: 21
+- `3xl`: 8.5rem (136px) - フィボナッチ: 34
+- `4xl`: 13.75rem (220px) - フィボナッチ: 55
+- `5xl`: 22.25rem (356px) - フィボナッチ: 89
 
 #### Margin
 
 ```html
 <!-- 全方向 -->
-<div class="m-md">margin: 1rem</div>
+<div class="m-md">margin: 1.25rem</div>
 
 <!-- 方向指定 -->
-<div class="mt-lg">margin-top: 1.5rem</div>
-<div class="mr-sm">margin-right: 0.5rem</div>
-<div class="mb-xl">margin-bottom: 2rem</div>
-<div class="ml-xs">margin-left: 0.25rem</div>
+<div class="mt-lg">margin-top: 2rem</div>
+<div class="mr-sm">margin-right: 0.75rem</div>
+<div class="mb-xl">margin-bottom: 3.25rem</div>
+<div class="ml-xs">margin-left: 0.5rem</div>
 
 <!-- 軸指定 -->
-<div class="mx-md">margin-left: 1rem; margin-right: 1rem</div>
-<div class="my-lg">margin-top: 1.5rem; margin-bottom: 1.5rem</div>
+<div class="mx-md">margin-left: 1.25rem; margin-right: 1.25rem</div>
+<div class="my-lg">margin-top: 2rem; margin-bottom: 2rem</div>
 
 <!-- 任意の値 -->
 <div class="m-[20px]">margin: 20px</div>
@@ -115,17 +114,17 @@ console.log(css);
 
 ```html
 <!-- 全方向 -->
-<div class="p-md">padding: 1rem</div>
+<div class="p-md">padding: 1.25rem</div>
 
 <!-- 方向指定 -->
-<div class="pt-lg">padding-top: 1.5rem</div>
-<div class="pr-sm">padding-right: 0.5rem</div>
-<div class="pb-xl">padding-bottom: 2rem</div>
-<div class="pl-xs">padding-left: 0.25rem</div>
+<div class="pt-lg">padding-top: 2rem</div>
+<div class="pr-sm">padding-right: 0.75rem</div>
+<div class="pb-xl">padding-bottom: 3.25rem</div>
+<div class="pl-xs">padding-left: 0.5rem</div>
 
 <!-- 軸指定 -->
-<div class="px-md">padding-left: 1rem; padding-right: 1rem</div>
-<div class="py-lg">padding-top: 1.5rem; padding-bottom: 1.5rem</div>
+<div class="px-md">padding-left: 1.25rem; padding-right: 1.25rem</div>
+<div class="py-lg">padding-top: 2rem; padding-bottom: 2rem</div>
 
 <!-- 任意の値 -->
 <div class="p-[1.5rem]">padding: 1.5rem</div>

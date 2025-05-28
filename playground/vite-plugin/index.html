@@ -9,16 +9,16 @@
     <div class="container">
       <header class="header">
         <h1 class="title">SmsshCSS Vite Plugin Demo</h1>
-        <p class="subtitle">ユーティリティクラスの使用例</p>
+        <p class="subtitle">フィボナッチ数列ベースのユーティリティクラス使用例</p>
       </header>
 
       <main class="main">
         <section class="section">
-          <h2 class="section-title">Spacing ユーティリティ</h2>
+          <h2 class="section-title">Spacing ユーティリティ（フィボナッチ数列）</h2>
           <div class="spacing-demo">
-            <div class="box m-md p-md">マージンとパディング</div>
-            <div class="box mt-lg mb-md">上下マージン</div>
-            <div class="box mx-xl py-md">水平マージンと垂直パディング</div>
+            <div class="box m-md p-md">マージンとパディング (md = 20px)</div>
+            <div class="box mt-lg mb-md">上下マージン (lg = 32px, md = 20px)</div>
+            <div class="box mx-xl py-md">水平マージンと垂直パディング (xl = 52px, md = 20px)</div>
           </div>
         </section>
 
@@ -26,30 +26,31 @@
           <h2 class="section-title">Display ユーティリティ</h2>
           <div class="display-demo">
             <div class="flex gap-md">
-              <div class="box p-sm">フレックスアイテム1</div>
-              <div class="box p-sm">フレックスアイテム2</div>
-              <div class="box p-sm">フレックスアイテム3</div>
+              <div class="box p-sm">フレックスアイテム1 (sm = 12px)</div>
+              <div class="box p-sm">フレックスアイテム2 (sm = 12px)</div>
+              <div class="box p-sm">フレックスアイテム3 (sm = 12px)</div>
             </div>
             <div class="grid gap-md mt-lg">
-              <div class="box p-md">グリッドアイテム1</div>
-              <div class="box p-md">グリッドアイテム2</div>
-              <div class="box p-md">グリッドアイテム3</div>
-              <div class="box p-md">グリッドアイテム4</div>
+              <div class="box p-md">グリッドアイテム1 (md = 20px)</div>
+              <div class="box p-md">グリッドアイテム2 (md = 20px)</div>
+              <div class="box p-md">グリッドアイテム3 (md = 20px)</div>
+              <div class="box p-md">グリッドアイテム4 (md = 20px)</div>
             </div>
           </div>
         </section>
 
         <section class="section">
           <h2 class="section-title">カスタム値</h2>
-          <div class="custom-demo">
-            <div class="box m-[20px] p-[1.5rem]">カスタムマージンとパディング</div>
-            <div class="box mt-[30px] mb-[15px]">カスタム上下マージン</div>
+          <div class="custom-demo flex">
+            <div class="box m-[20px] pt-[20px] pb-[40px]">カスタムマージンとパディング</div>
+            <div class="box mt-[30px] pt-[5rem] pb-[10rem]">カスタム上下マージン</div>
+            <div class="box mt-sm mb-md pl-[5rem] pr-[10rem] pt-[5rem] pb-[10rem]">フィボナッチ + カスタム</div>
           </div>
         </section>
       </main>
 
       <footer class="footer">
-        <p>SmsshCSS Vite Plugin Demo</p>
+        <p>SmsshCSS Vite Plugin Demo - フィボナッチ数列ベースのスペーシング</p>
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
