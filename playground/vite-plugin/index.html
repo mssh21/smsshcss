@@ -238,7 +238,7 @@
           </div>
         </section>
 
-        <!-- 9. 基本カスタム値テスト -->
+        <!-- 9. CSS関数テスト -->
         <section class="demo-section">
           <h2 class="demo-title p-[20px]">9. CSS関数テスト</h2>
           <div class="demo-content p-[30px]">
@@ -276,6 +276,118 @@
               <div class="demo-box css-var-padding-24 p-[var(--custom-padding-24)]">
                 var(--custom-padding-24)
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. 新設定オプションテスト -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">🆕 10. 新設定オプションテスト</h2>
+          <div class="demo-content p-[30px]">
+            <!-- テーマのカスタムスペーシング -->
+            <div class="test-label">📏 カスタムテーマ spacing (72, 84, 96, custom)</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-72">p-72 (18rem)</div>
+              <div class="demo-box p-84">p-84 (21rem)</div>
+              <div class="demo-box p-96">p-96 (24rem)</div>
+              <div class="demo-box p-custom">p-custom (2.5rem)</div>
+            </div>
+            <div class="flex gap-72 mb-[20px]">
+              <div class="demo-box p-sm">gap-72 (18rem)</div>
+              <div class="demo-box p-sm">Item 2</div>
+            </div>
+
+            <!-- カスタムディスプレイクラス -->
+            <div class="test-label mt-[40px]">🖥️ カスタムテーマ display</div>
+            <div class="custom-flex gap-custom mb-[20px]">
+              <div class="demo-box p-sm">custom-flex</div>
+              <div class="demo-box p-sm">gap-custom</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+            <div class="custom-grid gap-84" style="grid-template-columns: repeat(3, 1fr)">
+              <div class="demo-box p-sm">custom-grid</div>
+              <div class="demo-box p-sm">gap-84</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+
+            <!-- セーフリスト対象クラス -->
+            <div class="test-label mt-[40px]">✅ Safelist対象クラス（本番ビルドでも保持）</div>
+            <div class="flex gap-[20px] flex-wrap mb-[20px]">
+              <div class="demo-box p-md">未使用だが保持: m-2xl, p-2xl, mt-2xl</div>
+              <div class="demo-box p-md">未使用だが保持: gap-2xl, gap-x-2xl, gap-y-2xl</div>
+            </div>
+            <div class="bg-green-50 p-[15px] border border-green-200 mb-[20px]">
+              <p class="m-[0px] text-sm">
+                <strong>Safelist説明:</strong> これらのクラスはHTMLで使用していませんが、
+                safelistに指定されているため本番ビルドでも削除されません。
+              </p>
+            </div>
+
+            <!-- ホバー・フォーカス効果（セーフリスト対象） -->
+            <div class="test-label">🎯 Hover/Focus効果（セーフリスト対象パターン）</div>
+            <div class="flex gap-[20px] flex-wrap mb-[20px]">
+              <div class="demo-box p-md hover:p-lg transition-all">
+                hover:p-lg (safelistパターン: ^hover:p-)
+              </div>
+              <div class="demo-box p-md focus:m-lg transition-all" tabindex="0">
+                focus:m-lg (safelistパターン: ^focus:m-) - クリック可能
+              </div>
+            </div>
+
+            <!-- ブロックリスト対象クラス -->
+            <div class="test-label mt-[40px]">❌ Blocklist対象クラス（本番ビルドで強制削除）</div>
+            <div class="flex gap-[20px] flex-wrap mb-[20px]">
+              <div class="demo-box p-2xs m-2xs">p-2xs m-2xs (blocklist対象)</div>
+              <div class="demo-box gap-2xs">このdivはgap-2xsクラス (blocklist対象)</div>
+              <div class="demo-box mt-2xs mb-2xs">mt-2xs mb-2xs (blocklist対象)</div>
+            </div>
+            <div class="bg-red-50 p-[15px] border border-red-200 mb-[20px]">
+              <p class="m-[0px] text-sm">
+                <strong>Blocklist説明:</strong> これらのクラスは実際に使用していますが、
+                blocklistに指定されているため本番ビルドでは強制的に削除されます。
+                （スタイルが効かなくなる）
+              </p>
+            </div>
+
+            <!-- 使用中のクラス例 -->
+            <div class="test-label mt-[40px]">✅ 実際に使用中のクラス（本番ビルドで保持）</div>
+            <div class="flex gap-[20px] flex-wrap mb-[20px]">
+              <div class="demo-box p-md m-lg">p-md m-lg (使用中)</div>
+              <div class="demo-box p-sm gap-sm">p-sm (使用中)</div>
+              <div class="demo-box mt-lg mb-sm">mt-lg mb-sm (使用中)</div>
+            </div>
+            <div class="bg-blue-50 p-[15px] border border-blue-200 mb-[20px]">
+              <p class="m-[0px] text-sm">
+                <strong>使用中クラス:</strong> これらのクラスは実際にHTMLで使用されているため、
+                purge処理でも自動的に保持されます。
+              </p>
+            </div>
+
+            <!-- content パターンテスト -->
+            <div class="test-label mt-[40px]">📁 Content パターン確認</div>
+            <div class="bg-gray-100 p-[20px] mb-[20px]">
+              <p class="m-[0px] mb-[10px]"><strong>設定されたcontentパターン:</strong></p>
+              <ul class="m-[0px] pl-[20px]">
+                <li>index.html ✅ (このファイル)</li>
+                <li>src/**/*.{html,js,ts,jsx,tsx,vue,svelte} ✅</li>
+                <li>components/**/*.{js,ts,jsx,tsx,vue} ✅</li>
+                <li>**/*.html ✅</li>
+              </ul>
+            </div>
+
+            <!-- パージ設定説明 -->
+            <div class="test-label mt-[40px]">🗑️ Purge設定確認</div>
+            <div class="bg-yellow-50 p-[20px] border border-yellow-200">
+              <p class="m-[0px] mb-[10px]">
+                <strong>開発時:</strong> パージ無効（全クラス利用可能）
+              </p>
+              <p class="m-[0px] mb-[10px]"><strong>本番ビルド時:</strong> パージ有効</p>
+              <ul class="m-[0px] pl-[20px]">
+                <li>✅ Safelist: btn-primary, container, hover:*, focus:* は保持</li>
+                <li>❌ Blocklist: deprecated-class, old-* は強制削除</li>
+                <li>🎬 Keyframes, FontFace, Variables も最適化対象</li>
+                <li>📊 showPurgeReport: true でレポート表示</li>
+              </ul>
             </div>
           </div>
         </section>
