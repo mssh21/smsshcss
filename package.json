@@ -37,15 +37,14 @@
     "postcss": "^8.4.35",
     "prettier": "^3.0.0",
     "tsup": "^8.0.2",
-    "turbo": "^1.10.16",
+    "turbo": "^2.5.3",
     "typescript": "^5.3.3",
     "vitest": "^0.34.6"
   },
   "workspaces": [
     "packages/*",
     "packages/@smsshcss/*",
-    "playground/*",
-    "playground/@smsshcss/*"
+    "playground/*"
   ],
   "volta": {
     "node": "20.18.0",

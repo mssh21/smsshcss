@@ -1,183 +1,191 @@
-# SMSSHCSS Vite Plugin
+# @smsshcss/vite
 
-A Vite plugin for SMSSHCSS, a utility-first CSS framework.
+SmsshCSSのViteプラグイン。CSSユーティリティクラスを自動生成し、プロジェクトに統合します。
 
-## Installation
+## インストール
 
 ```bash
 # npm
-npm install smsshcss @smsshcss/vite --save-dev
+npm install @smsshcss/vite
 
 # yarn
-yarn add smsshcss @smsshcss/vite -D
+yarn add @smsshcss/vite
 
 # pnpm
-pnpm add smsshcss @smsshcss/vite -D
+pnpm add @smsshcss/vite
 ```
 
-## Usage
+## 使用方法
 
-### 1. Initialize SMSSHCSS configuration
+### 基本的な設定
 
-Run the CLI command to generate a configuration file:
+`vite.config.ts`に以下のように設定を追加します：
 
-```bash
-npx smsshcss init
-```
-
-This will create a `smsshcss.config.js` file in your project root.
-
-### 2. Configure Vite plugin
-
-```js
-// vite.config.js / vite.config.ts
+```typescript
 import { defineConfig } from 'vite';
 import smsshcss from '@smsshcss/vite';
 
 export default defineConfig({
   plugins: [
-    smsshcss(), // Will automatically load smsshcss.config.js or smsshcss.config.cjs
+    smsshcss(),
   ],
 });
 ```
 
-## Configuration
+### オプション
 
-The plugin will automatically use your configuration file. You can use either ESM (`.js`) or CommonJS (`.cjs`) format:
+プラグインは以下のオプションをサポートしています：
 
-### ESM format (smsshcss.config.js)
-
-```js
-export default {
-  // Configuration options here...
-};
-```
-
-### CommonJS format (smsshcss.config.cjs)
-
-```js
-/**
- * SmsshCSS 設定ファイル
- */
-module.exports = {
-  // スキャン対象のファイル
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  // 常に含めるクラス
-  safelist: [],
-  // reset.cssを含めるかどうか (デフォルトはtrue)
-  includeResetCSS: true,
-  // base.cssを含めるかどうか (デフォルトはtrue)
-  includeBaseCSS: true,
-  // レガシーモードを無効化（@importが不要になります）
-  legacyMode: false,
-  // デバッグモード (オプション)
-  debug: false,
-
-  // テーマ設定 - トークンのカスタマイズ
-  theme: {
-    // カラーのカスタマイズ
-    colors: {
-      primary: '#3366FF',
-      textPrimary: '#333333',
-      backgroundBase: '#FFFFFF',
-    },
-    // フォントウェイトのカスタマイズ
-    fontWeight: {
-      normal: '400',
-      bold: '700',
-    },
-    // フォントサイズのカスタマイズ
-    fontSize: {
-      base: '16px',
-      xl: '24px',
-      '2xl': '30px',
-    },
-    // 行の高さのカスタマイズ
-    lineHeight: {
-      normal: '1.5',
-      relaxed: '1.75',
-    },
-    // スペーシングのカスタマイズ
-    spacing: {
-      xs: '4px',
-      sm: '8px',
-      md: '16px',
-    },
-    // ボーダー半径のカスタマイズ
-    borderRadius: {
-      sm: '4px',
-      md: '8px',
-      lg: '12px',
-    },
-    // シャドウのカスタマイズ
-    shadow: {
-      sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    },
-  },
-};
-```
-
-### Plugin Options
-
-| Option            | Type       | Default                                          | Description                                           |
-| ----------------- | ---------- | ------------------------------------------------ | ----------------------------------------------------- |
-| `content`         | `string[]` | `['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}']` | File patterns to scan for class names                 |
-| `safelist`        | `string[]` | `[]`                                             | Classes to always include in the output CSS           |
-| `includeResetCSS` | `boolean`  | `true`                                           | Whether to include the built-in reset.css             |
-| `includeBaseCSS`  | `boolean`  | `true`                                           | Whether to include the built-in base.css              |
-| `legacyMode`      | `boolean`  | `false`                                          | Legacy mode for compatibility                         |
-| `debug`           | `boolean`  | `false`                                          | Enable debug logging                                  |
-| `outputFile`      | `string`   | `'smsshcss.css'`                                 | Output CSS file name                                  |
-| `customCSS`       | `string`   | `''`                                             | Custom CSS to be included at the end                  |
-| `configFile`      | `string`   | `'smsshcss.config.js'`                           | Path to config file (relative to project root)        |
-| `theme`           | `object`   | `{}`                                             | Theme customization options for colors, spacing, etc. |
-
-## CSS Directives
-
-You can use SMSSHCSS directives in your CSS files to include the generated styles:
-
-```css
-/* Import the reset and base styles */
-@smsshcss base;
-
-/* Import all utility classes */
-@smsshcss utilities;
-
-/* Or import everything with a single directive */
-@smsshcss;
-
-/* Your custom CSS */
-body {
-  /* ... */
+```typescript
+interface SmsshCSSViteOptions {
+  /**
+   * 生成するCSSの内容をカスタマイズ
+   */
+  content?: string[];
+  
+  /**
+   * リセットCSSを含めるかどうか
+   * @default true
+   */
+  includeResetCSS?: boolean;
+  
+  /**
+   * ベースCSSを含めるかどうか
+   * @default true
+   */
+  includeBaseCSS?: boolean;
+  
+  /**
+   * テーマのカスタマイズ
+   */
+  theme?: {
+    spacing?: Record<string, string>;
+    display?: Record<string, string>;
+  };
 }
 ```
 
-## Reset CSS and Base Styles
+### カスタムテーマの設定例
 
-The plugin includes a built-in reset CSS and base styles that provide a solid foundation for your project:
+```typescript
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
 
-- **Reset CSS**: Normalizes browser styles for consistent rendering across different browsers
-- **Base Styles**: Provides basic typography and element styling based on your theme config
-
-If the external reset.css file cannot be found, the plugin automatically falls back to using its built-in version, ensuring your styles are always applied correctly.
-
-## Debug Mode
-
-For more detailed logging during development:
-
-```js
-// Standard debug mode
-process.env.DEBUG = '1';
-
-// Verbose debug mode (includes file path information)
-process.env.DEBUG = 'verbose';
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      includeResetCSS: true,
+      includeBaseCSS: true,
+      theme: {
+        spacing: {
+          custom: '2rem',
+        },
+        display: {
+          custom: 'block',
+        },
+      },
+    }),
+  ],
+});
 ```
 
-## How it works
+## 生成されるユーティリティクラス
 
-This plugin scans your codebase for SMSSHCSS utility classes and generates a CSS file containing only the styles you're using. It integrates with Vite's dev server to automatically regenerate the CSS file when your files change.
+### Spacing
 
-## License
+マージンとパディングのユーティリティクラスが生成されます：
 
-MIT
+```css
+/* マージン */
+.m-2xs { margin: 0.125rem; }  /* 2px */
+.m-xs { margin: 0.25rem; }    /* 4px */
+.m-sm { margin: 0.5rem; }     /* 8px */
+.m-md { margin: 1rem; }       /* 16px */
+.m-lg { margin: 1.5rem; }     /* 24px */
+.m-xl { margin: 2rem; }       /* 32px */
+.m-2xl { margin: 3rem; }      /* 48px */
+.m-3xl { margin: 4rem; }      /* 64px */
+.m-4xl { margin: 6rem; }      /* 96px */
+
+/* パディング */
+.p-2xs { padding: 0.125rem; } /* 2px */
+.p-xs { padding: 0.25rem; }   /* 4px */
+.p-sm { padding: 0.5rem; }    /* 8px */
+.p-md { padding: 1rem; }      /* 16px */
+.p-lg { padding: 1.5rem; }    /* 24px */
+.p-xl { padding: 2rem; }      /* 32px */
+.p-2xl { padding: 3rem; }     /* 48px */
+.p-3xl { padding: 4rem; }     /* 64px */
+.p-4xl { padding: 6rem; }     /* 96px */
+
+/* 方向指定 */
+.mt-md { margin-top: 1rem; }
+.mr-md { margin-right: 1rem; }
+.mb-md { margin-bottom: 1rem; }
+.ml-md { margin-left: 1rem; }
+
+.pt-md { padding-top: 1rem; }
+.pr-md { padding-right: 1rem; }
+.pb-md { padding-bottom: 1rem; }
+.pl-md { padding-left: 1rem; }
+
+/* 任意の値 */
+.m-[20px] { margin: 20px; }
+.p-[1.5rem] { padding: 1.5rem; }
+```
+
+### Display
+
+表示プロパティのユーティリティクラスが生成されます：
+
+```css
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.flex { display: block flex; }
+.inline-flex { display: inline flex; }
+.grid { display: block grid; }
+.inline-grid { display: inline grid; }
+.none { display: none; }
+```
+
+## 使用例
+
+### HTMLでの使用例
+
+```html
+<!-- マージンとパディング -->
+<div class="m-md p-lg">
+  <p class="mb-sm">マージンとパディングの例</p>
+</div>
+
+<!-- フレックスボックス -->
+<div class="flex gap-md">
+  <div class="p-sm">フレックスアイテム1</div>
+  <div class="p-sm">フレックスアイテム2</div>
+</div>
+
+<!-- グリッド -->
+<div class="grid gap-lg">
+  <div class="p-md">グリッドアイテム1</div>
+  <div class="p-md">グリッドアイテム2</div>
+</div>
+```
+
+## 開発
+
+### ビルド
+
+```bash
+yarn build
+```
+
+### テスト
+
+```bash
+yarn test
+```
+
+## ライセンス
+
+MIT 

@@ -12,380 +12,205 @@ SmsshCSSは、軽量なユーティリティファーストCSSフレームワー
 
 ## インストール
 
-### PostCSSプラグインとして使用する場合
+### Viteプラグイン
 
 ```bash
 # npm
-npm install smsshcss @smsshcss/postcss postcss
+npm install smsshcss　@smsshcss/vite
 
 # yarn
-yarn add smsshcss @smsshcss/postcss postcss
+yarn add smsshcss　@smsshcss/vite
 ```
 
-### Viteプラグインとして使用する場合
+## 利用方法
 
-```bash
-# npm
-npm install smsshcss @smsshcss/vite
+### 1. Viteプラグインを使用する場合（推奨）
 
-# yarn
-yarn add smsshcss @smsshcss/vite
-```
+`vite.config.js`または`vite.config.ts`にプラグインを追加：
 
-## 使用方法
+```javascript
+import { defineConfig } from 'vite'
+import smsshcss from '@smsshcss/vite'
 
-### 1. テーマ設定ファイルの作成
-
-テーマを設定する方法には主に2つのアプローチがあります：
-
-#### A. 共有テーマモジュールの作成（推奨）
-
-複数のプロジェクト間でテーマ設定を共有する場合は、専用の共有テーマモジュールを作成する方法が推奨されます：
-
-```js
-// shared-theme.js - 複数プロジェクト間で共有するテーマ設定
-export const sharedTheme = {
-  // カラーのカスタマイズ
-  colors: {
-    primary: '#3366FF',
-    textPrimary: '#333333',
-    backgroundBase: '#FFFFFF',
-  },
-  // フォントウェイトのカスタマイズ
-  fontWeight: {
-    normal: '400',
-    bold: '700',
-  },
-  // フォントサイズのカスタマイズ
-  fontSize: {
-    base: '16px',
-    xl: '24px',
-    '2xl': '30px',
-  },
-  // その他のテーマ設定...
-  lineHeight: {
-    normal: '1.5',
-    relaxed: '1.75',
-  },
-  spacing: {
-    xs: '4px',
-    sm: '8px',
-    md: '16px',
-  },
-  borderRadius: {
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-  },
-  shadow: {
-    sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-  },
-};
-```
-
-#### B. プロジェクトごとの設定ファイル
-
-各プロジェクトで設定を分離したい場合は、従来の設定ファイルアプローチを使用できます：
-
-```js
-// smsshcss.config.js または smsshcss.config.cjs
-module.exports = {
-  // スキャン対象のファイル
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
-  // 常に含めるクラス
-  safelist: [
-    'flex', 'items-center', 'justify-between'
-  ],
-  // reset.cssを含めるかどうか (デフォルトはtrue)
-  includeResetCSS: true,
-  // base.cssを含めるかどうか (デフォルトはtrue)
-  includeBaseCSS: true,
-  // レガシーモードを無効化（@importが不要になります）
-  legacyMode: false,
-  // デバッグモード (オプション)
-  debug: false,
-  
-  // テーマ設定 - トークンのカスタマイズ
-  theme: {
-    // カラーのカスタマイズ
-    colors: {
-      primary: '#3366FF',
-      textPrimary: '#333333',
-      backgroundBase: '#FFFFFF'
-    },
-    // フォントウェイトのカスタマイズ
-    fontWeight: {
-      normal: '400',
-      bold: '700'
-    },
-    // フォントサイズのカスタマイズ
-    fontSize: {
-      base: '16px',
-      xl: '24px',
-      '2xl': '30px'
-    },
-    // 行の高さのカスタマイズ
-    lineHeight: {
-      normal: '1.5',
-      relaxed: '1.75'
-    },
-    // スペーシングのカスタマイズ
-    spacing: {
-      xs: '4px',
-      sm: '8px',
-      md: '16px'
-    },
-    // ボーダー半径のカスタマイズ
-    borderRadius: {
-      sm: '4px',
-      md: '8px',
-      lg: '12px'
-    },
-    // シャドウのカスタマイズ
-    shadow: {
-      sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-    }
-  }
-};
-```
-
-### 2. プラグインの設定
-
-#### PostCSSプラグインとして使用する場合
-
-`postcss.config.js`ファイルを作成し、以下のように設定します:
-
-```js
-// 方法1: 標準設定ファイルを使用
-module.exports = {
+export default defineConfig({
   plugins: [
-    require('@smsshcss/postcss')(),
-    // その他のプラグイン
-    require('autoprefixer')
+    smsshcss({
+      content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
+      includeResetCSS: true,
+      includeBaseCSS: true,
+    })
   ]
-};
-
-// 方法2: 共有テーマモジュールを使用
-const { sharedTheme } = require('./path/to/shared-theme.js');
-
-module.exports = {
-  plugins: [
-    require('@smsshcss/postcss')({
-      theme: sharedTheme,
-      // その他のオプション
-    }),
-    require('autoprefixer')
-  ]
-};
+})
 ```
 
-#### Viteプラグインとして使用する場合
-
-`vite.config.js`ファイルで以下のように設定します:
-
-```js
-// 方法1: 共有テーマモジュールを使用（推奨）
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-import { sharedTheme } from './path/to/shared-theme.js';
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-      theme: sharedTheme,
-      // その他のオプション
-    }),
-  ],
-});
-
-// 方法2: 直接テーマを定義
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-
-const theme = {
-  colors: {
-    primary: '#3366FF',
-    // その他のカラー設定...
-  },
-  // その他のテーマ設定...
-};
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-      theme: theme,
-    }),
-  ],
-});
-
-// 方法3: 設定ファイルを使用
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      configFile: 'smsshcss.config.js', // ESM形式が推奨
-    }),
-  ],
-});
-```
-
-**注意**: Viteプラグインを使用する場合、現時点ではCJS形式の設定ファイルの読み込みに制限があります。ESM形式の設定ファイルを使用するか、共有テーマモジュールまたはvite.configでの直接定義をお勧めします。
-
-### 3. CSSディレクティブの使用
-
-CSSファイルでSmsshCSSディレクティブを使用します:
-
-```css
-/* リセットとベーススタイルをインポート */
-@smsshcss base;
-
-/* すべてのユーティリティクラスをインポート */
-@smsshcss utilities;
-
-/* または、1つのディレクティブで両方をインポート */
-@smsshcss;
-
-/* カスタムCSSをここに追加 */
-.custom-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-```
-
-### 4. HTMLでの使用
-
-設定したユーティリティクラスをHTMLで使用します:
+HTMLでユーティリティクラスを使用：
 
 ```html
-<div class="flex items-center justify-between">
-  <h1 class="text-2xl font-bold text-primary">Hello, SmsshCSS!</h1>
-  <button class="bg-primary text-white p-md rounded-sm">Click me</button>
+<div class="p-md m-lg flex">
+  <h1 class="mb-sm">Hello SmsshCSS!</h1>
+  <p class="px-md py-sm">軽量で高速なCSSフレームワーク</p>
 </div>
 ```
 
-## 複数プロジェクト間でのテーマ共有のベストプラクティス
+Viteプラグインが自動的に使用されたクラスを検出し、必要なCSSを生成します。
 
-ViteプロジェクトとPostCSSプロジェクト間で一貫したテーマを共有するには、共有テーマモジュールを作成して両方のプラグインで使用することをお勧めします：
+### 2. プログラマティックに使用する場合
 
+```javascript
+import { generateCSS } from 'smsshcss'
+
+const css = generateCSS({
+  content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
+  includeResetCSS: true,
+  includeBaseCSS: true,
+})
+
+console.log(css)
 ```
-project-root/
-├── shared/
-│   └── theme.js        # 共有テーマモジュール
-├── vite-project/
-│   ├── vite.config.js  # 共有テーマをインポート
-│   └── ...
-└── postcss-project/
-    ├── postcss.config.js  # 同じ共有テーマをインポート
-    └── ...
+
+## 利用可能なユーティリティクラス
+
+### スペーシング（Margin/Padding）
+
+黄金比（1:1.618）と白銀比（1:1.414）を考慮したスペーシングシステム：
+
+#### サイズ
+- `2xs`: 0.125rem (2px)
+- `xs`: 0.25rem (4px)
+- `sm`: 0.5rem (8px)
+- `sm+`: 0.707rem (11.3px) - 白銀比
+- `md`: 1rem (16px)
+- `md+`: 1.618rem (25.9px) - 黄金比
+- `lg`: 1.5rem (24px)
+- `lg+`: 2.121rem (33.9px) - 白銀比
+- `xl`: 2rem (32px)
+- `xl+`: 3.236rem (51.8px) - 黄金比
+- `2xl`: 3rem (48px)
+- `3xl`: 4rem (64px)
+- `4xl`: 6rem (96px)
+
+#### Margin
+```html
+<!-- 全方向 -->
+<div class="m-md">margin: 1rem</div>
+
+<!-- 方向指定 -->
+<div class="mt-lg">margin-top: 1.5rem</div>
+<div class="mr-sm">margin-right: 0.5rem</div>
+<div class="mb-xl">margin-bottom: 2rem</div>
+<div class="ml-xs">margin-left: 0.25rem</div>
+
+<!-- 軸指定 -->
+<div class="mx-md">margin-left: 1rem; margin-right: 1rem</div>
+<div class="my-lg">margin-top: 1.5rem; margin-bottom: 1.5rem</div>
+
+<!-- 任意の値 -->
+<div class="m-[20px]">margin: 20px</div>
+<div class="mt-[1.5rem]">margin-top: 1.5rem</div>
 ```
 
-この方法により、すべてのプロジェクトで一貫したデザイントークンを維持できます。
+#### Padding
+```html
+<!-- 全方向 -->
+<div class="p-md">padding: 1rem</div>
+
+<!-- 方向指定 -->
+<div class="pt-lg">padding-top: 1.5rem</div>
+<div class="pr-sm">padding-right: 0.5rem</div>
+<div class="pb-xl">padding-bottom: 2rem</div>
+<div class="pl-xs">padding-left: 0.25rem</div>
+
+<!-- 軸指定 -->
+<div class="px-md">padding-left: 1rem; padding-right: 1rem</div>
+<div class="py-lg">padding-top: 1.5rem; padding-bottom: 1.5rem</div>
+
+<!-- 任意の値 -->
+<div class="p-[1.5rem]">padding: 1.5rem</div>
+```
+
+#### Gap（Flexbox/Grid）
+```html
+<div class="flex gap-md">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</div>
+
+<div class="grid gap-lg">
+  <div>Grid Item 1</div>
+  <div>Grid Item 2</div>
+</div>
+```
+
+### Display
+
+```html
+<!-- 基本的なdisplay -->
+<div class="block">display: block</div>
+<div class="inline">display: inline</div>
+<div class="inline-block">display: inline flow-root</div>
+<div class="flex">display: block flex</div>
+<div class="inline-flex">display: inline flex</div>
+<div class="grid">display: block grid</div>
+<div class="inline-grid">display: inline grid</div>
+<div class="none">display: none</div>
+<div class="hidden">display: none</div>
+
+<!-- 追加のdisplay -->
+<div class="contents">display: contents</div>
+<div class="flow-root">display: block flow-root</div>
+<div class="list-item">display: block flow list-item</div>
+<div class="table">display: block table</div>
+<div class="table-cell">display: table-cell</div>
+<div class="table-row">display: table-row</div>
+```
 
 ## 設定オプション
 
-### 主要なオプション
+### Viteプラグイン設定
 
-| オプション | 説明 | デフォルト値 |
-|------------|------|------------|
-| `content` | クラス名を抽出するファイルのパターン | `['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}']` |
-| `safelist` | 常に含めるクラス名 | `[]` |
-| `includeResetCSS` | reset.cssを含めるかどうか | `true` |
-| `includeBaseCSS` | base.cssを含めるかどうか | `true` |
-| `legacyMode` | @import "smsshcss"を使うレガシーモード | `false` |
-| `debug` | デバッグ情報を出力 | `false` |
-| `outputFile` | 出力するCSSファイル名 | `smsshcss.css` |
-| `customCSS` | 末尾に追加するカスタムCSS | `''` |
-| `configFile` | 設定ファイルのパス | `'smsshcss.config.js'` |
-| `theme` | テーマ設定オブジェクト | `{}` |
-
-### カスタマイズ可能なトークン
-
-| カテゴリ | 説明 | 例 |
-|---------|------|-----|
-| `colors` | カラートークン | `primary`, `textPrimary`, `backgroundBase` |
-| `fontSize` | フォントサイズトークン | `base`, `xl`, `2xl` |
-| `fontWeight` | フォントウェイトトークン | `normal`, `bold` |
-| `lineHeight` | 行の高さトークン | `normal`, `relaxed` |
-| `spacing` | スペーシングトークン | `xs`, `sm`, `md` |
-| `borderRadius` | 角丸トークン | `sm`, `md`, `lg` |
-| `shadow` | シャドウトークン | `sm`, `md` |
-
-## 応用例
-
-### ダークモード対応
-
-```js
-// shared-theme.js
-export const sharedTheme = {
-  colors: {
-    // ライトモード
-    primary: '#3366FF',
-    textPrimary: '#333333',
-    backgroundBase: '#FFFFFF',
-    
-    // ダークモード用（カスタムCSSと併用）
-    primaryDark: '#668CFF',
-    textPrimaryDark: '#EEEEEE',
-    backgroundBaseDark: '#121212'
-  }
-  // 他のテーマ設定...
-};
-```
-
-```css
-/* styles.css */
-@media (prefers-color-scheme: dark) {
-  body {
-    color: var(--text-primary-dark);
-    background-color: var(--background-base-dark);
-  }
+```javascript
+smsshcss({
+  // HTMLファイルのパターン（必須）
+  content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
   
-  .text-primary {
-    color: var(--primary-dark);
+  // Reset CSSを含めるか（デフォルト: true）
+  includeResetCSS: true,
+  
+  // Base CSSを含めるか（デフォルト: true）
+  includeBaseCSS: true,
+  
+  // カスタムテーマ設定
+  theme: {
+    spacing: {
+      'custom': '10px',
+      'large': '5rem'
+    }
   }
-}
+})
 ```
 
-## 開発
+## サンプルプロジェクト
 
-### パッケージ構成
-
-- `smsshcss`: コアライブラリ (ユーティリティ定義とトークン)
-- `@smsshcss/postcss`: PostCSSプラグイン (クラス抽出とCSSの生成)
-- `@smsshcss/vite`: Viteプラグイン (Viteプロジェクト向け統合)
-
-### 開発用コマンド
+完全な動作例は `playgrounds/vite-plugin` ディレクトリを参照してください：
 
 ```bash
-# 依存関係のインストール
-yarn
+cd playgrounds/vite-plugin
 
-# ビルド
-yarn build
-
-# PostCSSプレイグラウンドでのテスト
-cd playground/@smsshcss/postcss-playground
-yarn build
-yarn serve
-
-# Viteプレイグラウンドでのテスト
-cd playground/@smsshcss/vite-playground
+# yarn
+yarn install
 yarn dev
+
+# npm
+npm install
+npm run dev
 ```
-
-## 詳細ドキュメント
-
-より詳細な使用方法やカスタマイズオプションについては、[ドキュメント](./docs/smsshcss.md)を参照してください。
 
 ## ライセンス
 
-MIT
+MIT License
+
+## 貢献
+
+プルリクエストやイシューの報告を歓迎します。詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+

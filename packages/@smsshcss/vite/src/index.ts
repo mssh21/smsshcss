@@ -1,612 +1,144 @@
-import { Plugin } from 'vite';
-import * as fs from 'fs';
-import * as path from 'path';
-import { generateCSS, baseStylesToCss } from 'smsshcss';
+import type { Plugin } from 'vite';
+import { applyResetCss, applyBaseCss, generateAllSpacingClasses, generateDisplayClasses } from 'smsshcss/utils';
+import fs from 'fs';
+import path from 'path';
 
-// テーマオプションのインターフェイス
-export interface ThemeOptions {
-  colors?: Record<string, string>;
-  fontWeight?: Record<string, string>;
-  fontSize?: Record<string, string>;
-  lineHeight?: Record<string, string>;
-  spacing?: Record<string, string>;
-  borderRadius?: Record<string, string>;
-  shadow?: Record<string, string>;
-  [key: string]: unknown;
-}
-
-export interface SMSSHCSSOptions {
+export interface SmsshCSSViteOptions {
   /**
-   * File patterns to scan for class names
-   * @default [./src/**.js]
+   * 生成するCSSの内容をカスタマイズ
    */
-  content?: string[];
-
+  content?: string;
   /**
-   * Classes to always include in the output CSS
-   */
-  safelist?: string[];
-
-  /**
-   * Whether to use the built-in reset.css
+   * リセットCSSを含めるかどうか
    * @default true
    */
-  includeResetCSS?: boolean;
-
+  includeReset?: boolean;
   /**
-   * Whether to use the built-in base.css
+   * ベースCSSを含めるかどうか
    * @default true
    */
-  includeBaseCSS?: boolean;
-
+  includeBase?: boolean;
   /**
-   * Legacy mode for compatibility
-   * @default false
+   * テーマのカスタマイズ
    */
-  legacyMode?: boolean;
-
-  /**
-   * Enable debug mode
-   * @default false
-   */
-  debug?: boolean;
-
-  /**
-   * Output CSS file name
-   * @default 'smsshcss.css'
-   */
-  outputFile?: string;
-
-  /**
-   * Custom CSS to be included at the end of the generated CSS
-   */
-  customCSS?: string;
-
-  /**
-   * Path to config file (relative to project root)
-   * @default 'smsshcss.config.js'
-   */
-  configFile?: string;
-
-  /**
-   * テーマ設定 - トークンのカスタマイズ
-   */
-  theme?: ThemeOptions;
-}
-
-/**
- * 設定ファイルを読み込む関数
- * CJSファイルとESMファイルの両方に対応
- */
-function loadConfigFile(configPath: string): Record<string, unknown> {
-  try {
-    const absolutePath = path.resolve(process.cwd(), configPath);
-
-    // ファイルが存在するか確認
-    if (fs.existsSync(absolutePath)) {
-      console.log(`[@smsshcss/vite] Loading config from: ${absolutePath}`);
-
-      // ファイルの内容を直接読み取る
-      const fileContent = fs.readFileSync(absolutePath, 'utf-8');
-
-      // CJSファイル（module.exports = {...}）の処理
-      if (fileContent.includes('module.exports')) {
-        const configRegex = /module\.exports\s*=\s*({[\s\S]*?});?$/m;
-        const match = fileContent.match(configRegex);
-
-        if (match && match[1]) {
-          try {
-            // 設定オブジェクト文字列を取得
-            const configStr = match[1];
-
-            // JavaScriptの文字列表現をJSON互換に変換する
-            // シングルクォートをダブルクォートに変換
-            const jsonCompatible = configStr
-              .replace(/'([^']+)':/g, '"$1":')
-              .replace(/,\s*}/g, '}') // 末尾のカンマを削除
-              .replace(/\/\*[\s\S]*?\*\//g, '') // コメントを削除
-              .replace(/\/\/.*/g, ''); // 行コメントを削除
-
-            // evalを使用してオブジェクトに変換（安全なコンテキストで）
-            const configWithComments = Function(`return ${jsonCompatible}`)();
-            console.log(`[@smsshcss/vite] Successfully parsed config file`);
-            return configWithComments;
-          } catch (e) {
-            console.error(`[@smsshcss/vite] Error parsing config file:`, e);
-
-            // プロパティを個別に抽出する代替アプローチ
-            const config: Record<string, unknown> = {};
-
-            // テーマ設定を抽出
-            const themeRegex = /theme\s*:\s*({[\s\S]*?}),?\s*(?:\/\/.*)?$/m;
-            const themeMatch = fileContent.match(themeRegex);
-            if (themeMatch && themeMatch[1]) {
-              try {
-                const themeStr = themeMatch[1];
-                const themeObj = Function(`return ${themeStr}`)();
-                config.theme = themeObj;
-              } catch (e) {
-                console.error(`[@smsshcss/vite] Error parsing theme config:`, e);
-              }
-            }
-
-            // その他の設定を抽出
-            config.includeResetCSS = /includeResetCSS\s*:\s*true/.test(fileContent);
-            config.includeBaseCSS = /includeBaseCSS\s*:\s*true/.test(fileContent);
-            config.legacyMode = /legacyMode\s*:\s*true/.test(fileContent);
-            config.debug = /debug\s*:\s*true/.test(fileContent);
-
-            const contentMatch = fileContent.match(/content\s*:\s*(\[[^\]]*\])/);
-            if (contentMatch && contentMatch[1]) {
-              try {
-                config.content = Function(`return ${contentMatch[1]}`)();
-              } catch (e) {
-                console.error(`[@smsshcss/vite] Error parsing content config:`, e);
-              }
-            }
-
-            console.log(`[@smsshcss/vite] Fallback config parsing:`, config);
-            return config;
-          }
-        }
-      }
-      // ESMファイル（export default {...}）の処理
-      else if (fileContent.includes('export default')) {
-        const configRegex = /export\s+default\s*({[\s\S]*?});?$/m;
-        const match = fileContent.match(configRegex);
-
-        if (match && match[1]) {
-          try {
-            const configObj = Function(`return ${match[1]}`)();
-            console.log(`[@smsshcss/vite] Successfully parsed ESM config file`);
-            return configObj;
-          } catch (e) {
-            console.error(`[@smsshcss/vite] Error parsing ESM config:`, e);
-          }
-        }
-      }
-
-      console.warn(`[@smsshcss/vite] Could not parse config file format`);
-    } else {
-      console.warn(`[@smsshcss/vite] Config file not found: ${absolutePath}`);
-    }
-  } catch (e) {
-    console.error(`[@smsshcss/vite] Error loading config:`, e);
-  }
-
-  return {};
-}
-
-/**
- * リセットCSSの内容を読み込みます
- */
-async function loadResetCSS(): Promise<string> {
-  try {
-    // 複数の可能なパスを試行
-    const possiblePaths = [
-      // パッケージのインストール先から相対パス
-      path.resolve(process.cwd(), 'node_modules/smsshcss/src/reset.css'),
-
-      // ローカル開発用のパス
-      path.resolve(process.cwd(), '../../../smsshcss/src/reset.css'),
-      path.resolve(process.cwd(), '../../smsshcss/src/reset.css'),
-
-      // プロジェクトルートからの直接パス
-      path.resolve(process.cwd(), 'packages/smsshcss/src/reset.css'),
-
-      // インラインのリセットCSSを代わりに使用
-      null,
-    ];
-
-    // 存在するパスを探す
-    for (const filePath of possiblePaths) {
-      if (filePath && fs.existsSync(filePath)) {
-        // デバッグ情報をより詳細なレベル設定がある場合のみ表示
-        if (process.env.DEBUG === 'verbose') {
-          console.log(`[@smsshcss/vite] Found reset.css at: ${filePath}`);
-        }
-        return fs.readFileSync(filePath, 'utf-8');
-      }
-    }
-
-    // どのパスも見つからない場合は、警告を表示せずに組み込みバージョンを使用
-    // ビルトインバージョンは標準の動作なので、警告は不要
-
-    // 組み込みのリセットCSS定義
-    return `
-/* Reset CSS */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-
-body {
-  line-height: 1;
-}
-
-ol, ul {
-  list-style: none;
-}
-
-blockquote, q {
-  quotes: none;
-}
-
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-:focus {
-  outline: 0;
-}
-
-button, input, select, textarea {
-  margin: 0;
-  font-family: inherit;
-  font-size: 100%;
-  line-height: 1.15;
-}
-
-button, [type="button"], [type="reset"], [type="submit"] {
-  -webkit-appearance: button;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-`;
-  } catch (error) {
-    // 実際のエラーは引き続き報告
-    console.error('[@smsshcss/vite] Failed to load reset CSS:', error);
-    // シンプルなフォールバックのリセットCSSを返す
-    return `
-      /* Error Fallback Reset CSS */
-      *, *::before, *::after { box-sizing: border-box; }
-      body, h1, h2, h3, h4, p, ul, ol { margin: 0; padding: 0; }
-      body { line-height: 1.5; }
-    `;
-  }
-}
-
-/**
- * Process CSS content and replace @smsshcss directives
- * This is similar to how Tailwind processes its directives
- */
-async function processSmsshcssDirectives(css: string, options: SMSSHCSSOptions): Promise<string> {
-  // Generate base and utility CSS separately
-  const resetCSS = options.includeResetCSS !== false ? await loadResetCSS() : '';
-
-  // ベーススタイルにテーマオプションを適用（修正）
-  // 完全な設定オブジェクトを渡す
-  const baseCSS =
-    options.includeBaseCSS !== false
-      ? baseStylesToCss({
-          includeBaseCSS: options.includeBaseCSS,
-          includeResetCSS: options.includeResetCSS,
-          theme: options.theme || {},
-        })
-      : '';
-
-  const utilitiesCSS = await generateUtilitiesCSS(options);
-
-  // Replace directives with generated CSS
-  let result = css;
-
-  // For base directive, include both reset and base styles if enabled
-  let baseStyles = '';
-  if (options.includeResetCSS !== false) baseStyles += resetCSS;
-  if (options.includeBaseCSS !== false) baseStyles += baseCSS;
-
-  result = result.replace(/@smsshcss\s+base\s*;/g, baseStyles);
-  result = result.replace(/@smsshcss\s+utilities\s*;/g, utilitiesCSS);
-
-  // Also handle combined directive (@smsshcss)
-  result = result.replace(/@smsshcss\s*;/g, `${baseStyles}\n${utilitiesCSS}`);
-
-  return result;
-}
-
-/**
- * Generate utility CSS styles
- */
-async function generateUtilitiesCSS(options: SMSSHCSSOptions): Promise<string> {
-  try {
-    // Ensure content patterns are properly set
-    const contentPatterns = options.content || ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'];
-
-    // Pass the full options object to generateCSS with explicit content patterns
-    const css = await generateCSS({
-      ...options,
-      includeBaseCSS: false,
-      includeResetCSS: false,
-      debug: options.debug || false,
-      content: contentPatterns,
-      safelist: options.safelist || [],
-      theme: options.theme || {},
-      legacyMode: false, // Ensure legacy mode is disabled for arbitrary values
-      customCSS: options.customCSS || '',
-      outputFile: options.outputFile || 'smsshcss.css',
-    });
-
-    if (options.debug) {
-      console.log('[@smsshcss/vite] Generated utilities CSS:', {
-        size: css.length,
-        hasArbitraryClasses: css.includes('['),
-        content: contentPatterns,
-        theme: options.theme,
-        legacyMode: false,
-        customCSS: options.customCSS ? 'defined' : 'undefined',
-      });
-    }
-
-    return css;
-  } catch (error) {
-    console.error('Error generating utilities CSS:', error);
-    return '/* Error generating utilities CSS */';
-  }
-}
-
-export default function smsshcss(options: SMSSHCSSOptions = {}): Plugin {
-  // Default options
-  const defaultOptions: SMSSHCSSOptions = {
-    content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
-    outputFile: 'smsshcss.css',
-    safelist: [],
-    includeResetCSS: true,
-    includeBaseCSS: true,
-    legacyMode: false,
-    debug: false,
-    customCSS: '',
-    configFile: 'smsshcss.config.cjs', // デフォルトを.cjsに変更
-    theme: {},
+  theme?: {
+    spacing?: Record<string, string>;
+    display?: Record<string, string>;
   };
+}
 
-  // Merge options with defaults
-  let mergedOptions = { ...defaultOptions, ...options };
-  let configFileContent: SMSSHCSSOptions = {};
-  let cache = '';
-  let isBuild = false;
+// カスタム値クラスを検出する正規表現
+const customValuePattern = /\b([mp][trlbxy]?)-\[([^\]]+)\]/g;
+
+// HTMLファイルからカスタム値クラスを抽出
+function extractCustomClasses(content: string): string[] {
+  const matches = content.matchAll(customValuePattern);
+  const customClasses: string[] = [];
+  
+  for (const match of matches) {
+    const fullClass = match[0];
+    const prefix = match[1];
+    const value = match[2];
+    
+    // CSSクラスを生成
+    const cssClass = generateCustomSpacingClass(prefix, value);
+    if (cssClass) {
+      customClasses.push(cssClass);
+    }
+  }
+  
+  return customClasses;
+}
+
+// カスタムスペーシングクラスを生成
+function generateCustomSpacingClass(prefix: string, value: string): string | null {
+  const property = prefix.startsWith('m') ? 'margin' : 'padding';
+  const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
+  
+  let cssProperty = property;
+  
+  switch (direction) {
+    case 't':
+      cssProperty = `${property}-top`;
+      break;
+    case 'r':
+      cssProperty = `${property}-right`;
+      break;
+    case 'b':
+      cssProperty = `${property}-bottom`;
+      break;
+    case 'l':
+      cssProperty = `${property}-left`;
+      break;
+    case 'x':
+      return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${property}-left: ${value}; ${property}-right: ${value}; }`;
+    case 'y':
+      return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${property}-top: ${value}; ${property}-bottom: ${value}; }`;
+    case '':
+      // 全方向
+      break;
+    default:
+      return null;
+  }
+  
+  return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${cssProperty}: ${value}; }`;
+}
+
+export default function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
+  const {
+    includeReset = true,
+    includeBase = true,
+    theme = {}
+  } = options;
+
+  let customClasses: string[] = [];
 
   return {
-    name: '@smsshcss/vite',
-
-    configResolved(config): void {
-      // Determine if we're in build mode
-      isBuild = config.command === 'build';
-
-      if (mergedOptions.debug) {
-        console.log(`[@smsshcss/vite] Running in ${isBuild ? 'build' : 'development'} mode`);
-      }
-
-      // Load config file if it exists
-      if (mergedOptions.configFile) {
-        const configPath = mergedOptions.configFile || 'smsshcss.config.js';
-        const loadedConfig = loadConfigFile(configPath);
-        configFileContent = loadedConfig as unknown as SMSSHCSSOptions;
-
-        if (mergedOptions.debug) {
-          console.log('[@smsshcss/vite] Config file loaded:', {
-            path: configPath,
-            hasContent: !!configFileContent,
-            hasTheme: !!(configFileContent && configFileContent.theme),
-          });
-        }
-
-        // Final options with config file taking precedence
-        mergedOptions = { ...mergedOptions, ...configFileContent };
-
-        // 重要: テーマオプションを正しくマージする
-        if (configFileContent && configFileContent.theme) {
-          // 設定ファイルのテーマ設定を優先する
-          mergedOptions.theme = {
-            ...mergedOptions.theme,
-            ...configFileContent.theme,
-          };
-
-          if (mergedOptions.debug) {
-            console.log('[@smsshcss/vite] Theme merged:', {
-              colors: mergedOptions.theme?.colors ? 'defined' : 'undefined',
-              fontSize: mergedOptions.theme?.fontSize ? 'defined' : 'undefined',
-              theme: mergedOptions.theme,
-            });
-          }
-        }
-
-        if (mergedOptions.debug) {
-          console.log(
-            '[@smsshcss/vite] Config loaded:',
-            JSON.stringify(
-              {
-                debug: mergedOptions.debug,
-                includeBaseCSS: mergedOptions.includeBaseCSS,
-                includeResetCSS: mergedOptions.includeResetCSS,
-                hasTheme: !!mergedOptions.theme,
-              },
-              null,
-              2
-            )
-          );
-          console.log(
-            '[@smsshcss/vite] Theme settings:',
-            JSON.stringify(mergedOptions.theme, null, 2)
-          );
-        }
-      }
-    },
-
-    configureServer(server): void {
-      // Watch content files
-      if (mergedOptions.content && mergedOptions.content.length > 0) {
-        mergedOptions.content.forEach((pattern: string) => {
-          // Convert glob patterns to directories for watching
-          const baseDir = pattern.split('*')[0].replace(/\/+$/, '');
-          if (baseDir && fs.existsSync(path.resolve(process.cwd(), baseDir))) {
-            server.watcher.add(path.resolve(process.cwd(), baseDir));
-          }
-        });
-      }
-
-      // Also watch config file for changes
-      if (mergedOptions.configFile) {
-        const configPath = path.resolve(process.cwd(), mergedOptions.configFile);
-        server.watcher.add(configPath);
-      }
-
-      server.watcher.on('change', async (changedPath: string) => {
-        // Reload config if config file changes
-        if (changedPath.endsWith(mergedOptions.configFile || 'smsshcss.config.js')) {
-          const loadedConfig = loadConfigFile(mergedOptions.configFile || 'smsshcss.config.js');
-          configFileContent = loadedConfig as unknown as SMSSHCSSOptions;
-          mergedOptions = { ...defaultOptions, ...options, ...configFileContent };
-
-          // Deep merge theme options if both exist
-          if (options.theme && configFileContent.theme) {
-            mergedOptions.theme = { ...options.theme, ...configFileContent.theme };
-          }
-
-          if (mergedOptions.debug) {
-            console.log('[@smsshcss/vite] Config reloaded:', mergedOptions);
-          }
-
-          server.restart();
-          return;
-        }
-
-        // Check if changed file matches content patterns
-        const relativePath = path.relative(process.cwd(), changedPath);
-        const contentPatterns = mergedOptions.content || [
-          './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
-        ];
-
-        // Simple pattern matching (could be enhanced with micromatch or similar)
-        const shouldRegenerate = contentPatterns.some((pattern: string) => {
-          const regex = new RegExp(
-            pattern.replace(/\./g, '\\.').replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')
-          );
-          return regex.test(relativePath);
-        });
-
-        if (shouldRegenerate) {
-          if (mergedOptions.debug) {
-            console.log(
-              `[@smsshcss/vite] File changed: ${relativePath}, CSS will be regenerated on next request`
-            );
-          }
-        }
-      });
-    },
-
-    // Transform CSS files to process @smsshcss directives
-    async transform(code: string, id: string): Promise<{ code: string; map: null } | null> {
-      // Only process CSS files
-      if (!id.match(/\.(css|postcss)$/)) {
-        return null;
-      }
-
-      // Skip if the file doesn't contain @smsshcss directives
-      if (!code.includes('@smsshcss')) {
-        return null;
-      }
-
-      if (mergedOptions.debug) {
-        console.log(`[@smsshcss/vite] Processing ${id} with @smsshcss directives`);
-      }
-
+    name: 'smsshcss',
+    buildStart() {
+      // HTMLファイルをスキャンしてカスタムクラスを抽出
       try {
-        const result = await processSmsshcssDirectives(code, mergedOptions);
-
-        if (mergedOptions.debug) {
-          console.log(`[@smsshcss/vite] Processed CSS size: ${result.length} bytes`);
-        }
-
-        return {
-          code: result,
-          map: null,
-        };
-      } catch (error) {
-        console.error(`[@smsshcss/vite] Error processing ${id}:`, error);
-        return null;
-      }
-    },
-
-    // For production builds, add to CSS post-processing steps
-    async buildStart(): Promise<void> {
-      if (mergedOptions.debug) {
-        console.log(`[@smsshcss/vite] Build started`);
-      }
-
-      // Only needed for non-CSS imports of smsshcss
-      try {
-        const css = await generateCSS(mergedOptions);
-        cache = css;
-
-        if (mergedOptions.debug) {
-          console.log(`[@smsshcss/vite] Generated standalone CSS (${css.length} bytes)`);
+        const htmlPath = path.join(process.cwd(), 'index.html');
+        if (fs.existsSync(htmlPath)) {
+          const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+          customClasses = extractCustomClasses(htmlContent);
         }
       } catch (error) {
-        this.error(
-          `Failed to generate SMSSHCSS: ${error instanceof Error ? error.message : String(error)}`
-        );
+        console.warn('Failed to scan HTML for custom classes:', error);
       }
     },
+    transform(code: string, id: string) {
+      if (!id.endsWith('.css')) return null;
 
-    // Support direct import of smsshcss.css
-    resolveId(id: string): string | null {
-      const outputFile = mergedOptions.outputFile || 'smsshcss.css';
-      if (id === `/${outputFile}` || id === outputFile) {
-        return `\0${outputFile}`;
-      }
-      return null;
-    },
+      let css = code;
 
-    // Provide generated CSS for direct imports
-    load(id: string): string | null {
-      const outputFile = mergedOptions.outputFile || 'smsshcss.css';
-      if (id === `\0${outputFile}`) {
-        return cache;
+      // SmsshCSSのユーティリティクラスを生成
+      const spacingClasses = generateAllSpacingClasses(theme.spacing);
+      const displayClasses = generateDisplayClasses(theme.display);
+      const utilityClasses = `${spacingClasses}\n${displayClasses}`;
+
+      // リセットCSSを追加
+      if (includeReset) {
+        css = applyResetCss(css);
       }
-      return null;
+
+      // ベースCSSを追加
+      if (includeBase) {
+        css = applyBaseCss(css);
+      }
+
+      // ユーティリティクラスを追加
+      css = `${css}\n\n/* SmsshCSS Utility Classes */\n${utilityClasses}`;
+      
+      // カスタムクラスを追加
+      if (customClasses.length > 0) {
+        css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
+      }
+
+      return {
+        code: css,
+        map: null,
+      };
     },
   };
-}
-
-// Export types
-export type { SMSSHCSSOptions, ThemeOptions };
+} 

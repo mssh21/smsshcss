@@ -1,141 +1,184 @@
-/**
- * Export all utilities
- */
-import { getResetCssPath, applyResetCss } from './reset';
-import {
-  margin,
-  marginBlock,
-  marginBlockStart,
-  marginBlockEnd,
-  marginInline,
-  marginInlineStart,
-  marginInlineEnd,
-  arbitraryMargin,
-} from './margin';
-import {
-  padding,
-  paddingBlock,
-  paddingBlockStart,
-  paddingBlockEnd,
-  paddingInline,
-  paddingInlineStart,
-  paddingInlineEnd,
-  arbitraryPadding,
-} from './padding';
-import { gap, rowGap, columnGap, arbitraryGap } from './gap';
-import { display } from './display';
-import { flex, flexDirection, flexWrap, justifyContent, alignItems, alignSelf } from './flexbox';
-import { gridTemplateColumns, gridTemplateRows } from './grid';
-import { position } from './position';
-import { color } from './color';
-import { backgroundColor, arbitraryBackgroundColor } from './backgroundColor';
-import { textAlign } from './textAlign';
-import { fontSize } from './fontSize';
-import { fontWeight } from './fontWeight';
-import { borderColor, arbitraryBorderColor } from './borderColor';
-import { borderRadius, arbitraryBorderRadius } from './borderRadius';
-import { boxShadow } from './boxShadow';
-import { createUtilityClass, createUtilityClasses, mergeUtilityClasses } from './helpers';
-import { applyBaseCSS, baseStyles, baseStylesToCss } from './base';
+import { generateDisplayClasses } from './display';
+import { generateAllSpacingClasses } from './spacing';
 
-import { UtilityDefinition, UtilityCategory } from '../types';
+// Reset CSS の内容を直接定義
+const RESET_CSS = `/* Reset CSS */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-// Import all utility modules
-const utilityModules = {
-  margin,
-  marginBlock,
-  marginBlockStart,
-  marginBlockEnd,
-  marginInline,
-  marginInlineStart,
-  marginInlineEnd,
-  arbitraryMargin,
-  padding,
-  paddingBlock,
-  paddingBlockStart,
-  paddingBlockEnd,
-  paddingInline,
-  paddingInlineStart,
-  paddingInlineEnd,
-  arbitraryPadding,
-  gap,
-  rowGap,
-  columnGap,
-  arbitraryGap,
-  display,
-  flex,
-  flexDirection,
-  flexWrap,
-  justifyContent,
-  alignItems,
-  alignSelf,
-  gridTemplateColumns,
-  gridTemplateRows,
-  position,
-  textAlign,
-  fontSize,
-  fontWeight,
-  color,
-  backgroundColor,
-  arbitraryBackgroundColor,
-  borderColor,
-  arbitraryBorderColor,
-  borderRadius,
-  arbitraryBorderRadius,
-  boxShadow,
-};
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
 
-// Utility name mapping (if different from import variable name)
-const utilityNameMap: Record<string, string> = {
-  marginBlock: 'margin-block',
-  marginBlockStart: 'margin-block-start',
-  marginBlockEnd: 'margin-block-end',
-  marginInline: 'margin-inline',
-  marginInlineStart: 'margin-inline-start',
-  marginInlineEnd: 'margin-inline-end',
-  paddingBlock: 'padding-block',
-  paddingBlockStart: 'padding-block-start',
-  paddingBlockEnd: 'padding-block-end',
-  paddingInline: 'padding-inline',
-  paddingInlineStart: 'padding-inline-start',
-  paddingInlineEnd: 'padding-inline-end',
-  rowGap: 'row-gap',
-  columnGap: 'column-gap',
-  flexDirection: 'flex-direction',
-  flexWrap: 'flex-wrap',
-  justifyContent: 'justify-content',
-  alignItems: 'align-items',
-  alignSelf: 'align-self',
-  gridTemplateColumns: 'grid-template-columns',
-  gridTemplateRows: 'grid-template-rows',
-  textAlign: 'text-align',
-  fontSize: 'font-size',
-  fontWeight: 'font-weight',
-  color: 'color',
-  backgroundColor: 'background-color',
-  borderColor: 'border-color',
-  borderRadius: 'border-radius',
-  boxShadow: 'box-shadow',
-};
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+}
 
-// Export utility definitions - dynamically built
-export const utilities: UtilityDefinition = Object.entries(utilityModules).reduce(
-  (acc, [key, value]) => {
-    const cssPropertyName = utilityNameMap[key] || key;
-    acc[cssPropertyName] = value as UtilityCategory;
-    return acc;
-  },
-  {} as UtilityDefinition
-);
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
 
-// Export utility helper functions
-export {
-  createUtilityClass,
-  createUtilityClasses,
-  mergeUtilityClasses,
-  getResetCssPath,
-  applyResetCss,
-  applyBaseCSS,
-  baseStyles,
-  baseStylesToCss,
-};
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}`;
+
+// Base CSS の内容を直接定義
+const BASE_CSS = `/* Base CSS */
+:root {
+  --color-primary: #007bff;
+  --color-secondary: #6c757d;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #17a2b8;
+  --color-light: #f8f9fa;
+  --color-dark: #343a40;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-dark);
+  background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+code {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875em;
+  color: var(--color-danger);
+  background-color: var(--color-light);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+}`;
+
+// CSSファイルの内容を読み込む
+export function getResetCss(): string {
+  return RESET_CSS;
+}
+
+export function getBaseCss(): string {
+  return BASE_CSS;
+}
+
+// ユーティリティクラスの生成
+export function createUtilityClass(name: string, value: string): string {
+  return `.${name} { ${value} }`;
+}
+
+export function createUtilityClasses(classes: Record<string, string>): string {
+  return Object.entries(classes)
+    .map(([name, value]) => createUtilityClass(name, value))
+    .join('\n');
+}
+
+// ユーティリティクラスのマージ
+export function mergeUtilityClasses(...classes: string[]): string {
+  return classes.join('\n');
+}
+
+// リセットCSSの適用
+export function applyResetCss(css: string): string {
+  return `${getResetCss()}\n${css}`;
+}
+
+// ベースCSSの適用
+export function applyBaseCss(css: string): string {
+  return `${getBaseCss()}\n${css}`;
+}
+
+// ディスプレイとスペーシングのユーティリティをエクスポート
+export { generateDisplayClasses, generateAllSpacingClasses }; 

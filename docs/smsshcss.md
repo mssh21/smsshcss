@@ -15,10 +15,16 @@ SmsshCSSは、ユーティリティクラスの大量記述を避け、コンポ
 
 ```bash
 # 古いパッケージをアンインストール
+## npm
 npm uninstall smsshcss-postcss smsshcss-vite
+## yarn
+yarn remove smsshcss-postcss smsshcss-vite
 
 # 新しいパッケージをインストール
+## npm
 npm install @smsshcss/postcss @smsshcss/vite
+## yarn
+yarn add @smsshcss/postcss @smsshcss/vite
 ```
 
 また、設定ファイル内の参照も更新してください：
@@ -170,7 +176,7 @@ module.exports = {
 
 #### Viteプラグインとして使用する場合（2つのアプローチ）
 
-**アプローチ1: 共有テーマモジュールを使用（推奨）**
+共有テーマモジュールを使用（推奨）
 
 ```js
 // vite.config.js
@@ -187,48 +193,6 @@ export default defineConfig({
 });
 ```
 
-**アプローチ2: 設定ファイルを使用**
-
-現時点ではCJS形式の設定ファイルの読み込みにいくつかの制限があります。ESM形式の設定ファイルをご使用ください。
-
-```js
-// vite.config.js
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      configFile: 'smsshcss.config.js', // ESM形式の設定ファイルパス
-    }),
-  ],
-});
-```
-
-**アプローチ3: 直接テーマを定義**
-
-```js
-// vite.config.js
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-
-const theme = {
-  colors: {
-    primary: '#3366FF',
-    // その他のカラー設定...
-  },
-  // その他のテーマ設定...
-};
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-      theme: theme,
-    }),
-  ],
-});
-```
 
 ### 4. CSSディレクティブの使用
 
@@ -285,60 +249,3 @@ SmsshCSSは、Just-In-Time方式でCSSを生成します：
 | `customCSS`       | `string`   | `''`                                             | 末尾に追加するカスタムCSS                              |
 | `configFile`      | `string`   | `'smsshcss.config.js'`                           | 設定ファイルのパス（プロジェクトルートからの相対パス） |
 | `theme`           | `object`   | `{}`                                             | カラー、スペーシングなどのテーマカスタマイズオプション |
-
-## 🐞 デバッグモード
-
-開発中により詳細なログを確認するには：
-
-```js
-// 標準デバッグモード
-process.env.DEBUG = '1';
-
-// 詳細デバッグモード（ファイルパス情報など含む）
-process.env.DEBUG = 'verbose';
-```
-
-## 💡 複数プロジェクト間でのテーマ共有のベストプラクティス
-
-複数のプロジェクト（ViteプロジェクトとPostCSSプロジェクトなど）間で一貫したテーマを共有するには、共有テーマモジュールの作成をお勧めします：
-
-```js
-// shared-theme.js
-export const sharedTheme = {
-  colors: {
-    primary: '#3366FF',
-    // 他のカラー設定...
-  },
-  // 他のテーマ設定...
-};
-```
-
-そして、各プラグインの設定で直接このモジュールを参照します：
-
-```js
-// postcss.config.js
-const { sharedTheme } = require('./path/to/shared-theme.js');
-
-module.exports = {
-  plugins: [
-    require('@smsshcss/postcss')({
-      theme: sharedTheme
-    })
-  ]
-};
-
-// vite.config.js
-import { defineConfig } from 'vite';
-import smsshcss from '@smsshcss/vite';
-import { sharedTheme } from './path/to/shared-theme.js';
-
-export default defineConfig({
-  plugins: [
-    smsshcss({
-      theme: sharedTheme
-    })
-  ]
-});
-```
-
-この方法により、すべてのプロジェクトで一貫したスタイリングを確保しながら、特定のプロジェクト固有の設定も柔軟に追加できます.
