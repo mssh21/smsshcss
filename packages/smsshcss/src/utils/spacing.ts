@@ -38,8 +38,135 @@ const directionMap: Record<SpacingDirection, string> = {
   y: '-top',
 };
 
-// arbitraryValuePatternを削除または使用する
-// const arbitraryValuePattern = /\[([^\]]+)\]/g;
+// カスタム値クラスを検出する正規表現
+const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
+
+// カスタムスペーシングクラスを生成
+function generateCustomSpacingClass(prefix: string, value: string): string | null {
+  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  // CSS値内の特殊文字をエスケープ（クラス名用）
+  const escapeValue = (val: string): string => {
+    // CSS数学関数の場合は特別処理（カンマもエスケープする）
+    if (cssMathFunctions.test(val)) {
+      return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+    }
+    // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+    if (val.includes('var(--')) {
+      return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+    }
+    // 通常の値の場合は-も含めてエスケープ
+    return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+  };
+
+  // CSS関数内の値を再帰的にフォーマットする関数
+  const formatCSSFunctionValue = (input: string): string => {
+    // CSS関数を再帰的に処理（基本的な関数のみ）
+    return input.replace(
+      /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
+      (match, funcName, inner) => {
+        // 内部の関数を再帰的に処理
+        const processedInner = formatCSSFunctionValue(inner);
+
+        // 演算子とカンマの周りにスペースを適切に配置
+        const formattedInner = processedInner
+          // まず全てのスペースを正規化
+          .replace(/\s+/g, ' ')
+          .trim()
+          // カンマの処理（カンマの後にスペース、前のスペースは削除）
+          .replace(/\s*,\s*/g, ', ')
+          // 演算子の処理（前後にスペース）
+          .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
+            // マイナス記号が負の値かどうかを判定
+            if (operator === '-') {
+              // 現在の位置より前の文字を取得
+              const beforeMatch = str.substring(0, offset);
+              // 直前の非空白文字を取得
+              const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
+              const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
+
+              // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+              if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
+                return '-';
+              }
+            }
+            return ` ${operator} `;
+          });
+
+        return `${funcName}(${formattedInner})`;
+      }
+    );
+  };
+
+  // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+  // gap プロパティの処理
+  if (prefix === 'gap') {
+    return `.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`;
+  }
+
+  // gap-x (column-gap) プロパティの処理
+  if (prefix === 'gap-x') {
+    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`;
+  }
+
+  // gap-y (row-gap) プロパティの処理
+  if (prefix === 'gap-y') {
+    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`;
+  }
+
+  const property = prefix.startsWith('m') ? 'margin' : 'padding';
+  const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
+
+  let cssProperty = property;
+
+  switch (direction) {
+    case 't':
+      cssProperty = `${property}-top`;
+      break;
+    case 'r':
+      cssProperty = `${property}-right`;
+      break;
+    case 'b':
+      cssProperty = `${property}-bottom`;
+      break;
+    case 'l':
+      cssProperty = `${property}-left`;
+      break;
+    case 'x':
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`;
+    case 'y':
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`;
+    case '':
+      // 全方向
+      break;
+    default:
+      return null;
+  }
+
+  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${originalValue}; }`;
+}
+
+// HTMLファイルからカスタム値クラスを抽出
+export function extractCustomClasses(content: string): string[] {
+  const matches = content.matchAll(customValuePattern);
+  const customClasses: string[] = [];
+
+  for (const match of matches) {
+    const prefix = match[1];
+    const value = match[2];
+
+    // CSSクラスを生成
+    const cssClass = generateCustomSpacingClass(prefix, value);
+    if (cssClass) {
+      customClasses.push(cssClass);
+    }
+  }
+
+  return customClasses;
+}
 
 export function generateSpacingClasses(
   config: SpacingConfig = defaultSpacing,

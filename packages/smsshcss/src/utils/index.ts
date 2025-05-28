@@ -1,5 +1,5 @@
 import { generateDisplayClasses } from './display';
-import { generateAllSpacingClasses } from './spacing';
+import { generateAllSpacingClasses, extractCustomClasses } from './spacing';
 
 // Reset CSS の内容を直接定義
 const RESET_CSS = `/* Reset CSS */
@@ -181,4 +181,4 @@ export function applyBaseCss(css: string): string {
 }
 
 // ディスプレイとスペーシングのユーティリティをエクスポート
-export { generateDisplayClasses, generateAllSpacingClasses };
+export { generateDisplayClasses, generateAllSpacingClasses, extractCustomClasses };

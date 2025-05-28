@@ -59,14 +59,42 @@
 
 ```bash
 # パッチバージョンアップ (2.0.0 → 2.0.1)
-yarn version patch
+# 両方のパッケージのバージョンを同時に更新
+yarn workspace smsshcss version patch
+yarn workspace @smsshcss/vite version patch
 
 # マイナーバージョンアップ (2.0.0 → 2.1.0)
-yarn version minor
+yarn workspace smsshcss version minor
+yarn workspace @smsshcss/vite version minor
 
 # メジャーバージョンアップ (2.0.0 → 3.0.0)
-yarn version major
+yarn workspace smsshcss version major
+yarn workspace @smsshcss/vite version major
+
+# または、一括でバージョン更新したい場合（手動でpackage.jsonを編集）
+# packages/smsshcss/package.json と packages/@smsshcss/vite/package.json の version フィールドを直接編集
+
+# 一括でバージョン更新するスクリプト例（bash）
+# patch版のバージョンアップを両方のパッケージに適用
+function bump_patch() {
+  yarn workspace smsshcss version patch
+  yarn workspace @smsshcss/vite version patch
+}
+
+# minor版のバージョンアップを両方のパッケージに適用
+function bump_minor() {
+  yarn workspace smsshcss version minor
+  yarn workspace @smsshcss/vite version minor
+}
+
+# major版のバージョンアップを両方のパッケージに適用
+function bump_major() {
+  yarn workspace smsshcss version major
+  yarn workspace @smsshcss/vite version major
+}
 ```
+
+**注意**: このプロジェクトはmonorepoなので、`yarn version` ではなく `yarn workspace <パッケージ名> version` を使用してください。
 
 ### 3. CI をスキップしたい場合
 

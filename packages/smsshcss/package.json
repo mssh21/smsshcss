@@ -1,6 +1,6 @@
 {
   "name": "smsshcss",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A utility-first CSS framework for rapid UI development",
   "license": "MIT",
   "main": "dist/index.js",
@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",

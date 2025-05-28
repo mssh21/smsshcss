@@ -74,14 +74,14 @@ body {
 }
 
 /* CSS変数のデモ用 */
-.css-var-demo {
-  --custom-gap: 30px;
+.css-var-gap-30 {
+  --custom-gap-30: 30px;
 }
 
-.css-var-padding {
-  --custom-padding: 20px;
+.css-var-padding-20 {
+  --custom-padding-20: 20px;
 }
 
 .css-var-padding-24 {
-  --custom-padding: 24px;
+  --custom-padding-24: 24px;
 }

@@ -63,8 +63,8 @@
             <div class="test-label mt-[30px]">パーセンテージ・CSS変数</div>
             <div class="flex gap-[20px] flex-wrap">
               <div class="demo-box p-[5%]">p-[5%]</div>
-              <div class="demo-box css-var-padding-24 p-[var(--custom-padding)]">
-                p-[var(--custom-padding)]
+              <div class="demo-box css-var-padding-24 p-[var(--custom-padding-24)]">
+                p-[var(--custom-padding-24)]
               </div>
             </div>
           </div>
@@ -228,10 +228,54 @@
             </div>
 
             <div class="test-label">CSS変数・パーセンテージ</div>
-            <div class="flex css-var-demo gap-[var(--custom-gap)] flex-wrap">
-              <div class="demo-box css-var-padding p-[var(--custom-padding)]">CSS変数テスト</div>
+            <div class="flex css-var-gap-30 gap-[var(--custom-gap-30)] flex-wrap">
+              <div class="demo-box css-var-padding-20 p-[var(--custom-padding-20)]">
+                CSS変数テスト
+              </div>
               <div class="demo-box p-[10%]">パーセンテージ</div>
-              <div class="demo-box p-[calc(1rem + 10px)]">calc関数</div>
+              <div class="demo-box p-[25px]">固定値</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. 基本カスタム値テスト -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">9. CSS関数テスト</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本CSS関数</div>
+            <div class="flex gap-[20px] flex-wrap mb-[25px]">
+              <div class="demo-box p-[calc(1rem+10px)]">calc(1rem + 10px)</div>
+              <div class="demo-box p-[min(2rem,5vw)]">min(2rem, 5vw)</div>
+              <div class="demo-box p-[max(1rem,20px)]">max(1rem, 20px)</div>
+              <div class="demo-box p-[clamp(0.5rem,2vw,2rem)]">clamp(0.5rem, 2vw, 2rem)</div>
+            </div>
+
+            <div class="test-label">Gap with CSS関数</div>
+            <div class="flex gap-[min(1rem,3vw)] mb-[20px]">
+              <div class="demo-box p-sm">gap-[min(1rem, 3vw)]</div>
+              <div class="demo-box p-sm">レスポンシブギャップ</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+            <div
+              class="grid gap-x-[max(1rem,2vw)] gap-y-[clamp(0.5rem,1vw,1.5rem)]"
+              style="grid-template-columns: repeat(3, 1fr)"
+            >
+              <div class="demo-box p-xs">gap-x-[max(1rem, 2vw)]</div>
+              <div class="demo-box p-xs">gap-y-[clamp(0.5rem, 1vw, 1.5rem)]</div>
+              <div class="demo-box p-xs">Grid Item 3</div>
+              <div class="demo-box p-xs">Grid Item 4</div>
+              <div class="demo-box p-xs">Grid Item 5</div>
+              <div class="demo-box p-xs">Grid Item 6</div>
+            </div>
+
+            <div class="test-label mt-[30px]">基本カスタム値</div>
+            <div class="flex gap-[20px] flex-wrap">
+              <div class="demo-box p-[1.5rem]">p-[1.5rem]</div>
+              <div class="demo-box p-[2.5rem]">p-[2.5rem]</div>
+              <div class="demo-box p-[30px]">p-[30px]</div>
+              <div class="demo-box css-var-padding-24 p-[var(--custom-padding-24)]">
+                var(--custom-padding-24)
+              </div>
             </div>
           </div>
         </section>

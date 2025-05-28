@@ -1,42 +1,88 @@
 /**
  * smsshcss main entry point
  */
-import { SmsshCSSConfig } from './core/types';
+import { SmsshCSSConfig, PurgeReport } from './core/types';
 import { CSSGenerator } from './core/generator';
 
 // Export types
-export type { SmsshCSSConfig };
+export type { SmsshCSSConfig, PurgeReport };
 
 /**
- * Generate CSS based on configuration
+ * Generate CSS based on configuration (async version with purging support)
  * @param config Configuration options
  * @returns Generated CSS string
  */
-export function generateCSS(config: SmsshCSSConfig): string {
+export async function generateCSS(config: SmsshCSSConfig): Promise<string> {
   const generator = new CSSGenerator(config);
   return generator.generateFullCSS();
 }
 
 /**
- * Initialize SmsshCSS with default configuration
+ * Generate CSS based on configuration (sync version for backward compatibility)
+ * @param config Configuration options
+ * @returns Generated CSS string
+ */
+export function generateCSSSync(config: SmsshCSSConfig): string {
+  const generator = new CSSGenerator(config);
+  return generator.generateFullCSSSync();
+}
+
+/**
+ * Generate purge report without CSS generation
+ * @param config Configuration options
+ * @returns Purge report or null if purging is disabled
+ */
+export async function generatePurgeReport(config: SmsshCSSConfig): Promise<PurgeReport | null> {
+  const generator = new CSSGenerator(config);
+  return generator.generatePurgeReport();
+}
+
+/**
+ * Initialize SmsshCSS with default configuration (async version)
  * @param config Optional configuration to override defaults
  * @returns Generated CSS string
  */
-export function init(
+export async function init(
+  config: SmsshCSSConfig = {
+    content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
+    includeResetCSS: true,
+    includeBaseCSS: true,
+    purge: {
+      enabled: true,
+      content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
+    },
+  }
+): Promise<string> {
+  return generateCSS(config);
+}
+
+/**
+ * Initialize SmsshCSS with default configuration (sync version)
+ * @param config Optional configuration to override defaults
+ * @returns Generated CSS string
+ */
+export function initSync(
   config: SmsshCSSConfig = {
     content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
     includeResetCSS: true,
     includeBaseCSS: true,
   }
 ): string {
-  return generateCSS(config);
+  return generateCSSSync(config);
 }
 
 // Default export
 export default {
   generateCSS,
+  generateCSSSync,
+  generatePurgeReport,
   init,
+  initSync,
 };
 
 export * from './core/types';
 export * from './core/generator';
+export * from './core/purger';
+
+// Export utility functions
+export { extractCustomClasses } from './utils/spacing';
