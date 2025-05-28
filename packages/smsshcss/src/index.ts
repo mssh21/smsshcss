@@ -83,3 +83,6 @@ export default {
 export * from './core/types';
 export * from './core/generator';
 export * from './core/purger';
+
+// Export utility functions
+export { extractCustomClasses } from './utils/spacing';

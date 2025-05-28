@@ -25,6 +25,7 @@ vi.mock('smsshcss', () => ({
     css += '\n.mt-lg { margin-top: 2rem; }';
     css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
     css += '\n.p-md { padding: 1.25rem; }';
+    css += '\n.p-lg { padding: 2rem; }';
     css += '\n.pt-lg { padding-top: 2rem; }';
     css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
     css += '\n.gap-md { gap: 1.25rem; }';
@@ -34,7 +35,6 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
-    css += '\n.p-lg { padding: 2rem; }'; // テストで期待されているクラスを追加
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -74,6 +74,7 @@ vi.mock('smsshcss', () => ({
     css += '\n.mt-lg { margin-top: 2rem; }';
     css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
     css += '\n.p-md { padding: 1.25rem; }';
+    css += '\n.p-lg { padding: 2rem; }';
     css += '\n.pt-lg { padding-top: 2rem; }';
     css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
     css += '\n.gap-md { gap: 1.25rem; }';
@@ -83,7 +84,6 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
-    css += '\n.p-lg { padding: 2rem; }'; // テストで期待されているクラスを追加
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -109,6 +109,153 @@ vi.mock('smsshcss', () => ({
     usedClasses: 50,
     purgedClasses: 50,
     buildTime: 100,
+  }),
+  extractCustomClasses: vi.fn().mockImplementation((content) => {
+    // カスタム値クラスを検出する正規表現
+    const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
+    const matches = content.matchAll(customValuePattern);
+    const customClasses: string[] = [];
+
+    // CSS数学関数を検出する正規表現
+    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+    // CSS値内の特殊文字をエスケープ（クラス名用）
+    const escapeValue = (val: string): string => {
+      // CSS数学関数の場合は特別処理（カンマもエスケープする）
+      if (cssMathFunctions.test(val)) {
+        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+      }
+      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+      if (val.includes('var(--')) {
+        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+      }
+      // 通常の値の場合は-も含めてエスケープ
+      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+    };
+
+    // CSS関数内の値を再帰的にフォーマットする関数
+    const formatCSSFunctionValue = (input: string): string => {
+      // CSS関数を再帰的に処理（基本的な関数のみ）
+      return input.replace(
+        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
+        (match, funcName, inner) => {
+          // 内部の関数を再帰的に処理
+          const processedInner = formatCSSFunctionValue(inner);
+
+          // 演算子とカンマの周りにスペースを適切に配置
+          const formattedInner = processedInner
+            // まず全てのスペースを正規化
+            .replace(/\s+/g, ' ')
+            .trim()
+            // カンマの処理（カンマの後にスペース、前のスペースは削除）
+            .replace(/\s*,\s*/g, ', ')
+            // 演算子の処理（前後にスペース）
+            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
+              // マイナス記号が負の値かどうかを判定
+              if (operator === '-') {
+                // 現在の位置より前の文字を取得
+                const beforeMatch = str.substring(0, offset);
+                // 直前の非空白文字を取得
+                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
+                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
+
+                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
+                  return '-';
+                }
+              }
+              return ` ${operator} `;
+            });
+
+          return `${funcName}(${formattedInner})`;
+        }
+      );
+    };
+
+    for (const match of matches) {
+      const prefix = match[1];
+      const value = match[2];
+
+      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+      // gap プロパティの処理
+      if (prefix === 'gap') {
+        customClasses.push(`.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`);
+      } else if (prefix === 'gap-x') {
+        customClasses.push(`.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`);
+      } else if (prefix === 'gap-y') {
+        customClasses.push(`.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`);
+      } else if (prefix.startsWith('m')) {
+        const property = 'margin';
+        const direction = prefix.slice(1);
+
+        if (direction === 'x') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
+          );
+        } else if (direction === 'y') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
+          );
+        } else if (direction === 't') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
+          );
+        } else if (direction === 'r') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
+          );
+        } else if (direction === 'b') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
+          );
+        } else if (direction === 'l') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
+          );
+        } else {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
+          );
+        }
+      } else if (prefix.startsWith('p')) {
+        const property = 'padding';
+        const direction = prefix.slice(1);
+
+        if (direction === 'x') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
+          );
+        } else if (direction === 'y') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
+          );
+        } else if (direction === 't') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
+          );
+        } else if (direction === 'r') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
+          );
+        } else if (direction === 'b') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
+          );
+        } else if (direction === 'l') {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
+          );
+        } else {
+          customClasses.push(
+            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
+          );
+        }
+      }
+    }
+
+    return customClasses;
   }),
 }));
 

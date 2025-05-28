@@ -43,13 +43,16 @@ const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
 
 // カスタムスペーシングクラスを生成
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
+  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
   // CSS値内の特殊文字をエスケープ（クラス名用）
   const escapeValue = (val: string): string => {
-    // calc関数の場合は特別処理 - 既にスペースは除去済み
-    if (val.includes('calc(')) {
-      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+    // CSS数学関数の場合は特別処理（カンマもエスケープする）
+    if (cssMathFunctions.test(val)) {
+      return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
     }
-    // CSS変数（var(--name)）の場合は特別処理
+    // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
     if (val.includes('var(--')) {
       return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
     }
@@ -57,16 +60,47 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
     return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
   };
 
-  // 元の値を復元（CSS値用）- calc関数の場合はスペースを復元
-  const originalValue = value.includes('calc(')
-    ? value.replace(/calc\(([^)]+)\)/, (match, inner) => {
-        // calc関数内の演算子の前後にスペースを追加
-        return `calc(${inner
-          .replace(/([+\-*/])/g, ' $1 ')
+  // CSS関数内の値を再帰的にフォーマットする関数
+  const formatCSSFunctionValue = (input: string): string => {
+    // CSS関数を再帰的に処理（基本的な関数のみ）
+    return input.replace(
+      /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
+      (match, funcName, inner) => {
+        // 内部の関数を再帰的に処理
+        const processedInner = formatCSSFunctionValue(inner);
+
+        // 演算子とカンマの周りにスペースを適切に配置
+        const formattedInner = processedInner
+          // まず全てのスペースを正規化
           .replace(/\s+/g, ' ')
-          .trim()})`;
-      })
-    : value;
+          .trim()
+          // カンマの処理（カンマの後にスペース、前のスペースは削除）
+          .replace(/\s*,\s*/g, ', ')
+          // 演算子の処理（前後にスペース）
+          .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
+            // マイナス記号が負の値かどうかを判定
+            if (operator === '-') {
+              // 現在の位置より前の文字を取得
+              const beforeMatch = str.substring(0, offset);
+              // 直前の非空白文字を取得
+              const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
+              const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
+
+              // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+              if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
+                return '-';
+              }
+            }
+            return ` ${operator} `;
+          });
+
+        return `${funcName}(${formattedInner})`;
+      }
+    );
+  };
+
+  // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
 
   // gap プロパティの処理
   if (prefix === 'gap') {

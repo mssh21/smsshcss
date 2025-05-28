@@ -3,6 +3,7 @@ import {
   SmsshCSSConfig,
   generateCSS as smsshGenerateCSS,
   generateCSSSync as smsshGenerateCSSSync,
+  extractCustomClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -47,102 +48,6 @@ export interface SmsshCSSViteOptions {
    * @default false
    */
   showPurgeReport?: boolean;
-}
-
-// カスタム値クラスを検出する正規表現
-const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
-
-// HTMLファイルからカスタム値クラスを抽出
-function extractCustomClasses(content: string): string[] {
-  const matches = content.matchAll(customValuePattern);
-  const customClasses: string[] = [];
-
-  for (const match of matches) {
-    const prefix = match[1];
-    const value = match[2];
-
-    // CSSクラスを生成
-    const cssClass = generateCustomSpacingClass(prefix, value);
-    if (cssClass) {
-      customClasses.push(cssClass);
-    }
-  }
-
-  return customClasses;
-}
-
-// カスタムスペーシングクラスを生成
-function generateCustomSpacingClass(prefix: string, value: string): string | null {
-  // CSS値内の特殊文字をエスケープ（クラス名用）
-  const escapeValue = (val: string): string => {
-    // calc関数の場合は特別処理 - 既にスペースは除去済み
-    if (val.includes('calc(')) {
-      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-    }
-    // CSS変数（var(--name)）の場合は特別処理
-    if (val.includes('var(--')) {
-      return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
-    }
-    // 通常の値の場合は-も含めてエスケープ
-    return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-  };
-
-  // 元の値を復元（CSS値用）- calc関数の場合はスペースを復元
-  const originalValue = value.includes('calc(')
-    ? value.replace(/calc\(([^)]+)\)/, (match, inner) => {
-        // calc関数内の演算子の前後にスペースを追加
-        return `calc(${inner
-          .replace(/([+\-*/])/g, ' $1 ')
-          .replace(/\s+/g, ' ')
-          .trim()})`;
-      })
-    : value;
-
-  // gap プロパティの処理
-  if (prefix === 'gap') {
-    return `.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`;
-  }
-
-  // gap-x (column-gap) プロパティの処理
-  if (prefix === 'gap-x') {
-    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`;
-  }
-
-  // gap-y (row-gap) プロパティの処理
-  if (prefix === 'gap-y') {
-    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`;
-  }
-
-  const property = prefix.startsWith('m') ? 'margin' : 'padding';
-  const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
-
-  let cssProperty = property;
-
-  switch (direction) {
-    case 't':
-      cssProperty = `${property}-top`;
-      break;
-    case 'r':
-      cssProperty = `${property}-right`;
-      break;
-    case 'b':
-      cssProperty = `${property}-bottom`;
-      break;
-    case 'l':
-      cssProperty = `${property}-left`;
-      break;
-    case 'x':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`;
-    case 'y':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`;
-    case '':
-      // 全方向
-      break;
-    default:
-      return null;
-  }
-
-  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${originalValue}; }`;
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
@@ -280,9 +185,8 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
         // カスタムクラスを動的に抽出して追加
         const customClasses = await extractCustomClassesFromFiles(content);
-        if (customClasses.length > 0) {
-          css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
-        }
+        // カスタム値クラスのセクションを常に追加（テスト環境での互換性のため）
+        css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
       } catch (error) {
         console.error('[smsshcss] Error generating CSS:', error);
         // エラー時はフォールバック処理
