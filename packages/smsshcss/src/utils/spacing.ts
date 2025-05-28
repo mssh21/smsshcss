@@ -95,18 +95,25 @@ export function generateGapClasses(config: SpacingConfig = defaultSpacing): stri
   // Generate gap classes
   Object.entries(config).forEach(([size, value]) => {
     classes.push(`.gap-${size} { gap: ${value}; }`);
+    classes.push(`.gap-x-${size} { column-gap: ${value}; }`);
+    classes.push(`.gap-y-${size} { row-gap: ${value}; }`);
   });
 
   // 任意の値のgapクラスを追加
   classes.push(`
-/* Arbitrary gap value */
+/* Arbitrary gap values */
 .gap-\\[\\$\\{value\\}\\] { gap: var(--value); }
+.gap-x-\\[\\$\\{value\\}\\] { column-gap: var(--value); }
+.gap-y-\\[\\$\\{value\\}\\] { row-gap: var(--value); }
 `);
 
   return classes.join('\n');
 }
 
-export function generateAllSpacingClasses(config: SpacingConfig = defaultSpacing): string {
+export function generateAllSpacingClasses(customConfig?: SpacingConfig): string {
+  // デフォルトテーマとカスタムテーマをマージ
+  const config = customConfig ? { ...defaultSpacing, ...customConfig } : defaultSpacing;
+
   return [
     generateSpacingClasses(config, 'margin'),
     generateSpacingClasses(config, 'padding'),

@@ -3,57 +3,245 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SmsshCSS Vite Plugin Demo</title>
+    <title>SmsshCSS Vite Plugin - 包括的テスト</title>
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <h1 class="title">SmsshCSS Vite Plugin Demo</h1>
-        <p class="subtitle">フィボナッチ数列ベースのユーティリティクラス使用例</p>
+    <div class="p-[40px]">
+      <header class="mb-[60px]">
+        <h1 class="main-title m-[0px] mb-[20px]">SmsshCSS Vite Plugin</h1>
+        <p class="main-subtitle m-[0px]">包括的機能テスト - フィボナッチ数列ベース + カスタム値</p>
       </header>
 
-      <main class="main">
-        <section class="section">
-          <h2 class="section-title mb-none">Spacing ユーティリティ（フィボナッチ数列）</h2>
-          <div class="spacing-demo">
-            <div class="box m-md p-md">マージンとパディング (md = 20px)</div>
-            <div class="box mt-lg mb-md">上下マージン (lg = 32px, md = 20px)</div>
-            <div class="box mx-xl py-md">水平マージンと垂直パディング (xl = 52px, md = 20px)</div>
+      <main class="grid gap-[40px]">
+        <!-- 1. 基本的なSpacingクラス（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">1. 基本Spacingクラス（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">マージン・パディングの基本サイズ</div>
+            <div class="flex gap-[20px] flex-wrap">
+              <div class="demo-box p-2xs">p-2xs (5px)</div>
+              <div class="demo-box p-xs">p-xs (8px)</div>
+              <div class="demo-box p-sm">p-sm (12px)</div>
+              <div class="demo-box p-md">p-md (20px)</div>
+              <div class="demo-box p-lg">p-lg (32px)</div>
+              <div class="demo-box p-xl">p-xl (52px)</div>
+            </div>
+
+            <div class="test-label mt-[30px]">方向別マージン</div>
+            <div class="flex gap-[15px] flex-wrap">
+              <div class="demo-box mt-lg">mt-lg</div>
+              <div class="demo-box mr-lg">mr-lg</div>
+              <div class="demo-box mb-lg">mb-lg</div>
+              <div class="demo-box ml-lg">ml-lg</div>
+              <div class="demo-box mx-md">mx-md</div>
+              <div class="demo-box my-md">my-md</div>
+            </div>
           </div>
         </section>
 
-        <section class="section">
-          <h2 class="section-title">Display ユーティリティ</h2>
-          <div class="display-demo">
-            <div class="flex gap-none">
-              <div class="box p-sm">フレックスアイテム1 (sm = 12px)</div>
-              <div class="box p-sm">フレックスアイテム2 (sm = 12px)</div>
-              <div class="box p-sm">フレックスアイテム3 (sm = 12px)</div>
+        <!-- 2. カスタム値のSpacing -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">2. カスタム値Spacing</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ピクセル値</div>
+            <div class="flex gap-[25px] flex-wrap">
+              <div class="demo-box p-[15px]">p-[15px]</div>
+              <div class="demo-box p-[25px]">p-[25px]</div>
+              <div class="demo-box m-[10px]">m-[10px]</div>
+              <div class="demo-box mx-[35px]">mx-[35px]</div>
+              <div class="demo-box py-[18px]">py-[18px]</div>
             </div>
-            <div class="grid gap-md mt-lg">
-              <div class="box p-md">グリッドアイテム1 (md = 20px)</div>
-              <div class="box p-md">グリッドアイテム2 (md = 20px)</div>
-              <div class="box p-md">グリッドアイテム3 (md = 20px)</div>
-              <div class="box p-md">グリッドアイテム4 (md = 20px)</div>
+
+            <div class="test-label mt-[30px]">rem/em値</div>
+            <div class="flex gap-[20px] flex-wrap">
+              <div class="demo-box p-[1.5rem]">p-[1.5rem]</div>
+              <div class="demo-box p-[2.5rem]">p-[2.5rem]</div>
+              <div class="demo-box m-[1em]">m-[1em]</div>
+              <div class="demo-box mt-[0.5rem]">mt-[0.5rem]</div>
+            </div>
+
+            <div class="test-label mt-[30px]">パーセンテージ・CSS変数</div>
+            <div class="flex gap-[20px] flex-wrap">
+              <div class="demo-box p-[5%]">p-[5%]</div>
+              <div class="demo-box css-var-padding-24 p-[var(--custom-padding)]">
+                p-[var(--custom-padding)]
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="section">
-          <h2 class="section-title">カスタム値</h2>
-          <div class="custom-demo flex">
-            <div class="box m-[20px] pt-[20px] pb-[40px]">カスタムマージンとパディング</div>
-            <div class="box mt-[30px] pt-[5rem] pb-[10rem]">カスタム上下マージン</div>
-            <div class="box mt-sm mb-md pl-[5rem] pr-[10rem] pt-[5rem] pb-[10rem]">
-              フィボナッチ + カスタム
+        <!-- 3. Gap クラス（基本） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">3. Gap クラス（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Flexbox Gap</div>
+            <div class="flex gap-sm mb-[20px]">
+              <div class="demo-box p-sm">gap-sm (12px)</div>
+              <div class="demo-box p-sm">Item 2</div>
+              <div class="demo-box p-sm">Item 3</div>
             </div>
-            <div class="box m-[100px] p-[50px]">JIT動的追加テスト</div>
+            <div class="flex gap-lg mb-[20px]">
+              <div class="demo-box p-sm">gap-lg (32px)</div>
+              <div class="demo-box p-sm">Item 2</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+
+            <div class="test-label mt-[30px]">Grid Gap</div>
+            <div class="grid gap-md mb-[20px]" style="grid-template-columns: repeat(3, 1fr)">
+              <div class="demo-box p-xs">gap-md (20px)</div>
+              <div class="demo-box p-xs">Item 2</div>
+              <div class="demo-box p-xs">Item 3</div>
+              <div class="demo-box p-xs">Item 4</div>
+              <div class="demo-box p-xs">Item 5</div>
+              <div class="demo-box p-xs">Item 6</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Gap-X / Gap-Y クラス（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">4. Gap-X / Gap-Y クラス（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Flexbox Gap-X / Gap-Y</div>
+            <div class="flex gap-x-lg gap-y-sm flex-wrap mb-[25px]">
+              <div class="demo-box p-xs">gap-x-lg gap-y-sm</div>
+              <div class="demo-box p-xs">水平32px</div>
+              <div class="demo-box p-xs">垂直12px</div>
+              <div class="demo-box p-xs">Item 4</div>
+              <div class="demo-box p-xs">Item 5</div>
+            </div>
+
+            <div class="test-label">Grid Gap-X / Gap-Y</div>
+            <div class="grid gap-x-xl gap-y-md" style="grid-template-columns: repeat(3, 1fr)">
+              <div class="demo-box p-2xs">gap-x-xl gap-y-md</div>
+              <div class="demo-box p-2xs">水平52px</div>
+              <div class="demo-box p-2xs">垂直20px</div>
+              <div class="demo-box p-2xs">Item 4</div>
+              <div class="demo-box p-2xs">Item 5</div>
+              <div class="demo-box p-2xs">Item 6</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. カスタム値Gap -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">5. カスタム値Gap</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本Gap カスタム値</div>
+            <div class="flex gap-[45px] mb-[25px]">
+              <div class="demo-box p-sm">gap-[45px]</div>
+              <div class="demo-box p-sm">Item 2</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+            <div class="grid gap-[35px] mb-[25px]" style="grid-template-columns: repeat(2, 1fr)">
+              <div class="demo-box p-sm">gap-[35px]</div>
+              <div class="demo-box p-sm">Grid Item 2</div>
+              <div class="demo-box p-sm">Grid Item 3</div>
+              <div class="demo-box p-sm">Grid Item 4</div>
+            </div>
+
+            <div class="test-label">Gap-X / Gap-Y カスタム値</div>
+            <div class="flex gap-x-[60px] gap-y-[15px] flex-wrap mb-[25px]">
+              <div class="demo-box p-xs">gap-x-[60px] gap-y-[15px]</div>
+              <div class="demo-box p-xs">水平60px</div>
+              <div class="demo-box p-xs">垂直15px</div>
+              <div class="demo-box p-xs">Item 4</div>
+              <div class="demo-box p-xs">Item 5</div>
+            </div>
+            <div
+              class="grid gap-x-[80px] gap-y-[25px]"
+              style="grid-template-columns: repeat(3, 1fr)"
+            >
+              <div class="demo-box p-2xs">gap-x-[80px] gap-y-[25px]</div>
+              <div class="demo-box p-2xs">水平80px</div>
+              <div class="demo-box p-2xs">垂直25px</div>
+              <div class="demo-box p-2xs">Item 4</div>
+              <div class="demo-box p-2xs">Item 5</div>
+              <div class="demo-box p-2xs">Item 6</div>
+            </div>
+
+            <div class="test-label mt-[30px]">rem/em値のGap</div>
+            <div class="flex gap-[2rem] mb-[20px]">
+              <div class="demo-box p-sm">gap-[2rem]</div>
+              <div class="demo-box p-sm">Item 2</div>
+              <div class="demo-box p-sm">Item 3</div>
+            </div>
+            <div class="flex gap-x-[3em] gap-y-[1em] flex-wrap">
+              <div class="demo-box p-xs">gap-x-[3em] gap-y-[1em]</div>
+              <div class="demo-box p-xs">Item 2</div>
+              <div class="demo-box p-xs">Item 3</div>
+              <div class="demo-box p-xs">Item 4</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Display クラス -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">6. Display クラス</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本Display</div>
+            <div class="mb-[20px]">
+              <div class="flex gap-md mb-[15px]">
+                <div class="demo-box p-sm">flex container</div>
+                <div class="demo-box p-sm">flex item</div>
+                <div class="demo-box p-sm">flex item</div>
+              </div>
+              <div class="grid gap-sm" style="grid-template-columns: repeat(4, 1fr)">
+                <div class="demo-box p-xs">grid container</div>
+                <div class="demo-box p-xs">grid item</div>
+                <div class="demo-box p-xs">grid item</div>
+                <div class="demo-box p-xs">grid item</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. 複合テスト -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">7. 複合テスト（フィボナッチ + カスタム値）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">混在使用例</div>
+            <div class="flex gap-lg mb-[30px]">
+              <div class="demo-box p-md m-[15px]">フィボナッチ + カスタム</div>
+              <div class="demo-box p-[25px] m-sm">カスタム + フィボナッチ</div>
+              <div class="demo-box p-xl mx-[40px]">大きなパディング</div>
+            </div>
+
+            <div class="grid gap-x-[50px] gap-y-md" style="grid-template-columns: repeat(2, 1fr)">
+              <div class="demo-box p-lg m-[10px]">Grid Item 1</div>
+              <div class="demo-box p-[30px] m-xs">Grid Item 2</div>
+              <div class="demo-box p-md mx-[20px]">Grid Item 3</div>
+              <div class="demo-box p-[35px] my-sm">Grid Item 4</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. エッジケース -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">8. エッジケース・特殊値</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ゼロ値・小数値</div>
+            <div class="flex gap-[0px] mb-[20px]">
+              <div class="demo-box p-[0px] m-[5px]">gap-[0px] p-[0px]</div>
+              <div class="demo-box p-[1.5rem] m-[0px]">p-[1.5rem] m-[0px]</div>
+              <div class="demo-box p-[2.75em]">p-[2.75em]</div>
+            </div>
+
+            <div class="test-label">CSS変数・パーセンテージ</div>
+            <div class="flex css-var-demo gap-[var(--custom-gap)] flex-wrap">
+              <div class="demo-box css-var-padding p-[var(--custom-padding)]">CSS変数テスト</div>
+              <div class="demo-box p-[10%]">パーセンテージ</div>
+              <div class="demo-box p-[calc(1rem + 10px)]">calc関数</div>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer class="footer">
-        <p>SmsshCSS Vite Plugin Demo - フィボナッチ数列ベースのスペーシング</p>
+      <footer class="main-footer mt-[80px] p-[40px]">
+        <p class="m-[0px]">SmsshCSS Vite Plugin - 包括的機能テスト完了</p>
+        <p class="footer-subtitle m-[0px] mt-[10px]">
+          フィボナッチ数列ベースのスペーシング + カスタム値 + Gap-X/Gap-Y対応
+        </p>
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>

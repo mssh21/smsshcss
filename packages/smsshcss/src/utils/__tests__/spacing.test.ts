@@ -84,11 +84,35 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.gap-5xl { gap: 22.25rem; }');
     });
 
-    it('should include arbitrary gap value class', () => {
+    it('should generate gap-x (column-gap) classes with default config', () => {
+      const result = generateGapClasses(defaultConfig);
+
+      // gap-x (column-gap) クラスが含まれているか確認
+      expect(result).toContain('.gap-x-none { column-gap: 0; }');
+      expect(result).toContain('.gap-x-2xs { column-gap: 0.25rem; }');
+      expect(result).toContain('.gap-x-md { column-gap: 1.25rem; }');
+      expect(result).toContain('.gap-x-lg { column-gap: 2rem; }');
+      expect(result).toContain('.gap-x-5xl { column-gap: 22.25rem; }');
+    });
+
+    it('should generate gap-y (row-gap) classes with default config', () => {
+      const result = generateGapClasses(defaultConfig);
+
+      // gap-y (row-gap) クラスが含まれているか確認
+      expect(result).toContain('.gap-y-none { row-gap: 0; }');
+      expect(result).toContain('.gap-y-2xs { row-gap: 0.25rem; }');
+      expect(result).toContain('.gap-y-md { row-gap: 1.25rem; }');
+      expect(result).toContain('.gap-y-lg { row-gap: 2rem; }');
+      expect(result).toContain('.gap-y-5xl { row-gap: 22.25rem; }');
+    });
+
+    it('should include arbitrary gap value classes', () => {
       const result = generateGapClasses(defaultConfig);
 
       // 任意の値のギャップクラスが含まれているか確認
       expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
+      expect(result).toContain('.gap-x-\\[\\$\\{value\\}\\] { column-gap: var(--value); }');
+      expect(result).toContain('.gap-y-\\[\\$\\{value\\}\\] { row-gap: var(--value); }');
     });
   });
 
@@ -118,6 +142,8 @@ describe('Spacing Utilities', () => {
 
       // ギャップのnoneクラス
       expect(gapResult).toContain('.gap-none { gap: 0; }');
+      expect(gapResult).toContain('.gap-x-none { column-gap: 0; }');
+      expect(gapResult).toContain('.gap-y-none { row-gap: 0; }');
     });
   });
 
@@ -129,9 +155,13 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.m-none { margin: 0; }');
       expect(result).toContain('.p-none { padding: 0; }');
       expect(result).toContain('.gap-none { gap: 0; }');
+      expect(result).toContain('.gap-x-none { column-gap: 0; }');
+      expect(result).toContain('.gap-y-none { row-gap: 0; }');
       expect(result).toContain('.m-md { margin: 1.25rem; }');
       expect(result).toContain('.p-md { padding: 1.25rem; }');
       expect(result).toContain('.gap-md { gap: 1.25rem; }');
+      expect(result).toContain('.gap-x-md { column-gap: 1.25rem; }');
+      expect(result).toContain('.gap-y-md { row-gap: 1.25rem; }');
     });
 
     it('should include all directional classes', () => {
@@ -155,6 +185,8 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');
       expect(result).toContain('.p-\\[\\$\\{value\\}\\] { padding: var(--value); }');
       expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
+      expect(result).toContain('.gap-x-\\[\\$\\{value\\}\\] { column-gap: var(--value); }');
+      expect(result).toContain('.gap-y-\\[\\$\\{value\\}\\] { row-gap: var(--value); }');
     });
   });
 });

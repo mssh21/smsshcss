@@ -24,7 +24,10 @@ const defaultDisplay: DisplayConfig = {
   'table-caption': 'table-caption', // 表のキャプションとして表示
 };
 
-export function generateDisplayClasses(config: DisplayConfig = defaultDisplay): string {
+export function generateDisplayClasses(customConfig?: DisplayConfig): string {
+  // デフォルトテーマとカスタムテーマをマージ
+  const config = customConfig ? { ...defaultDisplay, ...customConfig } : defaultDisplay;
+
   const classes: string[] = [];
 
   // 基本的なdisplayクラスを生成

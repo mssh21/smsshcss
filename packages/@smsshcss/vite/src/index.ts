@@ -35,7 +35,7 @@ export interface SmsshCSSViteOptions {
 }
 
 // カスタム値クラスを検出する正規表現
-const customValuePattern = /\b([mp][trlbxy]?)-\[([^\]]+)\]/g;
+const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
 
 // HTMLファイルからカスタム値クラスを抽出
 function extractCustomClasses(content: string): string[] {
@@ -58,6 +58,31 @@ function extractCustomClasses(content: string): string[] {
 
 // カスタムスペーシングクラスを生成
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
+  // CSS値内の特殊文字をエスケープ
+  const escapeValue = (val: string): string => {
+    // CSS変数（var(--name)）の場合は特別処理
+    if (val.includes('var(--')) {
+      return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+    }
+    // 通常の値の場合は-も含めてエスケープ
+    return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+  };
+
+  // gap プロパティの処理
+  if (prefix === 'gap') {
+    return `.gap-\\[${escapeValue(value)}\\] { gap: ${value}; }`;
+  }
+
+  // gap-x (column-gap) プロパティの処理
+  if (prefix === 'gap-x') {
+    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${value}; }`;
+  }
+
+  // gap-y (row-gap) プロパティの処理
+  if (prefix === 'gap-y') {
+    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${value}; }`;
+  }
+
   const property = prefix.startsWith('m') ? 'margin' : 'padding';
   const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
 
@@ -77,9 +102,9 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       cssProperty = `${property}-left`;
       break;
     case 'x':
-      return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${property}-left: ${value}; ${property}-right: ${value}; }`;
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${value}; ${property}-right: ${value}; }`;
     case 'y':
-      return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${property}-top: ${value}; ${property}-bottom: ${value}; }`;
+      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${value}; ${property}-bottom: ${value}; }`;
     case '':
       // 全方向
       break;
@@ -87,7 +112,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       return null;
   }
 
-  return `.${prefix}-\\[${value.replace(/[()]/g, '\\$&')}\\] { ${cssProperty}: ${value}; }`;
+  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${value}; }`;
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
