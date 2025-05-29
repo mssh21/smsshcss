@@ -346,6 +346,7 @@ describe('Custom Value Classes Integration', () => {
     // プラグインを初期化（一時ディレクトリをスキャン対象に設定）
     plugin = smsshcss({
       content: [`${tempDir}/**/*.html`],
+      minify: false,
     });
   });
 
@@ -451,7 +452,7 @@ describe('Custom Value Classes Integration', () => {
 
     it('should handle complex custom values', async () => {
       const htmlContent = `
-        <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px] w-[var(--width)] min-w-[200px] max-w-[1000px]">
+        <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px] w-[100%] w-[var(--width)] min-w-[200px] max-w-[1000px]">
           <span class="m-[calc(100%-20px)] p-[var(--spacing)]">Complex</span>
         </div>
       `;
@@ -477,6 +478,7 @@ describe('Custom Value Classes Integration', () => {
         expect(result?.code).toContain('.min-w-\\[200px\\] { min-width: 200px; }');
         expect(result?.code).toContain('.max-w-\\[1000px\\] { max-width: 1000px; }');
         // var()の複雑な値もサポートされている
+        expect(result?.code).toMatch(/\.w-\\\[var\\\(.*?\\\)\\\]/);
         expect(result?.code).toMatch(/\.p-\\\[var\\\(.*?\\\)\\\]/);
       } else {
         // カスタム値クラスが生成されていない場合でも、基本機能は動作している

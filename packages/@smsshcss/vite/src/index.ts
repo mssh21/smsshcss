@@ -50,6 +50,11 @@ export interface SmsshCSSViteOptions {
    * @default false
    */
   showPurgeReport?: boolean;
+  /**
+   * CSS minifyを有効にするかどうか
+   * @default true
+   */
+  minify?: boolean;
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
@@ -60,6 +65,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
     content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
     purge = { enabled: true },
     showPurgeReport = false,
+    minify = true,
   } = options;
 
   let isProduction = false;
@@ -69,6 +75,14 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
     configResolved(config): void {
       isProduction = config.command === 'build';
+
+      // minifyオプションがfalseの場合、ViteのCSS minifyを無効化
+      if (!minify && isProduction) {
+        if (config.build && config.build.cssMinify !== false) {
+          config.build.cssMinify = false;
+          console.log('[smsshcss] CSS minify disabled to prevent arbitrary value syntax warnings');
+        }
+      }
     },
 
     configureServer(devServer: ViteDevServer): void {

@@ -7,6 +7,8 @@ export default defineConfig({
       includeReset: true,
       includeBase: true,
 
+      minify: false,
+
       content: [
         'index.html',
         'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
