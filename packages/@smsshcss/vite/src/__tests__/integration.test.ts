@@ -35,6 +35,13 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.w-md { width: 1.25rem; }';
+    css += '\n.w-lg { width: 2rem; }';
+    css += '\n.min-w-md { min-width: var(--size-md); }';
+    css += '\n.min-w-lg { min-width: var(--size-lg); }';
+    css += '\n.max-w-md { max-width: var(--size-md); }';
+    css += '\n.max-w-lg { max-width: var(--size-lg); }';
+    css += '\n.w-full { width: 100%; }';
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -44,6 +51,9 @@ vi.mock('smsshcss', () => ({
         css += `\n.gap-${key} { gap: ${value}; }`;
         css += `\n.gap-x-${key} { column-gap: ${value}; }`;
         css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+        css += `\n.w-${key} { width: ${value}; }`;
+        css += `\n.min-w-${key} { min-width: ${value}; }`;
+        css += `\n.max-w-${key} { max-width: ${value}; }`;
       });
     }
 
@@ -84,6 +94,13 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.w-md { width: 1.25rem; }';
+    css += '\n.w-lg { width: 2rem; }';
+    css += '\n.min-w-md { min-width: var(--size-md); }';
+    css += '\n.min-w-lg { min-width: var(--size-lg); }';
+    css += '\n.max-w-md { max-width: var(--size-md); }';
+    css += '\n.max-w-lg { max-width: var(--size-lg); }';
+    css += '\n.w-full { width: 100%; }';
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -93,6 +110,9 @@ vi.mock('smsshcss', () => ({
         css += `\n.gap-${key} { gap: ${value}; }`;
         css += `\n.gap-x-${key} { column-gap: ${value}; }`;
         css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+        css += `\n.w-${key} { width: ${value}; }`;
+        css += `\n.min-w-${key} { min-width: ${value}; }`;
+        css += `\n.max-w-${key} { max-width: ${value}; }`;
       });
     }
 
@@ -110,7 +130,7 @@ vi.mock('smsshcss', () => ({
     purgedClasses: 50,
     buildTime: 100,
   }),
-  extractCustomClasses: vi.fn().mockImplementation((content) => {
+  extractCustomSpacingClasses: vi.fn().mockImplementation((content) => {
     // カスタム値クラスを検出する正規表現
     const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
     const matches = content.matchAll(customValuePattern);
@@ -256,6 +276,97 @@ vi.mock('smsshcss', () => ({
     }
 
     return customClasses;
+  }),
+  extractCustomWidthClasses: vi.fn().mockImplementation((content) => {
+    // カスタム値クラスを検出する正規表現
+    const customValuePattern = /\b(w|min-w|max-w)-\[([^\]]+)\]/g;
+    const matches = content.matchAll(customValuePattern);
+    const customWidthClasses: string[] = [];
+
+    // CSS数学関数を検出する正規表現
+    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+    // CSS値内の特殊文字をエスケープ（クラス名用）
+    const escapeValue = (val: string): string => {
+      // CSS数学関数の場合は特別処理（カンマもエスケープする）
+      if (cssMathFunctions.test(val)) {
+        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+      }
+      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+      if (val.includes('var(--')) {
+        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+      }
+      // 通常の値の場合は-も含めてエスケープ
+      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+    };
+
+    // CSS関数内の値を再帰的にフォーマットする関数
+    const formatCSSFunctionValue = (input: string): string => {
+      // CSS関数を再帰的に処理（基本的な関数のみ）
+      return input.replace(
+        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
+        (match, funcName, inner) => {
+          // 内部の関数を再帰的に処理
+          const processedInner = formatCSSFunctionValue(inner);
+
+          // 演算子とカンマの周りにスペースを適切に配置
+          const formattedInner = processedInner
+            // まず全てのスペースを正規化
+            .replace(/\s+/g, ' ')
+            .trim()
+            // カンマの処理（カンマの後にスペース、前のスペースは削除）
+            .replace(/\s*,\s*/g, ', ')
+            // 演算子の処理（前後にスペース）
+            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
+              // マイナス記号が負の値かどうかを判定
+              if (operator === '-') {
+                // 現在の位置より前の文字を取得
+                const beforeMatch = str.substring(0, offset);
+                // 直前の非空白文字を取得
+                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
+                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
+
+                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
+                  return '-';
+                }
+              }
+              return ` ${operator} `;
+            });
+
+          return `${funcName}(${formattedInner})`;
+        }
+      );
+    };
+
+    for (const match of matches) {
+      const prefix = match[1];
+      const value = match[2];
+
+      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+      // width プロパティの処理
+      if (prefix === 'w') {
+        customWidthClasses.push(`.w-\\[${escapeValue(value)}\\] { width: ${originalValue}; }`);
+      } else if (prefix === 'min-w') {
+        customWidthClasses.push(
+          `.min-w-\\[${escapeValue(value)}\\] { min-width: ${originalValue}; }`
+        );
+      } else if (prefix === 'max-w') {
+        customWidthClasses.push(
+          `.max-w-\\[${escapeValue(value)}\\] { max-width: ${originalValue}; }`
+        );
+      } else if (prefix.startsWith('m')) {
+        const property = 'width';
+
+        customWidthClasses.push(
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
+        );
+      }
+    }
+
+    return customWidthClasses;
   }),
 }));
 

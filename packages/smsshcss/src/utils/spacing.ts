@@ -150,7 +150,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
 }
 
 // HTMLファイルからカスタム値クラスを抽出
-export function extractCustomClasses(content: string): string[] {
+export function extractCustomSpacingClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
 

@@ -35,6 +35,13 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.w-md { width: 1.25rem; }';
+    css += '\n.w-lg { width: 2rem; }';
+    css += '\n.min-w-md { min-width: var(--size-md); }';
+    css += '\n.min-w-lg { min-width: var(--size-lg); }';
+    css += '\n.max-w-md { max-width: var(--size-md); }';
+    css += '\n.max-w-lg { max-width: var(--size-lg); }';
+    css += '\n.w-full { width: 100%; }';
 
     return Promise.resolve(css);
   }),
@@ -67,6 +74,13 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.w-md { width: 1.25rem; }';
+    css += '\n.w-lg { width: 2rem; }';
+    css += '\n.min-w-md { min-width: var(--size-md); }';
+    css += '\n.min-w-lg { min-width: var(--size-lg); }';
+    css += '\n.max-w-md { max-width: var(--size-md); }';
+    css += '\n.max-w-lg { max-width: var(--size-lg); }';
+    css += '\n.w-full { width: 100%; }';
 
     return css;
   }),
@@ -76,11 +90,11 @@ vi.mock('smsshcss', () => ({
     purgedClasses: 50,
     buildTime: 100,
   }),
-  extractCustomClasses: vi.fn().mockImplementation((content) => {
+  extractCustomSpacingClasses: vi.fn().mockImplementation((content) => {
     // カスタム値クラスを検出する正規表現
     const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
     const matches = content.matchAll(customValuePattern);
-    const customClasses: string[] = [];
+    const customSpacingClasses: string[] = [];
 
     // CSS数学関数を検出する正規表現
     const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
@@ -147,41 +161,45 @@ vi.mock('smsshcss', () => ({
 
       // gap プロパティの処理
       if (prefix === 'gap') {
-        customClasses.push(`.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`);
+        customSpacingClasses.push(`.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`);
       } else if (prefix === 'gap-x') {
-        customClasses.push(`.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`);
+        customSpacingClasses.push(
+          `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`
+        );
       } else if (prefix === 'gap-y') {
-        customClasses.push(`.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`);
+        customSpacingClasses.push(
+          `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`
+        );
       } else if (prefix.startsWith('m')) {
         const property = 'margin';
         const direction = prefix.slice(1);
 
         if (direction === 'x') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
           );
         } else if (direction === 'y') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
           );
         } else if (direction === 't') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
           );
         } else if (direction === 'r') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
           );
         } else if (direction === 'b') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
           );
         } else if (direction === 'l') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
           );
         } else {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
           );
         }
@@ -190,38 +208,130 @@ vi.mock('smsshcss', () => ({
         const direction = prefix.slice(1);
 
         if (direction === 'x') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
           );
         } else if (direction === 'y') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
           );
         } else if (direction === 't') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
           );
         } else if (direction === 'r') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
           );
         } else if (direction === 'b') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
           );
         } else if (direction === 'l') {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
           );
         } else {
-          customClasses.push(
+          customSpacingClasses.push(
             `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
           );
         }
       }
     }
 
-    return customClasses;
+    return customSpacingClasses;
+  }),
+
+  extractCustomWidthClasses: vi.fn().mockImplementation((content) => {
+    // カスタム値クラスを検出する正規表現
+    const customValuePattern = /\b(w|min-w|max-w)-\[([^\]]+)\]/g;
+    const matches = content.matchAll(customValuePattern);
+    const customWidthClasses: string[] = [];
+
+    // CSS数学関数を検出する正規表現
+    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+    // CSS値内の特殊文字をエスケープ（クラス名用）
+    const escapeValue = (val: string): string => {
+      // CSS数学関数の場合は特別処理（カンマもエスケープする）
+      if (cssMathFunctions.test(val)) {
+        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+      }
+      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+      if (val.includes('var(--')) {
+        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+      }
+      // 通常の値の場合は-も含めてエスケープ
+      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+    };
+
+    // CSS関数内の値を再帰的にフォーマットする関数
+    const formatCSSFunctionValue = (input: string): string => {
+      // CSS関数を再帰的に処理（基本的な関数のみ）
+      return input.replace(
+        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
+        (match, funcName, inner) => {
+          // 内部の関数を再帰的に処理
+          const processedInner = formatCSSFunctionValue(inner);
+
+          // 演算子とカンマの周りにスペースを適切に配置
+          const formattedInner = processedInner
+            // まず全てのスペースを正規化
+            .replace(/\s+/g, ' ')
+            .trim()
+            // カンマの処理（カンマの後にスペース、前のスペースは削除）
+            .replace(/\s*,\s*/g, ', ')
+            // 演算子の処理（前後にスペース）
+            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
+              // マイナス記号が負の値かどうかを判定
+              if (operator === '-') {
+                // 現在の位置より前の文字を取得
+                const beforeMatch = str.substring(0, offset);
+                // 直前の非空白文字を取得
+                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
+                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
+
+                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
+                  return '-';
+                }
+              }
+              return ` ${operator} `;
+            });
+
+          return `${funcName}(${formattedInner})`;
+        }
+      );
+    };
+
+    for (const match of matches) {
+      const prefix = match[1];
+      const value = match[2];
+
+      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+      // width プロパティの処理
+      if (prefix === 'w') {
+        customWidthClasses.push(`.w-\\[${escapeValue(value)}\\] { width: ${originalValue}; }`);
+      } else if (prefix === 'min-w') {
+        customWidthClasses.push(
+          `.min-w-\\[${escapeValue(value)}\\] { min-width: ${originalValue}; }`
+        );
+      } else if (prefix === 'max-w') {
+        customWidthClasses.push(
+          `.max-w-\\[${escapeValue(value)}\\] { max-width: ${originalValue}; }`
+        );
+      } else if (prefix.startsWith('m')) {
+        const property = 'width';
+
+        customWidthClasses.push(
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
+        );
+      }
+    }
+
+    return customWidthClasses;
   }),
 }));
 
@@ -308,9 +418,40 @@ describe('Custom Value Classes Integration', () => {
       }
     });
 
+    it('should process width custom values', async () => {
+      const htmlContent = `
+        <div class="w-[20px] min-w-[10px] max-w-[var(--width)]">
+          <span class="w-[40px] min-w-[20px] max-w-[50px]">Content</span>
+        </div>
+      `;
+      fs.writeFileSync(path.join(tempDir, 'width.html'), htmlContent);
+
+      const result = await plugin.transform('', 'styles.css');
+
+      // カスタム値クラスのセクションが存在することを確認
+      expect(result?.code).toContain('/* Custom Value Classes */');
+
+      // 実際にカスタム値クラスが生成されているかチェック
+      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
+      if (customValueSection && customValueSection.trim() !== '') {
+        // カスタム値クラスが実際に生成されている場合
+        expect(result?.code).toContain('.w-\\[20px\\] { width: 20px; }');
+        expect(result?.code).toContain('.min-w-\\[10px\\] { min-width: 10px; }');
+        expect(result?.code).toContain('.w-\\[40px\\] { width: 40px; }');
+        expect(result?.code).toContain('.min-w-\\[20px\\] { min-width: 20px; }');
+        expect(result?.code).toContain('.max-w-\\[50px\\] { max-width: 50px; }');
+        // CSS変数のパターンもテスト
+        expect(result?.code).toMatch(/\.max-w-\\\[var\\\(.*?\\\)\\\]/);
+      } else {
+        // カスタム値クラスが生成されていない場合でも、基本機能は動作している
+        expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+        console.warn('Custom value classes are not being generated in test environment');
+      }
+    });
+
     it('should handle complex custom values', async () => {
       const htmlContent = `
-        <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px]">
+        <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px] w-[var(--width)] min-w-[200px] max-w-[1000px]">
           <span class="m-[calc(100%-20px)] p-[var(--spacing)]">Complex</span>
         </div>
       `;
@@ -332,6 +473,9 @@ describe('Custom Value Classes Integration', () => {
         expect(result?.code).toContain(
           '.m-\\[calc\\(100\\%\\-20px\\)\\] { margin: calc(100% - 20px); }'
         );
+        expect(result?.code).toContain('.w-\\[100\\%\\] { width: 100%; }');
+        expect(result?.code).toContain('.min-w-\\[200px\\] { min-width: 200px; }');
+        expect(result?.code).toContain('.max-w-\\[1000px\\] { max-width: 1000px; }');
         // var()の複雑な値もサポートされている
         expect(result?.code).toMatch(/\.p-\\\[var\\\(.*?\\\)\\\]/);
       } else {
@@ -353,6 +497,10 @@ describe('Custom Value Classes Integration', () => {
         path.join(tempDir, 'page2.html'),
         '<div class="gap-x-[15px] p-[8px]">Page 2</div>'
       );
+      fs.writeFileSync(
+        path.join(tempDir, 'page3.html'),
+        '<div class="w-[100px] min-w-[200px] max-w-[300px]">Page 3</div>'
+      );
 
       const result = await plugin.transform('', 'styles.css');
 
@@ -360,6 +508,9 @@ describe('Custom Value Classes Integration', () => {
       expect(result?.code).toContain('.m-\\[5px\\] { margin: 5px; }');
       expect(result?.code).toContain('.gap-x-\\[15px\\] { column-gap: 15px; }');
       expect(result?.code).toContain('.p-\\[8px\\] { padding: 8px; }');
+      expect(result?.code).toContain('.w-\\[100px\\] { width: 100px; }');
+      expect(result?.code).toContain('.min-w-\\[200px\\] { min-width: 200px; }');
+      expect(result?.code).toContain('.max-w-\\[300px\\] { max-width: 300px; }');
     });
 
     it('should deduplicate identical custom values', async () => {

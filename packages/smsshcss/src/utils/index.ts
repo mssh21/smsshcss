@@ -1,6 +1,7 @@
 import { generateDisplayClasses } from './display';
-import { generateAllSpacingClasses, extractCustomClasses } from './spacing';
-import { generateFlexboxClasses, extractCustomFlexboxClasses } from './flexbox';
+import { generateAllSpacingClasses, extractCustomSpacingClasses } from './spacing';
+import { generateFlexboxClasses } from './flexbox';
+import { extractCustomWidthClasses } from './width';
 
 // Reset CSS の内容を直接定義
 const RESET_CSS = `/* Reset CSS */
@@ -185,7 +186,7 @@ export function applyBaseCss(css: string): string {
 export {
   generateDisplayClasses,
   generateAllSpacingClasses,
-  extractCustomClasses,
+  extractCustomSpacingClasses,
+  extractCustomWidthClasses,
   generateFlexboxClasses,
-  extractCustomFlexboxClasses,
 };

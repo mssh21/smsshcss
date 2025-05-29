@@ -5,6 +5,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check . && turbo lint",
+    "lint:fix": "prettier --write . && eslint --fix",
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
