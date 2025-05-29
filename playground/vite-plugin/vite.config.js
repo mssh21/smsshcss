@@ -48,9 +48,12 @@ export default defineConfig({
           'custom-flex': 'flex',
           'custom-grid': 'grid',
         },
+        width: {
+          container: '1600px',
+        },
       },
 
-      showPurgeReport: false,
+      showPurgeReport: true,
     }),
   ],
 });

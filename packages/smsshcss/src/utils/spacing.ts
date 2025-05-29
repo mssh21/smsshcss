@@ -6,6 +6,7 @@ const defaultSpacing: SpacingConfig = {
 
   // ゼロスペーシング
   none: '0',
+  auto: 'auto',
 
   // 極小〜小サイズ
   '2xs': '0.25rem', // 4px  (フィボナッチ: 1)

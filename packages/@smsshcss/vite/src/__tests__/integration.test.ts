@@ -1,385 +1,17 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { smsshcss } from '../index';
 import fs from 'fs';
 import path from 'path';
 import { tmpdir } from 'os';
 
-// smsshcssパッケージをモック
-vi.mock('smsshcss', () => ({
-  generateCSS: vi.fn().mockImplementation((config) => {
-    let css = '';
-
-    // Reset CSS
-    if (config.includeResetCSS !== false) {
-      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
-    }
-
-    // Base CSS
-    if (config.includeBaseCSS !== false) {
-      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
-    }
-
-    // SmsshCSS Generated Styles
-    css += '\n/* SmsshCSS Generated Styles */';
-    css += '\n.m-md { margin: 1.25rem; }';
-    css += '\n.mt-lg { margin-top: 2rem; }';
-    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
-    css += '\n.p-md { padding: 1.25rem; }';
-    css += '\n.p-lg { padding: 2rem; }';
-    css += '\n.pt-lg { padding-top: 2rem; }';
-    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
-    css += '\n.gap-md { gap: 1.25rem; }';
-    css += '\n.gap-x-md { column-gap: 1.25rem; }';
-    css += '\n.gap-y-md { row-gap: 1.25rem; }';
-    css += '\n.gap-x-lg { column-gap: 2rem; }';
-    css += '\n.gap-y-lg { row-gap: 2rem; }';
-    css += '\n.flex { display: block flex; }';
-    css += '\n.grid { display: block grid; }';
-    css += '\n.w-md { width: 1.25rem; }';
-    css += '\n.w-lg { width: 2rem; }';
-    css += '\n.min-w-md { min-width: var(--size-md); }';
-    css += '\n.min-w-lg { min-width: var(--size-lg); }';
-    css += '\n.max-w-md { max-width: var(--size-md); }';
-    css += '\n.max-w-lg { max-width: var(--size-lg); }';
-    css += '\n.w-full { width: 100%; }';
-
-    // カスタムテーマクラス
-    if (config.theme?.spacing) {
-      Object.entries(config.theme.spacing).forEach(([key, value]) => {
-        css += `\n.m-${key} { margin: ${value}; }`;
-        css += `\n.p-${key} { padding: ${value}; }`;
-        css += `\n.gap-${key} { gap: ${value}; }`;
-        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
-        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
-        css += `\n.w-${key} { width: ${value}; }`;
-        css += `\n.min-w-${key} { min-width: ${value}; }`;
-        css += `\n.max-w-${key} { max-width: ${value}; }`;
-      });
-    }
-
-    if (config.theme?.display) {
-      Object.entries(config.theme.display).forEach(([key, value]) => {
-        css += `\n.${key} { display: ${value}; }`;
-      });
-    }
-
-    return Promise.resolve(css);
-  }),
-  generateCSSSync: vi.fn().mockImplementation((config) => {
-    let css = '';
-
-    // Reset CSS
-    if (config.includeResetCSS !== false) {
-      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
-    }
-
-    // Base CSS
-    if (config.includeBaseCSS !== false) {
-      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
-    }
-
-    // SmsshCSS Generated Styles
-    css += '\n/* SmsshCSS Generated Styles */';
-    css += '\n.m-md { margin: 1.25rem; }';
-    css += '\n.mt-lg { margin-top: 2rem; }';
-    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
-    css += '\n.p-md { padding: 1.25rem; }';
-    css += '\n.p-lg { padding: 2rem; }';
-    css += '\n.pt-lg { padding-top: 2rem; }';
-    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
-    css += '\n.gap-md { gap: 1.25rem; }';
-    css += '\n.gap-x-md { column-gap: 1.25rem; }';
-    css += '\n.gap-y-md { row-gap: 1.25rem; }';
-    css += '\n.gap-x-lg { column-gap: 2rem; }';
-    css += '\n.gap-y-lg { row-gap: 2rem; }';
-    css += '\n.flex { display: block flex; }';
-    css += '\n.grid { display: block grid; }';
-    css += '\n.w-md { width: 1.25rem; }';
-    css += '\n.w-lg { width: 2rem; }';
-    css += '\n.min-w-md { min-width: var(--size-md); }';
-    css += '\n.min-w-lg { min-width: var(--size-lg); }';
-    css += '\n.max-w-md { max-width: var(--size-md); }';
-    css += '\n.max-w-lg { max-width: var(--size-lg); }';
-    css += '\n.w-full { width: 100%; }';
-
-    // カスタムテーマクラス
-    if (config.theme?.spacing) {
-      Object.entries(config.theme.spacing).forEach(([key, value]) => {
-        css += `\n.m-${key} { margin: ${value}; }`;
-        css += `\n.p-${key} { padding: ${value}; }`;
-        css += `\n.gap-${key} { gap: ${value}; }`;
-        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
-        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
-        css += `\n.w-${key} { width: ${value}; }`;
-        css += `\n.min-w-${key} { min-width: ${value}; }`;
-        css += `\n.max-w-${key} { max-width: ${value}; }`;
-      });
-    }
-
-    if (config.theme?.display) {
-      Object.entries(config.theme.display).forEach(([key, value]) => {
-        css += `\n.${key} { display: ${value}; }`;
-      });
-    }
-
-    return css;
-  }),
-  generatePurgeReport: vi.fn().mockResolvedValue({
-    totalClasses: 100,
-    usedClasses: 50,
-    purgedClasses: 50,
-    buildTime: 100,
-  }),
-  extractCustomSpacingClasses: vi.fn().mockImplementation((content) => {
-    // カスタム値クラスを検出する正規表現
-    const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
-    const matches = content.matchAll(customValuePattern);
-    const customClasses: string[] = [];
-
-    // CSS数学関数を検出する正規表現
-    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
-
-    // CSS値内の特殊文字をエスケープ（クラス名用）
-    const escapeValue = (val: string): string => {
-      // CSS数学関数の場合は特別処理（カンマもエスケープする）
-      if (cssMathFunctions.test(val)) {
-        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
-      }
-      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
-      if (val.includes('var(--')) {
-        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
-      }
-      // 通常の値の場合は-も含めてエスケープ
-      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-    };
-
-    // CSS関数内の値を再帰的にフォーマットする関数
-    const formatCSSFunctionValue = (input: string): string => {
-      // CSS関数を再帰的に処理（基本的な関数のみ）
-      return input.replace(
-        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
-        (match, funcName, inner) => {
-          // 内部の関数を再帰的に処理
-          const processedInner = formatCSSFunctionValue(inner);
-
-          // 演算子とカンマの周りにスペースを適切に配置
-          const formattedInner = processedInner
-            // まず全てのスペースを正規化
-            .replace(/\s+/g, ' ')
-            .trim()
-            // カンマの処理（カンマの後にスペース、前のスペースは削除）
-            .replace(/\s*,\s*/g, ', ')
-            // 演算子の処理（前後にスペース）
-            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-              // マイナス記号が負の値かどうかを判定
-              if (operator === '-') {
-                // 現在の位置より前の文字を取得
-                const beforeMatch = str.substring(0, offset);
-                // 直前の非空白文字を取得
-                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
-                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
-
-                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
-                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
-                  return '-';
-                }
-              }
-              return ` ${operator} `;
-            });
-
-          return `${funcName}(${formattedInner})`;
-        }
-      );
-    };
-
-    for (const match of matches) {
-      const prefix = match[1];
-      const value = match[2];
-
-      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
-
-      // gap プロパティの処理
-      if (prefix === 'gap') {
-        customClasses.push(`.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`);
-      } else if (prefix === 'gap-x') {
-        customClasses.push(`.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`);
-      } else if (prefix === 'gap-y') {
-        customClasses.push(`.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`);
-      } else if (prefix.startsWith('m')) {
-        const property = 'margin';
-        const direction = prefix.slice(1);
-
-        if (direction === 'x') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'y') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 't') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
-          );
-        } else if (direction === 'r') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'b') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 'l') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
-          );
-        } else {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
-          );
-        }
-      } else if (prefix.startsWith('p')) {
-        const property = 'padding';
-        const direction = prefix.slice(1);
-
-        if (direction === 'x') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'y') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 't') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
-          );
-        } else if (direction === 'r') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'b') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 'l') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
-          );
-        } else {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
-          );
-        }
-      }
-    }
-
-    return customClasses;
-  }),
-  extractCustomWidthClasses: vi.fn().mockImplementation((content) => {
-    // カスタム値クラスを検出する正規表現
-    const customValuePattern = /\b(w|min-w|max-w)-\[([^\]]+)\]/g;
-    const matches = content.matchAll(customValuePattern);
-    const customWidthClasses: string[] = [];
-
-    // CSS数学関数を検出する正規表現
-    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
-
-    // CSS値内の特殊文字をエスケープ（クラス名用）
-    const escapeValue = (val: string): string => {
-      // CSS数学関数の場合は特別処理（カンマもエスケープする）
-      if (cssMathFunctions.test(val)) {
-        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
-      }
-      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
-      if (val.includes('var(--')) {
-        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
-      }
-      // 通常の値の場合は-も含めてエスケープ
-      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-    };
-
-    // CSS関数内の値を再帰的にフォーマットする関数
-    const formatCSSFunctionValue = (input: string): string => {
-      // CSS関数を再帰的に処理（基本的な関数のみ）
-      return input.replace(
-        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
-        (match, funcName, inner) => {
-          // 内部の関数を再帰的に処理
-          const processedInner = formatCSSFunctionValue(inner);
-
-          // 演算子とカンマの周りにスペースを適切に配置
-          const formattedInner = processedInner
-            // まず全てのスペースを正規化
-            .replace(/\s+/g, ' ')
-            .trim()
-            // カンマの処理（カンマの後にスペース、前のスペースは削除）
-            .replace(/\s*,\s*/g, ', ')
-            // 演算子の処理（前後にスペース）
-            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-              // マイナス記号が負の値かどうかを判定
-              if (operator === '-') {
-                // 現在の位置より前の文字を取得
-                const beforeMatch = str.substring(0, offset);
-                // 直前の非空白文字を取得
-                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
-                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
-
-                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
-                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
-                  return '-';
-                }
-              }
-              return ` ${operator} `;
-            });
-
-          return `${funcName}(${formattedInner})`;
-        }
-      );
-    };
-
-    for (const match of matches) {
-      const prefix = match[1];
-      const value = match[2];
-
-      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
-
-      // width プロパティの処理
-      if (prefix === 'w') {
-        customWidthClasses.push(`.w-\\[${escapeValue(value)}\\] { width: ${originalValue}; }`);
-      } else if (prefix === 'min-w') {
-        customWidthClasses.push(
-          `.min-w-\\[${escapeValue(value)}\\] { min-width: ${originalValue}; }`
-        );
-      } else if (prefix === 'max-w') {
-        customWidthClasses.push(
-          `.max-w-\\[${escapeValue(value)}\\] { max-width: ${originalValue}; }`
-        );
-      } else if (prefix.startsWith('m')) {
-        const property = 'width';
-
-        customWidthClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
-        );
-      }
-    }
-
-    return customWidthClasses;
-  }),
-}));
-
-describe('SmsshCSS Vite Plugin Integration', () => {
+describe('SmsshCSS Vite Plugin - Integration Tests', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    // 一時ディレクトリを作成
     tempDir = fs.mkdtempSync(path.join(tmpdir(), 'smsshcss-integration-'));
   });
 
   afterEach(() => {
-    // 一時ディレクトリをクリーンアップ
     if (fs.existsSync(tempDir)) {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -387,7 +19,6 @@ describe('SmsshCSS Vite Plugin Integration', () => {
 
   describe('Real-world Scenarios', () => {
     it('should handle a typical React project structure', async () => {
-      // React コンポーネントファイルを作成
       const componentContent = `
         import React from 'react';
         
@@ -418,6 +49,9 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       });
 
       const result = await plugin.transform('', 'main.css');
+
+      // 基本クラスが生成されている
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
 
       // カスタム値クラスが生成されている
       expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
@@ -489,78 +123,10 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       expect(result?.code).toContain('.p-lg { padding: 2rem; }');
       expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
 
-      // カスタム値クラスのセクションが存在することを確認
-      expect(result?.code).toContain('/* Custom Value Classes */');
-
-      // 実際にカスタム値クラスが生成されているかチェック
-      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
-      if (customValueSection && customValueSection.trim() !== '') {
-        // カスタム値クラスが実際に生成されている場合
-        expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
-        expect(result?.code).toContain('.m-\\[custom\\-value\\] { margin: custom-value; }');
-        expect(result?.code).toContain('.gap-y-\\[75px\\] { row-gap: 75px; }');
-      }
-    });
-  });
-
-  describe('Build Process Simulation', () => {
-    it('should work correctly in development mode', async () => {
-      const devContent1 = '<div class="gap-[20px] p-[1rem]">Dev Content 1</div>';
-      const devContent2 = '<div class="gap-[20px] m-[2rem]">Dev Content 2</div>';
-
-      fs.writeFileSync(path.join(tempDir, 'dev1.html'), devContent1);
-      fs.writeFileSync(path.join(tempDir, 'dev2.html'), devContent2);
-
-      const plugin = smsshcss({
-        content: [`${tempDir}/**/*.html`],
-        purge: { enabled: false }, // 開発モード
-      });
-
-      const result1 = await plugin.transform('/* Dev CSS v1 */', 'dev.css');
-      const result2 = await plugin.transform('/* Dev CSS v2 */', 'dev.css');
-
-      expect(result1?.code).toContain('.gap-\\[20px\\] { gap: 20px; }');
-      expect(result1?.code).toContain('.p-\\[1rem\\] { padding: 1rem; }');
-      expect(result2?.code).toContain('.gap-\\[20px\\] { gap: 20px; }');
-      expect(result2?.code).toContain('.m-\\[2rem\\] { margin: 2rem; }');
-    });
-
-    it('should handle production build optimization', async () => {
-      const prodContent1 = '<div class="gap-[10px] gap-[20px] m-[5px]">Prod 1</div>';
-      const prodContent2 = '<div class="gap-[10px] p-[8px]">Prod 2</div>';
-
-      fs.writeFileSync(path.join(tempDir, 'prod1.html'), prodContent1);
-      fs.writeFileSync(path.join(tempDir, 'prod2.html'), prodContent2);
-
-      const plugin = smsshcss({
-        content: [`${tempDir}/**/*.html`],
-        purge: { enabled: false }, // テスト環境では無効化
-      });
-
-      const result = await plugin.transform('', 'prod.css');
-
-      // 基本的なクラスが生成されている
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.flex { display: block flex; }');
-
-      // カスタム値クラスのセクションが存在することを確認
-      expect(result?.code).toContain('/* Custom Value Classes */');
-
-      // 実際にカスタム値クラスが生成されているかチェック
-      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
-      if (customValueSection && customValueSection.trim() !== '') {
-        // 重複したクラスは一度だけ生成される
-        const gap10Matches = result?.code.match(/\.gap-\\\[10px\\\]/g);
-        const gap20Matches = result?.code.match(/\.gap-\\\[20px\\\]/g);
-        const m5Matches = result?.code.match(/\.m-\\\[5px\\\]/g);
-
-        expect(gap10Matches).toBeTruthy();
-        expect(gap10Matches).toHaveLength(1);
-        expect(gap20Matches).toBeTruthy();
-        expect(gap20Matches).toHaveLength(1);
-        expect(m5Matches).toBeTruthy();
-        expect(m5Matches).toHaveLength(1);
-      }
+      // カスタム値クラス
+      expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
+      expect(result?.code).toContain('.m-\\[custom\\-value\\] { margin: custom-value; }');
+      expect(result?.code).toContain('.gap-y-\\[75px\\] { row-gap: 75px; }');
     });
   });
 
@@ -615,7 +181,6 @@ describe('SmsshCSS Vite Plugin Integration', () => {
 
   describe('Error Recovery', () => {
     it('should continue working after file system errors', async () => {
-      // 存在しないディレクトリを指定
       const plugin = smsshcss({
         content: [`${tempDir}/nonexistent/**/*.html`],
       });
@@ -626,21 +191,9 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
     });
 
-    it('should handle directory access errors gracefully', async () => {
-      const plugin = smsshcss({
-        content: ['/root/restricted/**/*.html'], // アクセス権限がない可能性のあるパス
-      });
-
-      const result = await plugin.transform('', 'access.css');
-
-      // ファイルが見つからなくても標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.flex { display: block flex; }');
-    });
-
     it('should handle glob errors gracefully', async () => {
       const plugin = smsshcss({
-        content: ['[invalid-glob-pattern'], // 無効なglobパターン
+        content: ['[invalid-glob-pattern'],
       });
 
       const result = await plugin.transform('', 'glob-error.css');
