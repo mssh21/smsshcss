@@ -50,6 +50,7 @@ export interface SmsshCSSConfig {
   theme?: {
     spacing?: SpacingConfig;
     display?: DisplayConfig;
+    flexbox?: FlexboxConfig;
   };
 }
 
@@ -64,5 +65,9 @@ export type SpacingDirection = 't' | 'r' | 'b' | 'l' | 'x' | 'y' | '';
 export type SpacingProperty = 'margin' | 'padding' | 'gap';
 
 export type DisplayConfig = {
+  [key: string]: string;
+};
+
+export type FlexboxConfig = {
   [key: string]: string;
 };
