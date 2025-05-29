@@ -1,6 +1,7 @@
 import { SmsshCSSConfig, GeneratedCSS, PurgeReport } from './types';
 import { generateAllSpacingClasses, extractCustomClasses } from '../utils/spacing';
 import { generateDisplayClasses } from '../utils/display';
+import { generateFlexboxClasses } from '../utils/flexbox';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
@@ -120,10 +121,12 @@ export class CSSGenerator {
   public async generate(): Promise<GeneratedCSS> {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
+    const flexboxConfig = this.config.theme?.flexbox;
 
     let utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
+      generateFlexboxClasses(flexboxConfig),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -176,6 +179,7 @@ export class CSSGenerator {
               const fileContent = fs.readFileSync(filePath, 'utf-8');
               const fileCustomClasses = extractCustomClasses(fileContent);
 
+              // スペーシングのカスタムクラスを追加
               for (const cssClass of fileCustomClasses) {
                 if (!seenClasses.has(cssClass)) {
                   seenClasses.add(cssClass);
@@ -216,10 +220,12 @@ export class CSSGenerator {
     const fileAnalysis = await this.purger.analyzeSourceFiles();
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
+    const flexboxConfig = this.config.theme?.flexbox;
 
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
+      generateFlexboxClasses(flexboxConfig),
     ].join('\n\n');
 
     // 全CSSを結合してパージャーに渡す
@@ -239,10 +245,12 @@ export class CSSGenerator {
   public generateFullCSSSync(): string {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
+    const flexboxConfig = this.config.theme?.flexbox;
 
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
+      generateFlexboxClasses(flexboxConfig),
     ].join('\n\n');
 
     return [

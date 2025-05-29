@@ -26,7 +26,7 @@ yarn add smsshcss　@smsshcss/vite
 
 ### 1. Viteプラグインを使用する場合（推奨）
 
-`vite.config.js`または`vite.config.ts`にプラグインを追加：
+`vite.config.js`にプラグインを追加：
 
 ```javascript
 import { defineConfig } from 'vite';
@@ -35,9 +35,51 @@ import smsshcss from '@smsshcss/vite';
 export default defineConfig({
   plugins: [
     smsshcss({
-      content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
-      includeResetCSS: true,
-      includeBaseCSS: true,
+      includeReset: true,
+      includeBase: true,
+
+      content: [
+        'index.html',
+        'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
+        'components/**/*.{js,ts,jsx,tsx,vue}',
+        '**/*.html',
+      ],
+
+      purge: {
+        enabled: true,
+        safelist: [
+          'm-2xl',
+          'p-2xl',
+          'mt-2xl',
+          'mb-2xl',
+          'mx-2xl',
+          'py-2xl',
+          'gap-2xl',
+          'gap-x-2xl',
+          'gap-y-2xl',
+          /^hover:p-/,
+          /^focus:m-/,
+        ],
+        blocklist: ['m-2xs', 'p-2xs', 'gap-2xs', 'mt-2xs', 'mb-2xs', /^gap-x-2xs/, /^gap-y-2xs/],
+        keyframes: true,
+        fontFace: true,
+        variables: true,
+      },
+
+      theme: {
+        spacing: {
+          72: '18rem',
+          84: '21rem',
+          96: '24rem',
+          custom: '2.5rem',
+        },
+        display: {
+          'custom-flex': 'flex',
+          'custom-grid': 'grid',
+        },
+      },
+
+      showPurgeReport: false,
     }),
   ],
 });
@@ -53,20 +95,6 @@ HTMLでユーティリティクラスを使用：
 ```
 
 Viteプラグインが自動的に使用されたクラスを検出し、必要なCSSを生成します。
-
-### 2. プログラマティックに使用する場合
-
-```javascript
-import { generateCSS } from 'smsshcss';
-
-const css = generateCSS({
-  content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
-  includeResetCSS: true,
-  includeBaseCSS: true,
-});
-
-console.log(css);
-```
 
 ## 利用可能なユーティリティクラス
 
@@ -237,9 +265,6 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 - **min()** - 複数の値から最小値を選択
 - **max()** - 複数の値から最大値を選択
 - **clamp()** - 最小値、推奨値、最大値の間で値を制限
-- **abs(), sign(), mod(), rem()** - 数学演算関数
-- **sin(), cos(), tan(), asin(), acos(), atan(), atan2()** - 三角関数
-- **pow(), sqrt(), log(), exp(), hypot()** - 指数・対数関数
 
 すべての関数は、margin (m-), padding (p-), gap の各ユーティリティで、全方向（t, r, b, l, x, y）に対応しています。
 
@@ -264,47 +289,6 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <div class="table">display: block table</div>
 <div class="table-cell">display: table-cell</div>
 <div class="table-row">display: table-row</div>
-```
-
-## 設定オプション
-
-### Viteプラグイン設定
-
-```javascript
-smsshcss({
-  // HTMLファイルのパターン（必須）
-  content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}'],
-
-  // Reset CSSを含めるか（デフォルト: true）
-  includeResetCSS: true,
-
-  // Base CSSを含めるか（デフォルト: true）
-  includeBaseCSS: true,
-
-  // カスタムテーマ設定
-  theme: {
-    spacing: {
-      custom: '10px',
-      large: '5rem',
-    },
-  },
-});
-```
-
-## サンプルプロジェクト
-
-完全な動作例は `playgrounds/vite-plugin` ディレクトリを参照してください：
-
-```bash
-cd playgrounds/vite-plugin
-
-# yarn
-yarn install
-yarn dev
-
-# npm
-npm install
-npm run dev
 ```
 
 ## ライセンス

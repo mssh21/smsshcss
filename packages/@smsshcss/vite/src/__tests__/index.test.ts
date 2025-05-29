@@ -31,6 +31,14 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.flex-row { flex-direction: row; }';
+    css += '\n.flex-wrap { flex-wrap: wrap; }';
+    css += '\n.flex-nowrap { flex-wrap: nowrap; }';
+    css += '\n.justify-start { justify-content: flex-start; }';
+    css += '\n.items-start { align-items: flex-start; }';
+    css += '\n.content-start { align-content: flex-start; }';
+    css += '\n.self-start { align-self: flex-start; }';
+    css += '\n.flex-1 { flex: 1 1 0%; }';
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -79,6 +87,14 @@ vi.mock('smsshcss', () => ({
     css += '\n.gap-y-lg { row-gap: 2rem; }';
     css += '\n.flex { display: block flex; }';
     css += '\n.grid { display: block grid; }';
+    css += '\n.flex-row { flex-direction: row; }';
+    css += '\n.flex-wrap { flex-wrap: wrap; }';
+    css += '\n.flex-nowrap { flex-wrap: nowrap; }';
+    css += '\n.justify-start { justify-content: flex-start; }';
+    css += '\n.items-start { align-items: flex-start; }';
+    css += '\n.content-start { align-content: flex-start; }';
+    css += '\n.self-start { align-self: flex-start; }';
+    css += '\n.flex-1 { flex: 1 1 0%; }';
 
     // カスタムテーマクラス
     if (config.theme?.spacing) {
@@ -247,6 +263,19 @@ describe('SmsshCSS Vite Plugin', () => {
       it('should generate display utility classes', () => {
         expect(result?.code).toContain('.flex { display: block flex; }');
         expect(result?.code).toContain('.grid { display: block grid; }');
+      });
+    });
+
+    describe('Flexbox Classes', () => {
+      it('should generate flexbox utility classes', () => {
+        expect(result?.code).toContain('.flex-row { flex-direction: row; }');
+        expect(result?.code).toContain('.flex-wrap { flex-wrap: wrap; }');
+        expect(result?.code).toContain('.flex-nowrap { flex-wrap: nowrap; }');
+        expect(result?.code).toContain('.justify-start { justify-content: flex-start; }');
+        expect(result?.code).toContain('.items-start { align-items: flex-start; }');
+        expect(result?.code).toContain('.content-start { align-content: flex-start; }');
+        expect(result?.code).toContain('.self-start { align-self: flex-start; }');
+        expect(result?.code).toContain('.flex-1 { flex: 1 1 0%; }');
       });
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "@smsshcss/vite",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Vite plugin for SmsshCSS",
   "type": "module",
   "main": "./dist/index.js",
