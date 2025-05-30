@@ -12,7 +12,16 @@
     "build": "tsup src/index.ts --format esm --external vite,smsshcss && cp src/index.d.ts dist/",
     "dev": "tsup src/index.ts --format esm --external vite,smsshcss --watch && cp src/index.d.ts dist/",
     "clean": "rm -rf dist",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:watch": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "test:ci": "vitest run --coverage --reporter=verbose",
+    "test:unit": "vitest run src/__tests__/plugin.test.ts src/__tests__/utility-classes.test.ts",
+    "test:integration": "vitest run src/__tests__/integration.test.ts src/__tests__/custom-values.test.ts",
+    "test:debug": "vitest run --reporter=verbose --bail=1",
+    "lint:test": "eslint 'src/__tests__/**/*.ts'"
   },
   "dependencies": {
     "glob": "^10.3.10",
@@ -20,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
+    "@vitest/ui": "^3.1.4",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.0",

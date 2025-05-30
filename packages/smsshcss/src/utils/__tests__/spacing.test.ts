@@ -1,25 +1,13 @@
 import { generateSpacingClasses, generateGapClasses, generateAllSpacingClasses } from '../spacing';
+import { defaultSpacingValues } from '../../core/sizeConfig';
 
 describe('Spacing Utilities', () => {
-  // フィボナッチ数列ベースのスペーシング設定（直感的な命名）
-  const defaultConfig = {
-    none: '0', // ゼロスペーシング
-    auto: 'auto',
-    '2xs': '0.25rem', // 4px  (フィボナッチ: 1)
-    xs: '0.5rem', // 8px  (フィボナッチ: 2)
-    sm: '0.75rem', // 12px (フィボナッチ: 3)
-    md: '1.25rem', // 20px (フィボナッチ: 5)
-    lg: '2rem', // 32px (フィボナッチ: 8)
-    xl: '3.25rem', // 52px (フィボナッチ: 13)
-    '2xl': '5.25rem', // 84px (フィボナッチ: 21)
-    '3xl': '8.5rem', // 136px (フィボナッチ: 34)
-    '4xl': '13.75rem', // 220px (フィボナッチ: 55)
-    '5xl': '22.25rem', // 356px (フィボナッチ: 89)
-  };
+  // 共通設定から spacing 設定を取得
+  const spacingConfig = defaultSpacingValues;
 
   describe('generateSpacingClasses', () => {
     it('should generate margin classes with default config', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 基本的なマージンクラスが含まれているか確認
       expect(result).toContain('.m-none { margin: 0; }');
@@ -30,7 +18,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate padding classes with default config', () => {
-      const result = generateSpacingClasses(defaultConfig, 'padding');
+      const result = generateSpacingClasses(spacingConfig, 'padding');
 
       // 基本的なパディングクラスが含まれているか確認
       expect(result).toContain('.p-none { padding: 0; }');
@@ -41,7 +29,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate directional classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 方向指定のクラスが含まれているか確認
       expect(result).toContain('.mt-none { margin-top: 0; }');
@@ -56,7 +44,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate x and y directional classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // x, y方向のクラスが含まれているか確認
       expect(result).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
@@ -67,7 +55,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include arbitrary value classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 任意の値のクラスが含まれているか確認
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');
@@ -80,7 +68,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateGapClasses', () => {
     it('should generate gap classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // 基本的なギャップクラスが含まれているか確認
       expect(result).toContain('.gap-none { gap: 0; }');
@@ -91,7 +79,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate gap-x (column-gap) classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // gap-x (column-gap) クラスが含まれているか確認
       expect(result).toContain('.gap-x-none { column-gap: 0; }');
@@ -103,7 +91,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate gap-y (row-gap) classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // gap-y (row-gap) クラスが含まれているか確認
       expect(result).toContain('.gap-y-none { row-gap: 0; }');
@@ -115,7 +103,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include arbitrary gap value classes', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // 任意の値のギャップクラスが含まれているか確認
       expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
@@ -126,9 +114,9 @@ describe('Spacing Utilities', () => {
 
   describe('none spacing value', () => {
     it('should generate all none spacing classes correctly', () => {
-      const marginResult = generateSpacingClasses(defaultConfig, 'margin');
-      const paddingResult = generateSpacingClasses(defaultConfig, 'padding');
-      const gapResult = generateGapClasses(defaultConfig);
+      const marginResult = generateSpacingClasses(spacingConfig, 'margin');
+      const paddingResult = generateSpacingClasses(spacingConfig, 'padding');
+      const gapResult = generateGapClasses(spacingConfig);
 
       // マージンのnoneクラス
       expect(marginResult).toContain('.m-none { margin: 0; }');
@@ -157,7 +145,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateAllSpacingClasses', () => {
     it('should generate all spacing classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // マージン、パディング、ギャップのクラスがすべて含まれているか確認
       expect(result).toContain('.m-none { margin: 0; }');
@@ -173,7 +161,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include all directional classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // すべての方向指定クラスが含まれているか確認
       expect(result).toContain('.mt-none { margin-top: 0; }');
@@ -187,7 +175,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include all arbitrary value classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // すべての任意の値クラスが含まれているか確認
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');

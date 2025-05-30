@@ -472,27 +472,21 @@
             <div>
               <div class="test-label">Flexbox column</div>
               <div class="flex gap-[20px] flex-col">
+                <div class="demo-box p-sm w-[200px] h-[100px]" style="background-color: #f0f0f0">
+                  flex item
+                </div>
+                <div class="demo-box p-sm w-md h-md" style="background-color: #f0f0f0">
+                  flex item
+                </div>
                 <div
-                  class="demo-box p-sm"
-                  style="width: 200px; height: 100px; background-color: #f0f0f0"
+                  class="demo-box p-sm w-[calc(200px+10px)] h-[calc(100px+10px)]"
+                  style="background-color: #f0f0f0"
                 >
                   flex item
                 </div>
                 <div
-                  class="demo-box p-sm"
-                  style="width: 200px; height: 100px; background-color: #f0f0f0"
-                >
-                  flex item
-                </div>
-                <div
-                  class="demo-box p-sm"
-                  style="width: 200px; height: 100px; background-color: #f0f0f0"
-                >
-                  flex item
-                </div>
-                <div
-                  class="demo-box p-sm"
-                  style="width: 200px; height: 100px; background-color: #f0f0f0"
+                  class="demo-box p-sm w-[var(--size-100)] h-[var(--size-100)]"
+                  style="--size-100: 100px; --size-100: 100px"
                 >
                   flex item
                 </div>
@@ -501,16 +495,10 @@
             <div>
               <div class="test-label">Flexbox row</div>
               <div class="flex gap-[20px] flex-row">
-                <div
-                  class="demo-box p-sm w-[600px]"
-                  style="height: 100px; background-color: #f0f0f0"
-                >
+                <div class="demo-box p-sm w-[600px] h-[100px]" style="background-color: #f0f0f0">
                   flex item
                 </div>
-                <div
-                  class="demo-box p-sm"
-                  style="width: 200px; height: 100px; background-color: #f0f0f0"
-                >
+                <div class="demo-box p-sm w-[50px] h-[200px]" style="background-color: #f0f0f0">
                   flex item
                 </div>
               </div>

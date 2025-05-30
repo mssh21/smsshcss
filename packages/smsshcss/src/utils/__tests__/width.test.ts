@@ -1,33 +1,11 @@
 import { generateWidthClasses, generateAllWidthClasses } from '../width';
+import { defaultSizeConfig } from '../../core/sizeConfig';
 
-describe('Spacing Utilities', () => {
-  // フィボナッチ数列ベースのスペーシング設定（直感的な命名）
-  const defaultConfig = {
-    none: '0', // ゼロスペーシング
-    '2xs': 'var(--size-2xs)', // 16px
-    xs: 'var(--size-xs)', // 24px
-    sm: 'var(--size-sm)', // 32px
-    md: 'var(--size-md)', // 40px
-    lg: 'var(--size-lg)', // 48px
-    xl: 'var(--size-xl)', // 64px
-    '2xl': 'var(--size-2xl)', // 96px
-    '3xl': 'var(--size-3xl)', // 128px
-    '4xl': 'var(--size-4xl)', // 192px
-    '5xl': 'var(--size-5xl)', // 256px
-    '6xl': 'var(--size-6xl)', // 320px
-    '7xl': 'var(--size-7xl)', // 384px
-    '8xl': 'var(--size-8xl)', // 512px
-    '9xl': 'var(--size-9xl)', // 768px
-    '10xl': 'var(--size-10xl)', // 1024px
-    '11xl': 'var(--size-11xl)', // 1280px
-    '12xl': 'var(--size-12xl)', // 1536px
-    full: '100%',
-    auto: 'auto',
-    fit: 'fit-content',
-    min: 'min-content',
-    max: 'max-content',
+describe('Width Utilities', () => {
+  // 共通設定から width 設定を取得（width特有の設定も含む）
+  const widthConfig = {
+    ...defaultSizeConfig,
     screen: '100vw',
-    dvh: '100dvh',
     dvw: '100dvw',
     cqw: '100cqw',
     cqi: '100cqi',
@@ -37,7 +15,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateWidthClasses', () => {
     it('should generate width classes with default config', () => {
-      const result = generateWidthClasses(defaultConfig, 'width');
+      const result = generateWidthClasses(widthConfig, 'width');
 
       // 基本的なwidthクラスが含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
@@ -47,7 +25,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate min-width classes with default config', () => {
-      const result = generateWidthClasses(defaultConfig, 'min-width');
+      const result = generateWidthClasses(widthConfig, 'min-width');
 
       // 基本的なmin-widthクラスが含まれているか確認
       expect(result).toContain('.min-w-none { min-width: 0; }');
@@ -57,7 +35,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should generate max-width classes with default config', () => {
-      const result = generateWidthClasses(defaultConfig, 'max-width');
+      const result = generateWidthClasses(widthConfig, 'max-width');
 
       // 基本的なmax-widthクラスが含まれているか確認
       expect(result).toContain('.max-w-none { max-width: 0; }');
@@ -67,7 +45,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include arbitrary value classes', () => {
-      const result = generateWidthClasses(defaultConfig, 'width');
+      const result = generateWidthClasses(widthConfig, 'width');
 
       // 任意の値のクラスが含まれているか確認
       expect(result).toContain('.w-\\[\\$\\{value\\}\\] { width: var(--value); }');
@@ -78,9 +56,9 @@ describe('Spacing Utilities', () => {
 
   describe('none width value', () => {
     it('should generate all none width classes correctly', () => {
-      const widthResult = generateWidthClasses(defaultConfig, 'width');
-      const minWidthResult = generateWidthClasses(defaultConfig, 'min-width');
-      const maxWidthResult = generateWidthClasses(defaultConfig, 'max-width');
+      const widthResult = generateWidthClasses(widthConfig, 'width');
+      const minWidthResult = generateWidthClasses(widthConfig, 'min-width');
+      const maxWidthResult = generateWidthClasses(widthConfig, 'max-width');
 
       // widthのnoneクラス
       expect(widthResult).toContain('.w-none { width: 0; }');
@@ -93,7 +71,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateAllWidthClasses', () => {
     it('should generate all width classes', () => {
-      const result = generateAllWidthClasses(defaultConfig);
+      const result = generateAllWidthClasses(widthConfig);
 
       // width、min-width、max-widthのクラスがすべて含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
@@ -105,7 +83,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include all arbitrary value classes', () => {
-      const result = generateAllWidthClasses(defaultConfig);
+      const result = generateAllWidthClasses(widthConfig);
 
       // すべての任意の値クラスが含まれているか確認
       expect(result).toContain('.w-\\[\\$\\{value\\}\\] { width: var(--value); }');
