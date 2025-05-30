@@ -19,9 +19,9 @@ describe('Width Utilities', () => {
 
       // 基本的なwidthクラスが含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
-      expect(result).toContain('.w-2xs { width: var(--size-2xs); }');
-      expect(result).toContain('.w-md { width: var(--size-md); }');
-      expect(result).toContain('.w-5xl { width: var(--size-5xl); }');
+      expect(result).toContain('.w-2xs { width: calc(var(--size-base) * 1.5); }');
+      expect(result).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.w-5xl { width: calc(var(--size-base) * 16); }');
     });
 
     it('should generate min-width classes with default config', () => {
@@ -29,9 +29,9 @@ describe('Width Utilities', () => {
 
       // 基本的なmin-widthクラスが含まれているか確認
       expect(result).toContain('.min-w-none { min-width: 0; }');
-      expect(result).toContain('.min-w-2xs { min-width: var(--size-2xs); }');
-      expect(result).toContain('.min-w-md { min-width: var(--size-md); }');
-      expect(result).toContain('.min-w-5xl { min-width: var(--size-5xl); }');
+      expect(result).toContain('.min-w-2xs { min-width: calc(var(--size-base) * 1.5); }');
+      expect(result).toContain('.min-w-md { min-width: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.min-w-5xl { min-width: calc(var(--size-base) * 16); }');
     });
 
     it('should generate max-width classes with default config', () => {
@@ -39,9 +39,9 @@ describe('Width Utilities', () => {
 
       // 基本的なmax-widthクラスが含まれているか確認
       expect(result).toContain('.max-w-none { max-width: 0; }');
-      expect(result).toContain('.max-w-2xs { max-width: var(--size-2xs); }');
-      expect(result).toContain('.max-w-md { max-width: var(--size-md); }');
-      expect(result).toContain('.max-w-5xl { max-width: var(--size-5xl); }');
+      expect(result).toContain('.max-w-2xs { max-width: calc(var(--size-base) * 1.5); }');
+      expect(result).toContain('.max-w-md { max-width: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.max-w-5xl { max-width: calc(var(--size-base) * 16); }');
     });
 
     it('should include arbitrary value classes', () => {
@@ -77,9 +77,9 @@ describe('Width Utilities', () => {
       expect(result).toContain('.w-none { width: 0; }');
       expect(result).toContain('.min-w-none { min-width: 0; }');
       expect(result).toContain('.max-w-none { max-width: 0; }');
-      expect(result).toContain('.w-md { width: var(--size-md); }');
-      expect(result).toContain('.min-w-md { min-width: var(--size-md); }');
-      expect(result).toContain('.max-w-md { max-width: var(--size-md); }');
+      expect(result).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.min-w-md { min-width: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.max-w-md { max-width: calc(var(--size-base) * 2.5); }');
     });
 
     it('should include all arbitrary value classes', () => {

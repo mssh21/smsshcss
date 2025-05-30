@@ -35,49 +35,51 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
 
   // SmsshCSS Generated Styles
   css += '\n/* SmsshCSS Generated Styles */';
-  css += '\n.m-md { margin: 1.25rem; }';
-  css += '\n.mt-lg { margin-top: 2rem; }';
-  css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
-  css += '\n.p-md { padding: 1.25rem; }';
-  css += '\n.p-lg { padding: 2rem; }';
-  css += '\n.pt-lg { padding-top: 2rem; }';
-  css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
-  css += '\n.gap-md { gap: 1.25rem; }';
-  css += '\n.gap-x-md { column-gap: 1.25rem; }';
-  css += '\n.gap-y-md { row-gap: 1.25rem; }';
-  css += '\n.gap-x-lg { column-gap: 2rem; }';
-  css += '\n.gap-y-lg { row-gap: 2rem; }';
-  css += '\n.gap-xl { gap: 3.25rem; }';
+  css += '\n.m-md { margin: calc(var(--space-base) * 5); }';
+  css += '\n.mt-lg { margin-top: calc(var(--space-base) * 8); }';
+  css +=
+    '\n.mx-sm { margin-left: calc(var(--space-base) * 3); margin-right: calc(var(--space-base) * 3); }';
+  css += '\n.p-md { padding: calc(var(--space-base) * 5); }';
+  css += '\n.p-lg { padding: calc(var(--space-base) * 8); }';
+  css += '\n.pt-lg { padding-top: calc(var(--space-base) * 8); }';
+  css +=
+    '\n.px-sm { padding-left: calc(var(--space-base) * 3); padding-right: calc(var(--space-base) * 3); }';
+  css += '\n.gap-md { gap: calc(var(--space-base) * 5); }';
+  css += '\n.gap-x-md { column-gap: calc(var(--space-base) * 5); }';
+  css += '\n.gap-y-md { row-gap: calc(var(--space-base) * 5); }';
+  css += '\n.gap-x-lg { column-gap: calc(var(--space-base) * 8); }';
+  css += '\n.gap-y-lg { row-gap: calc(var(--space-base) * 8); }';
+  css += '\n.gap-xl { gap: calc(var(--space-base) * 13); }';
   css += '\n.flex { display: flex; }';
   css += '\n.grid { display: grid; }';
 
   // Width classes - 全サイズをCSS変数形式で生成
-  css += '\n.w-2xs { width: var(--size-2xs); }';
-  css += '\n.w-xs { width: var(--size-xs); }';
-  css += '\n.w-sm { width: var(--size-sm); }';
-  css += '\n.w-md { width: var(--size-md); }';
-  css += '\n.w-lg { width: var(--size-lg); }';
-  css += '\n.w-xl { width: var(--size-xl); }';
+  css += '\n.w-2xs { width: var(--size-base); }';
+  css += '\n.w-xs { width: calc(var(--size-base) * 1.5); }';
+  css += '\n.w-sm { width: calc(var(--size-base) * 2); }';
+  css += '\n.w-md { width: calc(var(--size-base) * 2.5); }';
+  css += '\n.w-lg { width: calc(var(--size-base) * 3); }';
+  css += '\n.w-xl { width: calc(var(--size-base) * 4); }';
   css += '\n.w-screen { width: 100vw; }';
   css += '\n.w-full { width: 100%; }';
-  css += '\n.min-w-2xs { min-width: var(--size-2xs); }';
-  css += '\n.min-w-lg { min-width: var(--size-lg); }';
-  css += '\n.max-w-2xs { max-width: var(--size-2xs); }';
-  css += '\n.max-w-lg { max-width: var(--size-lg); }';
+  css += '\n.min-w-2xs { min-width: var(--size-base); }';
+  css += '\n.min-w-lg { min-width: calc(var(--size-base) * 3); }';
+  css += '\n.max-w-2xs { max-width: var(--size-base); }';
+  css += '\n.max-w-lg { max-width: calc(var(--size-base) * 3); }';
 
   // Height classes - 全サイズをCSS変数形式で生成
-  css += '\n.h-2xs { height: var(--size-2xs); }';
-  css += '\n.h-xs { height: var(--size-xs); }';
-  css += '\n.h-sm { height: var(--size-sm); }';
-  css += '\n.h-md { height: var(--size-md); }';
-  css += '\n.h-lg { height: var(--size-lg); }';
-  css += '\n.h-xl { height: var(--size-xl); }';
+  css += '\n.h-2xs { height: var(--size-base); }';
+  css += '\n.h-xs { height: calc(var(--size-base) * 1.5); }';
+  css += '\n.h-sm { height: calc(var(--size-base) * 2); }';
+  css += '\n.h-md { height: calc(var(--size-base) * 2.5); }';
+  css += '\n.h-lg { height: calc(var(--size-base) * 3); }';
+  css += '\n.h-xl { height: calc(var(--size-base) * 4); }';
   css += '\n.h-screen { height: 100vh; }';
   css += '\n.h-full { height: 100%; }';
-  css += '\n.min-h-2xs { min-height: var(--size-2xs); }';
-  css += '\n.min-h-lg { min-height: var(--size-lg); }';
-  css += '\n.max-h-2xs { max-height: var(--size-2xs); }';
-  css += '\n.max-h-lg { max-height: var(--size-lg); }';
+  css += '\n.min-h-2xs { min-height: var(--size-base); }';
+  css += '\n.min-h-lg { min-height: calc(var(--size-base) * 3); }';
+  css += '\n.max-h-2xs { max-height: var(--size-base); }';
+  css += '\n.max-h-lg { max-height: calc(var(--size-base) * 3); }';
 
   // Modern CSS units for compatibility tests
   css += '\n.h-dvh { height: 100dvh; }';
@@ -85,12 +87,12 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
 
   // SmsshCSS Generated Styles
   css += '\n.w-full { width: 100%; }';
-  css += '\n.h-md { height: 1.25rem; }';
-  css += '\n.h-lg { height: 2rem; }';
-  css += '\n.min-h-md { min-height: var(--size-md); }';
-  css += '\n.min-h-lg { min-height: var(--size-lg); }';
-  css += '\n.max-h-md { max-height: var(--size-md); }';
-  css += '\n.max-h-lg { max-height: var(--size-lg); }';
+  css += '\n.h-md { height: calc(var(--size-base) * 5); }';
+  css += '\n.h-lg { height: calc(var(--size-base) * 8); }';
+  css += '\n.min-h-md { min-height: calc(var(--size-base) * 5); }';
+  css += '\n.min-h-lg { min-height: calc(var(--size-base) * 8); }';
+  css += '\n.max-h-md { max-height: calc(var(--size-base) * 5); }';
+  css += '\n.max-h-lg { max-height: calc(var(--size-base) * 8); }';
 
   // カスタムテーマクラス
   if (config.theme?.spacing) {

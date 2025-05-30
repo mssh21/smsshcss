@@ -112,9 +112,9 @@ export function ${name}() {
     },
 
     expectStandardClasses: (code: string): void => {
-      expect(code).toContain('.m-md { margin: 1.25rem; }');
-      expect(code).toContain('.p-lg { padding: 2rem; }');
-      expect(code).toContain('.gap-xl { gap: 3.25rem; }');
+      expect(code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(code).toContain('.gap-xl { gap: calc(var(--space-base) * 13); }');
       expect(code).toContain('.flex { display: flex; }');
     },
 
@@ -209,7 +209,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'main.css');
 
       // 基本クラスが生成されている
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
 
       // カスタム値クラスが生成されている
       expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
@@ -277,9 +277,9 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       // 標準クラス
       expect(result?.code).toContain('.flex { display: flex; }');
       expect(result?.code).toContain('.grid { display: grid; }');
-      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
-      expect(result?.code).toContain('.p-lg { padding: 2rem; }');
-      expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
+      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
 
       // カスタム値クラス
       expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
@@ -346,7 +346,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'error.css');
 
       // 標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
     });
 
     it('should handle glob errors gracefully', async () => {
@@ -357,7 +357,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'glob-error.css');
 
       // globエラーが発生しても標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
       expect(result?.code).toContain('.flex { display: flex; }');
     });
   });

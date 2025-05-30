@@ -21,9 +21,9 @@ describe('Height Utilities', () => {
 
       // 基本的なheightクラスが含まれているか確認
       expect(result).toContain('.h-none { height: 0; }');
-      expect(result).toContain('.h-2xs { height: var(--size-2xs); }');
-      expect(result).toContain('.h-md { height: var(--size-md); }');
-      expect(result).toContain('.h-5xl { height: var(--size-5xl); }');
+      expect(result).toContain('.h-2xs { height: var(--size-base); }');
+      expect(result).toContain('.h-md { height: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.h-5xl { height: calc(var(--size-base) * 16); }');
     });
 
     it('should generate min-height classes with default config', () => {
@@ -31,9 +31,9 @@ describe('Height Utilities', () => {
 
       // 基本的なmin-heightクラスが含まれているか確認
       expect(result).toContain('.min-h-none { min-height: 0; }');
-      expect(result).toContain('.min-h-2xs { min-height: var(--size-2xs); }');
-      expect(result).toContain('.min-h-md { min-height: var(--size-md); }');
-      expect(result).toContain('.min-h-5xl { min-height: var(--size-5xl); }');
+      expect(result).toContain('.min-h-2xs { min-height: var(--size-base); }');
+      expect(result).toContain('.min-h-md { min-height: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.min-h-5xl { min-height: calc(var(--size-base) * 16); }');
     });
 
     it('should generate max-height classes with default config', () => {
@@ -41,9 +41,9 @@ describe('Height Utilities', () => {
 
       // 基本的なmax-heightクラスが含まれているか確認
       expect(result).toContain('.max-h-none { max-height: 0; }');
-      expect(result).toContain('.max-h-2xs { max-height: var(--size-2xs); }');
-      expect(result).toContain('.max-h-md { max-height: var(--size-md); }');
-      expect(result).toContain('.max-h-5xl { max-height: var(--size-5xl); }');
+      expect(result).toContain('.max-h-2xs { max-height: var(--size-base); }');
+      expect(result).toContain('.max-h-md { max-height: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.max-h-5xl { max-height: calc(var(--size-base) * 16); }');
     });
 
     it('should generate height-specific viewport classes', () => {
@@ -87,9 +87,9 @@ describe('Height Utilities', () => {
       expect(result).toContain('.h-none { height: 0; }');
       expect(result).toContain('.min-h-none { min-height: 0; }');
       expect(result).toContain('.max-h-none { max-height: 0; }');
-      expect(result).toContain('.h-md { height: var(--size-md); }');
-      expect(result).toContain('.min-h-md { min-height: var(--size-md); }');
-      expect(result).toContain('.max-h-md { max-height: var(--size-md); }');
+      expect(result).toContain('.h-md { height: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.min-h-md { min-height: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.max-h-md { max-height: calc(var(--size-base) * 2.5); }');
     });
 
     it('should include all viewport unit classes', () => {

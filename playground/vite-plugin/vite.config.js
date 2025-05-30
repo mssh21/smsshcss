@@ -6,7 +6,6 @@ export default defineConfig({
     smsshcss({
       includeReset: true,
       includeBase: true,
-
       minify: false,
 
       content: [

@@ -22,23 +22,27 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
 
   describe('Spacing Classes', () => {
     it('should generate margin classes', () => {
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.mt-lg { margin-top: 2rem; }');
-      expect(result?.code).toContain('.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.mt-lg { margin-top: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain(
+        '.mx-sm { margin-left: calc(var(--space-base) * 3); margin-right: calc(var(--space-base) * 3); }'
+      );
     });
 
     it('should generate padding classes', () => {
-      expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
-      expect(result?.code).toContain('.pt-lg { padding-top: 2rem; }');
-      expect(result?.code).toContain('.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }');
+      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.pt-lg { padding-top: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain(
+        '.px-sm { padding-left: calc(var(--space-base) * 3); padding-right: calc(var(--space-base) * 3); }'
+      );
     });
 
     it('should generate gap classes', () => {
-      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
-      expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
-      expect(result?.code).toContain('.gap-y-md { row-gap: 1.25rem; }');
-      expect(result?.code).toContain('.gap-x-lg { column-gap: 2rem; }');
-      expect(result?.code).toContain('.gap-y-lg { row-gap: 2rem; }');
+      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.gap-y-md { row-gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.gap-x-lg { column-gap: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain('.gap-y-lg { row-gap: calc(var(--space-base) * 8); }');
     });
   });
 
@@ -51,35 +55,35 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
 
   describe('Width Classes', () => {
     it('should generate width utility classes', () => {
-      expect(result?.code).toContain('.w-2xs { width: var(--size-2xs); }');
-      expect(result?.code).toContain('.w-xs { width: var(--size-xs); }');
-      expect(result?.code).toContain('.w-sm { width: var(--size-sm); }');
-      expect(result?.code).toContain('.w-md { width: var(--size-md); }');
-      expect(result?.code).toContain('.w-lg { width: var(--size-lg); }');
-      expect(result?.code).toContain('.w-xl { width: var(--size-xl); }');
+      expect(result?.code).toContain('.w-2xs { width: var(--size-base); }');
+      expect(result?.code).toContain('.w-xs { width: calc(var(--size-base) * 1.5); }');
+      expect(result?.code).toContain('.w-sm { width: calc(var(--size-base) * 2); }');
+      expect(result?.code).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
+      expect(result?.code).toContain('.w-lg { width: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.w-xl { width: calc(var(--size-base) * 4); }');
       expect(result?.code).toContain('.w-screen { width: 100vw; }');
       expect(result?.code).toContain('.w-full { width: 100%; }');
-      expect(result?.code).toContain('.min-w-2xs { min-width: var(--size-2xs); }');
-      expect(result?.code).toContain('.min-w-lg { min-width: var(--size-lg); }');
-      expect(result?.code).toContain('.max-w-2xs { max-width: var(--size-2xs); }');
-      expect(result?.code).toContain('.max-w-lg { max-width: var(--size-lg); }');
+      expect(result?.code).toContain('.min-w-2xs { min-width: var(--size-base); }');
+      expect(result?.code).toContain('.min-w-lg { min-width: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.max-w-2xs { max-width: var(--size-base); }');
+      expect(result?.code).toContain('.max-w-lg { max-width: calc(var(--size-base) * 3); }');
     });
   });
 
   describe('Height Classes', () => {
     it('should generate height utility classes', () => {
-      expect(result?.code).toContain('.h-2xs { height: var(--size-2xs); }');
-      expect(result?.code).toContain('.h-xs { height: var(--size-xs); }');
-      expect(result?.code).toContain('.h-sm { height: var(--size-sm); }');
-      expect(result?.code).toContain('.h-md { height: var(--size-md); }');
-      expect(result?.code).toContain('.h-lg { height: var(--size-lg); }');
-      expect(result?.code).toContain('.h-xl { height: var(--size-xl); }');
+      expect(result?.code).toContain('.h-2xs { height: var(--size-base); }');
+      expect(result?.code).toContain('.h-xs { height: calc(var(--size-base) * 1.5); }');
+      expect(result?.code).toContain('.h-sm { height: calc(var(--size-base) * 2); }');
+      expect(result?.code).toContain('.h-md { height: calc(var(--size-base) * 2.5); }');
+      expect(result?.code).toContain('.h-lg { height: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.h-xl { height: calc(var(--size-base) * 4); }');
       expect(result?.code).toContain('.h-screen { height: 100vh; }');
       expect(result?.code).toContain('.h-full { height: 100%; }');
-      expect(result?.code).toContain('.min-h-2xs { min-height: var(--size-2xs); }');
-      expect(result?.code).toContain('.min-h-lg { min-height: var(--size-lg); }');
-      expect(result?.code).toContain('.max-h-2xs { max-height: var(--size-2xs); }');
-      expect(result?.code).toContain('.max-h-lg { max-height: var(--size-lg); }');
+      expect(result?.code).toContain('.min-h-2xs { min-height: var(--size-base); }');
+      expect(result?.code).toContain('.min-h-lg { min-height: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.max-h-2xs { max-height: var(--size-base); }');
+      expect(result?.code).toContain('.max-h-lg { max-height: calc(var(--size-base) * 3); }');
     });
   });
 

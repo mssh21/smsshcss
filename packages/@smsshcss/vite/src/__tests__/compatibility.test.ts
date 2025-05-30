@@ -26,7 +26,7 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
       const result = await plugin.transform('', 'compatibility.css');
 
       expect(result?.code).toBeDefined();
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
     });
 
     it('should handle ES modules correctly', async () => {
@@ -260,6 +260,9 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
         width: {
           'custom-width': '42rem',
         },
+        height: {
+          'custom-height': '42rem',
+        },
       };
 
       const plugin = smsshcss({
@@ -270,6 +273,7 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
 
       expect(result?.code).toContain('.p-custom-1 { padding: 0.125rem; }');
       expect(result?.code).toContain('.w-custom-width { width: 42rem; }');
+      expect(result?.code).toContain('.h-custom-height { height: 42rem; }');
     });
 
     it('should handle malformed configurations gracefully', async () => {
@@ -315,7 +319,7 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
 
       // OS固有の問題がないことを確認
       expect(result?.code).toBeDefined();
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
 
       // ファイルパスの区切り文字などの問題がないことを確認
       expect(result?.code).not.toContain('\\\\');
