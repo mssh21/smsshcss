@@ -1,7 +1,9 @@
 import { SmsshCSSConfig, GeneratedCSS, PurgeReport } from './types';
-import { generateAllSpacingClasses, extractCustomClasses } from '../utils/spacing';
+import { generateAllSpacingClasses, extractCustomSpacingClasses } from '../utils/spacing';
 import { generateDisplayClasses } from '../utils/display';
 import { generateFlexboxClasses } from '../utils/flexbox';
+import { generateAllWidthClasses, extractCustomWidthClasses } from '../utils/width';
+import { generateAllHeightClasses, extractCustomHeightClasses } from '../utils/height';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
@@ -122,11 +124,14 @@ export class CSSGenerator {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
     const flexboxConfig = this.config.theme?.flexbox;
-
+    const widthConfig = this.config.theme?.width;
+    const heightConfig = this.config.theme?.height;
     let utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
       generateFlexboxClasses(flexboxConfig),
+      generateAllWidthClasses(widthConfig),
+      generateAllHeightClasses(heightConfig),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -177,10 +182,28 @@ export class CSSGenerator {
             try {
               const filePath = path.resolve(process.cwd(), file);
               const fileContent = fs.readFileSync(filePath, 'utf-8');
-              const fileCustomClasses = extractCustomClasses(fileContent);
+              const fileCustomSpacingClasses = extractCustomSpacingClasses(fileContent);
+              const fileCustomWidthClasses = extractCustomWidthClasses(fileContent);
+              const fileCustomHeightClasses = extractCustomHeightClasses(fileContent);
 
               // スペーシングのカスタムクラスを追加
-              for (const cssClass of fileCustomClasses) {
+              for (const cssClass of fileCustomSpacingClasses) {
+                if (!seenClasses.has(cssClass)) {
+                  seenClasses.add(cssClass);
+                  allCustomClasses.push(cssClass);
+                }
+              }
+
+              // Widthのカスタムクラスを追加
+              for (const cssClass of fileCustomWidthClasses) {
+                if (!seenClasses.has(cssClass)) {
+                  seenClasses.add(cssClass);
+                  allCustomClasses.push(cssClass);
+                }
+              }
+
+              // Heightのカスタムクラスを追加
+              for (const cssClass of fileCustomHeightClasses) {
                 if (!seenClasses.has(cssClass)) {
                   seenClasses.add(cssClass);
                   allCustomClasses.push(cssClass);
@@ -221,11 +244,14 @@ export class CSSGenerator {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
     const flexboxConfig = this.config.theme?.flexbox;
-
+    const widthConfig = this.config.theme?.width;
+    const heightConfig = this.config.theme?.height;
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
       generateFlexboxClasses(flexboxConfig),
+      generateAllWidthClasses(widthConfig),
+      generateAllHeightClasses(heightConfig),
     ].join('\n\n');
 
     // 全CSSを結合してパージャーに渡す
@@ -246,11 +272,15 @@ export class CSSGenerator {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
     const flexboxConfig = this.config.theme?.flexbox;
+    const widthConfig = this.config.theme?.width;
+    const heightConfig = this.config.theme?.height;
 
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
       generateFlexboxClasses(flexboxConfig),
+      generateAllWidthClasses(widthConfig),
+      generateAllHeightClasses(heightConfig),
     ].join('\n\n');
 
     return [

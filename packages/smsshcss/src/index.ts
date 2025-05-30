@@ -85,4 +85,6 @@ export * from './core/generator';
 export * from './core/purger';
 
 // Export utility functions
-export { extractCustomClasses } from './utils/spacing';
+export { extractCustomSpacingClasses } from './utils/spacing';
+export { extractCustomWidthClasses } from './utils/width';
+export { extractCustomHeightClasses } from './utils/height';

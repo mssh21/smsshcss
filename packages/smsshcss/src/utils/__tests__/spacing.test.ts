@@ -1,68 +1,65 @@
 import { generateSpacingClasses, generateGapClasses, generateAllSpacingClasses } from '../spacing';
+import { defaultSpacingValues } from '../../core/sizeConfig';
 
 describe('Spacing Utilities', () => {
-  // フィボナッチ数列ベースのスペーシング設定（直感的な命名）
-  const defaultConfig = {
-    none: '0', // ゼロスペーシング
-    '2xs': '0.25rem', // 4px  (フィボナッチ: 1)
-    xs: '0.5rem', // 8px  (フィボナッチ: 2)
-    sm: '0.75rem', // 12px (フィボナッチ: 3)
-    md: '1.25rem', // 20px (フィボナッチ: 5)
-    lg: '2rem', // 32px (フィボナッチ: 8)
-    xl: '3.25rem', // 52px (フィボナッチ: 13)
-    '2xl': '5.25rem', // 84px (フィボナッチ: 21)
-    '3xl': '8.5rem', // 136px (フィボナッチ: 34)
-    '4xl': '13.75rem', // 220px (フィボナッチ: 55)
-    '5xl': '22.25rem', // 356px (フィボナッチ: 89)
-  };
+  // 共通設定から spacing 設定を取得
+  const spacingConfig = defaultSpacingValues;
 
   describe('generateSpacingClasses', () => {
     it('should generate margin classes with default config', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 基本的なマージンクラスが含まれているか確認
       expect(result).toContain('.m-none { margin: 0; }');
-      expect(result).toContain('.m-2xs { margin: 0.25rem; }');
-      expect(result).toContain('.m-md { margin: 1.25rem; }');
-      expect(result).toContain('.m-5xl { margin: 22.25rem; }');
+      expect(result).toContain('.m-auto { margin: auto; }');
+      expect(result).toContain('.m-2xs { margin: var(--space-base); }');
+      expect(result).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.m-5xl { margin: calc(var(--space-base) * 89); }');
     });
 
     it('should generate padding classes with default config', () => {
-      const result = generateSpacingClasses(defaultConfig, 'padding');
+      const result = generateSpacingClasses(spacingConfig, 'padding');
 
       // 基本的なパディングクラスが含まれているか確認
       expect(result).toContain('.p-none { padding: 0; }');
-      expect(result).toContain('.p-2xs { padding: 0.25rem; }');
-      expect(result).toContain('.p-md { padding: 1.25rem; }');
-      expect(result).toContain('.p-5xl { padding: 22.25rem; }');
+      expect(result).toContain('.p-auto { padding: auto; }');
+      expect(result).toContain('.p-2xs { padding: var(--space-base); }');
+      expect(result).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.p-5xl { padding: calc(var(--space-base) * 89); }');
     });
 
     it('should generate directional classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 方向指定のクラスが含まれているか確認
       expect(result).toContain('.mt-none { margin-top: 0; }');
+      expect(result).toContain('.mt-auto { margin-top: auto; }');
       expect(result).toContain('.mr-none { margin-right: 0; }');
       expect(result).toContain('.mb-none { margin-bottom: 0; }');
       expect(result).toContain('.ml-none { margin-left: 0; }');
-      expect(result).toContain('.mt-md { margin-top: 1.25rem; }');
-      expect(result).toContain('.mr-md { margin-right: 1.25rem; }');
-      expect(result).toContain('.mb-md { margin-bottom: 1.25rem; }');
-      expect(result).toContain('.ml-md { margin-left: 1.25rem; }');
+      expect(result).toContain('.mt-md { margin-top: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.mr-md { margin-right: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.mb-md { margin-bottom: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.ml-md { margin-left: calc(var(--space-base) * 5); }');
     });
 
     it('should generate x and y directional classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // x, y方向のクラスが含まれているか確認
       expect(result).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
       expect(result).toContain('.my-none { margin-top: 0; margin-bottom: 0; }');
-      expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
-      expect(result).toContain('.my-md { margin-top: 1.25rem; margin-bottom: 1.25rem; }');
+      expect(result).toContain('.my-auto { margin-top: auto; margin-bottom: auto; }');
+      expect(result).toContain(
+        '.mx-md { margin-left: calc(var(--space-base) * 5); margin-right: calc(var(--space-base) * 5); }'
+      );
+      expect(result).toContain(
+        '.my-md { margin-top: calc(var(--space-base) * 5); margin-bottom: calc(var(--space-base) * 5); }'
+      );
     });
 
     it('should include arbitrary value classes', () => {
-      const result = generateSpacingClasses(defaultConfig, 'margin');
+      const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 任意の値のクラスが含まれているか確認
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');
@@ -75,39 +72,42 @@ describe('Spacing Utilities', () => {
 
   describe('generateGapClasses', () => {
     it('should generate gap classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // 基本的なギャップクラスが含まれているか確認
       expect(result).toContain('.gap-none { gap: 0; }');
-      expect(result).toContain('.gap-2xs { gap: 0.25rem; }');
-      expect(result).toContain('.gap-md { gap: 1.25rem; }');
-      expect(result).toContain('.gap-5xl { gap: 22.25rem; }');
+      expect(result).toContain('.gap-auto { gap: auto; }');
+      expect(result).toContain('.gap-2xs { gap: var(--space-base); }');
+      expect(result).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-5xl { gap: calc(var(--space-base) * 89); }');
     });
 
     it('should generate gap-x (column-gap) classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // gap-x (column-gap) クラスが含まれているか確認
       expect(result).toContain('.gap-x-none { column-gap: 0; }');
-      expect(result).toContain('.gap-x-2xs { column-gap: 0.25rem; }');
-      expect(result).toContain('.gap-x-md { column-gap: 1.25rem; }');
-      expect(result).toContain('.gap-x-lg { column-gap: 2rem; }');
-      expect(result).toContain('.gap-x-5xl { column-gap: 22.25rem; }');
+      expect(result).toContain('.gap-x-auto { column-gap: auto; }');
+      expect(result).toContain('.gap-x-2xs { column-gap: var(--space-base); }');
+      expect(result).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-x-lg { column-gap: calc(var(--space-base) * 8); }');
+      expect(result).toContain('.gap-x-5xl { column-gap: calc(var(--space-base) * 89); }');
     });
 
     it('should generate gap-y (row-gap) classes with default config', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // gap-y (row-gap) クラスが含まれているか確認
       expect(result).toContain('.gap-y-none { row-gap: 0; }');
-      expect(result).toContain('.gap-y-2xs { row-gap: 0.25rem; }');
-      expect(result).toContain('.gap-y-md { row-gap: 1.25rem; }');
-      expect(result).toContain('.gap-y-lg { row-gap: 2rem; }');
-      expect(result).toContain('.gap-y-5xl { row-gap: 22.25rem; }');
+      expect(result).toContain('.gap-y-auto { row-gap: auto; }');
+      expect(result).toContain('.gap-y-2xs { row-gap: var(--space-base); }');
+      expect(result).toContain('.gap-y-md { row-gap: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-y-lg { row-gap: calc(var(--space-base) * 8); }');
+      expect(result).toContain('.gap-y-5xl { row-gap: calc(var(--space-base) * 89); }');
     });
 
     it('should include arbitrary gap value classes', () => {
-      const result = generateGapClasses(defaultConfig);
+      const result = generateGapClasses(spacingConfig);
 
       // 任意の値のギャップクラスが含まれているか確認
       expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
@@ -118,9 +118,9 @@ describe('Spacing Utilities', () => {
 
   describe('none spacing value', () => {
     it('should generate all none spacing classes correctly', () => {
-      const marginResult = generateSpacingClasses(defaultConfig, 'margin');
-      const paddingResult = generateSpacingClasses(defaultConfig, 'padding');
-      const gapResult = generateGapClasses(defaultConfig);
+      const marginResult = generateSpacingClasses(spacingConfig, 'margin');
+      const paddingResult = generateSpacingClasses(spacingConfig, 'padding');
+      const gapResult = generateGapClasses(spacingConfig);
 
       // マージンのnoneクラス
       expect(marginResult).toContain('.m-none { margin: 0; }');
@@ -149,7 +149,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateAllSpacingClasses', () => {
     it('should generate all spacing classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // マージン、パディング、ギャップのクラスがすべて含まれているか確認
       expect(result).toContain('.m-none { margin: 0; }');
@@ -157,29 +157,33 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.gap-none { gap: 0; }');
       expect(result).toContain('.gap-x-none { column-gap: 0; }');
       expect(result).toContain('.gap-y-none { row-gap: 0; }');
-      expect(result).toContain('.m-md { margin: 1.25rem; }');
-      expect(result).toContain('.p-md { padding: 1.25rem; }');
-      expect(result).toContain('.gap-md { gap: 1.25rem; }');
-      expect(result).toContain('.gap-x-md { column-gap: 1.25rem; }');
-      expect(result).toContain('.gap-y-md { row-gap: 1.25rem; }');
+      expect(result).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.gap-y-md { row-gap: calc(var(--space-base) * 5); }');
     });
 
     it('should include all directional classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // すべての方向指定クラスが含まれているか確認
       expect(result).toContain('.mt-none { margin-top: 0; }');
       expect(result).toContain('.pt-none { padding-top: 0; }');
       expect(result).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
       expect(result).toContain('.px-none { padding-left: 0; padding-right: 0; }');
-      expect(result).toContain('.mt-md { margin-top: 1.25rem; }');
-      expect(result).toContain('.pt-md { padding-top: 1.25rem; }');
-      expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
-      expect(result).toContain('.px-md { padding-left: 1.25rem; padding-right: 1.25rem; }');
+      expect(result).toContain('.mt-md { margin-top: calc(var(--space-base) * 5); }');
+      expect(result).toContain('.pt-md { padding-top: calc(var(--space-base) * 5); }');
+      expect(result).toContain(
+        '.mx-md { margin-left: calc(var(--space-base) * 5); margin-right: calc(var(--space-base) * 5); }'
+      );
+      expect(result).toContain(
+        '.px-md { padding-left: calc(var(--space-base) * 5); padding-right: calc(var(--space-base) * 5); }'
+      );
     });
 
     it('should include all arbitrary value classes', () => {
-      const result = generateAllSpacingClasses(defaultConfig);
+      const result = generateAllSpacingClasses(spacingConfig);
 
       // すべての任意の値クラスが含まれているか確認
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');

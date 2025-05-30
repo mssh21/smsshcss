@@ -144,6 +144,13 @@ interface SmsshCSSViteOptions {
    * @default false
    */
   showPurgeReport?: boolean;
+
+  /**
+   * CSS minifyを有効にするかどうか
+   * arbitrary value syntax使用時の警告を回避したい場合はfalseに設定
+   * @default true
+   */
+  minify?: boolean;
 }
 ```
 
@@ -205,6 +212,25 @@ blocklist: [
 ⏱️  Build time: 156ms
 📉 Size reduction: 72.6%
 ```
+
+### ⚠️ CSS Minify設定
+
+Tailwind CSS のarbitrary value syntax（`gap-[min(1rem, 3vw)]` など）を使用する際、ViteのCSS minifyプロセスで警告が発生することがあります。
+
+```javascript
+smsshcss({
+  // CSS minifyを無効化して警告を回避
+  minify: false,
+
+  // または環境に応じて設定
+  minify: process.env.NODE_ENV === 'development' ? false : true,
+});
+```
+
+**設定の影響：**
+
+- `minify: true`（デフォルト）: CSS圧縮有効、ファイルサイズ最小化
+- `minify: false`: CSS圧縮無効、arbitrary value構文の警告回避
 
 ## パフォーマンス最適化
 

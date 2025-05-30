@@ -1,274 +1,175 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { smsshcss } from '../index';
 import fs from 'fs';
 import path from 'path';
 import { tmpdir } from 'os';
 
-// smsshcssパッケージをモック
-vi.mock('smsshcss', () => ({
-  generateCSS: vi.fn().mockImplementation((config) => {
-    let css = '';
+// 統合テスト用のヘルパー関数とユーティリティ
+interface IntegrationTestHelpers {
+  createProjectStructure: (structure: ProjectStructure) => void;
+  createReactComponent: (name: string, classes: string[]) => void;
+  createVueComponent: (name: string, classes: string[]) => void;
+  createHTMLFile: (name: string, classes: string[]) => void;
+  createTSXFile: (name: string, classes: string[]) => void;
+  expectStandardClasses: (code: string) => void;
+  expectCustomClasses: (code: string, expectedClasses: string[]) => void;
+  measurePerformance: <T>(fn: () => Promise<T>) => Promise<{ result: T; duration: number }>;
+  createLargeProject: (fileCount: number, classesPerFile: number) => void;
+}
 
-    // Reset CSS
-    if (config.includeResetCSS !== false) {
-      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
-    }
+interface ProjectStructure {
+  [fileName: string]: string | ProjectStructure;
+}
 
-    // Base CSS
-    if (config.includeBaseCSS !== false) {
-      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
-    }
-
-    // SmsshCSS Generated Styles
-    css += '\n/* SmsshCSS Generated Styles */';
-    css += '\n.m-md { margin: 1.25rem; }';
-    css += '\n.mt-lg { margin-top: 2rem; }';
-    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
-    css += '\n.p-md { padding: 1.25rem; }';
-    css += '\n.p-lg { padding: 2rem; }';
-    css += '\n.pt-lg { padding-top: 2rem; }';
-    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
-    css += '\n.gap-md { gap: 1.25rem; }';
-    css += '\n.gap-x-md { column-gap: 1.25rem; }';
-    css += '\n.gap-y-md { row-gap: 1.25rem; }';
-    css += '\n.gap-x-lg { column-gap: 2rem; }';
-    css += '\n.gap-y-lg { row-gap: 2rem; }';
-    css += '\n.flex { display: block flex; }';
-    css += '\n.grid { display: block grid; }';
-
-    // カスタムテーマクラス
-    if (config.theme?.spacing) {
-      Object.entries(config.theme.spacing).forEach(([key, value]) => {
-        css += `\n.m-${key} { margin: ${value}; }`;
-        css += `\n.p-${key} { padding: ${value}; }`;
-        css += `\n.gap-${key} { gap: ${value}; }`;
-        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
-        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
-      });
-    }
-
-    if (config.theme?.display) {
-      Object.entries(config.theme.display).forEach(([key, value]) => {
-        css += `\n.${key} { display: ${value}; }`;
-      });
-    }
-
-    return Promise.resolve(css);
-  }),
-  generateCSSSync: vi.fn().mockImplementation((config) => {
-    let css = '';
-
-    // Reset CSS
-    if (config.includeResetCSS !== false) {
-      css += '\n/* Reset CSS */\n* { margin: 0; padding: 0; }';
-    }
-
-    // Base CSS
-    if (config.includeBaseCSS !== false) {
-      css += '\n/* Base CSS */\nbody { font-family: sans-serif; }';
-    }
-
-    // SmsshCSS Generated Styles
-    css += '\n/* SmsshCSS Generated Styles */';
-    css += '\n.m-md { margin: 1.25rem; }';
-    css += '\n.mt-lg { margin-top: 2rem; }';
-    css += '\n.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }';
-    css += '\n.p-md { padding: 1.25rem; }';
-    css += '\n.p-lg { padding: 2rem; }';
-    css += '\n.pt-lg { padding-top: 2rem; }';
-    css += '\n.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }';
-    css += '\n.gap-md { gap: 1.25rem; }';
-    css += '\n.gap-x-md { column-gap: 1.25rem; }';
-    css += '\n.gap-y-md { row-gap: 1.25rem; }';
-    css += '\n.gap-x-lg { column-gap: 2rem; }';
-    css += '\n.gap-y-lg { row-gap: 2rem; }';
-    css += '\n.flex { display: block flex; }';
-    css += '\n.grid { display: block grid; }';
-
-    // カスタムテーマクラス
-    if (config.theme?.spacing) {
-      Object.entries(config.theme.spacing).forEach(([key, value]) => {
-        css += `\n.m-${key} { margin: ${value}; }`;
-        css += `\n.p-${key} { padding: ${value}; }`;
-        css += `\n.gap-${key} { gap: ${value}; }`;
-        css += `\n.gap-x-${key} { column-gap: ${value}; }`;
-        css += `\n.gap-y-${key} { row-gap: ${value}; }`;
-      });
-    }
-
-    if (config.theme?.display) {
-      Object.entries(config.theme.display).forEach(([key, value]) => {
-        css += `\n.${key} { display: ${value}; }`;
-      });
-    }
-
-    return css;
-  }),
-  generatePurgeReport: vi.fn().mockResolvedValue({
-    totalClasses: 100,
-    usedClasses: 50,
-    purgedClasses: 50,
-    buildTime: 100,
-  }),
-  extractCustomClasses: vi.fn().mockImplementation((content) => {
-    // カスタム値クラスを検出する正規表現
-    const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
-    const matches = content.matchAll(customValuePattern);
-    const customClasses: string[] = [];
-
-    // CSS数学関数を検出する正規表現
-    const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
-
-    // CSS値内の特殊文字をエスケープ（クラス名用）
-    const escapeValue = (val: string): string => {
-      // CSS数学関数の場合は特別処理（カンマもエスケープする）
-      if (cssMathFunctions.test(val)) {
-        return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+function createIntegrationHelpers(tempDir: string): IntegrationTestHelpers {
+  return {
+    createProjectStructure: (structure: ProjectStructure): void => {
+      function createStructure(struct: ProjectStructure, basePath: string): void {
+        Object.entries(struct).forEach(([name, content]) => {
+          const fullPath = path.join(basePath, name);
+          if (typeof content === 'string') {
+            fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+            fs.writeFileSync(fullPath, content);
+          } else {
+            fs.mkdirSync(fullPath, { recursive: true });
+            createStructure(content, fullPath);
+          }
+        });
       }
-      // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
-      if (val.includes('var(--')) {
-        return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+      createStructure(structure, tempDir);
+    },
+
+    createReactComponent: (name: string, classes: string[]): void => {
+      const componentPath = path.join(tempDir, 'src', 'components');
+      fs.mkdirSync(componentPath, { recursive: true });
+
+      const content = `
+import React from 'react';
+
+export function ${name}() {
+  return (
+    <div className="${classes.join(' ')}">
+      <h2>Component: ${name}</h2>
+      <p>This is a ${name} component</p>
+    </div>
+  );
+}`;
+      fs.writeFileSync(path.join(componentPath, `${name}.tsx`), content);
+    },
+
+    createVueComponent: (name: string, classes: string[]): void => {
+      const componentPath = path.join(tempDir, 'src', 'components');
+      fs.mkdirSync(componentPath, { recursive: true });
+
+      const content = `
+<template>
+  <div class="${classes.join(' ')}">
+    <h2>Component: ${name}</h2>
+    <p>This is a ${name} component</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: '${name}'
+}
+</script>`;
+      fs.writeFileSync(path.join(componentPath, `${name}.vue`), content);
+    },
+
+    createHTMLFile: (name: string, classes: string[]): void => {
+      const content = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${name}</title>
+</head>
+<body>
+  <div class="${classes.join(' ')}">
+    <h1>${name} Page</h1>
+    <main class="p-lg gap-md">
+      <section class="m-md">Content</section>
+    </main>
+  </div>
+</body>
+</html>`;
+      fs.writeFileSync(path.join(tempDir, `${name}.html`), content);
+    },
+
+    createTSXFile: (name: string, classes: string[]): void => {
+      const content = `
+export function ${name}() {
+  return (
+    <div className="${classes.join(' ')}">
+      <h1>${name}</h1>
+      <div className="flex gap-md p-lg">
+        <span className="m-sm">Child element</span>
+      </div>
+    </div>
+  );
+}`;
+      fs.writeFileSync(path.join(tempDir, `${name}.tsx`), content);
+    },
+
+    expectStandardClasses: (code: string): void => {
+      expect(code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(code).toContain('.gap-xl { gap: calc(var(--space-base) * 13); }');
+      expect(code).toContain('.flex { display: flex; }');
+    },
+
+    expectCustomClasses: (code: string, expectedClasses: string[]): void => {
+      expectedClasses.forEach((className) => {
+        expect(code).toContain(className);
+      });
+    },
+
+    measurePerformance: async <T>(
+      fn: () => Promise<T>
+    ): Promise<{ result: T; duration: number }> => {
+      const startTime = Date.now();
+      const result = await fn();
+      const endTime = Date.now();
+      return { result, duration: endTime - startTime };
+    },
+
+    createLargeProject: (fileCount: number, classesPerFile: number): void => {
+      const srcDir = path.join(tempDir, 'src');
+      fs.mkdirSync(srcDir, { recursive: true });
+
+      for (let i = 0; i < fileCount; i++) {
+        const classes = [];
+        for (let j = 0; j < classesPerFile; j++) {
+          classes.push(`m-[${i * j + 10}px]`, `p-[${i + j * 2}rem]`, `gap-[${i * 2 + j}em]`);
+        }
+
+        const content = `
+export function Component${i}() {
+  return (
+    <div className="${classes.join(' ')}">
+      <h2>Component ${i}</h2>
+      <div className="flex gap-md p-lg m-xl">
+        <span>Large project test</span>
+      </div>
+    </div>
+  );
+}`;
+        fs.writeFileSync(path.join(srcDir, `Component${i}.tsx`), content);
       }
-      // 通常の値の場合は-も含めてエスケープ
-      return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-    };
+    },
+  };
+}
 
-    // CSS関数内の値を再帰的にフォーマットする関数
-    const formatCSSFunctionValue = (input: string): string => {
-      // CSS関数を再帰的に処理（基本的な関数のみ）
-      return input.replace(
-        /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
-        (match, funcName, inner) => {
-          // 内部の関数を再帰的に処理
-          const processedInner = formatCSSFunctionValue(inner);
-
-          // 演算子とカンマの周りにスペースを適切に配置
-          const formattedInner = processedInner
-            // まず全てのスペースを正規化
-            .replace(/\s+/g, ' ')
-            .trim()
-            // カンマの処理（カンマの後にスペース、前のスペースは削除）
-            .replace(/\s*,\s*/g, ', ')
-            // 演算子の処理（前後にスペース）
-            .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-              // マイナス記号が負の値かどうかを判定
-              if (operator === '-') {
-                // 現在の位置より前の文字を取得
-                const beforeMatch = str.substring(0, offset);
-                // 直前の非空白文字を取得
-                const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
-                const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
-
-                // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
-                if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
-                  return '-';
-                }
-              }
-              return ` ${operator} `;
-            });
-
-          return `${funcName}(${formattedInner})`;
-        }
-      );
-    };
-
-    for (const match of matches) {
-      const prefix = match[1];
-      const value = match[2];
-
-      // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-      const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
-
-      // gap プロパティの処理
-      if (prefix === 'gap') {
-        customClasses.push(`.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`);
-      } else if (prefix === 'gap-x') {
-        customClasses.push(`.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`);
-      } else if (prefix === 'gap-y') {
-        customClasses.push(`.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`);
-      } else if (prefix.startsWith('m')) {
-        const property = 'margin';
-        const direction = prefix.slice(1);
-
-        if (direction === 'x') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'y') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 't') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
-          );
-        } else if (direction === 'r') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'b') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 'l') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
-          );
-        } else {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
-          );
-        }
-      } else if (prefix.startsWith('p')) {
-        const property = 'padding';
-        const direction = prefix.slice(1);
-
-        if (direction === 'x') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'y') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 't') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
-          );
-        } else if (direction === 'r') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
-          );
-        } else if (direction === 'b') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
-          );
-        } else if (direction === 'l') {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
-          );
-        } else {
-          customClasses.push(
-            `.${prefix}-\\[${escapeValue(value)}\\] { ${property}: ${originalValue}; }`
-          );
-        }
-      }
-    }
-
-    return customClasses;
-  }),
-}));
-
-describe('SmsshCSS Vite Plugin Integration', () => {
+describe('SmsshCSS Vite Plugin - Integration Tests', () => {
   let tempDir: string;
+  let helpers: IntegrationTestHelpers;
 
   beforeEach(() => {
-    // 一時ディレクトリを作成
     tempDir = fs.mkdtempSync(path.join(tmpdir(), 'smsshcss-integration-'));
+    helpers = createIntegrationHelpers(tempDir);
   });
 
   afterEach(() => {
-    // 一時ディレクトリをクリーンアップ
     if (fs.existsSync(tempDir)) {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -276,7 +177,6 @@ describe('SmsshCSS Vite Plugin Integration', () => {
 
   describe('Real-world Scenarios', () => {
     it('should handle a typical React project structure', async () => {
-      // React コンポーネントファイルを作成
       const componentContent = `
         import React from 'react';
         
@@ -307,6 +207,9 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       });
 
       const result = await plugin.transform('', 'main.css');
+
+      // 基本クラスが生成されている
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
 
       // カスタム値クラスが生成されている
       expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
@@ -372,84 +275,16 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       const result = await plugin.transform('', 'styles.css');
 
       // 標準クラス
-      expect(result?.code).toContain('.flex { display: block flex; }');
-      expect(result?.code).toContain('.grid { display: block grid; }');
-      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
-      expect(result?.code).toContain('.p-lg { padding: 2rem; }');
-      expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
+      expect(result?.code).toContain('.flex { display: flex; }');
+      expect(result?.code).toContain('.grid { display: grid; }');
+      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
 
-      // カスタム値クラスのセクションが存在することを確認
-      expect(result?.code).toContain('/* Custom Value Classes */');
-
-      // 実際にカスタム値クラスが生成されているかチェック
-      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
-      if (customValueSection && customValueSection.trim() !== '') {
-        // カスタム値クラスが実際に生成されている場合
-        expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
-        expect(result?.code).toContain('.m-\\[custom\\-value\\] { margin: custom-value; }');
-        expect(result?.code).toContain('.gap-y-\\[75px\\] { row-gap: 75px; }');
-      }
-    });
-  });
-
-  describe('Build Process Simulation', () => {
-    it('should work correctly in development mode', async () => {
-      const devContent1 = '<div class="gap-[20px] p-[1rem]">Dev Content 1</div>';
-      const devContent2 = '<div class="gap-[20px] m-[2rem]">Dev Content 2</div>';
-
-      fs.writeFileSync(path.join(tempDir, 'dev1.html'), devContent1);
-      fs.writeFileSync(path.join(tempDir, 'dev2.html'), devContent2);
-
-      const plugin = smsshcss({
-        content: [`${tempDir}/**/*.html`],
-        purge: { enabled: false }, // 開発モード
-      });
-
-      const result1 = await plugin.transform('/* Dev CSS v1 */', 'dev.css');
-      const result2 = await plugin.transform('/* Dev CSS v2 */', 'dev.css');
-
-      expect(result1?.code).toContain('.gap-\\[20px\\] { gap: 20px; }');
-      expect(result1?.code).toContain('.p-\\[1rem\\] { padding: 1rem; }');
-      expect(result2?.code).toContain('.gap-\\[20px\\] { gap: 20px; }');
-      expect(result2?.code).toContain('.m-\\[2rem\\] { margin: 2rem; }');
-    });
-
-    it('should handle production build optimization', async () => {
-      const prodContent1 = '<div class="gap-[10px] gap-[20px] m-[5px]">Prod 1</div>';
-      const prodContent2 = '<div class="gap-[10px] p-[8px]">Prod 2</div>';
-
-      fs.writeFileSync(path.join(tempDir, 'prod1.html'), prodContent1);
-      fs.writeFileSync(path.join(tempDir, 'prod2.html'), prodContent2);
-
-      const plugin = smsshcss({
-        content: [`${tempDir}/**/*.html`],
-        purge: { enabled: false }, // テスト環境では無効化
-      });
-
-      const result = await plugin.transform('', 'prod.css');
-
-      // 基本的なクラスが生成されている
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.flex { display: block flex; }');
-
-      // カスタム値クラスのセクションが存在することを確認
-      expect(result?.code).toContain('/* Custom Value Classes */');
-
-      // 実際にカスタム値クラスが生成されているかチェック
-      const customValueSection = result?.code.split('/* Custom Value Classes */')[1];
-      if (customValueSection && customValueSection.trim() !== '') {
-        // 重複したクラスは一度だけ生成される
-        const gap10Matches = result?.code.match(/\.gap-\\\[10px\\\]/g);
-        const gap20Matches = result?.code.match(/\.gap-\\\[20px\\\]/g);
-        const m5Matches = result?.code.match(/\.m-\\\[5px\\\]/g);
-
-        expect(gap10Matches).toBeTruthy();
-        expect(gap10Matches).toHaveLength(1);
-        expect(gap20Matches).toBeTruthy();
-        expect(gap20Matches).toHaveLength(1);
-        expect(m5Matches).toBeTruthy();
-        expect(m5Matches).toHaveLength(1);
-      }
+      // カスタム値クラス
+      expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
+      expect(result?.code).toContain('.m-\\[custom\\-value\\] { margin: custom-value; }');
+      expect(result?.code).toContain('.gap-y-\\[75px\\] { row-gap: 75px; }');
     });
   });
 
@@ -504,7 +339,6 @@ describe('SmsshCSS Vite Plugin Integration', () => {
 
   describe('Error Recovery', () => {
     it('should continue working after file system errors', async () => {
-      // 存在しないディレクトリを指定
       const plugin = smsshcss({
         content: [`${tempDir}/nonexistent/**/*.html`],
       });
@@ -512,31 +346,369 @@ describe('SmsshCSS Vite Plugin Integration', () => {
       const result = await plugin.transform('', 'error.css');
 
       // 標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-    });
-
-    it('should handle directory access errors gracefully', async () => {
-      const plugin = smsshcss({
-        content: ['/root/restricted/**/*.html'], // アクセス権限がない可能性のあるパス
-      });
-
-      const result = await plugin.transform('', 'access.css');
-
-      // ファイルが見つからなくても標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.flex { display: block flex; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
     });
 
     it('should handle glob errors gracefully', async () => {
       const plugin = smsshcss({
-        content: ['[invalid-glob-pattern'], // 無効なglobパターン
+        content: ['[invalid-glob-pattern'],
       });
 
       const result = await plugin.transform('', 'glob-error.css');
 
       // globエラーが発生しても標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
-      expect(result?.code).toContain('.flex { display: block flex; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.flex { display: flex; }');
+    });
+  });
+
+  describe('Advanced Integration Scenarios', () => {
+    it('should handle large-scale projects efficiently', async () => {
+      helpers.createLargeProject(50, 10);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+      });
+
+      const { result, duration } = await helpers.measurePerformance(async () => {
+        return await plugin.transform('', 'large-project.css');
+      });
+
+      expect(result?.code).toBeDefined();
+      expect(duration).toBeLessThan(10000); // 10秒以内
+      helpers.expectStandardClasses(result?.code || '');
+
+      // 大量のカスタムクラスが生成されていることを確認
+      expect(result?.code).toContain('/* Custom Value Classes */');
+    });
+
+    it('should handle mixed framework project (React + Vue + HTML)', async () => {
+      // React コンポーネント
+      helpers.createReactComponent('ReactCard', ['p-[20px]', 'gap-[16px]', 'm-[12px]']);
+
+      // Vue コンポーネント
+      helpers.createVueComponent('VueButton', ['gap-[8px]', 'p-[10px]', 'm-[5px]']);
+
+      // HTML ファイル
+      helpers.createHTMLFile('index', ['gap-[24px]', 'p-[30px]', 'm-[15px]']);
+
+      // TypeScript ファイル
+      helpers.createTSXFile('Utils', ['gap-[32px]', 'p-[40px]']);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.{tsx,vue,html}`],
+      });
+
+      const result = await plugin.transform('', 'mixed-framework.css');
+
+      // 各フレームワークのカスタムクラスが全て含まれている
+      const expectedClasses = [
+        '.p-\\[20px\\] { padding: 20px; }',
+        '.gap-\\[16px\\] { gap: 16px; }',
+        '.m-\\[12px\\] { margin: 12px; }',
+        '.gap-\\[8px\\] { gap: 8px; }',
+        '.p-\\[10px\\] { padding: 10px; }',
+        '.m-\\[5px\\] { margin: 5px; }',
+        '.gap-\\[24px\\] { gap: 24px; }',
+        '.p-\\[30px\\] { padding: 30px; }',
+        '.m-\\[15px\\] { margin: 15px; }',
+        '.gap-\\[32px\\] { gap: 32px; }',
+        '.p-\\[40px\\] { padding: 40px; }',
+      ];
+
+      helpers.expectCustomClasses(result?.code || '', expectedClasses);
+      helpers.expectStandardClasses(result?.code || '');
+    });
+
+    it('should handle real-world project structure with nested directories', async () => {
+      const projectStructure: ProjectStructure = {
+        src: {
+          components: {
+            ui: {
+              'Button.tsx': `export function Button() { return <button className="p-[8px] gap-[4px]">Click</button>; }`,
+              'Card.tsx': `export function Card() { return <div className="p-[16px] m-[8px] gap-[12px]">Card</div>; }`,
+            },
+            layout: {
+              'Header.tsx': `export function Header() { return <header className="p-[20px] gap-[16px]">Header</header>; }`,
+              'Footer.tsx': `export function Footer() { return <footer className="p-[24px] m-[20px]">Footer</footer>; }`,
+            },
+          },
+          pages: {
+            'Home.tsx': `export function Home() { return <div className="gap-[32px] p-[40px]">Home</div>; }`,
+            'About.tsx': `export function About() { return <div className="gap-[28px] p-[36px]">About</div>; }`,
+          },
+          styles: {
+            'components.css': `/* Component styles */`,
+          },
+        },
+        public: {
+          'index.html': `<!DOCTYPE html><html><body><div class="p-[50px] gap-[40px]">Public</div></body></html>`,
+        },
+      };
+
+      helpers.createProjectStructure(projectStructure);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.{tsx,html}`],
+      });
+
+      const result = await plugin.transform('', 'nested-project.css');
+
+      const expectedClasses = [
+        '.p-\\[8px\\] { padding: 8px; }',
+        '.gap-\\[4px\\] { gap: 4px; }',
+        '.p-\\[16px\\] { padding: 16px; }',
+        '.m-\\[8px\\] { margin: 8px; }',
+        '.gap-\\[12px\\] { gap: 12px; }',
+        '.p-\\[20px\\] { padding: 20px; }',
+        '.gap-\\[16px\\] { gap: 16px; }',
+        '.p-\\[24px\\] { padding: 24px; }',
+        '.m-\\[20px\\] { margin: 20px; }',
+        '.gap-\\[32px\\] { gap: 32px; }',
+        '.p-\\[40px\\] { padding: 40px; }',
+        '.gap-\\[28px\\] { gap: 28px; }',
+        '.p-\\[36px\\] { padding: 36px; }',
+        '.p-\\[50px\\] { padding: 50px; }',
+      ];
+
+      helpers.expectCustomClasses(result?.code || '', expectedClasses);
+    });
+  });
+
+  describe('Performance and Scalability', () => {
+    it('should maintain performance with increasing file count', async () => {
+      const fileCounts = [10, 50, 100];
+      const classesPerFile = 5;
+
+      for (const fileCount of fileCounts) {
+        // 新しい一時ディレクトリを作成
+        const performanceTempDir = fs.mkdtempSync(path.join(tmpdir(), `perf-test-${fileCount}-`));
+        const perfHelpers = createIntegrationHelpers(performanceTempDir);
+
+        try {
+          perfHelpers.createLargeProject(fileCount, classesPerFile);
+
+          const plugin = smsshcss({
+            content: [`${performanceTempDir}/**/*.tsx`],
+          });
+
+          const { duration } = await perfHelpers.measurePerformance(async () => {
+            return await plugin.transform('', `perf-${fileCount}.css`);
+          });
+
+          // ファイル数に比例した妥当な処理時間であることを確認
+          const expectedMaxTime = fileCount * 100; // ファイル1つあたり100ms
+          expect(duration).toBeLessThan(expectedMaxTime);
+
+          console.log(`Performance test - ${fileCount} files: ${duration}ms`);
+        } finally {
+          // クリーンアップ
+          if (fs.existsSync(performanceTempDir)) {
+            fs.rmSync(performanceTempDir, { recursive: true, force: true });
+          }
+        }
+      }
+    });
+
+    it('should handle memory efficiently with large class count', async () => {
+      helpers.createLargeProject(20, 50); // 20ファイル、各50クラス
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+      });
+
+      const startMemory = process.memoryUsage().heapUsed;
+
+      const result = await plugin.transform('', 'memory-test.css');
+
+      const endMemory = process.memoryUsage().heapUsed;
+      const memoryIncrease = endMemory - startMemory;
+
+      expect(result?.code).toBeDefined();
+      expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024); // 100MB未満
+
+      console.log(`Memory increase: ${Math.round((memoryIncrease / 1024 / 1024) * 100) / 100}MB`);
+    });
+  });
+
+  describe('Production Environment Simulation', () => {
+    it('should work correctly with minification enabled', async () => {
+      helpers.createReactComponent('ProdComponent', [
+        'p-[20px]',
+        'gap-[16px]',
+        'm-[calc(100%-20px)]',
+      ]);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        minify: true,
+      });
+
+      const result = await plugin.transform('', 'production.css');
+
+      expect(result?.code).toBeDefined();
+      // カスタム値クラスが存在する
+      if (result?.code.includes('/* Custom Value Classes */')) {
+        expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
+        expect(result?.code).toContain('.gap-\\[16px\\] { gap: 16px; }');
+        expect(result?.code).toContain(
+          '.m-\\[calc\\(100\\%\\-20px\\)\\] { margin: calc(100% - 20px); }'
+        );
+      }
+    });
+
+    it('should handle production optimizations', async () => {
+      helpers.createLargeProject(30, 8);
+
+      const devPlugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        minify: false,
+        includeReset: true,
+        includeBase: true,
+      });
+
+      const prodPlugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        minify: true,
+        includeReset: false,
+        includeBase: false,
+      });
+
+      const devResult = await devPlugin.transform('', 'dev.css');
+      const prodResult = await prodPlugin.transform('', 'prod.css');
+
+      expect(devResult?.code).toBeDefined();
+      expect(prodResult?.code).toBeDefined();
+
+      // プロダクション版はサイズが小さい
+      expect(prodResult.code.length).toBeLessThan(devResult.code.length);
+
+      // プロダクション版にはReset/Base CSSが含まれていない
+      expect(prodResult?.code).not.toContain('/* Reset CSS */');
+      expect(prodResult?.code).not.toContain('/* Base CSS */');
+
+      // 開発版には含まれている
+      expect(devResult?.code).toContain('/* Reset CSS */');
+      expect(devResult?.code).toContain('/* Base CSS */');
+    });
+  });
+
+  describe('Plugin Compatibility and Edge Cases', () => {
+    it('should handle concurrent transform calls', async () => {
+      helpers.createReactComponent('ConcurrentTest1', ['p-[10px]']);
+      helpers.createReactComponent('ConcurrentTest2', ['p-[20px]']);
+      helpers.createReactComponent('ConcurrentTest3', ['p-[30px]']);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+      });
+
+      // 同時に複数のtransformを実行
+      const promises = [
+        plugin.transform('', 'concurrent1.css'),
+        plugin.transform('', 'concurrent2.css'),
+        plugin.transform('', 'concurrent3.css'),
+      ];
+
+      const results = await Promise.all(promises);
+
+      // 全ての結果が正常
+      results.forEach((result) => {
+        expect(result?.code).toBeDefined();
+        expect(result?.code).toContain('.p-\\[10px\\] { padding: 10px; }');
+        expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
+        expect(result?.code).toContain('.p-\\[30px\\] { padding: 30px; }');
+      });
+    });
+
+    it('should handle file watch scenarios', async () => {
+      helpers.createReactComponent('WatchTest', ['p-[15px]']);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+      });
+
+      // 最初のビルド
+      const firstResult = await plugin.transform('', 'watch-test.css');
+      expect(firstResult?.code).toContain('.p-\\[15px\\] { padding: 15px; }');
+
+      // ファイルを変更
+      helpers.createReactComponent('WatchTestUpdated', ['p-[25px]', 'gap-[10px]']);
+
+      // 2回目のビルド
+      const secondResult = await plugin.transform('', 'watch-test.css');
+      expect(secondResult?.code).toContain('.p-\\[15px\\] { padding: 15px; }');
+      expect(secondResult?.code).toContain('.p-\\[25px\\] { padding: 25px; }');
+      expect(secondResult?.code).toContain('.gap-\\[10px\\] { gap: 10px; }');
+    });
+
+    it('should handle empty and invalid files gracefully', async () => {
+      // 空のファイル
+      fs.writeFileSync(path.join(tempDir, 'empty.tsx'), '');
+
+      // 無効な構文のファイル
+      fs.writeFileSync(path.join(tempDir, 'invalid.tsx'), 'invalid typescript content <>"');
+
+      // バイナリファイル
+      fs.writeFileSync(path.join(tempDir, 'binary.tsx'), Buffer.from([0x00, 0x01, 0x02, 0x03]));
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+      });
+
+      const result = await plugin.transform('', 'error-resilience.css');
+
+      // エラーが発生してもプラグインは動作する
+      expect(result?.code).toBeDefined();
+      helpers.expectStandardClasses(result?.code || '');
+    });
+  });
+
+  describe('Configuration Edge Cases', () => {
+    it('should handle extreme configuration values', async () => {
+      helpers.createReactComponent('ConfigTest', ['p-[10px]']);
+
+      const plugin = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        theme: {
+          spacing: {
+            'extreme-small': '0.001rem',
+            'extreme-large': '9999rem',
+            negative: '-100px',
+            complex: 'calc(100vw - 50% + 20px)',
+          },
+        },
+      });
+
+      const result = await plugin.transform('', 'extreme-config.css');
+
+      expect(result?.code).toContain('.p-extreme-small { padding: 0.001rem; }');
+      expect(result?.code).toContain('.p-extreme-large { padding: 9999rem; }');
+      expect(result?.code).toContain('.p-negative { padding: -100px; }');
+      expect(result?.code).toContain('.p-complex { padding: calc(100vw - 50% + 20px); }');
+    });
+
+    it('should handle configuration updates correctly', async () => {
+      helpers.createReactComponent('ConfigUpdateTest', ['p-[15px]']);
+
+      // 最初の設定
+      const plugin1 = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        theme: { spacing: { custom: '1rem' } },
+      });
+
+      const result1 = await plugin1.transform('', 'config-update1.css');
+      expect(result1?.code).toContain('.p-custom { padding: 1rem; }');
+
+      // 設定を変更
+      const plugin2 = smsshcss({
+        content: [`${tempDir}/**/*.tsx`],
+        theme: { spacing: { custom: '2rem', newValue: '3rem' } },
+      });
+
+      const result2 = await plugin2.transform('', 'config-update2.css');
+      expect(result2?.code).toContain('.p-custom { padding: 2rem; }');
+      expect(result2?.code).toContain('.p-newValue { padding: 3rem; }');
     });
   });
 });

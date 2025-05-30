@@ -6,6 +6,7 @@ export default defineConfig({
     smsshcss({
       includeReset: true,
       includeBase: true,
+      minify: false,
 
       content: [
         'index.html',
@@ -46,9 +47,12 @@ export default defineConfig({
           'custom-flex': 'flex',
           'custom-grid': 'grid',
         },
+        width: {
+          container: '1600px',
+        },
       },
 
-      showPurgeReport: false,
+      showPurgeReport: true,
     }),
   ],
 });

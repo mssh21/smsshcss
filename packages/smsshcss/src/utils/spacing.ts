@@ -1,32 +1,9 @@
-import { SpacingConfig, SpacingDirection, SpacingProperty } from '../core/types';
+import { SpacingDirection, SpacingProperty, SizeConfig } from '../core/types';
+import { defaultSpacingValues, escapeValue, formatCSSFunctionValue } from '../core/sizeConfig';
 
-const defaultSpacing: SpacingConfig = {
-  // フィボナッチ数列ベースのスペーシング（基本単位: 4px = 0.25rem）
-  // フィボナッチ数列の値を使用しつつ、直感的な命名を採用
-
-  // ゼロスペーシング
-  none: '0',
-
-  // 極小〜小サイズ
-  '2xs': '0.25rem', // 4px  (フィボナッチ: 1)
-  xs: '0.5rem', // 8px  (フィボナッチ: 2)
-  sm: '0.75rem', // 12px (フィボナッチ: 3)
-
-  // 中サイズ
-  md: '1.25rem', // 20px (フィボナッチ: 5)
-  lg: '2rem', // 32px (フィボナッチ: 8)
-
-  // 大サイズ
-  xl: '3.25rem', // 52px (フィボナッチ: 13)
-  '2xl': '5.25rem', // 84px (フィボナッチ: 21)
-
-  // 特大サイズ
-  '3xl': '8.5rem', // 136px (フィボナッチ: 34)
-  '4xl': '13.75rem', // 220px (フィボナッチ: 55)
-
-  // 超大サイズ
-  '5xl': '22.25rem', // 356px (フィボナッチ: 89)
-};
+// 後方互換性のためのエイリアス
+export type SpacingConfig = SizeConfig;
+export const defaultSpacing: SpacingConfig = defaultSpacingValues;
 
 const directionMap: Record<SpacingDirection, string> = {
   '': '',
@@ -45,59 +22,6 @@ const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
   // CSS数学関数を検出する正規表現（基本的な関数のみ）
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
-
-  // CSS値内の特殊文字をエスケープ（クラス名用）
-  const escapeValue = (val: string): string => {
-    // CSS数学関数の場合は特別処理（カンマもエスケープする）
-    if (cssMathFunctions.test(val)) {
-      return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
-    }
-    // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
-    if (val.includes('var(--')) {
-      return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
-    }
-    // 通常の値の場合は-も含めてエスケープ
-    return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
-  };
-
-  // CSS関数内の値を再帰的にフォーマットする関数
-  const formatCSSFunctionValue = (input: string): string => {
-    // CSS関数を再帰的に処理（基本的な関数のみ）
-    return input.replace(
-      /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
-      (match, funcName, inner) => {
-        // 内部の関数を再帰的に処理
-        const processedInner = formatCSSFunctionValue(inner);
-
-        // 演算子とカンマの周りにスペースを適切に配置
-        const formattedInner = processedInner
-          // まず全てのスペースを正規化
-          .replace(/\s+/g, ' ')
-          .trim()
-          // カンマの処理（カンマの後にスペース、前のスペースは削除）
-          .replace(/\s*,\s*/g, ', ')
-          // 演算子の処理（前後にスペース）
-          .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-            // マイナス記号が負の値かどうかを判定
-            if (operator === '-') {
-              // 現在の位置より前の文字を取得
-              const beforeMatch = str.substring(0, offset);
-              // 直前の非空白文字を取得
-              const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
-              const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
-
-              // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
-              if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
-                return '-';
-              }
-            }
-            return ` ${operator} `;
-          });
-
-        return `${funcName}(${formattedInner})`;
-      }
-    );
-  };
 
   // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
   const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
@@ -150,7 +74,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
 }
 
 // HTMLファイルからカスタム値クラスを抽出
-export function extractCustomClasses(content: string): string[] {
+export function extractCustomSpacingClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
 

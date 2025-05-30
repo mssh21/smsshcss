@@ -3,7 +3,9 @@ import {
   SmsshCSSConfig,
   generateCSS as smsshGenerateCSS,
   generateCSSSync as smsshGenerateCSSSync,
-  extractCustomClasses,
+  extractCustomSpacingClasses,
+  extractCustomWidthClasses,
+  extractCustomHeightClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -42,12 +44,19 @@ export interface SmsshCSSViteOptions {
   theme?: {
     spacing?: Record<string, string>;
     display?: Record<string, string>;
+    width?: Record<string, string>;
+    height?: Record<string, string>;
   };
   /**
    * 開発時にパージレポートを表示するかどうか
    * @default false
    */
   showPurgeReport?: boolean;
+  /**
+   * CSS minifyを有効にするかどうか
+   * @default true
+   */
+  minify?: boolean;
 }
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
@@ -58,6 +67,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
     content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
     purge = { enabled: true },
     showPurgeReport = false,
+    minify = true,
   } = options;
 
   let isProduction = false;
@@ -67,6 +77,14 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
     configResolved(config): void {
       isProduction = config.command === 'build';
+
+      // minifyオプションがfalseの場合、ViteのCSS minifyを無効化
+      if (!minify && isProduction) {
+        if (config.build && config.build.cssMinify !== false) {
+          config.build.cssMinify = false;
+          console.log('[smsshcss] CSS minify disabled to prevent arbitrary value syntax warnings');
+        }
+      }
     },
 
     configureServer(devServer: ViteDevServer): void {
@@ -184,9 +202,13 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
         css = `${css}\n\n/* SmsshCSS Generated Styles */\n${generatedCSS}`;
 
         // カスタムクラスを動的に抽出して追加
-        const customClasses = await extractCustomClassesFromFiles(content);
+        // contentが配列であることを確認
+        const contentArray = Array.isArray(content) ? content : [content];
+        const customSpacingClasses = await extractCustomSpacingClassesFromFiles(contentArray);
+        const customWidthClasses = await extractCustomWidthClassesFromFiles(contentArray);
+        const customHeightClasses = await extractCustomHeightClassesFromFiles(contentArray);
         // カスタム値クラスのセクションを常に追加（テスト環境での互換性のため）
-        css = `${css}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
+        css = `${css}\n\n/* Custom Value Classes */\n${customSpacingClasses.join('\n')}\n${customWidthClasses.join('\n')}\n${customHeightClasses.join('\n')}`;
       } catch (error) {
         console.error('[smsshcss] Error generating CSS:', error);
         // エラー時はフォールバック処理
@@ -201,7 +223,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 }
 
 // ファイルからカスタムクラスを非同期で抽出
-async function extractCustomClassesFromFiles(content: string[]): Promise<string[]> {
+async function extractCustomSpacingClassesFromFiles(content: string[]): Promise<string[]> {
   const allCustomClasses: string[] = [];
   const seenClasses = new Set<string>();
 
@@ -217,7 +239,85 @@ async function extractCustomClassesFromFiles(content: string[]): Promise<string[
           try {
             const filePath = path.resolve(process.cwd(), file);
             const fileContent = fs.readFileSync(filePath, 'utf-8');
-            const fileCustomClasses = extractCustomClasses(fileContent);
+            const fileCustomClasses = extractCustomSpacingClasses(fileContent);
+
+            for (const cssClass of fileCustomClasses) {
+              if (!seenClasses.has(cssClass)) {
+                seenClasses.add(cssClass);
+                allCustomClasses.push(cssClass);
+              }
+            }
+          } catch (error) {
+            // ファイル読み込みエラーは無視
+          }
+        }
+      } catch (error) {
+        // globエラーは無視
+      }
+    }
+  } catch (error) {
+    console.warn('[smsshcss] Failed to scan files for custom classes:', error);
+  }
+
+  return allCustomClasses;
+}
+
+async function extractCustomWidthClassesFromFiles(content: string[]): Promise<string[]> {
+  const allCustomClasses: string[] = [];
+  const seenClasses = new Set<string>();
+
+  try {
+    for (const pattern of content) {
+      try {
+        const files = glob.sync(pattern, {
+          cwd: process.cwd(),
+          ignore: ['node_modules/**', 'dist/**', 'build/**'],
+        });
+
+        for (const file of files) {
+          try {
+            const filePath = path.resolve(process.cwd(), file);
+            const fileContent = fs.readFileSync(filePath, 'utf-8');
+            const fileCustomClasses = extractCustomWidthClasses(fileContent);
+
+            for (const cssClass of fileCustomClasses) {
+              if (!seenClasses.has(cssClass)) {
+                seenClasses.add(cssClass);
+                allCustomClasses.push(cssClass);
+              }
+            }
+          } catch (error) {
+            // ファイル読み込みエラーは無視
+          }
+        }
+      } catch (error) {
+        // globエラーは無視
+      }
+    }
+  } catch (error) {
+    console.warn('[smsshcss] Failed to scan files for custom classes:', error);
+  }
+
+  return allCustomClasses;
+}
+
+async function extractCustomHeightClassesFromFiles(content: string[]): Promise<string[]> {
+  const allCustomClasses: string[] = [];
+  const seenClasses = new Set<string>();
+
+  try {
+    for (const pattern of content) {
+      try {
+        const files = glob.sync(pattern, {
+          cwd: process.cwd(),
+          ignore: ['node_modules/**', 'dist/**', 'build/**'],
+        });
+
+        for (const file of files) {
+          try {
+            const filePath = path.resolve(process.cwd(), file);
+            const fileContent = fs.readFileSync(filePath, 'utf-8');
+            const fileCustomClasses = extractCustomHeightClasses(fileContent);
 
             for (const cssClass of fileCustomClasses) {
               if (!seenClasses.has(cssClass)) {
