@@ -21,6 +21,45 @@ export const mockFileContents = {
   'base.css': 'body { font-family: sans-serif; }',
 };
 
+// CSS検証用のユーティリティ関数
+export const cssValidators = {
+  /**
+   * CSSが有効な構文を持っているかチェック
+   */
+  isValidCSS: (css: string): boolean => {
+    // 基本的なCSS構文チェック
+    const openBraces = (css.match(/{/g) || []).length;
+    const closeBraces = (css.match(/}/g) || []).length;
+
+    return openBraces === closeBraces && css.length > 0;
+  },
+
+  /**
+   * 指定されたクラス名がCSSに含まれているかチェック
+   */
+  hasClass: (css: string, className: string): boolean => {
+    const classPattern = new RegExp(
+      `\\.${className.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`
+    );
+    return classPattern.test(css);
+  },
+
+  /**
+   * CSSにユーティリティクラスが含まれているかチェック
+   */
+  hasUtilityClasses: (css: string, classes: string[]): boolean => {
+    return classes.every((className) => cssValidators.hasClass(css, className));
+  },
+
+  /**
+   * CSS内のクラス数をカウント
+   */
+  countClasses: (css: string): number => {
+    const classMatches = css.match(/\.[a-zA-Z][\w-]*\s*\{/g);
+    return classMatches ? classMatches.length : 0;
+  },
+};
+
 // デフォルトモック設定関数
 export function setupDefaultMocks(): void {
   vi.clearAllMocks();
@@ -111,9 +150,14 @@ export const customValueSamples = {
       <span class="w-[50vw] min-w-[var(--min-width)]">Width Values</span>
     </div>
   `,
+  height: `
+    <div class="h-[100px] min-h-[200px] max-h-[calc(100%-40px)]">
+      <span class="h-[50vh] min-h-[var(--min-height)]">Height Values</span>
+    </div>
+  `,
   complex: `
     <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)]">
-      <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)]">Complex</span>
+      <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)] h-[minmax(200px)]">Complex</span>
     </div>
   `,
 };

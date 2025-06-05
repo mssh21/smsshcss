@@ -46,6 +46,7 @@ export interface SmsshCSSViteOptions {
     display?: Record<string, string>;
     width?: Record<string, string>;
     height?: Record<string, string>;
+    grid?: Record<string, string>;
   };
   /**
    * 開発時にパージレポートを表示するかどうか

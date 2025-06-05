@@ -21,6 +21,9 @@ export interface SmsshCSSViteOptions {
   theme?: {
     spacing?: Record<string, string>;
     display?: Record<string, string>;
+    width?: Record<string, string>;
+    height?: Record<string, string>;
+    grid?: Record<string, string>;
   };
 }
 

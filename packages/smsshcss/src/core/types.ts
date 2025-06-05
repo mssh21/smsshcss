@@ -111,3 +111,19 @@ export type FlexboxConfig = {
 export type GridConfig = {
   [key: string]: string;
 };
+
+export type PositioningConfig = {
+  [key: string]: string;
+};
+
+export type OverflowConfig = {
+  [key: string]: string;
+};
+
+export type OrderConfig = {
+  [key: string]: string;
+};
+
+export type ZIndexConfig = {
+  [key: string]: string;
+};

@@ -1,7 +1,13 @@
 import { generateDisplayClasses } from './display';
 import { generateAllSpacingClasses, extractCustomSpacingClasses } from './spacing';
-import { generateFlexboxClasses } from './flexbox';
-import { extractCustomWidthClasses } from './width';
+import { generateFlexboxClasses, extractCustomFlexClasses } from './flexbox';
+import { generatePositioningClasses } from './positioning';
+import { generateZIndexClasses, extractCustomZIndexClasses } from './z-index';
+import { generateOverflowClasses } from './overflow';
+import { generateOrderClasses, extractCustomOrderClasses } from './order';
+import { generateGridClasses, extractCustomGridClasses } from './grid';
+import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
+import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 
 // Reset CSS の内容を直接定義
 const RESET_CSS = `/* Reset CSS */
@@ -182,11 +188,23 @@ export function applyBaseCss(css: string): string {
   return `${getBaseCss()}\n${css}`;
 }
 
-// ディスプレイとスペーシングのユーティリティをエクスポート
+// 全ユーティリティクラス生成関数をエクスポート
 export {
   generateDisplayClasses,
   generateAllSpacingClasses,
   extractCustomSpacingClasses,
-  extractCustomWidthClasses,
   generateFlexboxClasses,
+  extractCustomFlexClasses,
+  generatePositioningClasses,
+  generateZIndexClasses,
+  extractCustomZIndexClasses,
+  generateOverflowClasses,
+  generateOrderClasses,
+  extractCustomOrderClasses,
+  generateGridClasses,
+  extractCustomGridClasses,
+  generateAllWidthClasses,
+  extractCustomWidthClasses,
+  generateAllHeightClasses,
+  extractCustomHeightClasses,
 };
