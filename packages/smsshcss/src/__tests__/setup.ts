@@ -155,6 +155,16 @@ export const customValueSamples = {
       <span class="h-[50vh] min-h-[var(--min-height)]">Height Values</span>
     </div>
   `,
+  zIndex: `
+    <div class="z-[var(--z-index)]">
+     <div class="z-[5]">Z Index Values</div>
+    </div>
+  `,
+  order: `
+    <div class="order-[var(--order)]">
+      <div class="order-[5]">Order Values</div>
+    </div>
+  `,
   complex: `
     <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)]">
       <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)] h-[minmax(200px)]">Complex</span>

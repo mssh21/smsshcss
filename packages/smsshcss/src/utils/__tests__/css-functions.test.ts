@@ -1,6 +1,7 @@
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
 import { extractCustomGridClasses } from '../grid';
+import { extractCustomOrderClasses } from '../order';
 
 describe('Enhanced CSS Functions Support', () => {
   describe('calc() function', () => {
@@ -350,6 +351,14 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result[0]).toBe(
         '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
       );
+    });
+
+    it('should handle order with CSS variables', () => {
+      const content = '<div class="order-[var(--order)]">Test</div>';
+      const result = extractCustomOrderClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.order-\\[var\\(--order\\)\\] { order: var(--order); }');
     });
   });
 });
