@@ -107,3 +107,7 @@ export type DisplayConfig = {
 export type FlexboxConfig = {
   [key: string]: string;
 };
+
+export type GridConfig = {
+  [key: string]: string;
+};

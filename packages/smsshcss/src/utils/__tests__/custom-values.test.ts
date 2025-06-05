@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
+import { extractCustomGridClasses } from '../grid';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -243,6 +244,121 @@ describe('Custom Value Extraction Functions', () => {
       it('should handle content without custom values', () => {
         const content = '<div class="w-full max-w-md">Standard classes</div>';
         const result = extractCustomWidthClasses(content);
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomGridClasses', () => {
+    describe('Basic Grid Custom Values', () => {
+      it('should extract grid-cols custom values', () => {
+        const content = '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-cols-\\[80\\] { grid-template-columns: repeat(80, minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.grid-cols-\\[200px,1fr,100px\\] { grid-template-columns: 200px 1fr 100px; }'
+        );
+      });
+
+      it('should extract grid-rows custom values', () => {
+        const content = '<div class="grid-rows-[20] grid-rows-[auto,1fr,auto]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-rows-\\[20\\] { grid-template-rows: repeat(20, minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.grid-rows-\\[auto,1fr,auto\\] { grid-template-rows: auto 1fr auto; }'
+        );
+      });
+
+      it('should extract span custom values', () => {
+        const content = '<div class="col-span-[15] row-span-[8]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
+        expect(result).toContain('.row-span-\\[8\\] { grid-row: span 8 / span 8; }');
+      });
+
+      it('should extract grid position custom values', () => {
+        const content =
+          '<div class="col-start-[5] col-end-[10] row-start-[2] row-end-[4]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.col-start-\\[5\\] { grid-column-start: 5; }');
+        expect(result).toContain('.col-end-\\[10\\] { grid-column-end: 10; }');
+        expect(result).toContain('.row-start-\\[2\\] { grid-row-start: 2; }');
+        expect(result).toContain('.row-end-\\[4\\] { grid-row-end: 4; }');
+      });
+    });
+
+    describe('Complex Grid Values', () => {
+      it('should extract CSS variable values', () => {
+        const content = '<div class="grid-cols-[var(--columns)] row-span-[var(--span)]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.row-span-\\[var\\(--span\\)\\] { grid-row: span var(--span) / span var(--span); }'
+        );
+      });
+
+      it('should extract grid-cols with CSS variables', () => {
+        const content =
+          '<div class="grid-cols-[var(--columns)] row-span-[var(--span)] col-span-[var(--span)]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain(
+          '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.row-span-\\[var\\(--span\\)\\] { grid-row: span var(--span) / span var(--span); }'
+        );
+        expect(result).toContain(
+          '.col-span-\\[var\\(--span\\)\\] { grid-column: span var(--span) / span var(--span); }'
+        );
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('should handle duplicate classes', () => {
+        const content = '<div class="grid-cols-[80] col-span-[80] grid-cols-[80]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        // 実装では重複排除されていないため、3つのクラスが生成される
+        expect(result).toHaveLength(3);
+        expect(
+          result.filter((r) => r.includes('grid-template-columns: repeat(80, minmax(0, 1fr))'))
+            .length
+        ).toBe(2);
+        expect(result.filter((r) => r.includes('grid-column: span 80 / span 80')).length).toBe(1);
+      });
+
+      it('should handle empty content', () => {
+        const result = extractCustomGridClasses('');
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle content without grid classes', () => {
+        const content = '<div class="text-red-500 p-4">Content</div>';
+        const result = extractCustomGridClasses(content);
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle malformed bracket classes', () => {
+        const content = '<div class="grid-cols-[incomplete">Content</div>';
+        const result = extractCustomGridClasses(content);
         expect(result).toHaveLength(0);
       });
     });

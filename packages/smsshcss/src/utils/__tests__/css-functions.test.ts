@@ -1,5 +1,6 @@
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
+import { extractCustomGridClasses } from '../grid';
 
 describe('Enhanced CSS Functions Support', () => {
   describe('calc() function', () => {
@@ -339,6 +340,16 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe('.w-\\[min\\(1rem\\,2rem\\)\\] { width: min(1rem, 2rem); }');
+    });
+
+    it('should handle grid-cols with CSS variables', () => {
+      const content = '<div class="grid-cols-[var(--columns)]">Test</div>';
+      const result = extractCustomGridClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
+      );
     });
   });
 });
