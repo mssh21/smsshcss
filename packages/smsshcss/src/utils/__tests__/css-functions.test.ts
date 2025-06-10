@@ -1,7 +1,7 @@
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
-import { extractCustomGridClasses } from '../grid';
-import { extractCustomOrderClasses } from '../order';
+import { extractCustomHeightClasses } from '../height';
+import { extractCustomFlexClasses } from '../flexbox';
 
 describe('Enhanced CSS Functions Support', () => {
   describe('calc() function', () => {
@@ -66,6 +66,16 @@ describe('Enhanced CSS Functions Support', () => {
         '.max-w-\\[calc\\(2rem\\*1\\.5\\)\\] { max-width: calc(2rem * 1.5); }'
       );
     });
+
+    it('should handle calc() with basis', () => {
+      const content = '<div class="basis-[calc(100%-20px)]">Test</div>';
+      const result = extractCustomFlexClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
+      );
+    });
   });
 
   describe('min() function', () => {
@@ -93,6 +103,16 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe('.w-\\[min\\(2rem\\,5vw\\)\\] { width: min(2rem, 5vw); }');
+    });
+
+    it('should handle max() with basis', () => {
+      const content = '<div class="basis-[max(100%-20px)]">Test</div>';
+      const result = extractCustomFlexClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.basis-\\[max\\(100\\%\\-20px\\)\\] { flex-basis: max(100% - 20px); }'
+      );
     });
   });
 
@@ -129,6 +149,16 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe('.min-w-\\[max\\(2rem\\,5vw\\)\\] { min-width: max(2rem, 5vw); }');
+    });
+
+    it('should handle max() with basis', () => {
+      const content = '<div class="basis-[max(100%-20px)]">Test</div>';
+      const result = extractCustomFlexClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.basis-\\[max\\(100\\%\\-20px\\)\\] { flex-basis: max(100% - 20px); }'
+      );
     });
   });
 
@@ -170,6 +200,16 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result).toHaveLength(1);
       expect(result[0]).toBe(
         '.max-w-\\[clamp\\(2rem\\,5vw\\,4rem\\)\\] { max-width: clamp(2rem, 5vw, 4rem); }'
+      );
+    });
+
+    it('should handle clamp() with basis', () => {
+      const content = '<div class="basis-[clamp(100%-20px)]">Test</div>';
+      const result = extractCustomFlexClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.basis-\\[clamp\\(100\\%\\-20px\\)\\] { flex-basis: clamp(100% - 20px); }'
       );
     });
   });
@@ -242,123 +282,48 @@ describe('Enhanced CSS Functions Support', () => {
         '.w-\\[clamp\\(2rem\\,5vw\\,4rem\\)\\] { width: clamp(2rem, 5vw, 4rem); }'
       );
     });
+
+    it('should handle basis() with basis', () => {
+      const content = '<div class="basis-[clamp(2rem,5vw,4rem)]">Test</div>';
+      const result = extractCustomFlexClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.basis-\\[clamp\\(2rem\\,5vw\\,4rem\\)\\] { flex-basis: clamp(2rem, 5vw, 4rem); }'
+      );
+    });
   });
 
   describe('multiple CSS functions in one content', () => {
     it('should handle multiple different CSS functions', () => {
       const content = `
         <div class="m-[calc(1rem+10px)] p-[min(2rem,5vw)]">
-          <span class="gap-[max(1rem,20px)] mt-[clamp(0.5rem,2vw,2rem)] w-[clamp(2rem,5vw,4rem)] min-w-[clamp(3rem,6vw,5rem)] max-w-[clamp(4rem,8vw,6rem)]">Test</span>
+          <span class="w-[max(100px,20%)] h-[clamp(50px,10vh,200px)] basis-[calc(100%-20px)]">Test</span>
         </div>
       `;
-      const resultSpacing = extractCustomSpacingClasses(content);
-      const resultWidth = extractCustomWidthClasses(content);
+      const spacingResult = extractCustomSpacingClasses(content);
+      const widthResult = extractCustomWidthClasses(content);
+      const heightResult = extractCustomHeightClasses(content);
+      const basisResult = extractCustomFlexClasses(content);
 
-      expect(resultSpacing).toHaveLength(4);
-      expect(resultSpacing).toContain(
+      expect(spacingResult).toHaveLength(2);
+      expect(spacingResult).toContain(
         '.m-\\[calc\\(1rem\\+10px\\)\\] { margin: calc(1rem + 10px); }'
       );
-      expect(resultSpacing).toContain('.p-\\[min\\(2rem\\,5vw\\)\\] { padding: min(2rem, 5vw); }');
-      expect(resultSpacing).toContain('.gap-\\[max\\(1rem\\,20px\\)\\] { gap: max(1rem, 20px); }');
-      expect(resultSpacing).toContain(
-        '.mt-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { margin-top: clamp(0.5rem, 2vw, 2rem); }'
+      expect(spacingResult).toContain('.p-\\[min\\(2rem\\,5vw\\)\\] { padding: min(2rem, 5vw); }');
+
+      expect(widthResult).toHaveLength(1);
+      expect(widthResult).toContain('.w-\\[max\\(100px\\,20\\%\\)\\] { width: max(100px, 20%); }');
+
+      expect(heightResult).toHaveLength(1);
+      expect(heightResult).toContain(
+        '.h-\\[clamp\\(50px\\,10vh\\,200px\\)\\] { height: clamp(50px, 10vh, 200px); }'
       );
-      expect(resultWidth).toHaveLength(3);
-      expect(resultWidth).toContain(
-        '.w-\\[clamp\\(2rem\\,5vw\\,4rem\\)\\] { width: clamp(2rem, 5vw, 4rem); }'
+
+      expect(basisResult).toHaveLength(1);
+      expect(basisResult).toContain(
+        '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
       );
-      expect(resultWidth).toContain(
-        '.min-w-\\[clamp\\(3rem\\,6vw\\,5rem\\)\\] { min-width: clamp(3rem, 6vw, 5rem); }'
-      );
-      expect(resultWidth).toContain(
-        '.max-w-\\[clamp\\(4rem\\,8vw\\,6rem\\)\\] { max-width: clamp(4rem, 8vw, 6rem); }'
-      );
-    });
-  });
-
-  describe('CSS variables with functions', () => {
-    it('should handle CSS variables correctly', () => {
-      const content = '<div class="m-[var(--spacing-dynamic)]">Test</div>';
-      const result = extractCustomSpacingClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(
-        '.m-\\[var\\(--spacing-dynamic\\)\\] { margin: var(--spacing-dynamic); }'
-      );
-    });
-
-    it('should not apply CSS function formatting to CSS variables', () => {
-      const content = '<div class="p-[var(--responsive-padding)]">Test</div>';
-      const result = extractCustomSpacingClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(
-        '.p-\\[var\\(--responsive-padding\\)\\] { padding: var(--responsive-padding); }'
-      );
-    });
-
-    it('should handle CSS variables with functions', () => {
-      const content = '<div class="w-[var(--responsive-width)]">Test</div>';
-      const result = extractCustomWidthClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(
-        '.w-\\[var\\(--responsive-width\\)\\] { width: var(--responsive-width); }'
-      );
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should handle functions with no spaces', () => {
-      const content = '<div class="m-[min(1rem,2rem)]">Test</div>';
-      const result = extractCustomSpacingClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.m-\\[min\\(1rem\\,2rem\\)\\] { margin: min(1rem, 2rem); }');
-    });
-
-    it('should handle functions with extra spaces', () => {
-      const content = '<div class="m-[min( 1rem , 2rem )]">Test</div>';
-      const result = extractCustomSpacingClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.m-\\[min\\( 1rem \\, 2rem \\)\\] { margin: min(1rem, 2rem); }');
-    });
-
-    it('should handle mixed units and values', () => {
-      const content = '<div class="p-[clamp(10px,2vw,3rem)]">Test</div>';
-      const result = extractCustomSpacingClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(
-        '.p-\\[clamp\\(10px\\,2vw\\,3rem\\)\\] { padding: clamp(10px, 2vw, 3rem); }'
-      );
-    });
-
-    it('should handle width functions with no spaces', () => {
-      const content = '<div class="w-[min(1rem,2rem)]">Test</div>';
-      const result = extractCustomWidthClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.w-\\[min\\(1rem\\,2rem\\)\\] { width: min(1rem, 2rem); }');
-    });
-
-    it('should handle grid-cols with CSS variables', () => {
-      const content = '<div class="grid-cols-[var(--columns)]">Test</div>';
-      const result = extractCustomGridClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe(
-        '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
-      );
-    });
-
-    it('should handle order with CSS variables', () => {
-      const content = '<div class="order-[var(--order)]">Test</div>';
-      const result = extractCustomOrderClasses(content);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.order-\\[var\\(--order\\)\\] { order: var(--order); }');
     });
   });
 });

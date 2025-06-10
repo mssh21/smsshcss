@@ -87,6 +87,67 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     });
   });
 
+  describe('Z-Index Classes', () => {
+    it('should generate z-index utility classes', () => {
+      expect(result?.code).toContain('.z-10 { z-index: 10; }');
+      expect(result?.code).toContain('.z-20 { z-index: 20; }');
+      expect(result?.code).toContain('.z-30 { z-index: 30; }');
+      expect(result?.code).toContain('.z-40 { z-index: 40; }');
+      expect(result?.code).toContain('.z-50 { z-index: 50; }');
+      expect(result?.code).toContain('.z-auto { z-index: auto; }');
+    });
+  });
+
+  describe('Order Classes', () => {
+    it('should generate order utility classes', () => {
+      expect(result?.code).toContain('.order-1 { order: 1; }');
+      expect(result?.code).toContain('.order-2 { order: 2; }');
+      expect(result?.code).toContain('.order-first { order: -9999; }');
+      expect(result?.code).toContain('.order-last { order: 9999; }');
+      expect(result?.code).toContain('.order-none { order: 0; }');
+    });
+  });
+
+  describe('Grid Classes', () => {
+    it('should generate grid utility classes', () => {
+      expect(result?.code).toContain(
+        '.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain('.col-span-3 { grid-column: span 3 / span 3; }');
+      expect(result?.code).toContain('.row-span-1 { grid-row: span 1 / span 1; }');
+      expect(result?.code).toContain('.col-start-4 { grid-column-start: 4; }');
+      expect(result?.code).toContain('.row-start-4 { grid-row-start: 4; }');
+      expect(result?.code).toContain('.col-end-4 { grid-column-end: 4; }');
+      expect(result?.code).toContain('.grid-flow-row { grid-auto-flow: row; }');
+    });
+  });
+
+  describe('Flex Classes', () => {
+    it('should generate flex utility classes', () => {
+      expect(result?.code).toContain('.flex-row { flex-direction: row; }');
+      expect(result?.code).toContain('.flex-col { flex-direction: column; }');
+      expect(result?.code).toContain('.flex-row-reverse { flex-direction: row-reverse; }');
+      expect(result?.code).toContain('.flex-col-reverse { flex-direction: column-reverse; }');
+      expect(result?.code).toContain('.flex-wrap { flex-wrap: wrap; }');
+      expect(result?.code).toContain('.flex-wrap-reverse { flex-wrap: wrap-reverse; }');
+      expect(result?.code).toContain('.flex-grow { flex-grow: 1; }');
+      expect(result?.code).toContain('.flex-shrink { flex-shrink: 1; }');
+      expect(result?.code).toContain('.flex-1 { flex: 1 1 0%; }');
+      expect(result?.code).toContain('.flex-basis-auto { flex-basis: auto; }');
+      expect(result?.code).toContain('.flex-basis-full { flex-basis: 100%; }');
+      expect(result?.code).toContain('.flex-basis-sm { flex-basis: calc(var(--size-base) * 2); }');
+    });
+  });
+
   describe('Custom Theme', () => {
     it('should apply custom spacing theme', async () => {
       const customPlugin = smsshcss({
@@ -94,6 +155,50 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
           spacing: {
             custom: '2rem',
             special: '3.5rem',
+          },
+          width: {
+            custom: '2rem',
+            special: '3.5rem',
+          },
+          height: {
+            custom: '2rem',
+            special: '3.5rem',
+          },
+          zIndex: {
+            custom: '20',
+            special: '30',
+          },
+          order: {
+            custom: '50',
+            special: '60',
+          },
+          gridCols: {
+            custom: '20',
+            special: '30',
+          },
+          gridRows: {
+            custom: '20',
+            special: '30',
+          },
+          gridColumnSpan: {
+            custom: '20',
+            special: '30',
+          },
+          gridRowSpan: {
+            custom: '20',
+            special: '30',
+          },
+          gridColumnStart: {
+            custom: '20',
+            special: '30',
+          },
+          gridRowStart: {
+            custom: '20',
+            special: '30',
+          },
+          gridAutoFlow: {
+            custom: 'row',
+            special: 'column',
           },
         },
       });

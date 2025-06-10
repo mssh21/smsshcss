@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
 import { extractCustomHeightClasses } from '../height';
+import { extractCustomFlexClasses } from '../flexbox';
 import { extractCustomGridClasses } from '../grid';
+import { extractCustomZIndexClasses } from '../z-index';
+import { extractCustomOrderClasses } from '../order';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -386,12 +389,13 @@ describe('Custom Value Extraction Functions', () => {
       });
 
       it('should extract grid-rows custom values', () => {
-        const content = '<div class="grid-rows-[20] grid-rows-[auto,1fr,auto]">Test</div>';
+        const content =
+          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto]">Test</div>';
         const result = extractCustomGridClasses(content);
 
         expect(result).toHaveLength(2);
         expect(result).toContain(
-          '.grid-rows-\\[20\\] { grid-template-rows: repeat(20, minmax(0, 1fr)); }'
+          '.grid-rows-\\[var\\(--grid-rows\\)\\] { grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr)); }'
         );
         expect(result).toContain(
           '.grid-rows-\\[auto,1fr,auto\\] { grid-template-rows: auto 1fr auto; }'
@@ -399,12 +403,14 @@ describe('Custom Value Extraction Functions', () => {
       });
 
       it('should extract span custom values', () => {
-        const content = '<div class="col-span-[15] row-span-[8]">Test</div>';
+        const content = '<div class="col-span-[15] row-span-[var(--row-span)]">Test</div>';
         const result = extractCustomGridClasses(content);
 
         expect(result).toHaveLength(2);
         expect(result).toContain('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
-        expect(result).toContain('.row-span-\\[8\\] { grid-row: span 8 / span 8; }');
+        expect(result).toContain(
+          '.row-span-\\[var\\(--row-span\\)\\] { grid-row: span var(--row-span) / span var(--row-span); }'
+        );
       });
 
       it('should extract grid position custom values', () => {
@@ -481,6 +487,97 @@ describe('Custom Value Extraction Functions', () => {
         const content = '<div class="grid-cols-[incomplete">Content</div>';
         const result = extractCustomGridClasses(content);
         expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomFlexClasses', () => {
+    describe('Basic Flex Custom Values', () => {
+      it('should extract flex custom values', () => {
+        const content = '<div class="basis-xs grow-0 shrink-0 flex-1">Test</div>';
+        const result = extractCustomFlexClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.basis-\\[xs\\] { flex-basis: xs; }');
+        expect(result).toContain('.grow-\\[0\\] { flex-grow: 0; }');
+        expect(result).toContain('.shrink-\\[0\\] { flex-shrink: 0; }');
+        expect(result).toContain('.flex-\\[1\\] { flex: 1; }');
+      });
+    });
+
+    describe('CSS Functions', () => {
+      it('should extract calc() with flex', () => {
+        const content =
+          '<div class="flex-[5] basis-[calc(100%-20px)] shrink-[2] grow-[4]">Test</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.flex-\\[5\\] { flex: 5; }');
+        expect(result).toContain(
+          '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
+        );
+        expect(result).toContain('.shrink-\\[2\\] { flex-shrink: 2; }');
+        expect(result).toContain('.grow-\\[4\\] { flex-grow: 4; }');
+      });
+    });
+
+    describe('Complex Flex Values', () => {
+      it('should extract CSS variable values', () => {
+        const content =
+          '<div class="flex-[var(--flex)] basis-[var(--basis)] shrink-[var(--shrink)] grow-[var(--grow)]">Test</div>';
+        const result = extractCustomFlexClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.flex-\\[var\\(--flex\\)\\] { flex: var(--flex); }');
+        expect(result).toContain('.basis-\\[var\\(--basis\\)\\] { flex-basis: var(--basis); }');
+        expect(result).toContain('.shrink-\\[var\\(--shrink\\)\\] { flex-shrink: var(--shrink); }');
+        expect(result).toContain('.grow-\\[var\\(--grow\\)\\] { flex-grow: var(--grow); }');
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('should handle empty content', () => {
+        const result = extractCustomFlexClasses('');
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle content without flex classes', () => {
+        const content = '<div class="text-red-500 p-4">Content</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle malformed bracket classes', () => {
+        const content = '<div class="flex-[incomplete">Content</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomZIndexClasses', () => {
+    describe('Basic Z-Index Custom Values', () => {
+      it('should extract z-index custom values', () => {
+        const content = '<div class="z-[1] z-[2] z-[3]">Test</div>';
+        const result = extractCustomZIndexClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.z-\\[1\\] { z-index: 1; }');
+        expect(result).toContain('.z-\\[2\\] { z-index: 2; }');
+        expect(result).toContain('.z-\\[3\\] { z-index: 3; }');
+      });
+    });
+  });
+
+  describe('extractCustomOrderClasses', () => {
+    describe('Basic Order Values', () => {
+      it('should extract order custom values', () => {
+        const content = '<div class="order-[1] order-[2] order-[3]">Test</div>';
+        const result = extractCustomOrderClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.order-\\[1\\] { order: 1; }');
+        expect(result).toContain('.order-\\[2\\] { order: 2; }');
+        expect(result).toContain('.order-\\[3\\] { order: 3; }');
       });
     });
   });

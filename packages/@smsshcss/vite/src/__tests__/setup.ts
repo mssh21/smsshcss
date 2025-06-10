@@ -10,6 +10,9 @@ interface SmsshCSSConfig {
     display?: Record<string, string>;
     width?: Record<string, string>;
     height?: Record<string, string>;
+    grid?: Record<string, string>;
+    order?: Record<string, string>;
+    zIndex?: Record<string, string>;
   };
   purge?: {
     enabled?: boolean;
@@ -94,6 +97,52 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.max-h-md { max-height: calc(var(--size-base) * 5); }';
   css += '\n.max-h-lg { max-height: calc(var(--size-base) * 8); }';
 
+  // Grid classes
+  css += '\n.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }';
+  css += '\n.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }';
+  css += '\n.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }';
+  css += '\n.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }';
+  css += '\n.col-span-3 { grid-column: span 3 / span 3; }';
+  css += '\n.row-span-1 { grid-row: span 1 / span 1; }';
+  css += '\n.col-start-4 { grid-column-start: 4; }';
+  css += '\n.row-start-4 { grid-row-start: 4; }';
+  css += '\n.col-end-4 { grid-column-end: 4; }';
+  css += '\n.grid-flow-row { grid-auto-flow: row; }';
+
+  // Flexbox classes
+  css += '\n.flex-row { flex-direction: row; }';
+  css += '\n.flex-col { flex-direction: column; }';
+  css += '\n.flex-row-reverse { flex-direction: row-reverse; }';
+  css += '\n.flex-col-reverse { flex-direction: column-reverse; }';
+  css += '\n.flex-wrap { flex-wrap: wrap; }';
+  css += '\n.flex-wrap-reverse { flex-wrap: wrap-reverse; }';
+  css += '\n.flex-grow { flex-grow: 1; }';
+  css += '\n.flex-shrink { flex-shrink: 1; }';
+  css += '\n.flex-1 { flex: 1 1 0%; }';
+  css += '\n.flex-auto { flex: 1 1 auto; }';
+  css += '\n.flex-basis-auto { flex-basis: auto; }';
+  css += '\n.flex-basis-full { flex-basis: 100%; }';
+  css += '\n.flex-basis-sm { flex-basis: calc(var(--size-base) * 2); }';
+
+  // Order classes
+  css += '\n.order-1 { order: 1; }';
+  css += '\n.order-2 { order: 2; }';
+  css += '\n.order-3 { order: 3; }';
+  css += '\n.order-4 { order: 4; }';
+  css += '\n.order-5 { order: 5; }';
+  css += '\n.order-first { order: -9999; }';
+  css += '\n.order-last { order: 9999; }';
+  css += '\n.order-none { order: 0; }';
+
+  // Z-index classes
+  css += '\n.z-0 { z-index: 0; }';
+  css += '\n.z-10 { z-index: 10; }';
+  css += '\n.z-20 { z-index: 20; }';
+  css += '\n.z-30 { z-index: 30; }';
+  css += '\n.z-40 { z-index: 40; }';
+  css += '\n.z-50 { z-index: 50; }';
+  css += '\n.z-auto { z-index: auto; }';
+
   // カスタムテーマクラス
   if (config.theme?.spacing) {
     Object.entries(config.theme.spacing).forEach(([key, value]) => {
@@ -102,6 +151,22 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
       css += `\n.gap-${key} { gap: ${value}; }`;
       css += `\n.gap-x-${key} { column-gap: ${value}; }`;
       css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+      css += `\n.w-${key} { width: ${value}; }`;
+      css += `\n.min-w-${key} { min-width: ${value}; }`;
+      css += `\n.max-w-${key} { max-width: ${value}; }`;
+      css += `\n.h-${key} { height: ${value}; }`;
+      css += `\n.min-h-${key} { min-height: ${value}; }`;
+      css += `\n.max-h-${key} { max-height: ${value}; }`;
+      css += `\n.grid-cols-${key} { grid-template-columns: repeat(${value}, minmax(0, 1fr)); }`;
+      css += `\n.grid-rows-${key} { grid-template-rows: repeat(${value}, minmax(0, 1fr)); }`;
+      css += `\n.col-span-${key} { grid-column: span ${value}; }`;
+      css += `\n.row-span-${key} { grid-row: span ${value}; }`;
+      css += `\n.col-start-${key} { grid-column-start: ${value}; }`;
+      css += `\n.row-start-${key} { grid-row-start: ${value}; }`;
+      css += `\n.col-end-${key} { grid-column-end: ${value}; }`;
+      css += `\n.row-end-${key} { grid-row-end: ${value}; }`;
+      css += `\n.order-${key} { order: ${value}; }`;
+      css += `\n.z-${key} { z-index: ${value}; }`;
     });
   }
 
@@ -124,6 +189,19 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
       css += `\n.h-${key} { height: ${value}; }`;
       css += `\n.min-h-${key} { min-height: ${value}; }`;
       css += `\n.max-h-${key} { max-height: ${value}; }`;
+    });
+  }
+
+  if (config.theme?.grid) {
+    Object.entries(config.theme.grid).forEach(([key, value]) => {
+      css += `\n.grid-cols-${key} { grid-template-columns: repeat(${value}, minmax(0, 1fr)); }`;
+      css += `\n.grid-rows-${key} { grid-template-rows: repeat(${value}, minmax(0, 1fr)); }`;
+      css += `\n.col-span-${key} { grid-column: span ${value}; }`;
+      css += `\n.row-span-${key} { grid-row: span ${value}; }`;
+      css += `\n.col-start-${key} { grid-column-start: ${value}; }`;
+      css += `\n.row-start-${key} { grid-row-start: ${value}; }`;
+      css += `\n.col-end-${key} { grid-column-end: ${value}; }`;
+      css += `\n.row-end-${key} { grid-row-end: ${value}; }`;
     });
   }
 
@@ -344,6 +422,61 @@ const mockExtractCustomHeightClasses = (content: string): string[] => {
   return customHeightClasses;
 };
 
+// カスタムグリッドクラス抽出モック
+
+const mockExtractCustomGridClasses = (content: string): string[] => {
+  const customValuePattern =
+    /\b(grid-cols|grid-rows|col-span|row-span|col-start|col-end|row-start|row-end)-\[([^\]]+)\]/g;
+  const matches = content.matchAll(customValuePattern);
+  const customGridClasses: string[] = [];
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  for (const match of matches) {
+    const prefix = match[1];
+    const value = match[2];
+    const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+    if (prefix === 'grid-cols') {
+      customGridClasses.push(
+        `.grid-cols-\\[${escapeValue(value)}\\] { grid-template-columns: ${originalValue}; }`
+      );
+    } else if (prefix === 'grid-rows') {
+      customGridClasses.push(
+        `.grid-rows-\\[${escapeValue(value)}\\] { grid-template-rows: ${originalValue}; }`
+      );
+    } else if (prefix === 'col-span') {
+      customGridClasses.push(
+        `.col-span-\\[${escapeValue(value)}\\] { grid-column: span ${originalValue}; }`
+      );
+    } else if (prefix === 'row-span') {
+      customGridClasses.push(
+        `.row-span-\\[${escapeValue(value)}\\] { grid-row: span ${originalValue}; }`
+      );
+    } else if (prefix === 'col-start') {
+      customGridClasses.push(
+        `.col-start-\\[${escapeValue(value)}\\] { grid-column-start: ${originalValue}; }`
+      );
+    } else if (prefix === 'col-end') {
+      customGridClasses.push(
+        `.col-end-\\[${escapeValue(value)}\\] { grid-column-end: ${originalValue}; }`
+      );
+    } else if (prefix === 'row-start') {
+      customGridClasses.push(
+        `.row-start-\\[${escapeValue(value)}\\] { grid-row-start: ${originalValue}; }`
+      );
+    } else if (prefix === 'row-end') {
+      customGridClasses.push(
+        `.row-end-\\[${escapeValue(value)}\\] { grid-row-end: ${originalValue}; }`
+      );
+    } else if (prefix === 'grid-flow') {
+      customGridClasses.push(
+        `.grid-flow-\\[${escapeValue(value)}\\] { grid-auto-flow: ${originalValue}; }`
+      );
+    }
+  }
+  return customGridClasses;
+};
+
 // smsshcssパッケージをモック
 vi.mock('smsshcss', () => ({
   generateCSS: vi.fn().mockImplementation((config) => Promise.resolve(generateMockCSS(config))),
@@ -357,6 +490,7 @@ vi.mock('smsshcss', () => ({
   extractCustomSpacingClasses: vi.fn().mockImplementation(mockExtractCustomSpacingClasses),
   extractCustomWidthClasses: vi.fn().mockImplementation(mockExtractCustomWidthClasses),
   extractCustomHeightClasses: vi.fn().mockImplementation(mockExtractCustomHeightClasses),
+  extractCustomGridClasses: vi.fn().mockImplementation(mockExtractCustomGridClasses),
 }));
 
 // モッククリア関数

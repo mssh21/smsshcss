@@ -102,3 +102,22 @@ export function generateArbitraryZIndex(value: string): string {
   const escapedValue = escapeZIndexValue(value);
   return `.z-\\[${escapedValue}\\] { z-index: ${value}; }`;
 }
+
+// テーマ設定からクラスを生成
+export function generateAllZIndexClasses(themeConfig?: {
+  zIndex?: Record<string, string>;
+}): string {
+  const classes: string[] = [];
+
+  // デフォルトのクラスを生成
+  classes.push(generateZIndexClasses());
+
+  // テーマ設定がある場合は、カスタムクラスを生成
+  if (themeConfig?.zIndex) {
+    Object.entries(themeConfig.zIndex).forEach(([key, value]) => {
+      classes.push(`.z-${key} { z-index: ${value}; }`);
+    });
+  }
+
+  return classes.join('\n');
+}

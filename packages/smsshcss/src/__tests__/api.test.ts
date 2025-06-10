@@ -220,12 +220,6 @@ describe('SmsshCSS Main API', () => {
           spacing: {
             custom: '2rem',
           },
-          display: {
-            'custom-flex': 'flex',
-          },
-          flexbox: {
-            'custom-direction': 'column',
-          },
         },
       };
 

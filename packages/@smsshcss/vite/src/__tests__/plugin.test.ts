@@ -16,6 +16,17 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
         theme: {
           spacing: { custom: '2rem' },
           display: { custom: 'block' },
+          width: { custom: '100px' },
+          height: { custom: '100px' },
+          gridCols: { custom: '20' },
+          gridRows: { custom: '20' },
+          gridColumnSpan: { custom: '20' },
+          gridRowSpan: { custom: '20' },
+          gridColumnPosition: { custom: '20' },
+          gridRowPosition: { custom: '20' },
+          gridAutoFlow: { custom: '20' },
+          zIndex: { custom: '100' },
+          order: { custom: '50' },
         },
       };
       const plugin = smsshcss(options);

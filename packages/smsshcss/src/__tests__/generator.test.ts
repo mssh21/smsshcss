@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CSSGenerator } from '../core/generator';
-import { setupDefaultMocks, testConfigs } from './setup';
+import { setupDefaultMocks, testConfigs, cssValidators } from './setup';
 import type { SmsshCSSConfig } from '../core/types';
 
 describe('CSSGenerator', () => {
@@ -103,9 +103,6 @@ describe('CSSGenerator', () => {
           theme: {
             spacing: {
               'custom-xl': '10rem',
-            },
-            display: {
-              'custom-flex': 'inline-flex',
             },
           },
         };
@@ -228,6 +225,111 @@ describe('CSSGenerator', () => {
       const openBraces = (result.match(/{/g) || []).length;
       const closeBraces = (result.match(/}/g) || []).length;
       expect(openBraces).toBe(closeBraces);
+    });
+  });
+
+  describe('Display Generation', () => {
+    it('should generate display utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'block')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-block')).toBe(true);
+      expect(cssValidators.hasClass(result, 'flex')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-flex')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grid')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-grid')).toBe(true);
+      expect(cssValidators.hasClass(result, 'none')).toBe(true);
+      expect(cssValidators.hasClass(result, 'contents')).toBe(true);
+      expect(cssValidators.hasClass(result, 'hidden')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.block\s*\{[^}]*display: block[^}]*\}/);
+      expect(result).toMatch(/\.inline\s*\{[^}]*display: inline[^}]*\}/);
+      expect(result).toMatch(/\.inline-block\s*\{[^}]*display: inline flow-root[^}]*\}/);
+      expect(result).toMatch(/\.flex\s*\{[^}]*display: block flex[^}]*\}/);
+      expect(result).toMatch(/\.inline-flex\s*\{[^}]*display: inline flex[^}]*\}/);
+      expect(result).toMatch(/\.grid\s*\{[^}]*display: block grid[^}]*\}/);
+      expect(result).toMatch(/\.inline-grid\s*\{[^}]*display: inline grid[^}]*\}/);
+      expect(result).toMatch(/\.none\s*\{[^}]*display: none[^}]*\}/);
+      expect(result).toMatch(/\.contents\s*\{[^}]*display: contents[^}]*\}/);
+      expect(result).toMatch(/\.hidden\s*\{[^}]*display: none[^}]*\}/);
+    });
+  });
+
+  describe('Flexbox Generation', () => {
+    it('should generate flexbox utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'flex-1')).toBe(true);
+      expect(cssValidators.hasClass(result, 'basis-full')).toBe(true);
+      expect(cssValidators.hasClass(result, 'shrink-0')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grow-0')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.flex-1\s*\{[^}]*flex: 1 1 0%[^}]*\}/);
+      expect(result).toMatch(/\.basis-full\s*\{[^}]*flex-basis: 100%[^}]*\}/);
+      expect(result).toMatch(/\.shrink-0\s*\{[^}]*flex-shrink: 0[^}]*\}/);
+      expect(result).toMatch(/\.grow-0\s*\{[^}]*flex-grow: 0[^}]*[^}]*\}/);
+    });
+  });
+
+  describe('Grid Generation', () => {
+    it('should generate grid utility classes', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // グリッドテンプレートのクラスを確認
+      expect(cssValidators.hasClass(result, 'grid-cols-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grid-rows-2')).toBe(true);
+
+      // グリッドアイテムの配置クラスを確認
+      expect(cssValidators.hasClass(result, 'col-span-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'row-span-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'col-start-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'row-start-2')).toBe(true);
+
+      // グリッドの配置プロパティを確認
+      expect(result).toMatch(
+        /\.grid-cols-2\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)[^}]*\}/
+      );
+      expect(result).toMatch(
+        /\.grid-rows-2\s*\{[^}]*grid-template-rows: repeat\(2, minmax\(0, 1fr\)\)[^}]*\}/
+      );
+      expect(result).toMatch(/\.col-span-2\s*\{[^}]*grid-column: span 2 \/ span 2[^}]*\}/);
+      expect(result).toMatch(/\.row-span-2\s*\{[^}]*grid-row: span 2 \/ span 2[^}]*\}/);
+      expect(result).toMatch(/\.col-start-2\s*\{[^}]*grid-column-start: 2[^}]*\}/);
+      expect(result).toMatch(/\.row-start-2\s*\{[^}]*grid-row-start: 2[^}]*\}/);
+    });
+  });
+
+  describe('Z-Index Generation', () => {
+    it('should generate z-index utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'z-10')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.z-10\s*\{[^}]*z-index: 10[^}]*\}/);
+    });
+  });
+
+  describe('Order Generation', () => {
+    it('should generate order utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'order-10')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.order-10\s*\{[^}]*order: 10[^}]*\}/);
     });
   });
 });

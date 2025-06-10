@@ -37,6 +37,22 @@ function createTestHelpers(tempDir: string): TestHelpers {
       expect(code).toContain('.m-md { margin: 1.25rem; }');
       expect(code).toContain('.p-md { padding: 1.25rem; }');
       expect(code).toContain('.gap-md { gap: 1.25rem; }');
+      expect(code).toContain('.w-md { width: 1.25rem; }');
+      expect(code).toContain('.h-md { height: 1.25rem; }');
+      expect(code).toContain('.min-w-md { min-width: 1.25rem; }');
+      expect(code).toContain('.max-w-md { max-width: 1.25rem; }');
+      expect(code).toContain('.min-h-md { min-height: 1.25rem; }');
+      expect(code).toContain('.max-h-md { max-height: 1.25rem; }');
+      expect(code).toContain('.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }');
+      expect(code).toContain('.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }');
+      expect(code).toContain('.col-span-2 { grid-column: span 2; }');
+      expect(code).toContain('.row-span-3 { grid-row: span 3; }');
+      expect(code).toContain('.col-start-2 { grid-column-start: 2; }');
+      expect(code).toContain('.row-start-3 { grid-row-start: 3; }');
+      expect(code).toContain('.col-end-4 { grid-column-end: 4; }');
+      expect(code).toContain('.row-end-5 { grid-row-end: 5; }');
+      expect(code).toContain('.order-6 { order: 6; }');
+      expect(code).toContain('.z-10 { z-index: 10; }');
     },
   };
 }
@@ -64,6 +80,37 @@ const testCases = {
     { html: 'max-w-[50px]', css: '.max-w-\\[50px\\] { max-width: 50px; }' },
     { html: 'max-h-[50px]', css: '.max-h-\\[50px\\] { max-height: 50px; }' },
   ],
+  grid: [
+    {
+      html: 'grid-cols-2',
+      css: '.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }',
+    },
+    { html: 'grid-rows-4', css: '.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }' },
+    { html: 'col-span-2', css: '.col-span-2 { grid-column: span 2; }' },
+    { html: 'row-span-3', css: '.row-span-3 { grid-row: span 3; }' },
+    { html: 'col-start-2', css: '.col-start-2 { grid-column-start: 2; }' },
+    { html: 'row-start-3', css: '.row-start-3 { grid-row-start: 3; }' },
+    { html: 'col-end-4', css: '.col-end-4 { grid-column-end: 4; }' },
+    { html: 'row-end-5', css: '.row-end-5 { grid-row-end: 5; }' },
+  ],
+  order: [
+    { html: 'order-6', css: '.order-6 { order: 6; }' },
+    { html: 'z-10', css: '.z-10 { z-index: 10; }' },
+  ],
+  display: [
+    { html: 'flex', css: '.flex { display: flex; }' },
+    { html: 'grid', css: '.grid { display: grid; }' },
+    { html: 'block', css: '.block { display: block; }' },
+    { html: 'inline-block', css: '.inline-block { display: inline-block; }' },
+    { html: 'inline', css: '.inline { display: inline; }' },
+  ],
+  zIndex: [
+    { html: 'z-10', css: '.z-10 { z-index: 10; }' },
+    { html: 'z-20', css: '.z-20 { z-index: 20; }' },
+    { html: 'z-30', css: '.z-30 { z-index: 30; }' },
+    { html: 'z-40', css: '.z-40 { z-index: 40; }' },
+    { html: 'z-50', css: '.z-50 { z-index: 50; }' },
+  ],
   complex: [
     { html: 'gap-[2rem]', css: '.gap-\\[2rem\\] { gap: 2rem; }' },
     { html: 'gap-x-[1.5em]', css: '.gap-x-\\[1\\.5em\\] { column-gap: 1.5em; }' },
@@ -72,6 +119,40 @@ const testCases = {
       html: 'm-[calc(100%-20px)]',
       css: '.m-\\[calc\\(100\\%\\-20px\\)\\] { margin: calc(100% - 20px); }',
     },
+    {
+      html: 'grid-cols-[var(--columns)]',
+      css: '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }',
+    },
+    {
+      html: 'grid-rows-[var(--rows)]',
+      css: '.grid-rows-\\[var\\(--rows\\)\\] { grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); }',
+    },
+    {
+      html: 'col-span-[var(--span)]',
+      css: '.col-span-\\[var\\(--span\\)\\] { grid-column: span var(--span); }',
+    },
+    {
+      html: 'row-span-[var(--span)]',
+      css: '.row-span-\\[var\\(--span\\)\\] { grid-row: span var(--span); }',
+    },
+    {
+      html: 'col-start-[var(--start)]',
+      css: '.col-start-\\[var\\(--start\\)\\] { grid-column-start: var(--start); }',
+    },
+    {
+      html: 'row-start-[var(--start)]',
+      css: '.row-start-\\[var\\(--start\\)\\] { grid-row-start: var(--start); }',
+    },
+    {
+      html: 'col-end-[var(--end)]',
+      css: '.col-end-\\[var\\(--end\\)\\] { grid-column-end: var(--end); }',
+    },
+    {
+      html: 'row-end-[var(--end)]',
+      css: '.row-end-\\[var\\(--end\\)\\] { grid-row-end: var(--end); }',
+    },
+    { html: 'order-[var(--order)]', css: '.order-\\[var\\(--order\\)\\] { order: var(--order); }' },
+    { html: 'z-[var(--zIndex)]', css: '.z-\\[var\\(--zIndex\\)\\] { z-index: var(--zIndex); }' },
   ],
 };
 

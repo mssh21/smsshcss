@@ -52,12 +52,27 @@ describe('Flexbox Utility Classes', () => {
       expect(result).toContain('.flex-auto { flex: 1 1 auto; }');
       expect(result).toContain('.flex-initial { flex: 0 1 auto; }');
       expect(result).toContain('.flex-none { flex: none; }');
+
+      // Flex Basis
+      expect(result).toContain('.basis-auto { flex-basis: auto; }');
+      expect(result).toContain('.basis-full { flex-basis: 100%; }');
+
+      // Flex Grow
+      expect(result).toContain('.grow { flex-grow: 1; }');
+      expect(result).toContain('.grow-0 { flex-grow: 0; }');
+
+      // Flex Shrink
+      expect(result).toContain('.shrink { flex-shrink: 1; }');
+      expect(result).toContain('.shrink-0 { flex-shrink: 0; }');
     });
 
     it('should generate custom flexbox configuration', () => {
       const customConfig = {
         'custom-justify': 'start',
         'custom-align': 'center',
+        'basis-custom': '100px',
+        'grow-custom': '2',
+        'shrink-custom': '3',
       };
 
       const result = generateFlexboxClasses(customConfig);
@@ -65,6 +80,9 @@ describe('Flexbox Utility Classes', () => {
       // カスタム設定は含まれない（プロパティマッピングがないため）
       expect(result).not.toContain('custom-justify');
       expect(result).not.toContain('custom-align');
+      expect(result).not.toContain('basis-custom');
+      expect(result).not.toContain('grow-custom');
+      expect(result).not.toContain('shrink-custom');
 
       // デフォルトクラスは存在
       expect(result).toContain('.flex-row { flex-direction: row; }');
@@ -82,6 +100,9 @@ describe('Flexbox Utility Classes', () => {
         '.justify-between { justify-content: space-between; }',
         '.flex-1 { flex: 1 1 0%; }',
         '.flex-wrap { flex-wrap: wrap; }',
+        '.basis-auto { flex-basis: auto; }',
+        '.grow { flex-grow: 1; }',
+        '.shrink { flex-shrink: 1; }',
       ];
 
       flexboxPatterns.forEach((pattern) => {
@@ -101,6 +122,9 @@ describe('Flexbox Utility Classes', () => {
         'align-content',
         'align-self',
         'flex',
+        'flex-basis',
+        'flex-grow',
+        'flex-shrink',
       ];
 
       properties.forEach((property) => {

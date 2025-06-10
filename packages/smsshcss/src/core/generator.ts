@@ -4,6 +4,9 @@ import { generateDisplayClasses } from '../utils/display';
 import { generateFlexboxClasses } from '../utils/flexbox';
 import { generateAllWidthClasses, extractCustomWidthClasses } from '../utils/width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from '../utils/height';
+import { generateAllGridClasses } from '../utils/grid';
+import { generateAllZIndexClasses } from '../utils/z-index';
+import { generateAllOrderClasses } from '../utils/order';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
@@ -123,15 +126,47 @@ export class CSSGenerator {
   public async generate(): Promise<GeneratedCSS> {
     const spacingConfig = this.config.theme?.spacing;
     const displayConfig = this.config.theme?.display;
-    const flexboxConfig = this.config.theme?.flexbox;
+    const basisConfig = this.config.theme?.basis;
+    const flexDirectionConfig = this.config.theme?.flexDirection;
+    const flexWrapConfig = this.config.theme?.flexWrap;
+    const flexGrowConfig = this.config.theme?.flexGrow;
+    const flexShrinkConfig = this.config.theme?.flexShrink;
+    const flexBasisConfig = this.config.theme?.flexBasis;
     const widthConfig = this.config.theme?.width;
     const heightConfig = this.config.theme?.height;
+    const gridColumnsConfig = this.config.theme?.gridColumns;
+    const gridRowsConfig = this.config.theme?.gridRows;
+    const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
+    const gridRowSpanConfig = this.config.theme?.gridRowSpan;
+    const gridColumnStartConfig = this.config.theme?.gridColumnStart;
+    const gridRowStartConfig = this.config.theme?.gridRowStart;
+    const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
+    const zIndexConfig = this.config.theme?.zIndex;
+    const orderConfig = this.config.theme?.order;
     let utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
-      generateFlexboxClasses(flexboxConfig),
+      generateFlexboxClasses(
+        basisConfig,
+        flexDirectionConfig,
+        flexWrapConfig,
+        flexGrowConfig,
+        flexShrinkConfig,
+        flexBasisConfig
+      ),
       generateAllWidthClasses(widthConfig),
       generateAllHeightClasses(heightConfig),
+      generateAllGridClasses(
+        gridColumnsConfig,
+        gridRowsConfig,
+        gridColumnSpanConfig,
+        gridRowSpanConfig,
+        gridColumnStartConfig,
+        gridRowStartConfig,
+        gridAutoFlowConfig
+      ),
+      generateAllZIndexClasses(zIndexConfig),
+      generateAllOrderClasses(orderConfig),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -246,12 +281,18 @@ export class CSSGenerator {
     const flexboxConfig = this.config.theme?.flexbox;
     const widthConfig = this.config.theme?.width;
     const heightConfig = this.config.theme?.height;
+    const gridConfig = this.config.theme?.grid;
+    const zIndexConfig = this.config.theme?.zIndex;
+    const orderConfig = this.config.theme?.order;
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
       generateFlexboxClasses(flexboxConfig),
       generateAllWidthClasses(widthConfig),
       generateAllHeightClasses(heightConfig),
+      generateAllGridClasses(gridConfig),
+      generateAllZIndexClasses(zIndexConfig),
+      generateAllOrderClasses(orderConfig),
     ].join('\n\n');
 
     // 全CSSを結合してパージャーに渡す
@@ -274,6 +315,9 @@ export class CSSGenerator {
     const flexboxConfig = this.config.theme?.flexbox;
     const widthConfig = this.config.theme?.width;
     const heightConfig = this.config.theme?.height;
+    const gridConfig = this.config.theme?.grid;
+    const zIndexConfig = this.config.theme?.zIndex;
+    const orderConfig = this.config.theme?.order;
 
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
@@ -281,6 +325,9 @@ export class CSSGenerator {
       generateFlexboxClasses(flexboxConfig),
       generateAllWidthClasses(widthConfig),
       generateAllHeightClasses(heightConfig),
+      generateAllGridClasses(gridConfig),
+      generateAllZIndexClasses(zIndexConfig),
+      generateAllOrderClasses(orderConfig),
     ].join('\n\n');
 
     return [

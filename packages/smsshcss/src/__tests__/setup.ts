@@ -14,8 +14,10 @@ export const mockGlob = vi.mocked((await import('fast-glob')).default);
 
 // 共通のモックファイル内容
 export const mockFileContents = {
-  'test.html': '<div class="p-md m-sm block">Test</div>',
-  'component.tsx': '<div className="flex p-lg">Component</div>',
+  'test.html':
+    '<div class="p-md m-sm block flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Test</div>',
+  'component.tsx':
+    '<div className="flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Component</div>',
   'app.vue': '<div class="grid gap-md">Vue Component</div>',
   'reset.css': '* { margin: 0; padding: 0; }',
   'base.css': 'body { font-family: sans-serif; }',
@@ -114,9 +116,6 @@ export const testConfigs = {
       spacing: {
         custom: '2rem',
         special: '3rem',
-      },
-      display: {
-        'custom-flex': 'flex',
       },
     },
   },

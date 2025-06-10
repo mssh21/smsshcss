@@ -272,6 +272,8 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
       const result = await plugin.transform('', 'theme-test.css');
 
       expect(result?.code).toContain('.p-custom-1 { padding: 0.125rem; }');
+      expect(result?.code).toContain('.p-custom-2 { padding: 0.375rem; }');
+      expect(result?.code).toContain('.p-huge { padding: 10rem; }');
       expect(result?.code).toContain('.w-custom-width { width: 42rem; }');
       expect(result?.code).toContain('.h-custom-height { height: 42rem; }');
     });

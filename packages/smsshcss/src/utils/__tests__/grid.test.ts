@@ -3,7 +3,7 @@ import {
   generateSubgridClasses,
   generateArbitraryGridCols,
   generateArbitraryGridRows,
-  generateArbitraryColSpan,
+  generateArbitraryColumnSpan,
   generateArbitraryRowSpan,
 } from '../grid';
 
@@ -38,18 +38,18 @@ describe('Grid Utilities', () => {
     it('should generate grid-column span classes', () => {
       const result = generateGridClasses();
 
-      expect(result).toContain('.col-span-1 { grid-column: 1; }');
-      expect(result).toContain('.col-span-6 { grid-column: 6; }');
-      expect(result).toContain('.col-span-12 { grid-column: 12; }');
+      expect(result).toContain('.col-span-1 { grid-column: span 1 / span 1; }');
+      expect(result).toContain('.col-span-6 { grid-column: span 6 / span 6; }');
+      expect(result).toContain('.col-span-12 { grid-column: span 12 / span 12; }');
       expect(result).toContain('.col-span-full { grid-column: 1 / -1; }');
     });
 
     it('should generate grid-row span classes', () => {
       const result = generateGridClasses();
 
-      expect(result).toContain('.row-span-1 { grid-row: 1; }');
-      expect(result).toContain('.row-span-6 { grid-row: 6; }');
-      expect(result).toContain('.row-span-12 { grid-row: 12; }');
+      expect(result).toContain('.row-span-1 { grid-row: span 1 / span 1; }');
+      expect(result).toContain('.row-span-6 { grid-row: span 6 / span 6; }');
+      expect(result).toContain('.row-span-12 { grid-row: span 12 / span 12; }');
       expect(result).toContain('.row-span-full { grid-row: 1 / -1; }');
     });
 
@@ -101,10 +101,10 @@ describe('Grid Utilities', () => {
       const result = generateGridClasses();
 
       expect(result).toContain(
-        '.grid-cols-\\[\\$\\{value\\}\\] { grid-template-columns: var(--value); }'
+        '.grid-cols-\\[\\$\\{value\\}\\] { grid-template-columns: repeat(var(--value), minmax(0, 1fr)); }'
       );
       expect(result).toContain(
-        '.grid-rows-\\[\\$\\{value\\}\\] { grid-template-rows: var(--value); }'
+        '.grid-rows-\\[\\$\\{value\\}\\] { grid-template-rows: repeat(var(--value), minmax(0, 1fr)); }'
       );
       expect(result).toContain(
         '.col-span-\\[\\$\\{value\\}\\] { grid-column: span var(--value) / span var(--value); }'
@@ -186,9 +186,9 @@ describe('Grid Utilities', () => {
     });
   });
 
-  describe('generateArbitraryColSpan', () => {
+  describe('generateArbitraryColumnSpan', () => {
     it('should generate col-span with numeric value', () => {
-      const result = generateArbitraryColSpan('15');
+      const result = generateArbitraryColumnSpan('15');
 
       expect(result).toBe('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
     });
