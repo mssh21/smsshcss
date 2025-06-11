@@ -1,5 +1,6 @@
 import { SpacingDirection, SpacingProperty, SizeConfig } from '../core/types';
-import { defaultSpacingValues, escapeValue, formatCSSFunctionValue } from '../core/sizeConfig';
+import { defaultSpacingValues, escapeValue } from '../core/sizeConfig';
+import { validateArbitraryValue, isSafeArbitraryValue } from '../core/arbitrary-value-validator';
 
 // 後方互換性のためのエイリアス
 export type SpacingConfig = SizeConfig;
@@ -18,75 +19,114 @@ const directionMap: Record<SpacingDirection, string> = {
 // カスタム値クラスを検出する正規表現
 const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
 
-// カスタムスペーシングクラスを生成
+// カスタムスペーシングクラスを生成（バリデーション強化版）
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
-  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+  try {
+    // 新しいバリデーターを使用して値を検証
+    const validationResult = validateArbitraryValue(value, `spacing.${prefix}`);
 
-  // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
-
-  // gap プロパティの処理
-  if (prefix === 'gap') {
-    return `.gap-\\[${escapeValue(value)}\\] { gap: ${originalValue}; }`;
-  }
-
-  // gap-x (column-gap) プロパティの処理
-  if (prefix === 'gap-x') {
-    return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${originalValue}; }`;
-  }
-
-  // gap-y (row-gap) プロパティの処理
-  if (prefix === 'gap-y') {
-    return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${originalValue}; }`;
-  }
-
-  const property = prefix.startsWith('m') ? 'margin' : 'padding';
-  const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
-
-  let cssProperty = property;
-
-  switch (direction) {
-    case 't':
-      cssProperty = `${property}-top`;
-      break;
-    case 'r':
-      cssProperty = `${property}-right`;
-      break;
-    case 'b':
-      cssProperty = `${property}-bottom`;
-      break;
-    case 'l':
-      cssProperty = `${property}-left`;
-      break;
-    case 'x':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`;
-    case 'y':
-      return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`;
-    case '':
-      // 全方向
-      break;
-    default:
+    if (!validationResult.isValid) {
+      console.warn(`⚠️  Invalid spacing value for ${prefix}: ${value}`);
+      console.warn(`Errors: ${validationResult.errors.join(', ')}`);
       return null;
-  }
+    }
 
-  return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${originalValue}; }`;
+    // 警告があれば表示
+    if (validationResult.warnings.length > 0) {
+      console.warn(
+        `⚠️  Spacing warnings for ${prefix}[${value}]: ${validationResult.warnings.join(', ')}`
+      );
+    }
+
+    // サニタイズされた値を使用
+    const sanitizedValue = validationResult.sanitizedValue;
+
+    // gap プロパティの処理
+    if (prefix === 'gap') {
+      return `.gap-\\[${escapeValue(value)}\\] { gap: ${sanitizedValue}; }`;
+    }
+
+    // gap-x (column-gap) プロパティの処理
+    if (prefix === 'gap-x') {
+      return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${sanitizedValue}; }`;
+    }
+
+    // gap-y (row-gap) プロパティの処理
+    if (prefix === 'gap-y') {
+      return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${sanitizedValue}; }`;
+    }
+
+    const property = prefix.startsWith('m') ? 'margin' : 'padding';
+    const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
+
+    let cssProperty = property;
+
+    switch (direction) {
+      case 't':
+        cssProperty = `${property}-top`;
+        break;
+      case 'r':
+        cssProperty = `${property}-right`;
+        break;
+      case 'b':
+        cssProperty = `${property}-bottom`;
+        break;
+      case 'l':
+        cssProperty = `${property}-left`;
+        break;
+      case 'x':
+        return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${sanitizedValue}; ${property}-right: ${sanitizedValue}; }`;
+      case 'y':
+        return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${sanitizedValue}; ${property}-bottom: ${sanitizedValue}; }`;
+      case '':
+        // 全方向
+        break;
+      default:
+        console.warn(`⚠️  Unknown spacing direction: ${direction}`);
+        return null;
+    }
+
+    return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${sanitizedValue}; }`;
+  } catch (error) {
+    console.error(`❌ Error generating spacing class for ${prefix}[${value}]:`, error);
+    return null;
+  }
 }
 
-// HTMLファイルからカスタム値クラスを抽出
+// HTMLファイルからカスタム値クラスを抽出（エラーハンドリング強化版）
 export function extractCustomSpacingClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
+  const errors: string[] = [];
 
   for (const match of matches) {
     const prefix = match[1];
     const value = match[2];
 
-    // CSSクラスを生成
-    const cssClass = generateCustomSpacingClass(prefix, value);
-    if (cssClass) {
-      customClasses.push(cssClass);
+    try {
+      // セキュリティチェック
+      if (!isSafeArbitraryValue(value)) {
+        errors.push(`Unsafe spacing value detected: ${prefix}[${value}]`);
+        continue;
+      }
+
+      // CSSクラスを生成
+      const cssClass = generateCustomSpacingClass(prefix, value);
+      if (cssClass) {
+        customClasses.push(cssClass);
+      } else {
+        errors.push(`Failed to generate spacing class: ${prefix}[${value}]`);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      errors.push(`Error processing spacing class ${prefix}[${value}]: ${errorMessage}`);
     }
+  }
+
+  // エラーがあれば警告を表示
+  if (errors.length > 0) {
+    console.warn('⚠️  Spacing extraction errors:');
+    errors.forEach((error) => console.warn(`  • ${error}`));
   }
 
   return customClasses;

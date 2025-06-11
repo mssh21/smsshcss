@@ -7,6 +7,16 @@ import { CSSGenerator } from './core/generator';
 // Export types
 export type { SmsshCSSConfig, PurgeReport };
 
+// Export new enhanced types for arbitrary values
+export type {
+  ArbitraryValue,
+  ArbitraryValueValidationResult,
+  ArbitraryValueConfig,
+  TypedValidationError,
+  ValidationErrorType,
+  TypeSafePropertyMapping,
+} from './core/types';
+
 /**
  * Generate CSS based on configuration (async version with purging support)
  * @param config Configuration options
@@ -91,3 +101,32 @@ export { extractCustomHeightClasses } from './utils/height';
 export { extractCustomGridClasses } from './utils/grid';
 export { extractCustomOrderClasses } from './utils/order';
 export { extractCustomZIndexClasses } from './utils/z-index';
+
+// Export new enhanced arbitrary value utilities
+export {
+  ArbitraryValueValidator,
+  defaultValidator,
+  validateArbitraryValue,
+  isSafeArbitraryValue,
+  logValidatorStats,
+} from './core/arbitrary-value-validator';
+
+// Export performance utilities
+export {
+  PerformanceCache,
+  globalCache,
+  generateContentHash,
+  memoize,
+  memoizeAsync,
+  BatchProcessor,
+  logCacheStats,
+} from './core/performance-cache';
+
+// Enhanced API functions with improved error handling
+export {
+  /**
+   * Validate configuration with detailed error messages
+   */
+  validateConfig,
+  formatValidationResult,
+} from './core/config-validator';

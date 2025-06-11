@@ -261,7 +261,7 @@ pnpm analyze:css
 
 SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数学関数をサポートしています：
 
-##### 基本的なCSS関数
+#### 基本的なCSS関数
 
 ```html
 <!-- calc() - 数学的計算 -->
@@ -285,7 +285,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <div class="px-[clamp(1rem,5vw,4rem)]">padding-left/right: clamp(1rem, 5vw, 4rem)</div>
 ```
 
-##### 高度な数学関数
+#### 高度な数学関数
 
 ```html
 <!-- 数学演算関数 -->
@@ -304,7 +304,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <div class="mt-[tan(30deg)]">margin-top: tan(30deg)</div>
 ```
 
-##### 複雑なネスト関数
+#### 複雑なネスト関数
 
 ```html
 <!-- calc()内でのmin/max/clamp使用 -->
@@ -321,7 +321,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 </div>
 ```
 
-##### CSS変数との組み合わせ
+#### CSS変数との組み合わせ
 
 ```html
 <!-- CSS変数とCSS関数の組み合わせ -->
@@ -364,6 +364,171 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <div class="table">display: block table</div>
 <div class="table-cell">display: table-cell</div>
 <div class="table-row">display: table-row</div>
+```
+
+## 🚀 最新の改善機能
+
+### 型安全性の向上
+
+SmsshCSSは任意値の型安全性を大幅に改善しました：
+
+```typescript
+import { validateArbitraryValue, isSafeArbitraryValue } from 'smsshcss';
+
+// 任意値の検証
+const result = validateArbitraryValue('calc(100% - 20px)', 'margin');
+if (result.isValid) {
+  console.log('✅ 有効な値:', result.sanitizedValue);
+} else {
+  console.error('❌ エラー:', result.errors);
+}
+
+// 安全性チェック
+if (isSafeArbitraryValue('1rem')) {
+  console.log('✅ 安全な値です');
+}
+```
+
+### エラーハンドリングの強化
+
+詳細なエラーメッセージとセキュリティチェック：
+
+```typescript
+import { ArbitraryValueValidator } from 'smsshcss';
+
+const validator = new ArbitraryValueValidator({
+  enableSecurityCheck: true,
+  maxLength: 200,
+  allowedFunctions: ['calc', 'min', 'max', 'clamp', 'var'],
+  allowedUnits: ['px', 'rem', 'em', '%', 'vh', 'vw'],
+});
+
+const result = validator.validate('javascript:alert("xss")');
+// { isValid: false, errors: ['JavaScript URLs are not allowed'] }
+```
+
+### パフォーマンス最適化
+
+高速なキャッシュシステムとメモ化：
+
+```typescript
+import { memoize, PerformanceCache, logCacheStats } from 'smsshcss';
+
+// 関数のメモ化
+const memoizedValidator = memoize(validateArbitraryValue);
+
+// キャッシュ統計の確認
+logCacheStats();
+// 📊 Performance Cache Statistics:
+//   Cache Hits: 150
+//   Cache Misses: 50
+//   Hit Rate: 75%
+```
+
+### バッチ処理
+
+大量の任意値を効率的に処理：
+
+```typescript
+import { BatchProcessor } from 'smsshcss';
+
+const processor = new BatchProcessor(
+  async (values) => values.map((v) => validateArbitraryValue(v)),
+  50, // バッチサイズ
+  10 // タイムアウト（ms）
+);
+
+// 大量の値を効率的に処理
+const results = await Promise.all([
+  processor.add('1rem'),
+  processor.add('calc(100% - 20px)'),
+  processor.add('clamp(1rem, 4vw, 3rem)'),
+  // ... 数百の値
+]);
+```
+
+### 設定バリデーション
+
+設定エラーの詳細な診断：
+
+```typescript
+import { validateConfig, formatValidationResult } from 'smsshcss';
+
+const config = {
+  content: ['src/**/*.html'],
+  // 不正な設定...
+};
+
+const validation = validateConfig(config);
+if (!validation.isValid) {
+  console.error(formatValidationResult(validation));
+  // ❌ Configuration has errors:
+  // 🚨 Errors:
+  //   • content field is required and must be an array
+  //   Path: content
+  //   Fix: Add content: ["./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}"]
+}
+```
+
+### Display
+
+```html
+<!-- 基本的なdisplay -->
+<div class="block">display: block</div>
+<div class="inline">display: inline</div>
+<div class="inline-block">display: inline-block</div>
+<div class="flex">display: block flex</div>
+<div class="inline-flex">display: inline flex</div>
+<div class="grid">display: block grid</div>
+<div class="inline-grid">display: inline grid</div>
+<div class="none">display: none</div>
+<div class="hidden">display: none</div>
+
+<!-- 追加のdisplay -->
+<div class="contents">display: contents</div>
+<div class="flow-root">display: block flow-root</div>
+<div class="list-item">display: block flow list-item</div>
+<div class="table">display: block table</div>
+<div class="table-cell">display: table-cell</div>
+<div class="table-row">display: table-row</div>
+```
+
+## 🧪 デバッグとパフォーマンス分析
+
+### キャッシュ統計の監視
+
+```typescript
+import { logValidatorStats, logCacheStats } from 'smsshcss';
+
+// バリデーターの統計
+logValidatorStats();
+
+// 全体のキャッシュ統計
+logCacheStats();
+```
+
+### カスタムバリデーション設定
+
+```typescript
+import { ArbitraryValueValidator } from 'smsshcss';
+
+// プロダクション環境用（厳密）
+const productionValidator = new ArbitraryValueValidator({
+  enableSecurityCheck: true,
+  maxLength: 100,
+  allowedFunctions: ['calc', 'min', 'max', 'clamp'],
+  allowedUnits: ['px', 'rem', '%', 'vh', 'vw'],
+  debug: false,
+});
+
+// 開発環境用（緩やか）
+const developmentValidator = new ArbitraryValueValidator({
+  enableSecurityCheck: false,
+  maxLength: 500,
+  allowedFunctions: ['calc', 'min', 'max', 'clamp', 'var', 'env'],
+  allowedUnits: ['px', 'rem', 'em', '%', 'vh', 'vw', 'ch', 'ex'],
+  debug: true,
+});
 ```
 
 ## ライセンス
