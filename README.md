@@ -16,10 +16,13 @@ SmsshCSSは、軽量なユーティリティファーストCSSフレームワー
 
 ```bash
 # npm
-npm install smsshcss　@smsshcss/vite
+npm install smsshcss @smsshcss/vite
 
 # yarn
-yarn add smsshcss　@smsshcss/vite
+yarn add smsshcss @smsshcss/vite
+
+# pnpm
+pnpm add smsshcss @smsshcss/vite
 ```
 
 ## 利用方法
@@ -96,6 +99,55 @@ HTMLでユーティリティクラスを使用：
 
 Viteプラグインが自動的に使用されたクラスを検出し、必要なCSSを生成します。
 
+## 開発ツール
+
+SmsshCSSには開発効率を向上させるための豊富なツールが付属しています：
+
+### 設定ファイルの管理
+
+```bash
+# 設定ファイルの作成（サンプルをコピー）
+cp node_modules/smsshcss/smsshcss.config.example.js smsshcss.config.js
+
+# 設定の妥当性をチェック
+yarn validate:config
+# または
+pnpm validate:config
+```
+
+### 新しいユーティリティクラスの生成
+
+```bash
+# 基本的なユーティリティクラスを生成
+yarn generate:utility color --css-property=color --prefix=text
+
+# 方向指定あり（margin, paddingのような）
+yarn generate:utility border --directions --default-values='{"sm":"1px","md":"2px"}'
+
+# pnpmの場合
+pnpm generate:utility color --css-property=color --prefix=text
+```
+
+### デバッグとパフォーマンス分析
+
+```bash
+# CSS生成の詳細情報を表示
+yarn debug:classes
+pnpm debug:classes
+
+# 重複するCSSセレクターをチェック
+yarn check:duplicates
+pnpm check:duplicates
+
+# CSSサイズレポートを生成
+yarn size:report
+pnpm size:report
+
+# 利用可能な分析ツールを表示
+yarn analyze:css
+pnpm analyze:css
+```
+
 ## 利用可能なユーティリティクラス
 
 #### スペース
@@ -105,8 +157,8 @@ Viteプラグインが自動的に使用されたクラスを検出し、必要�
 - `2xs`: 0.25rem (4px) - フィボナッチ: 1
 - `xs`: 0.5rem (8px) - フィボナッチ: 2
 - `sm`: 0.75rem (12px) - フィボナッチ: 3
-- `md`: 1.25rem (20px) - フィボナッチ: 5
-- `lg`: 2rem (32px) - フィボナッチ: 8
+- `md`: calc(var(--space-base) \* 5) = 1.25rem (20px) - フィボナッチ: 5
+- `lg`: calc(var(--space-base) \* 8) = 2rem (32px) - フィボナッチ: 8
 - `xl`: 3.25rem (52px) - フィボナッチ: 13
 - `2xl`: 5.25rem (84px) - フィボナッチ: 21
 - `3xl`: 8.5rem (136px) - フィボナッチ: 34
@@ -270,7 +322,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <!-- 基本的なdisplay -->
 <div class="block">display: block</div>
 <div class="inline">display: inline</div>
-<div class="inline-block">display: inline flow-root</div>
+<div class="inline-block">display: inline-block</div>
 <div class="flex">display: block flex</div>
 <div class="inline-flex">display: inline flex</div>
 <div class="grid">display: block grid</div>

@@ -18,7 +18,13 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "generate:utility": "node scripts/generate-utility.js",
+    "validate:config": "node -e \"const { validateConfigDetailed } = require('./dist/core/config-validator.js'); validateConfigDetailed(require('./smsshcss.config.js'));\"",
+    "analyze:css": "node -e \"const { devHelpers } = require('./dist/utils/index.js'); console.log('CSS Analysis Tools Available:', Object.keys(devHelpers));\"",
+    "debug:classes": "node -e \"const { generateCSS } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generateCSS({...config, development: true}).then(css => console.log('Generated CSS length:', css.length));\"",
+    "check:duplicates": "node -e \"const { devHelpers } = require('./dist/utils/index.js'); const { generateCSS } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generateCSS(config).then(css => { const dups = devHelpers.findDuplicateSelectors(css); console.log('Duplicate selectors:', dups.length ? dups : 'None found'); });\"",
+    "size:report": "node -e \"const { generatePurgeReport } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generatePurgeReport(config).then(report => report && console.log('CSS Size Report:', JSON.stringify(report, null, 2)));\""
   },
   "exports": {
     ".": {

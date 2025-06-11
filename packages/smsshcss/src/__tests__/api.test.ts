@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { generateCSS, generateCSSSync, generatePurgeReport, init, initSync } from '../index';
 import { setupDefaultMocks, testConfigs } from './setup';
+import { SmsshCSSConfig } from '../types';
 
 describe('SmsshCSS Main API', () => {
   beforeEach(() => {
@@ -171,11 +172,10 @@ describe('SmsshCSS Main API', () => {
         content: null as unknown,
       };
 
-      const result = await generateCSS(invalidConfig);
-      expect(result).toBeTruthy();
-      expect(typeof result).toBe('string');
-      // 無効な設定でも最低限のCSSが生成されることを確認
-      expect(result.length).toBeGreaterThan(0);
+      // 無効な設定の場合はエラーがスローされることを確認
+      await expect(generateCSS(invalidConfig as SmsshCSSConfig)).rejects.toThrow(
+        'content field is required and must be an array'
+      );
     });
 
     it('should handle empty content arrays', async () => {

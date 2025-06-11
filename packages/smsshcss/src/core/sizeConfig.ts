@@ -1,11 +1,14 @@
 import { SizeConfig } from '../core/types';
 
-// CSS変数ベースの設定（width/height用）
+/**
+ * Width/Height用のサイズ設定
+ * より大きな値を基本とし、レイアウト要素に適している
+ */
 export const defaultSizeConfig: SizeConfig = {
   // ゼロスペーシング
   none: '0',
 
-  // 極小〜小サイズ
+  // 極小〜小サイズ（width/heightでは大きめに設定）
   '2xs': 'var(--size-base)', // 1rem (16px)
   xs: 'calc(var(--size-base) * 1.5)', // 1.5rem (24px)
   sm: 'calc(var(--size-base) * 2)', // 2rem (32px)
@@ -30,7 +33,11 @@ export const defaultSizeConfig: SizeConfig = {
   max: 'max-content',
 };
 
-// 直接値ベースの設定（spacing用）
+/**
+ * Spacing（margin/padding/gap）用のサイズ設定
+ * フィボナッチ数列ベースで細かなスペーシング制御に適している
+ * 基本単位: 4px (0.25rem) = --space-base
+ */
 export const defaultSpacingValues: SizeConfig = {
   // フィボナッチ数列ベースのスペーシング（基本単位: 4px = 0.25rem）
   // フィボナッチ数列の値を使用しつつ、直感的な命名を採用
@@ -39,21 +46,22 @@ export const defaultSpacingValues: SizeConfig = {
   '2xs': 'var(--space-base)', // 0.25rem (4px)  (フィボナッチ: 1)
   xs: 'calc(var(--space-base) * 2)', // 0.5rem (8px)  (フィボナッチ: 2)
   sm: 'calc(var(--space-base) * 3)', // 0.75rem (12px) (フィボナッチ: 3)
-  md: 'calc(var(--space-base) * 5)', // 20px (フィボナッチ: 5)
-  lg: 'calc(var(--space-base) * 8)', // 32px (フィボナッチ: 8)
-  xl: 'calc(var(--space-base) * 13)', // 52px (フィボナッチ: 13)
-  '2xl': 'calc(var(--space-base) * 21)', // 84px (フィボナッチ: 21)
-  '3xl': 'calc(var(--space-base) * 34)', // 136px (フィボナッチ: 34)
-  '4xl': 'calc(var(--space-base) * 55)', // 220px (フィボナッチ: 55)
-  '5xl': 'calc(var(--space-base) * 89)', // 356px (フィボナッチ: 89)
-  '6xl': 'calc(var(--space-base) * 144)', // 576px
-  '7xl': 'calc(var(--space-base) * 192)', // 768px
-  '8xl': 'calc(var(--space-base) * 256)', // 1024px
-  '9xl': 'calc(var(--space-base) * 320)', // 1280px
-  '10xl': 'calc(var(--space-base) * 384)', // 1536px
-  '11xl': 'calc(var(--space-base) * 448)', // 1792px
-  '12xl': 'calc(var(--space-base) * 512)', // 2048px
+  md: 'calc(var(--space-base) * 5)', // 1.25rem (20px) (フィボナッチ: 5)
+  lg: 'calc(var(--space-base) * 8)', // 2rem (32px) (フィボナッチ: 8)
+  xl: 'calc(var(--space-base) * 13)', // 3.25rem (52px) (フィボナッチ: 13)
+  '2xl': 'calc(var(--space-base) * 21)', // 5.25rem (84px) (フィボナッチ: 21)
+  '3xl': 'calc(var(--space-base) * 34)', // 8.5rem (136px) (フィボナッチ: 34)
+  '4xl': 'calc(var(--space-base) * 55)', // 13.75rem (220px) (フィボナッチ: 55)
+  '5xl': 'calc(var(--space-base) * 89)', // 22.25rem (356px) (フィボナッチ: 89)
+  '6xl': 'calc(var(--space-base) * 144)', // 36rem (576px) (フィボナッチ: 144)
+  '7xl': 'calc(var(--space-base) * 192)', // 48rem (768px)
+  '8xl': 'calc(var(--space-base) * 256)', // 64rem (1024px)
+  '9xl': 'calc(var(--space-base) * 320)', // 80rem (1280px)
+  '10xl': 'calc(var(--space-base) * 384)', // 96rem (1536px)
+  '11xl': 'calc(var(--space-base) * 448)', // 112rem (1792px)
+  '12xl': 'calc(var(--space-base) * 512)', // 128rem (2048px)
 
+  // レスポンシブ・動的な値
   full: '100%',
   fit: 'fit-content',
   min: 'min-content',

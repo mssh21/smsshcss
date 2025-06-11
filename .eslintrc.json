@@ -28,5 +28,11 @@
       }
     }
   ],
-  "ignorePatterns": ["postcss.config.js", "**/*.d.ts"]
+  "ignorePatterns": [
+    "postcss.config.js",
+    "**/*.d.ts",
+    "**/scripts/**/*",
+    "**/*.example.js",
+    "**/*.example.ts"
+  ]
 }
