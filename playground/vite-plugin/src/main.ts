@@ -141,7 +141,7 @@ window.addEventListener('load', () => {
 });
 
 // 開発者用のグローバル関数
-(window as Record<string, unknown>).smsshcssDebug = {
+(window as unknown as Record<string, unknown>).smsshcssDebug = {
   listAllClasses: (): string[] => {
     const allElements = document.querySelectorAll('*');
     const allClasses = new Set<string>();
