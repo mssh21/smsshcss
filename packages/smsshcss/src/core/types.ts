@@ -329,3 +329,78 @@ export type ZIndexConfig = {
 export interface ApplyConfig {
   [className: string]: string; // クラス名: 適用するユーティリティクラス
 }
+
+// 任意値の型安全性を向上させる新しい型定義
+export type ArbitraryValue = string;
+
+export interface ArbitraryValueValidationResult {
+  isValid: boolean;
+  errors: string[];
+  sanitizedValue: string;
+  warnings: string[];
+}
+
+export interface ArbitraryValueConfig {
+  // CSS関数の許可リスト
+  allowedFunctions: string[];
+  // 許可される単位
+  allowedUnits: string[];
+  // セキュリティチェックを有効にするか
+  enableSecurityCheck: boolean;
+  // 最大値の長さ制限
+  maxLength: number;
+  // デバッグモード
+  debug: boolean;
+}
+
+export const defaultArbitraryValueConfig: ArbitraryValueConfig = {
+  allowedFunctions: ['calc', 'min', 'max', 'clamp', 'var', 'rgb', 'rgba', 'hsl', 'hsla'],
+  allowedUnits: [
+    'px',
+    'rem',
+    'em',
+    '%',
+    'vh',
+    'vw',
+    'dvh',
+    'dvw',
+    'vmin',
+    'vmax',
+    'ch',
+    'ex',
+    'cm',
+    'mm',
+    'in',
+    'pt',
+    'pc',
+  ],
+  enableSecurityCheck: true,
+  maxLength: 200,
+  debug: false,
+};
+
+// 型安全なプロパティマッピング
+export interface TypeSafePropertyMapping {
+  [key: string]: {
+    cssProperty: string;
+    validator: (value: string) => ArbitraryValueValidationResult;
+    transform?: (value: string) => string;
+  };
+}
+
+// エラーの種類を型安全にする
+export type ValidationErrorType =
+  | 'INVALID_CSS_FUNCTION'
+  | 'INVALID_UNIT'
+  | 'SECURITY_VIOLATION'
+  | 'VALUE_TOO_LONG'
+  | 'MALFORMED_VALUE'
+  | 'UNSUPPORTED_PROPERTY';
+
+export interface TypedValidationError {
+  type: ValidationErrorType;
+  message: string;
+  value: string;
+  property?: string;
+  suggestion?: string;
+}
