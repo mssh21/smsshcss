@@ -30,30 +30,11 @@ yarn add @smsshcss/postcss @smsshcss/vite
 また、設定ファイル内の参照も更新してください：
 
 ```js
-// postcss.config.js (変更前)
-require('smsshcss-postcss')();
-
-// postcss.config.js (変更後)
-require('@smsshcss/postcss')();
-
-// vite.config.js (変更前)
-import smsshcssPlugin from 'smsshcss-vite';
-
 // vite.config.js (変更後)
 import smsshcssPlugin from '@smsshcss/vite';
 ```
 
 ## 🌟 インストール
-
-### PostCSSプラグインとして使用
-
-```bash
-# npm
-npm i smsshcss @smsshcss/postcss postcss
-
-# yarn
-yarn add smsshcss @smsshcss/postcss postcss
-```
 
 ### Viteプラグインとして使用
 
