@@ -241,6 +241,8 @@ export interface SmsshCSSConfig {
     height?: HeightConfig;
     gridColumns?: GridColumnsConfig;
     gridRows?: GridRowsConfig;
+    gridTemplateColumns?: Record<string, string>;
+    gridTemplateRows?: Record<string, string>;
     gridColumnSpan?: ColumnSpanConfig;
     gridRowSpan?: RowSpanConfig;
     gridColumnStart?: ColumnPositionConfig;
@@ -253,6 +255,7 @@ export interface SmsshCSSConfig {
     autoFlow?: GridFlowConfig;
     order?: OrderConfig;
     zIndex?: ZIndexConfig;
+    components?: ComponentsConfig;
   };
 }
 
@@ -349,3 +352,8 @@ export type OrderConfig = {
 export type ZIndexConfig = {
   [key: string]: string;
 };
+
+// コンポーネントクラスの設定
+export interface ComponentsConfig {
+  [componentName: string]: string; // コンポーネント名: 適用するユーティリティクラス
+}

@@ -34,6 +34,14 @@ SmsshCSSの全ドキュメントへのアクセスポイントです。
 - カスタム値の使用方法
 - 実用的なレイアウト例
 
+### 🎨 [テーマカスタマイズガイド](./THEME_CUSTOMIZATION.md)
+
+- ユーティリティクラスの値のカスタマイズ方法
+- スペーシング、サイズ、グリッドの設定
+- プロジェクト固有の設定例
+- ベストプラクティス
+- **コンポーネントクラスの定義（SmsshCSS独自機能）** 🆕
+
 ## ⚙️ 設定とサンプル
 
 ### 🔧 [設定ファイルサンプル](./smsshcss.config.example.js)
@@ -230,3 +238,30 @@ yarn validate:config
 ---
 
 **注意**: このプロジェクトは yarn v4.5.0 と pnpm を推奨しています。npmでも動作しますが、パフォーマンスと機能の面でyarn/pnpmの使用を強く推奨します。
+
+## 🚀 新機能
+
+### コンポーネントクラス（v2.0.0〜）
+
+SmsshCSSの独自機能として、よく使うユーティリティクラスの組み合わせを設定ファイルで定義できます：
+
+```javascript
+theme: {
+  components: {
+    'main-layout': 'w-lg mx-auto px-lg block',
+    'card': 'p-md bg-white rounded-lg shadow-md',
+    'btn-primary': 'inline-block px-md py-sm bg-blue-500 text-white rounded',
+  }
+}
+```
+
+```html
+<!-- 1つのクラスで複数のユーティリティが適用される -->
+<div class="main-layout">
+  <div class="card">
+    <button class="btn-primary">クリック</button>
+  </div>
+</div>
+```
+
+これにより、HTMLをよりクリーンに保ちながら、一貫性のあるコンポーネントスタイルを維持できます。

@@ -7,6 +7,8 @@ import { generateAllHeightClasses, extractCustomHeightClasses } from '../utils/h
 import { generateAllGridClasses } from '../utils/grid';
 import { generateAllZIndexClasses } from '../utils/z-index';
 import { generateAllOrderClasses } from '../utils/order';
+import { generateGridTemplateClasses } from '../utils/grid-template';
+import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
 import fs from 'fs';
@@ -201,6 +203,8 @@ export class CSSGenerator {
     const heightConfig = this.config.theme?.height;
     const gridColumnsConfig = this.config.theme?.gridColumns;
     const gridRowsConfig = this.config.theme?.gridRows;
+    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
+    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
     const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
     const gridRowSpanConfig = this.config.theme?.gridRowSpan;
     const gridColumnStartConfig = this.config.theme?.gridColumnStart;
@@ -208,6 +212,8 @@ export class CSSGenerator {
     const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
     const zIndexConfig = this.config.theme?.zIndex;
     const orderConfig = this.config.theme?.order;
+    const componentsConfig = this.config.theme?.components;
+
     let utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
@@ -223,8 +229,9 @@ export class CSSGenerator {
         gridRowStartConfig,
         gridAutoFlowConfig
       ),
-      generateAllZIndexClasses(zIndexConfig),
-      generateAllOrderClasses(orderConfig),
+      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
+      generateAllZIndexClasses({ zIndex: zIndexConfig }),
+      generateAllOrderClasses({ order: orderConfig }),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -236,6 +243,13 @@ export class CSSGenerator {
       utilities = `${utilities}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
     }
 
+    // コンポーネントクラスを生成
+    let components = generateComponentClasses(componentsConfig, {
+      spacing: spacingConfig,
+      width: widthConfig,
+      height: heightConfig,
+    });
+
     // パージ処理を実行
     if (this.purger) {
       const fileAnalysis = await this.purger.analyzeSourceFiles();
@@ -244,6 +258,7 @@ export class CSSGenerator {
       utilities = this.purger.purgeCSS(utilities);
       base = this.purger.purgeCSS(base);
       reset = this.purger.purgeCSS(reset);
+      components = this.purger.purgeCSS(components);
 
       // レポートを生成・表示
       const report = this.purger.generateReport(fileAnalysis);
@@ -252,7 +267,7 @@ export class CSSGenerator {
 
     return {
       utilities,
-      components: '', // 必要に応じて実装
+      components,
       base,
       reset,
     };
@@ -362,6 +377,8 @@ export class CSSGenerator {
     const heightConfig = this.config.theme?.height;
     const gridColumnsConfig = this.config.theme?.gridColumns;
     const gridRowsConfig = this.config.theme?.gridRows;
+    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
+    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
     const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
     const gridRowSpanConfig = this.config.theme?.gridRowSpan;
     const gridColumnStartConfig = this.config.theme?.gridColumnStart;
@@ -369,6 +386,8 @@ export class CSSGenerator {
     const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
     const zIndexConfig = this.config.theme?.zIndex;
     const orderConfig = this.config.theme?.order;
+    const componentsConfig = this.config.theme?.components;
+
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
       generateDisplayClasses(displayConfig),
@@ -384,15 +403,24 @@ export class CSSGenerator {
         gridRowStartConfig,
         gridAutoFlowConfig
       ),
-      generateAllZIndexClasses(zIndexConfig),
-      generateAllOrderClasses(orderConfig),
+      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
+      generateAllZIndexClasses({ zIndex: zIndexConfig }),
+      generateAllOrderClasses({ order: orderConfig }),
     ].join('\n\n');
+
+    // コンポーネントクラスを生成
+    const components = generateComponentClasses(componentsConfig, {
+      spacing: spacingConfig,
+      width: widthConfig,
+      height: heightConfig,
+    });
 
     // 全CSSを結合してパージャーに渡す
     const fullCSS = [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
       utilities,
+      components,
     ]
       .filter(Boolean)
       .join('\n\n');
@@ -410,6 +438,8 @@ export class CSSGenerator {
     const heightConfig = this.config.theme?.height;
     const gridColumnsConfig = this.config.theme?.gridColumns;
     const gridRowsConfig = this.config.theme?.gridRows;
+    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
+    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
     const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
     const gridRowSpanConfig = this.config.theme?.gridRowSpan;
     const gridColumnStartConfig = this.config.theme?.gridColumnStart;
@@ -417,6 +447,7 @@ export class CSSGenerator {
     const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
     const zIndexConfig = this.config.theme?.zIndex;
     const orderConfig = this.config.theme?.order;
+    const componentsConfig = this.config.theme?.components;
 
     const utilities = [
       generateAllSpacingClasses(spacingConfig),
@@ -433,15 +464,23 @@ export class CSSGenerator {
         gridRowStartConfig,
         gridAutoFlowConfig
       ),
-      generateAllZIndexClasses(zIndexConfig),
-      generateAllOrderClasses(orderConfig),
+      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
+      generateAllZIndexClasses({ zIndex: zIndexConfig }),
+      generateAllOrderClasses({ order: orderConfig }),
     ].join('\n\n');
+
+    // コンポーネントクラスを生成
+    const components = generateComponentClasses(componentsConfig, {
+      spacing: spacingConfig,
+      width: widthConfig,
+      height: heightConfig,
+    });
 
     return [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
       utilities,
-      '', // components
+      components,
     ]
       .filter(Boolean)
       .join('\n\n');

@@ -9,6 +9,7 @@ SmsshCSSは、軽量なユーティリティファーストCSSフレームワー
 - **カスタマイズ可能**: 設定ファイルを通じてトークンやスタイルをカスタマイズ可能
 - **高速**: 最小限のCSSでパフォーマンスを最適化
 - **多様な統合**: PostCSSプラグインとViteプラグインの両方をサポート
+- **コンポーネントクラス**: よく使うユーティリティの組み合わせを設定ファイルで定義できる独自機能 🆕
 
 ## インストール
 
@@ -80,6 +81,15 @@ export default defineConfig({
           'custom-flex': 'flex',
           'custom-grid': 'grid',
         },
+
+        // コンポーネントクラスの定義（SmsshCSS独自機能）
+        components: {
+          'main-layout': 'w-lg mx-auto px-lg block',
+          card: 'p-md bg-white rounded-lg shadow-md',
+          btn: 'inline-block px-md py-sm rounded',
+          'btn-primary': 'btn bg-blue-500 text-white',
+          'flex-center': 'flex justify-center items-center',
+        },
       },
 
       showPurgeReport: false,
@@ -94,6 +104,15 @@ HTMLでユーティリティクラスを使用：
 <div class="p-md m-lg flex">
   <h1 class="mb-sm">Hello SmsshCSS!</h1>
   <p class="px-md py-sm">軽量で高速なCSSフレームワーク</p>
+</div>
+
+<!-- コンポーネントクラスの使用例 -->
+<div class="main-layout">
+  <div class="card">
+    <h2>便利なコンポーネントクラス</h2>
+    <p>設定ファイルで定義したクラスを使用</p>
+    <button class="btn-primary">クリック</button>
+  </div>
 </div>
 ```
 
@@ -152,6 +171,7 @@ pnpm analyze:css
 
 - [📚 ドキュメント目次](packages/smsshcss/DOCUMENTATION_INDEX.md) - 全ドキュメントへのアクセスポイント
 - [🎨 ユーティリティクラス リファレンス](packages/smsshcss/UTILITY_CLASSES.md) - 全ユーティリティクラスの詳細な一覧
+- [🎨 テーマカスタマイズガイド](packages/smsshcss/THEME_CUSTOMIZATION.md) - ユーティリティクラスの値のカスタマイズ方法
 - [👨‍💻 開発者ガイド](packages/smsshcss/DEVELOPER_GUIDE.md) - 開発環境のセットアップと新機能の追加方法
 - [📖 API リファレンス](packages/smsshcss/API_REFERENCE.md) - 全API関数の詳細説明
 

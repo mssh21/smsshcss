@@ -199,7 +199,8 @@ interface ThemeConfig {
   width?: SizeConfig; // 幅設定
   height?: SizeConfig; // 高さ設定
   gridColumns?: GridColumnsConfig; // グリッド列設定
-  // ... その他のテーマ設定
+  zIndex?: ZIndexConfig; // Z-indexユーティリティクラスのカスタマイズ設定
+  components?: Record<string, string>; // コンポーネントクラスの定義
 }
 ```
 
@@ -234,7 +235,55 @@ interface ThemeConfig {
       'footer': '120px',
       'screen-minus-header': 'calc(100vh - 60px)',
     },
+
+    zIndex: {
+      '10': '10',
+      '11': '11',
+      '12': '12',
+    },
+
+    // コンポーネントクラスの定義
+    components: {
+      'component-name': 'utility-class-1 utility-class-2 utility-class-3',
+      // 例:
+      'main-layout': 'w-lg mx-auto px-lg block',
+      'card': 'p-md bg-white rounded-lg shadow-md',
+    }
   }
+}
+```
+
+#### theme.zIndex
+
+Z-indexユーティリティクラスのカスタマイズ設定。
+
+#### theme.components
+
+コンポーネントクラスの定義。よく使うユーティリティクラスの組み合わせを1つのクラス名として定義できます。
+
+- **型**: `Record<string, string>`
+- **デフォルト**: `undefined`
+
+```javascript
+components: {
+  'component-name': 'space-separated utility classes',
+  // 実例:
+  'btn': 'inline-block px-md py-sm rounded',
+  'btn-primary': 'btn bg-blue-500 text-white',
+  'container': 'max-w-7xl mx-auto px-sm md:px-md lg:px-lg',
+}
+```
+
+生成されるCSS:
+
+```css
+.btn {
+  display: inline-block;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.25rem;
 }
 ```
 
