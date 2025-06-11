@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Width/Height Classes Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <a href="./gap.html" class="nav-link">Gap</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">📐 Width/Height Classes</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">📐 Width/Height Classes</h1>
+        <p class="page-subtitle">幅・高さクラス - フィボナッチ数列 + パーセンテージ + カスタム値</p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. 基本Width（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">基本Width（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Width基本サイズ</div>
+            <div class="grid gap-sm mb-[30px]">
+              <div class="demo-box w-2xs h-[40px]">w-2xs (5px)</div>
+              <div class="demo-box w-xs h-[40px]">w-xs (8px)</div>
+              <div class="demo-box w-sm h-[40px]">w-sm (12px)</div>
+              <div class="demo-box w-md h-[40px]">w-md (20px)</div>
+              <div class="demo-box w-lg h-[40px]">w-lg (32px)</div>
+              <div class="demo-box w-xl h-[40px]">w-xl (52px)</div>
+            </div>
+
+            <div class="test-label">Width拡張サイズ</div>
+            <div class="grid gap-sm mb-[30px]">
+              <div class="demo-box w-2xl h-[40px]">w-2xl (84px)</div>
+              <div class="demo-box w-3xl h-[40px]">w-3xl (136px)</div>
+              <div class="demo-box w-4xl h-[40px]">w-4xl (220px)</div>
+              <div class="demo-box w-5xl h-[40px]">w-5xl (356px)</div>
+            </div>
+
+            <div class="test-label">フィボナッチ数列 Width値</div>
+            <div class="code-example">
+              w-2xs: 5px → w-xs: 8px → w-sm: 12px<br />
+              w-md: 20px → w-lg: 32px → w-xl: 52px<br />
+              w-2xl: 84px → w-3xl: 136px → w-4xl: 220px → w-5xl: 356px
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. 基本Height（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">基本Height（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Height基本サイズ</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-box h-2xs w-[60px]">h-2xs (5px)</div>
+              <div class="demo-box h-xs w-[60px]">h-xs (8px)</div>
+              <div class="demo-box h-sm w-[60px]">h-sm (12px)</div>
+              <div class="demo-box h-md w-[60px]">h-md (20px)</div>
+              <div class="demo-box h-lg w-[60px]">h-lg (32px)</div>
+              <div class="demo-box h-xl w-[60px]">h-xl (52px)</div>
+            </div>
+
+            <div class="test-label">Height拡張サイズ</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-box h-2xl w-[80px]">h-2xl (84px)</div>
+              <div class="demo-box h-3xl w-[80px]">h-3xl (136px)</div>
+              <div class="demo-box h-4xl w-[80px]">h-4xl (220px)</div>
+            </div>
+
+            <div class="test-label">Width × Height組み合わせ</div>
+            <div class="flex gap-lg items-end">
+              <div class="demo-box w-lg h-lg">w-lg h-lg<br />(32×32px)</div>
+              <div class="demo-box w-xl h-md">w-xl h-md<br />(52×20px)</div>
+              <div class="demo-box w-2xl h-xl">w-2xl h-xl<br />(84×52px)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. パーセンテージ・フルサイズ -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">パーセンテージ・フルサイズ</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本パーセンテージ</div>
+            <div class="relative bg-gray-100 p-md mb-[30px]" style="height: 200px">
+              <div class="demo-box w-quarter h-quarter absolute top-0 left-0">
+                w-quarter h-quarter (25%)
+              </div>
+              <div class="demo-box w-half h-half absolute top-quarter left-quarter">
+                w-half h-half (50%)
+              </div>
+              <div class="demo-box w-full h-[30px] absolute bottom-0 left-0">w-full (100%)</div>
+            </div>
+
+            <div class="test-label">Width パーセンテージ</div>
+            <div class="grid gap-sm mb-[30px]">
+              <div class="demo-box w-quarter h-[40px]">w-quarter (25%)</div>
+              <div class="demo-box w-half h-[40px]">w-half (50%)</div>
+              <div class="demo-box w-3quarter h-[40px]">w-3quarter (75%)</div>
+              <div class="demo-box w-full h-[40px]">w-full (100%)</div>
+            </div>
+
+            <div class="test-label">Height パーセンテージ（親要素高さ300px）</div>
+            <div class="flex gap-md items-end bg-gray-50 p-md" style="height: 300px">
+              <div class="demo-box h-quarter w-[80px]">h-quarter (25%)</div>
+              <div class="demo-box h-half w-[80px]">h-half (50%)</div>
+              <div class="demo-box h-3quarter w-[80px]">h-3quarter (75%)</div>
+              <div class="demo-box h-full w-[80px]">h-full (100%)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. カスタム値Width/Height -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">カスタム値Width/Height</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ピクセル値</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-box w-[100px] h-[60px]">w-[100px] h-[60px]</div>
+              <div class="demo-box w-[150px] h-[80px]">w-[150px] h-[80px]</div>
+              <div class="demo-box w-[200px] h-[40px]">w-[200px] h-[40px]</div>
+            </div>
+
+            <div class="test-label">rem/em値</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-box w-[8rem] h-[4rem]">w-[8rem] h-[4rem]</div>
+              <div class="demo-box w-[10rem] h-[3rem]">w-[10rem] h-[3rem]</div>
+              <div class="demo-box w-[6em] h-[5em]">w-[6em] h-[5em]</div>
+            </div>
+
+            <div class="test-label">パーセンテージカスタム値</div>
+            <div class="grid gap-sm mb-[30px]">
+              <div class="demo-box w-[33.33%] h-[40px]">w-[33.33%]</div>
+              <div class="demo-box w-[66.67%] h-[40px]">w-[66.67%]</div>
+              <div class="demo-box w-[83.33%] h-[40px]">w-[83.33%]</div>
+            </div>
+
+            <div class="test-label">CSS変数</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-box w-[var(--demo-size)] h-[100px]">w-[var(--demo-size)]</div>
+              <div class="demo-box w-[200px] h-[var(--demo-size)]">h-[var(--demo-size)]</div>
+            </div>
+
+            <div class="test-label">CSS関数（calc, min, max, clamp）</div>
+            <div class="flex gap-md items-end flex-wrap">
+              <div class="demo-box w-[calc(100px+2rem)] h-[60px]">w-[calc(100px+2rem)]</div>
+              <div class="demo-box w-[min(200px,30vw)] h-[80px]">w-[min(200px,30vw)]</div>
+              <div class="demo-box w-[max(150px,20vw)] h-[70px]">w-[max(150px,20vw)]</div>
+              <div class="demo-box w-[clamp(100px,25vw,300px)] h-[50px]">
+                w-[clamp(100px,25vw,300px)]
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. レスポンシブWidth/Height -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">レスポンシブWidth/Height</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ビューポート単位</div>
+            <div class="grid gap-md mb-[30px]">
+              <div class="demo-box w-[50vw] h-[60px]">w-[50vw] (50% viewport width)</div>
+              <div class="demo-box w-[300px] h-[10vh]">h-[10vh] (10% viewport height)</div>
+              <div class="demo-box w-[30vmin] h-[80px]">w-[30vmin] (30% of smaller viewport)</div>
+              <div class="demo-box w-[200px] h-[8vmax]">h-[8vmax] (8% of larger viewport)</div>
+            </div>
+
+            <div class="test-label">レスポンシブ関数</div>
+            <div class="grid gap-md mb-[30px]">
+              <div class="demo-box w-[clamp(200px,50vw,600px)] h-[60px]">
+                w-[clamp(200px,50vw,600px)] - レスポンシブ幅
+              </div>
+              <div class="demo-box w-[300px] h-[clamp(40px,8vh,100px)]">
+                h-[clamp(40px,8vh,100px)] - レスポンシブ高さ
+              </div>
+            </div>
+
+            <div class="test-label">フルスクリーン・ビューポート</div>
+            <div class="flex gap-sm mb-[30px]" style="height: 150px">
+              <div class="demo-box w-[100vw] h-[100px] max-w-[200px]">w-[100vw] (制限付き)</div>
+              <div class="demo-box w-[150px] h-[100vh] max-h-[120px]">h-[100vh] (制限付き)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. 実用例・レイアウトパターン -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">実用例・レイアウトパターン</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">アバター・アイコンサイズ</div>
+            <div class="flex gap-md items-end mb-[30px]">
+              <div class="demo-avatar w-sm h-sm">XS</div>
+              <div class="demo-avatar w-md h-md">SM</div>
+              <div class="demo-avatar w-lg h-lg">MD</div>
+              <div class="demo-avatar w-xl h-xl">LG</div>
+              <div class="demo-avatar w-2xl h-2xl">XL</div>
+            </div>
+
+            <div class="test-label">ボタンサイズ</div>
+            <div class="flex gap-md items-center flex-wrap mb-[30px]">
+              <button class="demo-btn px-sm py-2xs h-[28px]">小ボタン</button>
+              <button class="demo-btn px-md py-xs h-[36px]">中ボタン</button>
+              <button class="demo-btn px-lg py-sm h-[44px]">大ボタン</button>
+              <button class="demo-btn px-xl py-md h-[52px]">特大ボタン</button>
+            </div>
+
+            <div class="test-label">カードサイズバリエーション</div>
+            <div
+              class="grid gap-md mb-[30px]"
+              style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))"
+            >
+              <div class="demo-card p-sm h-[120px]">
+                <h4 class="m-[0px] mb-xs">小カード</h4>
+                <p class="m-[0px] text-sm">h-[120px]</p>
+              </div>
+              <div class="demo-card p-md h-[160px]">
+                <h4 class="m-[0px] mb-sm">中カード</h4>
+                <p class="m-[0px]">h-[160px]</p>
+              </div>
+              <div class="demo-card p-lg h-[200px]">
+                <h4 class="m-[0px] mb-md">大カード</h4>
+                <p class="m-[0px]">h-[200px]<br />より多くの内容</p>
+              </div>
+            </div>
+
+            <div class="test-label">レスポンシブ画像コンテナ</div>
+            <div
+              class="grid gap-md"
+              style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))"
+            >
+              <div class="demo-image-container w-full h-[100px]">
+                <span class="demo-image-placeholder">w-full h-[100px]</span>
+              </div>
+              <div class="demo-image-container w-full h-[clamp(80px,15vw,120px)]">
+                <span class="demo-image-placeholder">レスポンシブ高さ</span>
+              </div>
+              <div class="demo-image-container w-full h-[calc(100px+2rem)]">
+                <span class="demo-image-placeholder">calc高さ</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. 特殊ケース・制約 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">特殊ケース・制約</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">最小・最大サイズ</div>
+            <div class="grid gap-md mb-[30px]">
+              <div class="demo-box w-[50px] min-w-[100px] h-[40px]">
+                w-[50px] min-w-[100px] (最小幅適用)
+              </div>
+              <div class="demo-box w-[300px] max-w-[150px] h-[40px]">
+                w-[300px] max-w-[150px] (最大幅適用)
+              </div>
+              <div class="demo-box w-[200px] h-[30px] min-h-[60px]">
+                h-[30px] min-h-[60px] (最小高さ適用)
+              </div>
+            </div>
+
+            <div class="test-label">アスペクト比</div>
+            <div class="flex gap-md mb-[30px]">
+              <div class="demo-box w-[100px]" style="aspect-ratio: 1/1">
+                w-[100px] aspect-ratio: 1/1
+              </div>
+              <div class="demo-box w-[120px]" style="aspect-ratio: 16/9">
+                w-[120px] aspect-ratio: 16/9
+              </div>
+              <div class="demo-box w-[80px]" style="aspect-ratio: 3/4">
+                w-[80px] aspect-ratio: 3/4
+              </div>
+            </div>
+
+            <div class="test-label">オーバーフロー処理</div>
+            <div class="grid gap-md mb-[30px]">
+              <div class="demo-box w-[200px] h-[60px] overflow-hidden">
+                <div class="w-[300px] h-[80px] bg-red-200">
+                  overflow-hidden: 子要素が親よりも大きい場合
+                </div>
+              </div>
+              <div class="demo-box w-[200px] h-[60px] overflow-auto">
+                <div class="w-[300px] h-[80px] bg-blue-200">overflow-auto: スクロール可能</div>
+              </div>
+            </div>
+
+            <div class="test-label">ゼロサイズ・極小サイズ</div>
+            <div class="flex gap-lg items-center">
+              <div class="demo-box w-[0px] h-[40px] border-2 border-red-500">w-[0px]</div>
+              <div class="demo-box w-[1px] h-[40px]">w-[1px]</div>
+              <div class="demo-box w-[0.5rem] h-[40px]">w-[0.5rem]</div>
+              <div class="demo-box w-[40px] h-[0px] border-2 border-blue-500">h-[0px]</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. デバッグ情報 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">デバッグ情報</h2>
+          <div class="demo-content p-[30px]">
+            <div class="debug-info">
+              <h4 class="debug-info-title">使用中のWidth/Heightクラス</h4>
+              <div class="debug-classes" id="size-classes">
+                <!-- JavaScriptで動的に追加 -->
+              </div>
+              <button class="debug-btn mt-md" onclick="showSizeClasses()">
+                Width/Heightクラス一覧表示
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">📐 Width/Height Classes テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              フィボナッチ数列 + パーセンテージ + カスタム値対応
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./gap.html" class="page-nav-btn">← Gap</a>
+            <a href="./display.html" class="page-nav-btn">次: Display →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showSizeClasses() {
+        const sizePatterns = [
+          /^[wh]-/, // width, height
+          /^min-[wh]-/, // min-width, min-height
+          /^max-[wh]-/, // max-width, max-height
+          /^[wh]-\[.*\]$/, // custom values
+        ];
+
+        const allClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => sizePatterns.some((pattern) => pattern.test(cls)))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        const container = document.getElementById('size-classes');
+        container.innerHTML = allClasses
+          .map((cls) => `<span class="class-tag">${cls}</span>`)
+          .join('');
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showSizeClasses);
+    </script>
+  </body>
+</html>

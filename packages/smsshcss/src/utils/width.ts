@@ -98,9 +98,8 @@ export function generateWidthClasses(config: WidthConfig = defaultWidth): string
   return classes.join('\n');
 }
 
-export function generateAllWidthClasses(customConfig?: WidthConfig): string {
-  // デフォルトテーマとカスタムテーマをマージ
-  const config = customConfig ? { ...defaultWidth, ...customConfig } : defaultWidth;
-
-  return generateWidthClasses(config);
+export function generateAllWidthClasses(): string {
+  return [generateWidthClasses(defaultWidth), generateCustomWidthClasses(defaultWidth)].join(
+    '\n\n'
+  );
 }

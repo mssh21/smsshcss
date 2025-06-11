@@ -13,9 +13,10 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
         includeReset: false,
         includeBase: false,
         content: ['src/**/*.tsx'],
-        theme: {
-          spacing: { custom: '2rem' },
-          display: { custom: 'block' },
+        apply: {
+          'btn-primary': 'p-md bg-blue-500 text-white rounded',
+          card: 'p-lg bg-white rounded-lg shadow',
+          container: 'max-w-lg mx-auto px-md',
         },
       };
       const plugin = smsshcss(options);

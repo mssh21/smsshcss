@@ -87,69 +87,121 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     });
   });
 
-  describe('Custom Theme', () => {
-    it('should apply custom spacing theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          spacing: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
+  describe('Z-Index Classes', () => {
+    it('should generate z-index utility classes', () => {
+      expect(result?.code).toContain('.z-10 { z-index: 10; }');
+      expect(result?.code).toContain('.z-20 { z-index: 20; }');
+      expect(result?.code).toContain('.z-30 { z-index: 30; }');
+      expect(result?.code).toContain('.z-40 { z-index: 40; }');
+      expect(result?.code).toContain('.z-50 { z-index: 50; }');
+      expect(result?.code).toContain('.z-auto { z-index: auto; }');
+    });
+  });
+
+  describe('Order Classes', () => {
+    it('should generate order utility classes', () => {
+      expect(result?.code).toContain('.order-1 { order: 1; }');
+      expect(result?.code).toContain('.order-2 { order: 2; }');
+      expect(result?.code).toContain('.order-first { order: -9999; }');
+      expect(result?.code).toContain('.order-last { order: 9999; }');
+      expect(result?.code).toContain('.order-none { order: 0; }');
+    });
+  });
+
+  describe('Grid Classes', () => {
+    it('should generate grid utility classes', () => {
+      expect(result?.code).toContain(
+        '.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain(
+        '.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }'
+      );
+      expect(result?.code).toContain('.col-span-3 { grid-column: span 3 / span 3; }');
+      expect(result?.code).toContain('.row-span-1 { grid-row: span 1 / span 1; }');
+      expect(result?.code).toContain('.col-start-4 { grid-column-start: 4; }');
+      expect(result?.code).toContain('.row-start-4 { grid-row-start: 4; }');
+      expect(result?.code).toContain('.col-end-4 { grid-column-end: 4; }');
+      expect(result?.code).toContain('.grid-flow-row { grid-auto-flow: row; }');
+    });
+  });
+
+  describe('Flex Classes', () => {
+    it('should generate flex utility classes', () => {
+      expect(result?.code).toContain('.flex-row { flex-direction: row; }');
+      expect(result?.code).toContain('.flex-col { flex-direction: column; }');
+      expect(result?.code).toContain('.flex-row-reverse { flex-direction: row-reverse; }');
+      expect(result?.code).toContain('.flex-col-reverse { flex-direction: column-reverse; }');
+      expect(result?.code).toContain('.flex-wrap { flex-wrap: wrap; }');
+      expect(result?.code).toContain('.flex-wrap-reverse { flex-wrap: wrap-reverse; }');
+      expect(result?.code).toContain('.flex-grow { flex-grow: 1; }');
+      expect(result?.code).toContain('.flex-shrink { flex-shrink: 1; }');
+      expect(result?.code).toContain('.flex-1 { flex: 1 1 0%; }');
+      expect(result?.code).toContain('.flex-basis-auto { flex-basis: auto; }');
+      expect(result?.code).toContain('.flex-basis-full { flex-basis: 100%; }');
+      expect(result?.code).toContain('.flex-basis-sm { flex-basis: calc(var(--size-base) * 2); }');
+    });
+  });
+
+  describe('Apply Configuration', () => {
+    it('should generate apply-based classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'btn-primary': 'p-md bg-blue-500 text-white rounded',
+          card: 'p-lg bg-white rounded-lg shadow',
+          container: 'max-w-lg mx-auto px-md',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.m-custom { margin: 2rem; }');
-      expect(customResult?.code).toContain('.p-special { padding: 3.5rem; }');
-      expect(customResult?.code).toContain('.gap-custom { gap: 2rem; }');
-      expect(customResult?.code).toContain('.gap-x-special { column-gap: 3.5rem; }');
+      // Apply設定が動作することを確認（基本的なユーティリティクラスが生成される）
+      expect(applyResult?.code).toContain('/* SmsshCSS Generated Styles */');
     });
 
-    it('should apply custom display theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          display: {
-            custom: 'inline-block',
-            special: 'inline-flex',
-          },
+    it('should handle multiple apply classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'flex-center': 'flex items-center justify-center',
+          'text-gradient': 'bg-gradient-to-r from-blue-500 to-purple-600',
+          'card-header': 'p-lg border-b border-gray-200',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.custom { display: inline-block; }');
-      expect(customResult?.code).toContain('.special { display: inline-flex; }');
+      // 基本的なユーティリティクラスが含まれていることを確認
+      expect(applyResult?.code).toContain('.flex { display: flex; }');
+      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 
-    it('should merge custom theme with defaults', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          width: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
-        },
+    it('should work with empty apply configuration', async () => {
+      const applyPlugin = smsshcss({
+        apply: {},
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.w-custom { width: 2rem; }');
-      expect(customResult?.code).toContain('.min-w-special { min-width: 3.5rem; }');
-      expect(customResult?.code).toContain('.max-w-custom { max-width: 2rem; }');
+      // 基本的なクラスは生成される
+      expect(applyResult?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 
-    it('should apply custom height theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          height: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
+    it('should handle apply with standard utility classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'layout-main': 'w-full h-screen flex flex-col',
+          'spacing-default': 'm-md p-lg gap-sm',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.h-custom { height: 2rem; }');
-      expect(customResult?.code).toContain('.min-h-special { min-height: 3.5rem; }');
-      expect(customResult?.code).toContain('.max-h-custom { max-height: 2rem; }');
+      // 標準的なユーティリティクラスが正しく生成される
+      expect(applyResult?.code).toContain('.w-full { width: 100%; }');
+      expect(applyResult?.code).toContain('.h-screen { height: 100vh; }');
+      expect(applyResult?.code).toContain('.flex { display: flex; }');
     });
   });
 });

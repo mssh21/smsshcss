@@ -14,11 +14,52 @@ export const mockGlob = vi.mocked((await import('fast-glob')).default);
 
 // 共通のモックファイル内容
 export const mockFileContents = {
-  'test.html': '<div class="p-md m-sm block">Test</div>',
-  'component.tsx': '<div className="flex p-lg">Component</div>',
+  'test.html':
+    '<div class="p-md m-sm block flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Test</div>',
+  'component.tsx':
+    '<div className="flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Component</div>',
   'app.vue': '<div class="grid gap-md">Vue Component</div>',
   'reset.css': '* { margin: 0; padding: 0; }',
   'base.css': 'body { font-family: sans-serif; }',
+};
+
+// CSS検証用のユーティリティ関数
+export const cssValidators = {
+  /**
+   * CSSが有効な構文を持っているかチェック
+   */
+  isValidCSS: (css: string): boolean => {
+    // 基本的なCSS構文チェック
+    const openBraces = (css.match(/{/g) || []).length;
+    const closeBraces = (css.match(/}/g) || []).length;
+
+    return openBraces === closeBraces && css.length > 0;
+  },
+
+  /**
+   * 指定されたクラス名がCSSに含まれているかチェック
+   */
+  hasClass: (css: string, className: string): boolean => {
+    const classPattern = new RegExp(
+      `\\.${className.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`
+    );
+    return classPattern.test(css);
+  },
+
+  /**
+   * CSSにユーティリティクラスが含まれているかチェック
+   */
+  hasUtilityClasses: (css: string, classes: string[]): boolean => {
+    return classes.every((className) => cssValidators.hasClass(css, className));
+  },
+
+  /**
+   * CSS内のクラス数をカウント
+   */
+  countClasses: (css: string): number => {
+    const classMatches = css.match(/\.[a-zA-Z][\w-]*\s*\{/g);
+    return classMatches ? classMatches.length : 0;
+  },
 };
 
 // デフォルトモック設定関数
@@ -76,9 +117,6 @@ export const testConfigs = {
         custom: '2rem',
         special: '3rem',
       },
-      display: {
-        'custom-flex': 'flex',
-      },
     },
   },
   full: {
@@ -111,9 +149,24 @@ export const customValueSamples = {
       <span class="w-[50vw] min-w-[var(--min-width)]">Width Values</span>
     </div>
   `,
+  height: `
+    <div class="h-[100px] min-h-[200px] max-h-[calc(100%-40px)]">
+      <span class="h-[50vh] min-h-[var(--min-height)]">Height Values</span>
+    </div>
+  `,
+  zIndex: `
+    <div class="z-[var(--z-index)]">
+     <div class="z-[5]">Z Index Values</div>
+    </div>
+  `,
+  order: `
+    <div class="order-[var(--order)]">
+      <div class="order-[5]">Order Values</div>
+    </div>
+  `,
   complex: `
     <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)]">
-      <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)]">Complex</span>
+      <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)] h-[minmax(200px)]">Complex</span>
     </div>
   `,
 };

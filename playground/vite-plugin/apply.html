@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Apply Settings Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">⚡ Apply Settings</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">⚡ Apply Settings</h1>
+        <p class="page-subtitle">
+          Apply設定デモ - 50+ 組み合わせクラス（コンポーネント風ユーティリティ）
+        </p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. レイアウト Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">レイアウト Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">主要レイアウトクラス</div>
+            <div class="apply-demo mb-[30px]">
+              <div class="container">
+                <p class="body-text">📦 .container</p>
+                <p class="caption">w-full max-w-4xl mx-auto px-md</p>
+              </div>
+            </div>
+
+            <div class="apply-demo mb-[30px]">
+              <div class="section-spacing">
+                <p class="body-text">📏 .section-spacing</p>
+                <p class="caption">py-xl px-lg (上下52px, 左右32px)</p>
+              </div>
+            </div>
+
+            <div class="test-label">Flexboxレイアウト Apply</div>
+            <div class="grid gap-[20px] mb-[30px]">
+              <div class="apply-demo">
+                <div class="flex-center p-lg">
+                  <div class="demo-box p-md">.flex-center</div>
+                  <p class="caption">flex items-center justify-center</p>
+                </div>
+              </div>
+
+              <div class="apply-demo">
+                <div class="flex-between p-lg">
+                  <div class="demo-box p-sm">Left</div>
+                  <div class="demo-box p-sm">Right</div>
+                </div>
+                <p class="caption">.flex-between: flex items-center justify-between</p>
+              </div>
+
+              <div class="apply-demo">
+                <div class="flex-col-center p-lg">
+                  <div class="demo-box p-xs mb-sm">Item 1</div>
+                  <div class="demo-box p-xs">Item 2</div>
+                </div>
+                <p class="caption">.flex-col-center: flex flex-col items-center</p>
+              </div>
+            </div>
+
+            <div class="test-label">Grid レイアウト Apply</div>
+            <div class="grid gap-[20px] mb-[30px]">
+              <div class="apply-demo">
+                <div class="grid-2-cols">
+                  <div class="demo-box p-sm">Grid 1</div>
+                  <div class="demo-box p-sm">Grid 2</div>
+                </div>
+                <p class="caption">.grid-2-cols: grid grid-cols-2 gap-md</p>
+              </div>
+
+              <div class="apply-demo">
+                <div class="grid-3-cols">
+                  <div class="demo-box p-sm">Col 1</div>
+                  <div class="demo-box p-sm">Col 2</div>
+                  <div class="demo-box p-sm">Col 3</div>
+                </div>
+                <p class="caption">.grid-3-cols: grid grid-cols-3 gap-md</p>
+              </div>
+
+              <div class="apply-demo">
+                <div class="grid-4-cols">
+                  <div class="demo-box p-xs">1</div>
+                  <div class="demo-box p-xs">2</div>
+                  <div class="demo-box p-xs">3</div>
+                  <div class="demo-box p-xs">4</div>
+                </div>
+                <p class="caption">.grid-4-cols: grid grid-cols-4 gap-sm</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. ボタン Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">ボタン Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本ボタンスタイル</div>
+            <div class="flex gap-md flex-wrap mb-[30px]">
+              <button class="btn-primary">Primary Button</button>
+              <button class="btn-secondary">Secondary Button</button>
+              <button class="btn-danger">Danger Button</button>
+            </div>
+
+            <div class="test-label">ボタンサイズバリエーション</div>
+            <div class="flex gap-md items-center flex-wrap mb-[30px]">
+              <button class="btn-primary btn-sm">Small Primary</button>
+              <button class="btn-secondary btn-sm">Small Secondary</button>
+              <button class="btn-primary">Regular Primary</button>
+              <button class="btn-secondary">Regular Secondary</button>
+              <button class="btn-primary btn-lg">Large Primary</button>
+              <button class="btn-secondary btn-lg">Large Secondary</button>
+            </div>
+
+            <div class="test-label">ボタン組み合わせ例</div>
+            <div class="flex gap-sm flex-wrap">
+              <button class="btn-primary">保存</button>
+              <button class="btn-secondary">キャンセル</button>
+              <button class="btn-danger btn-sm">削除</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. カード Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">カード Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本カード構造</div>
+            <div class="card mb-[30px]">
+              <div class="card-header">
+                <h3 class="heading-3">カードヘッダー</h3>
+              </div>
+              <div class="card-body">
+                <p class="body-text">
+                  これはカードのボディ部分です。Apply設定によってスタイルが適用されています。
+                </p>
+                <p class="body-text">複数の段落も美しく配置されます。</p>
+              </div>
+              <div class="card-footer">
+                <button class="btn-primary">メインアクション</button>
+                <button class="btn-secondary">サブアクション</button>
+              </div>
+            </div>
+
+            <div class="test-label">複数カードレイアウト</div>
+            <div class="grid-3-cols">
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="heading-3">カード 1</h4>
+                </div>
+                <div class="card-body">
+                  <p class="body-text">最初のカードです。</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn-primary btn-sm">アクション</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="heading-3">カード 2</h4>
+                </div>
+                <div class="card-body">
+                  <p class="body-text">2番目のカードです。</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn-secondary btn-sm">詳細</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="heading-3">カード 3</h4>
+                </div>
+                <div class="card-body">
+                  <p class="body-text">3番目のカードです。</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn-danger btn-sm">削除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. タイポグラフィ Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">タイポグラフィ Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">見出しスタイル</div>
+            <div class="apply-demo mb-[30px]">
+              <h1 class="heading-1">見出し1 (.heading-1)</h1>
+              <h2 class="heading-2">見出し2 (.heading-2)</h2>
+              <h3 class="heading-3">見出し3 (.heading-3)</h3>
+            </div>
+
+            <div class="test-label">本文・キャプションスタイル</div>
+            <div class="apply-demo mb-[30px]">
+              <p class="body-text">
+                本文テキスト (.body-text) - これは通常の本文に使用するテキストスタイルです。
+                読みやすさを重視した行間とフォントサイズが設定されています。
+              </p>
+              <p class="caption">
+                キャプション (.caption) - 小さなテキストや補足情報に使用します。
+              </p>
+            </div>
+
+            <div class="test-label">タイポグラフィ組み合わせ例</div>
+            <article class="apply-demo">
+              <h2 class="heading-2">記事タイトル</h2>
+              <p class="body-text">
+                記事の本文です。Apply設定により統一されたタイポグラフィが適用されています。
+              </p>
+              <h3 class="heading-3">小見出し</h3>
+              <p class="body-text">
+                小見出し以下の内容です。各要素が適切な間隔で配置されています。
+              </p>
+              <p class="caption">最終更新: 2024年1月</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- 5. フォーム Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">フォーム Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本フォーム要素</div>
+            <form class="apply-demo mb-[30px] max-w-[500px]">
+              <div class="form-group">
+                <label class="form-label">名前</label>
+                <input type="text" class="form-input" placeholder="名前を入力してください" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">メールアドレス</label>
+                <input type="email" class="form-input" placeholder="email@example.com" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">メッセージ</label>
+                <textarea
+                  class="form-textarea"
+                  placeholder="メッセージを入力してください"
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">カテゴリ</label>
+                <select class="form-select">
+                  <option>選択してください</option>
+                  <option>お問い合わせ</option>
+                  <option>ご意見・ご要望</option>
+                  <option>技術的な質問</option>
+                </select>
+              </div>
+
+              <div class="flex gap-sm">
+                <button type="submit" class="btn-primary">送信</button>
+                <button type="button" class="btn-secondary">リセット</button>
+              </div>
+            </form>
+
+            <div class="test-label">インライン form-group</div>
+            <form class="apply-demo max-w-[600px]">
+              <div class="grid-2-cols">
+                <div class="form-group">
+                  <label class="form-label">姓</label>
+                  <input type="text" class="form-input" placeholder="田中" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">名</label>
+                  <input type="text" class="form-input" placeholder="太郎" />
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 6. スタック Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">スタック Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">垂直スタック（間隔バリエーション）</div>
+            <div class="grid-3-cols mb-[30px]">
+              <div class="apply-demo">
+                <div class="stack-sm">
+                  <div class="demo-box p-xs">.stack-sm</div>
+                  <div class="demo-box p-xs">間隔: 12px</div>
+                  <div class="demo-box p-xs">Item 3</div>
+                </div>
+              </div>
+
+              <div class="apply-demo">
+                <div class="stack-md">
+                  <div class="demo-box p-xs">.stack-md</div>
+                  <div class="demo-box p-xs">間隔: 20px</div>
+                  <div class="demo-box p-xs">Item 3</div>
+                </div>
+              </div>
+
+              <div class="apply-demo">
+                <div class="stack-lg">
+                  <div class="demo-box p-xs">.stack-lg</div>
+                  <div class="demo-box p-xs">間隔: 32px</div>
+                  <div class="demo-box p-xs">Item 3</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="test-label">水平スタック</div>
+            <div class="apply-demo mb-[30px]">
+              <div class="inline-stack-md">
+                <button class="btn-primary">ボタン1</button>
+                <button class="btn-secondary">ボタン2</button>
+                <button class="btn-secondary">ボタン3</button>
+              </div>
+              <p class="caption">.inline-stack-md: 水平方向に20px間隔</p>
+            </div>
+
+            <div class="test-label">スタック実用例</div>
+            <div class="apply-demo">
+              <div class="stack-lg">
+                <h3 class="heading-3">セクションタイトル</h3>
+                <p class="body-text">
+                  スタッククラスを使用することで、要素間の一貫した間隔を簡単に実現できます。
+                </p>
+                <div class="inline-stack-sm">
+                  <button class="btn-primary btn-sm">アクション1</button>
+                  <button class="btn-secondary btn-sm">アクション2</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. ユーティリティ Apply -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">ユーティリティ Apply</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">インタラクティブ要素</div>
+            <div class="flex gap-md mb-[30px]">
+              <div class="interactive demo-box p-md">.interactive (ホバー効果あり)</div>
+              <div class="demo-box p-md">通常の要素</div>
+            </div>
+
+            <div class="test-label">状態表現</div>
+            <div class="flex gap-md flex-wrap mb-[30px]">
+              <div class="disabled demo-box p-md">.disabled (無効状態)</div>
+              <div class="loading demo-box p-md">.loading (読み込み中)</div>
+            </div>
+
+            <div class="test-label">組み合わせ使用例</div>
+            <div class="card">
+              <div class="card-header">
+                <h4 class="heading-3">実用例: ユーザーカード</h4>
+              </div>
+              <div class="card-body">
+                <div class="flex-between mb-md">
+                  <div>
+                    <h5 class="heading-3">田中太郎</h5>
+                    <p class="caption">tanaka@example.com</p>
+                  </div>
+                  <div class="demo-avatar w-xl h-xl">TT</div>
+                </div>
+                <p class="body-text">
+                  Apply設定を組み合わせることで、複雑なコンポーネントも簡単に構築できます。
+                </p>
+              </div>
+              <div class="card-footer">
+                <div class="inline-stack-sm">
+                  <button class="btn-primary btn-sm interactive">編集</button>
+                  <button class="btn-secondary btn-sm interactive">詳細</button>
+                  <button class="btn-danger btn-sm">削除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. デバッグ情報 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">デバッグ情報</h2>
+          <div class="demo-content p-[30px]">
+            <div class="debug-info">
+              <h4 class="debug-info-title">使用中のApplyクラス</h4>
+              <div class="debug-classes" id="apply-classes">
+                <!-- JavaScriptで動的に追加 -->
+              </div>
+              <button class="debug-btn mt-md" onclick="showApplyClasses()">
+                Applyクラス一覧表示
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">⚡ Apply Settings テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              50+ 組み合わせクラス（コンポーネント風ユーティリティ）
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./custom-values.html" class="page-nav-btn">次: Custom Values →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showApplyClasses() {
+        // Apply設定で定義されたクラス名パターン
+        const applyClasses = [
+          'main-layout',
+          'container',
+          'section-spacing',
+          'btn-primary',
+          'btn-secondary',
+          'btn-danger',
+          'btn-sm',
+          'btn-lg',
+          'card',
+          'card-header',
+          'card-body',
+          'card-footer',
+          'flex-center',
+          'flex-between',
+          'flex-col-center',
+          'grid-2-cols',
+          'grid-3-cols',
+          'grid-4-cols',
+          'heading-1',
+          'heading-2',
+          'heading-3',
+          'body-text',
+          'caption',
+          'form-group',
+          'form-label',
+          'form-input',
+          'form-textarea',
+          'form-select',
+          'stack-sm',
+          'stack-md',
+          'stack-lg',
+          'inline-stack-md',
+          'inline-stack-sm',
+          'interactive',
+          'disabled',
+          'loading',
+        ];
+
+        const usedClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => applyClasses.includes(cls))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        const container = document.getElementById('apply-classes');
+        container.innerHTML = usedClasses
+          .map((cls) => `<span class="class-tag apply-tag">${cls}</span>`)
+          .join('');
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showApplyClasses);
+    </script>
+  </body>
+</html>

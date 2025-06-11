@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Spacing Classes Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">🎯 Spacing Classes</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">🎯 Spacing Classes</h1>
+        <p class="page-subtitle">
+          マージン・パディングクラス - フィボナッチ数列ベース (5px-55px) + カスタム値
+        </p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. 基本Spacingクラス（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">基本Spacingクラス（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">パディングの基本サイズ</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-2xs">p-2xs (5px)</div>
+              <div class="demo-box p-xs">p-xs (8px)</div>
+              <div class="demo-box p-sm">p-sm (12px)</div>
+              <div class="demo-box p-md">p-md (20px)</div>
+              <div class="demo-box p-lg">p-lg (32px)</div>
+              <div class="demo-box p-xl">p-xl (52px)</div>
+            </div>
+
+            <div class="test-label">マージンの基本サイズ</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box m-2xs">m-2xs (5px)</div>
+              <div class="demo-box m-xs">m-xs (8px)</div>
+              <div class="demo-box m-sm">m-sm (12px)</div>
+              <div class="demo-box m-md">m-md (20px)</div>
+              <div class="demo-box m-lg">m-lg (32px)</div>
+              <div class="demo-box m-xl">m-xl (52px)</div>
+            </div>
+
+            <div class="test-label">フィボナッチ数列の確認</div>
+            <div class="code-example">
+              2xs: 5px (基準値)<br />
+              xs: 8px (5 + 3)<br />
+              sm: 12px (8 + 5) ※調整<br />
+              md: 20px (12 + 8) ※調整<br />
+              lg: 32px (20 + 12) ※調整<br />
+              xl: 52px (32 + 20) ※調整
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. 方向別Spacing -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">方向別Spacing</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">パディング - 上下左右（Top, Right, Bottom, Left）</div>
+            <div class="flex gap-[15px] flex-wrap mb-[30px]">
+              <div class="demo-box pt-lg">pt-lg (上32px)</div>
+              <div class="demo-box pr-lg">pr-lg (右32px)</div>
+              <div class="demo-box pb-lg">pb-lg (下32px)</div>
+              <div class="demo-box pl-lg">pl-lg (左32px)</div>
+            </div>
+
+            <div class="test-label">マージン - 上下左右</div>
+            <div class="flex gap-[15px] flex-wrap mb-[30px]">
+              <div class="demo-box mt-lg">mt-lg (上32px)</div>
+              <div class="demo-box mr-lg">mr-lg (右32px)</div>
+              <div class="demo-box mb-lg">mb-lg (下32px)</div>
+              <div class="demo-box ml-lg">ml-lg (左32px)</div>
+            </div>
+
+            <div class="test-label">パディング - 水平・垂直（X軸, Y軸）</div>
+            <div class="flex gap-[15px] flex-wrap mb-[30px]">
+              <div class="demo-box px-md">px-md (左右20px)</div>
+              <div class="demo-box py-md">py-md (上下20px)</div>
+              <div class="demo-box px-lg py-sm">px-lg py-sm (左右32px, 上下12px)</div>
+            </div>
+
+            <div class="test-label">マージン - 水平・垂直</div>
+            <div class="flex gap-[15px] flex-wrap mb-[30px]">
+              <div class="demo-box mx-md">mx-md (左右20px)</div>
+              <div class="demo-box my-md">my-md (上下20px)</div>
+              <div class="demo-box mx-lg my-sm">mx-lg my-sm (左右32px, 上下12px)</div>
+            </div>
+
+            <div class="test-label">組み合わせ例</div>
+            <div class="flex gap-[15px] flex-wrap">
+              <div class="demo-box pt-xl pb-xs px-lg">pt-xl pb-xs px-lg</div>
+              <div class="demo-box pl-xl pr-sm py-md">pl-xl pr-sm py-md</div>
+              <div class="demo-box m-sm p-lg">m-sm p-lg</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. カスタム値Spacing -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">カスタム値Spacing</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ピクセル値</div>
+            <div class="flex gap-[25px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[15px]">p-[15px]</div>
+              <div class="demo-box p-[25px]">p-[25px]</div>
+              <div class="demo-box p-[35px]">p-[35px]</div>
+              <div class="demo-box m-[10px]">m-[10px]</div>
+              <div class="demo-box m-[30px]">m-[30px]</div>
+            </div>
+
+            <div class="test-label">rem/em値</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[1rem]">p-[1rem]</div>
+              <div class="demo-box p-[1.5rem]">p-[1.5rem]</div>
+              <div class="demo-box p-[2.5rem]">p-[2.5rem]</div>
+              <div class="demo-box m-[1em]">m-[1em]</div>
+              <div class="demo-box m-[2em]">m-[2em]</div>
+            </div>
+
+            <div class="test-label">パーセンテージ値</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[5%]">p-[5%]</div>
+              <div class="demo-box p-[10%]">p-[10%]</div>
+              <div class="demo-box m-[3%]">m-[3%]</div>
+              <div class="demo-box mx-[8%]">mx-[8%]</div>
+            </div>
+
+            <div class="test-label">CSS変数</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box css-var-padding-24 p-[var(--custom-padding-24)]">
+                p-[var(--custom-padding-24)]
+              </div>
+              <div class="demo-box css-var-padding-20 p-[var(--custom-padding-20)]">
+                p-[var(--custom-padding-20)]
+              </div>
+              <div class="demo-box m-[var(--custom-margin-16)]">m-[var(--custom-margin-16)]</div>
+            </div>
+
+            <div class="test-label">CSS関数（calc, min, max, clamp）</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[calc(1rem+10px)]">p-[calc(1rem+10px)]</div>
+              <div class="demo-box p-[min(2rem,50px)]">p-[min(2rem,50px)]</div>
+              <div class="demo-box p-[max(1rem,25px)]">p-[max(1rem,25px)]</div>
+              <div class="demo-box p-[clamp(0.5rem,3vw,2rem)]">p-[clamp(0.5rem,3vw,2rem)]</div>
+            </div>
+
+            <div class="test-label">方向別カスタム値</div>
+            <div class="flex gap-[20px] flex-wrap">
+              <div class="demo-box pt-[40px] pb-[20px]">pt-[40px] pb-[20px]</div>
+              <div class="demo-box pl-[2rem] pr-[1rem]">pl-[2rem] pr-[1rem]</div>
+              <div class="demo-box mx-[calc(2rem+10px)]">mx-[calc(2rem+10px)]</div>
+              <div class="demo-box py-[clamp(1rem,4vw,3rem)]">py-[clamp(1rem,4vw,3rem)]</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 特殊ケース -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">特殊ケース・エッジケース</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ゼロ値</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[0px] border-2 border-red-300">p-[0px] (パディングゼロ)</div>
+              <div class="demo-box m-[0px] bg-blue-100">m-[0px] (マージンゼロ)</div>
+              <div class="demo-box pt-[0px] pb-lg px-md">pt-[0px] pb-lg px-md</div>
+            </div>
+
+            <div class="test-label">小数値</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[1.5px]">p-[1.5px]</div>
+              <div class="demo-box p-[2.75rem]">p-[2.75rem]</div>
+              <div class="demo-box m-[0.5em]">m-[0.5em]</div>
+              <div class="demo-box px-[1.25rem]">px-[1.25rem]</div>
+            </div>
+
+            <div class="test-label">大きな値</div>
+            <div class="flex gap-[20px] flex-wrap mb-[30px]">
+              <div class="demo-box p-[100px]" style="max-width: 200px">p-[100px]</div>
+              <div class="demo-box p-[8rem]" style="max-width: 200px">p-[8rem]</div>
+              <div class="demo-box m-[5rem]">m-[5rem]</div>
+            </div>
+
+            <div class="test-label">負の値（マージンのみ）</div>
+            <div class="flex gap-[40px] flex-wrap">
+              <div class="demo-box m-[-10px] bg-red-100">m-[-10px] (負のマージン)</div>
+              <div class="demo-box mt-[-1rem] bg-yellow-100">mt-[-1rem] (負の上マージン)</div>
+              <div class="demo-box ml-[-20px] bg-green-100">ml-[-20px] (負の左マージン)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. 実用例・パターン -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">実用例・パターン</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">カードレイアウト</div>
+            <div
+              class="grid gap-[20px] mb-[30px]"
+              style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"
+            >
+              <div class="demo-card p-lg">
+                <h4 class="m-[0px] mb-sm">カードタイトル</h4>
+                <p class="m-[0px] mb-md">
+                  カードの内容です。パディングlg（32px）でスペースを確保。
+                </p>
+                <button class="px-md py-sm bg-blue-500 text-white">ボタン</button>
+              </div>
+              <div class="demo-card p-[24px]">
+                <h4 class="m-[0px] mb-[16px]">カスタム値カード</h4>
+                <p class="m-[0px] mb-[20px]">
+                  パディング24px、マージン16px、20pxのカスタム値使用。
+                </p>
+                <button class="px-[18px] py-[8px] bg-green-500 text-white">カスタムボタン</button>
+              </div>
+            </div>
+
+            <div class="test-label">セクション構成</div>
+            <div class="demo-section-example mb-[30px]">
+              <section class="py-xl px-lg bg-gray-50">
+                <h3 class="m-[0px] mb-md">メインセクション</h3>
+                <div class="grid gap-md" style="grid-template-columns: 2fr 1fr">
+                  <div class="p-md bg-white">
+                    <p class="m-[0px] mb-sm">フィボナッチ数列ベースのスペーシング適用例</p>
+                    <p class="m-[0px]">
+                      py-xl (上下52px), px-lg (左右32px), mb-md (下20px), p-md (20px)
+                    </p>
+                  </div>
+                  <div class="p-[clamp(1rem,3vw,2rem)] bg-blue-50">
+                    <p class="m-[0px]">レスポンシブパディング<br />clamp(1rem,3vw,2rem)</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="test-label">フォームレイアウト</div>
+            <form class="demo-form max-w-[400px]">
+              <div class="mb-md">
+                <label class="block mb-sm font-medium">ラベル</label>
+                <input
+                  type="text"
+                  class="w-full px-sm py-xs border"
+                  placeholder="フィボナッチ値使用"
+                />
+              </div>
+              <div class="mb-[24px]">
+                <label class="block mb-[8px] font-medium">カスタム値ラベル</label>
+                <input
+                  type="text"
+                  class="w-full px-[12px] py-[6px] border"
+                  placeholder="カスタム値使用"
+                />
+              </div>
+              <div class="flex gap-sm">
+                <button type="submit" class="px-lg py-sm bg-blue-500 text-white">送信</button>
+                <button type="button" class="px-[20px] py-[8px] bg-gray-300">カスタム</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 6. デバッグ情報 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">デバッグ情報</h2>
+          <div class="demo-content p-[30px]">
+            <div class="debug-info">
+              <h4 class="debug-info-title">使用中のSpacingクラス</h4>
+              <div class="debug-classes" id="spacing-classes">
+                <!-- JavaScriptで動的に追加 -->
+              </div>
+              <button class="debug-btn mt-md" onclick="showSpacingClasses()">
+                Spacingクラス一覧表示
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">🎯 Spacing Classes テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              フィボナッチ数列ベース + カスタム値対応
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./gap.html" class="page-nav-btn">次: Gap Classes →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showSpacingClasses() {
+        const spacingPatterns = [
+          /^[mp][trblxy]?-/, // margin, padding
+          /^[mp]-\[.*\]$/, // custom values
+        ];
+
+        const allClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => spacingPatterns.some((pattern) => pattern.test(cls)))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        const container = document.getElementById('spacing-classes');
+        container.innerHTML = allClasses
+          .map((cls) => `<span class="class-tag">${cls}</span>`)
+          .join('');
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showSpacingClasses);
+    </script>
+  </body>
+</html>

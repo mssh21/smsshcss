@@ -9,6 +9,7 @@ SmsshCSSは、軽量なユーティリティファーストCSSフレームワー
 - **カスタマイズ可能**: 設定ファイルを通じてトークンやスタイルをカスタマイズ可能
 - **高速**: 最小限のCSSでパフォーマンスを最適化
 - **多様な統合**: PostCSSプラグインとViteプラグインの両方をサポート
+- **コンポーネントクラス**: よく使うユーティリティの組み合わせを設定ファイルで定義できる独自機能 🆕
 
 ## インストール
 
@@ -16,10 +17,13 @@ SmsshCSSは、軽量なユーティリティファーストCSSフレームワー
 
 ```bash
 # npm
-npm install smsshcss　@smsshcss/vite
+npm install smsshcss @smsshcss/vite
 
 # yarn
-yarn add smsshcss　@smsshcss/vite
+yarn add smsshcss @smsshcss/vite
+
+# pnpm
+pnpm add smsshcss @smsshcss/vite
 ```
 
 ## 利用方法
@@ -77,6 +81,15 @@ export default defineConfig({
           'custom-flex': 'flex',
           'custom-grid': 'grid',
         },
+
+        // コンポーネントクラスの定義（SmsshCSS独自機能）
+        components: {
+          'main-layout': 'w-lg mx-auto px-lg block',
+          card: 'p-md bg-white rounded-lg shadow-md',
+          btn: 'inline-block px-md py-sm rounded',
+          'btn-primary': 'btn bg-blue-500 text-white',
+          'flex-center': 'flex justify-center items-center',
+        },
       },
 
       showPurgeReport: false,
@@ -92,9 +105,75 @@ HTMLでユーティリティクラスを使用：
   <h1 class="mb-sm">Hello SmsshCSS!</h1>
   <p class="px-md py-sm">軽量で高速なCSSフレームワーク</p>
 </div>
+
+<!-- コンポーネントクラスの使用例 -->
+<div class="main-layout">
+  <div class="card">
+    <h2>便利なコンポーネントクラス</h2>
+    <p>設定ファイルで定義したクラスを使用</p>
+    <button class="btn-primary">クリック</button>
+  </div>
+</div>
 ```
 
 Viteプラグインが自動的に使用されたクラスを検出し、必要なCSSを生成します。
+
+## 開発ツール
+
+SmsshCSSには開発効率を向上させるための豊富なツールが付属しています：
+
+### 設定ファイルの管理
+
+```bash
+# 設定ファイルの作成（サンプルをコピー）
+cp node_modules/smsshcss/smsshcss.config.example.js smsshcss.config.js
+
+# 設定の妥当性をチェック
+yarn validate:config
+# または
+pnpm validate:config
+```
+
+### 新しいユーティリティクラスの生成
+
+```bash
+# 基本的なユーティリティクラスを生成
+yarn generate:utility color --css-property=color --prefix=text
+
+# 方向指定あり（margin, paddingのような）
+yarn generate:utility border --directions --default-values='{"sm":"1px","md":"2px"}'
+
+# pnpmの場合
+pnpm generate:utility color --css-property=color --prefix=text
+```
+
+### デバッグとパフォーマンス分析
+
+```bash
+# CSS生成の詳細情報を表示
+yarn debug:classes
+pnpm debug:classes
+
+# 重複するCSSセレクターをチェック
+yarn check:duplicates
+pnpm check:duplicates
+
+# CSSサイズレポートを生成
+yarn size:report
+pnpm size:report
+
+# 利用可能な分析ツールを表示
+yarn analyze:css
+pnpm analyze:css
+```
+
+## ドキュメント
+
+- [📚 ドキュメント目次](packages/smsshcss/DOCUMENTATION_INDEX.md) - 全ドキュメントへのアクセスポイント
+- [🎨 ユーティリティクラス リファレンス](packages/smsshcss/UTILITY_CLASSES.md) - 全ユーティリティクラスの詳細な一覧
+- [🎨 テーマカスタマイズガイド](packages/smsshcss/THEME_CUSTOMIZATION.md) - ユーティリティクラスの値のカスタマイズ方法
+- [👨‍💻 開発者ガイド](packages/smsshcss/DEVELOPER_GUIDE.md) - 開発環境のセットアップと新機能の追加方法
+- [📖 API リファレンス](packages/smsshcss/API_REFERENCE.md) - 全API関数の詳細説明
 
 ## 利用可能なユーティリティクラス
 
@@ -105,8 +184,8 @@ Viteプラグインが自動的に使用されたクラスを検出し、必要�
 - `2xs`: 0.25rem (4px) - フィボナッチ: 1
 - `xs`: 0.5rem (8px) - フィボナッチ: 2
 - `sm`: 0.75rem (12px) - フィボナッチ: 3
-- `md`: 1.25rem (20px) - フィボナッチ: 5
-- `lg`: 2rem (32px) - フィボナッチ: 8
+- `md`: calc(var(--space-base) \* 5) = 1.25rem (20px) - フィボナッチ: 5
+- `lg`: calc(var(--space-base) \* 8) = 2rem (32px) - フィボナッチ: 8
 - `xl`: 3.25rem (52px) - フィボナッチ: 13
 - `2xl`: 5.25rem (84px) - フィボナッチ: 21
 - `3xl`: 8.5rem (136px) - フィボナッチ: 34
@@ -270,7 +349,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <!-- 基本的なdisplay -->
 <div class="block">display: block</div>
 <div class="inline">display: inline</div>
-<div class="inline-block">display: inline flow-root</div>
+<div class="inline-block">display: inline-block</div>
 <div class="flex">display: block flex</div>
 <div class="inline-flex">display: inline flex</div>
 <div class="grid">display: block grid</div>

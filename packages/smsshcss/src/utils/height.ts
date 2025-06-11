@@ -97,9 +97,8 @@ export function generateHeightClasses(config: HeightConfig = defaultHeight): str
   return classes.join('\n');
 }
 
-export function generateAllHeightClasses(customConfig?: HeightConfig): string {
-  // デフォルトテーマとカスタムテーマをマージ
-  const config = customConfig ? { ...defaultHeight, ...customConfig } : defaultHeight;
-
-  return generateHeightClasses(config);
+export function generateAllHeightClasses(): string {
+  return [generateHeightClasses(defaultHeight), generateCustomHeightClasses(defaultHeight)].join(
+    '\n\n'
+  );
 }

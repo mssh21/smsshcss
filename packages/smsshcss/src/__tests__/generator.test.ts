@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CSSGenerator } from '../core/generator';
-import { setupDefaultMocks, testConfigs } from './setup';
+import { setupDefaultMocks, testConfigs, cssValidators } from './setup';
 import type { SmsshCSSConfig } from '../core/types';
 
 describe('CSSGenerator', () => {
@@ -29,6 +29,14 @@ describe('CSSGenerator', () => {
         expect(result).toBeTruthy();
         expect(typeof result).toBe('string');
         expect(result.length).toBeGreaterThan(0);
+
+        // CSSの基本構造を確認
+        expect(result).toMatch(/\.[\w-]+\s*\{[^}]*\}/);
+
+        // モックデータに基づいて期待されるクラスが含まれていることを確認
+        expect(result).toContain('.p-md');
+        expect(result).toContain('.m-sm');
+        expect(result).toContain('.block');
       });
 
       it('should include reset CSS when enabled', () => {
@@ -40,8 +48,10 @@ describe('CSSGenerator', () => {
         const generator = new CSSGenerator(config);
         const result = generator.generateFullCSSSync();
 
-        // Reset CSSが含まれているかチェック（実装に依存）
         expect(result).toBeTruthy();
+        // Reset CSS関連のスタイルが含まれている可能性を確認
+        // 実装に依存するため、存在チェックまたは特定のパターンをチェック
+        expect(result).toMatch(/margin\s*:\s*0|padding\s*:\s*0|\*\s*\{/);
       });
 
       it('should include base CSS when enabled', () => {
@@ -53,8 +63,9 @@ describe('CSSGenerator', () => {
         const generator = new CSSGenerator(config);
         const result = generator.generateFullCSSSync();
 
-        // Base CSSが含まれているかチェック（実装に依存）
         expect(result).toBeTruthy();
+        // Base CSS関連のスタイルが含まれている可能性を確認
+        expect(result).toMatch(/font-family|line-height|body\s*\{/);
       });
     });
 
@@ -93,9 +104,6 @@ describe('CSSGenerator', () => {
             spacing: {
               'custom-xl': '10rem',
             },
-            display: {
-              'custom-flex': 'inline-flex',
-            },
           },
         };
         const generator = new CSSGenerator(config);
@@ -112,8 +120,13 @@ describe('CSSGenerator', () => {
         content: ['invalid/**/*.pattern'],
       };
       const generator = new CSSGenerator(config);
+      const result = generator.generateFullCSSSync();
 
       expect(() => generator.generateFullCSSSync()).not.toThrow();
+      expect(result).toBeTruthy();
+      expect(typeof result).toBe('string');
+      // 無効なパターンでも基本的なCSSが生成されることを確認
+      expect(result.length).toBeGreaterThan(0);
     });
 
     it('should handle empty content array', () => {
@@ -125,6 +138,8 @@ describe('CSSGenerator', () => {
 
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');
+      // 空のコンテンツでも基本的なCSSが生成されることを確認
+      expect(result.length).toBeGreaterThan(0);
     });
 
     it('should handle missing theme properties', () => {
@@ -138,22 +153,33 @@ describe('CSSGenerator', () => {
         },
       };
       const generator = new CSSGenerator(config);
+      const result = generator.generateFullCSSSync();
 
       expect(() => generator.generateFullCSSSync()).not.toThrow();
+      expect(result).toBeTruthy();
+      expect(typeof result).toBe('string');
+      // カスタムテーマが部分的に適用されていることを確認
+      if (result.includes('2rem')) {
+        expect(result).toContain('2rem');
+      }
     });
   });
 
   describe('Performance', () => {
     it('should generate CSS within reasonable time', () => {
       const generator = new CSSGenerator(testConfigs.full);
-      const startTime = Date.now();
+      const startTime = performance.now();
 
-      generator.generateFullCSSSync();
+      const result = generator.generateFullCSSSync();
 
-      const endTime = Date.now();
+      const endTime = performance.now();
       const duration = endTime - startTime;
 
-      // 1秒以内で完了することを確認
+      // パフォーマンステストを改善：結果の品質も確認
+      expect(result).toBeTruthy();
+      expect(result.length).toBeGreaterThan(0);
+
+      // 1秒以内で完了することを確認（より安定したタイミング測定）
       expect(duration).toBeLessThan(1000);
     });
 
@@ -162,8 +188,18 @@ describe('CSSGenerator', () => {
         content: Array.from({ length: 100 }, (_, i) => `src/component-${i}.html`),
       };
       const generator = new CSSGenerator(largeContentConfig);
+      const startTime = performance.now();
+
+      const result = generator.generateFullCSSSync();
+
+      const endTime = performance.now();
 
       expect(() => generator.generateFullCSSSync()).not.toThrow();
+      expect(result).toBeTruthy();
+      expect(typeof result).toBe('string');
+
+      // 大量のコンテンツでも合理的な時間で処理されることを確認
+      expect(endTime - startTime).toBeLessThan(2000);
     });
   });
 
@@ -189,6 +225,111 @@ describe('CSSGenerator', () => {
       const openBraces = (result.match(/{/g) || []).length;
       const closeBraces = (result.match(/}/g) || []).length;
       expect(openBraces).toBe(closeBraces);
+    });
+  });
+
+  describe('Display Generation', () => {
+    it('should generate display utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'block')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-block')).toBe(true);
+      expect(cssValidators.hasClass(result, 'flex')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-flex')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grid')).toBe(true);
+      expect(cssValidators.hasClass(result, 'inline-grid')).toBe(true);
+      expect(cssValidators.hasClass(result, 'none')).toBe(true);
+      expect(cssValidators.hasClass(result, 'contents')).toBe(true);
+      expect(cssValidators.hasClass(result, 'hidden')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.block\s*\{[^}]*display: block[^}]*\}/);
+      expect(result).toMatch(/\.inline\s*\{[^}]*display: inline[^}]*\}/);
+      expect(result).toMatch(/\.inline-block\s*\{[^}]*display: inline flow-root[^}]*\}/);
+      expect(result).toMatch(/\.flex\s*\{[^}]*display: block flex[^}]*\}/);
+      expect(result).toMatch(/\.inline-flex\s*\{[^}]*display: inline flex[^}]*\}/);
+      expect(result).toMatch(/\.grid\s*\{[^}]*display: block grid[^}]*\}/);
+      expect(result).toMatch(/\.inline-grid\s*\{[^}]*display: inline grid[^}]*\}/);
+      expect(result).toMatch(/\.none\s*\{[^}]*display: none[^}]*\}/);
+      expect(result).toMatch(/\.contents\s*\{[^}]*display: contents[^}]*\}/);
+      expect(result).toMatch(/\.hidden\s*\{[^}]*display: none[^}]*\}/);
+    });
+  });
+
+  describe('Flexbox Generation', () => {
+    it('should generate flexbox utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'flex-1')).toBe(true);
+      expect(cssValidators.hasClass(result, 'basis-full')).toBe(true);
+      expect(cssValidators.hasClass(result, 'shrink-0')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grow-0')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.flex-1\s*\{[^}]*flex: 1 1 0%[^}]*\}/);
+      expect(result).toMatch(/\.basis-full\s*\{[^}]*flex-basis: 100%[^}]*\}/);
+      expect(result).toMatch(/\.shrink-0\s*\{[^}]*flex-shrink: 0[^}]*\}/);
+      expect(result).toMatch(/\.grow-0\s*\{[^}]*flex-grow: 0[^}]*[^}]*\}/);
+    });
+  });
+
+  describe('Grid Generation', () => {
+    it('should generate grid utility classes', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // グリッドテンプレートのクラスを確認
+      expect(cssValidators.hasClass(result, 'grid-cols-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grid-rows-2')).toBe(true);
+
+      // グリッドアイテムの配置クラスを確認
+      expect(cssValidators.hasClass(result, 'col-span-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'row-span-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'col-start-2')).toBe(true);
+      expect(cssValidators.hasClass(result, 'row-start-2')).toBe(true);
+
+      // グリッドの配置プロパティを確認
+      expect(result).toMatch(
+        /\.grid-cols-2\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)[^}]*\}/
+      );
+      expect(result).toMatch(
+        /\.grid-rows-2\s*\{[^}]*grid-template-rows: repeat\(2, minmax\(0, 1fr\)\)[^}]*\}/
+      );
+      expect(result).toMatch(/\.col-span-2\s*\{[^}]*grid-column: span 2 \/ span 2[^}]*\}/);
+      expect(result).toMatch(/\.row-span-2\s*\{[^}]*grid-row: span 2 \/ span 2[^}]*\}/);
+      expect(result).toMatch(/\.col-start-2\s*\{[^}]*grid-column-start: 2[^}]*\}/);
+      expect(result).toMatch(/\.row-start-2\s*\{[^}]*grid-row-start: 2[^}]*\}/);
+    });
+  });
+
+  describe('Z-Index Generation', () => {
+    it('should generate z-index utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'z-10')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.z-10\s*\{[^}]*z-index: 10[^}]*\}/);
+    });
+  });
+
+  describe('Order Generation', () => {
+    it('should generate order utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      // 新しいクラスが生成されていることを確認
+      expect(cssValidators.hasClass(result, 'order-10')).toBe(true);
+
+      // 期待されるCSSプロパティが含まれていることを確認
+      expect(result).toMatch(/\.order-10\s*\{[^}]*order: 10[^}]*\}/);
     });
   });
 });

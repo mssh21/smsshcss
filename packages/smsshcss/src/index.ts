@@ -88,3 +88,6 @@ export * from './core/purger';
 export { extractCustomSpacingClasses } from './utils/spacing';
 export { extractCustomWidthClasses } from './utils/width';
 export { extractCustomHeightClasses } from './utils/height';
+export { extractCustomGridClasses } from './utils/grid';
+export { extractCustomOrderClasses } from './utils/order';
+export { extractCustomZIndexClasses } from './utils/z-index';

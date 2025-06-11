@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
+import { extractCustomHeightClasses } from '../height';
+import { extractCustomFlexClasses } from '../flexbox';
+import { extractCustomGridClasses } from '../grid';
+import { extractCustomZIndexClasses } from '../z-index';
+import { extractCustomOrderClasses } from '../order';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -244,6 +249,335 @@ describe('Custom Value Extraction Functions', () => {
         const content = '<div class="w-full max-w-md">Standard classes</div>';
         const result = extractCustomWidthClasses(content);
         expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomHeightClasses', () => {
+    describe('Basic Height Values', () => {
+      it('should extract height custom values', () => {
+        const content = '<div class="h-[200px] h-[50%] h-[10rem]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.h-\\[200px\\] { height: 200px; }');
+        expect(result).toContain('.h-\\[50\\%\\] { height: 50%; }');
+        expect(result).toContain('.h-\\[10rem\\] { height: 10rem; }');
+      });
+
+      it('should extract min-height custom values', () => {
+        const content = '<div class="min-h-[100px] min-h-[20%] min-h-[5rem]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.min-h-\\[100px\\] { min-height: 100px; }');
+        expect(result).toContain('.min-h-\\[20\\%\\] { min-height: 20%; }');
+        expect(result).toContain('.min-h-\\[5rem\\] { min-height: 5rem; }');
+      });
+
+      it('should extract max-height custom values', () => {
+        const content = '<div class="max-h-[300px] max-h-[80%] max-h-[15rem]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.max-h-\\[300px\\] { max-height: 300px; }');
+        expect(result).toContain('.max-h-\\[80\\%\\] { max-height: 80%; }');
+        expect(result).toContain('.max-h-\\[15rem\\] { max-height: 15rem; }');
+      });
+    });
+
+    describe('Complex Height Functions', () => {
+      it('should extract calc() height values', () => {
+        const content = '<div class="h-[calc(100%-40px)] min-h-[calc(50%+2rem)]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain('.h-\\[calc\\(100\\%\\-40px\\)\\] { height: calc(100% - 40px); }');
+        expect(result).toContain(
+          '.min-h-\\[calc\\(50\\%\\+2rem\\)\\] { min-height: calc(50% + 2rem); }'
+        );
+      });
+
+      it('should extract clamp() height values', () => {
+        const content = '<div class="h-[clamp(200px,50vw,800px)]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(1);
+        expect(result).toContain(
+          '.h-\\[clamp\\(200px\\,50vw\\,800px\\)\\] { height: clamp(200px, 50vw, 800px); }'
+        );
+      });
+
+      it('should extract viewport units', () => {
+        const content = '<div class="h-[50vh] h-[100vh] h-[25vmin] h-[75vmax]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.h-\\[50vh\\] { height: 50vh; }');
+        expect(result).toContain('.h-\\[100vh\\] { height: 100vh; }');
+        expect(result).toContain('.h-\\[25vmin\\] { height: 25vmin; }');
+        expect(result).toContain('.h-\\[75vmax\\] { height: 75vmax; }');
+      });
+    });
+
+    describe('CSS Variables and Complex Cases', () => {
+      it('should extract CSS variable height values', () => {
+        const content = '<div class="h-[var(--height)] min-h-[var(--min-height)]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        expect(result).toHaveLength(2);
+        // CSS変数の場合、ハイフンはエスケープされない
+        expect(result).toContain('.h-\\[var\\(--height\\)\\] { height: var(--height); }');
+        expect(result).toContain(
+          '.min-h-\\[var\\(--min-height\\)\\] { min-height: var(--min-height); }'
+        );
+      });
+
+      it('should handle height samples from setup', () => {
+        const result = extractCustomHeightClasses(customValueSamples.height);
+
+        expect(result.length).toBeGreaterThan(0);
+        expect(result.some((r) => r.includes('height: 100px'))).toBe(true);
+        expect(result.some((r) => r.includes('min-height: 200px'))).toBe(true);
+        expect(result.some((r) => r.includes('max-height: calc(100% - 40px)'))).toBe(true);
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('should handle duplicate height classes', () => {
+        const content = '<div class="h-[200px] min-h-[200px] h-[200px]">Test</div>';
+        const result = extractCustomHeightClasses(content);
+
+        // 実装では重複排除されていないため、3つのクラスが生成される
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.h-\\[200px\\] { height: 200px; }');
+        expect(result).toContain('.min-h-\\[200px\\] { min-height: 200px; }');
+
+        // w-[200px]が2回、min-w-[200px]が1回
+        const heightClasses = result.filter((r) => r.includes('{ height: 200px; }'));
+        const minHeightClasses = result.filter((r) => r.includes('{ min-height: 200px; }'));
+        expect(heightClasses).toHaveLength(2);
+        expect(minHeightClasses).toHaveLength(1);
+      });
+
+      it('should handle empty content', () => {
+        const result = extractCustomHeightClasses('');
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle content without custom values', () => {
+        const content = '<div class="h-full max-h-md">Standard classes</div>';
+        const result = extractCustomHeightClasses(content);
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomGridClasses', () => {
+    describe('Basic Grid Custom Values', () => {
+      it('should extract grid-cols custom values', () => {
+        const content = '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-cols-\\[80\\] { grid-template-columns: repeat(80, minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.grid-cols-\\[200px,1fr,100px\\] { grid-template-columns: 200px 1fr 100px; }'
+        );
+      });
+
+      it('should extract grid-rows custom values', () => {
+        const content =
+          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-rows-\\[var\\(--grid-rows\\)\\] { grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.grid-rows-\\[auto,1fr,auto\\] { grid-template-rows: auto 1fr auto; }'
+        );
+      });
+
+      it('should extract span custom values', () => {
+        const content = '<div class="col-span-[15] row-span-[var(--row-span)]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
+        expect(result).toContain(
+          '.row-span-\\[var\\(--row-span\\)\\] { grid-row: span var(--row-span) / span var(--row-span); }'
+        );
+      });
+
+      it('should extract grid position custom values', () => {
+        const content =
+          '<div class="col-start-[5] col-end-[10] row-start-[2] row-end-[4]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.col-start-\\[5\\] { grid-column-start: 5; }');
+        expect(result).toContain('.col-end-\\[10\\] { grid-column-end: 10; }');
+        expect(result).toContain('.row-start-\\[2\\] { grid-row-start: 2; }');
+        expect(result).toContain('.row-end-\\[4\\] { grid-row-end: 4; }');
+      });
+    });
+
+    describe('Complex Grid Values', () => {
+      it('should extract CSS variable values', () => {
+        const content = '<div class="grid-cols-[var(--columns)] row-span-[var(--span)]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(2);
+        expect(result).toContain(
+          '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.row-span-\\[var\\(--span\\)\\] { grid-row: span var(--span) / span var(--span); }'
+        );
+      });
+
+      it('should extract grid-cols with CSS variables', () => {
+        const content =
+          '<div class="grid-cols-[var(--columns)] row-span-[var(--span)] col-span-[var(--span)]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain(
+          '.grid-cols-\\[var\\(--columns\\)\\] { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }'
+        );
+        expect(result).toContain(
+          '.row-span-\\[var\\(--span\\)\\] { grid-row: span var(--span) / span var(--span); }'
+        );
+        expect(result).toContain(
+          '.col-span-\\[var\\(--span\\)\\] { grid-column: span var(--span) / span var(--span); }'
+        );
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('should handle duplicate classes', () => {
+        const content = '<div class="grid-cols-[80] col-span-[80] grid-cols-[80]">Test</div>';
+        const result = extractCustomGridClasses(content);
+
+        // 実装では重複排除されていないため、3つのクラスが生成される
+        expect(result).toHaveLength(3);
+        expect(
+          result.filter((r) => r.includes('grid-template-columns: repeat(80, minmax(0, 1fr))'))
+            .length
+        ).toBe(2);
+        expect(result.filter((r) => r.includes('grid-column: span 80 / span 80')).length).toBe(1);
+      });
+
+      it('should handle empty content', () => {
+        const result = extractCustomGridClasses('');
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle content without grid classes', () => {
+        const content = '<div class="text-red-500 p-4">Content</div>';
+        const result = extractCustomGridClasses(content);
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle malformed bracket classes', () => {
+        const content = '<div class="grid-cols-[incomplete">Content</div>';
+        const result = extractCustomGridClasses(content);
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomFlexClasses', () => {
+    describe('Basic Flex Custom Values', () => {
+      it('should extract flex custom values', () => {
+        const content = '<div class="basis-xs grow-0 shrink-0 flex-1">Test</div>';
+        const result = extractCustomFlexClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.basis-\\[xs\\] { flex-basis: xs; }');
+        expect(result).toContain('.grow-\\[0\\] { flex-grow: 0; }');
+        expect(result).toContain('.shrink-\\[0\\] { flex-shrink: 0; }');
+        expect(result).toContain('.flex-\\[1\\] { flex: 1; }');
+      });
+    });
+
+    describe('CSS Functions', () => {
+      it('should extract calc() with flex', () => {
+        const content =
+          '<div class="flex-[5] basis-[calc(100%-20px)] shrink-[2] grow-[4]">Test</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.flex-\\[5\\] { flex: 5; }');
+        expect(result).toContain(
+          '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
+        );
+        expect(result).toContain('.shrink-\\[2\\] { flex-shrink: 2; }');
+        expect(result).toContain('.grow-\\[4\\] { flex-grow: 4; }');
+      });
+    });
+
+    describe('Complex Flex Values', () => {
+      it('should extract CSS variable values', () => {
+        const content =
+          '<div class="flex-[var(--flex)] basis-[var(--basis)] shrink-[var(--shrink)] grow-[var(--grow)]">Test</div>';
+        const result = extractCustomFlexClasses(content);
+
+        expect(result).toHaveLength(4);
+        expect(result).toContain('.flex-\\[var\\(--flex\\)\\] { flex: var(--flex); }');
+        expect(result).toContain('.basis-\\[var\\(--basis\\)\\] { flex-basis: var(--basis); }');
+        expect(result).toContain('.shrink-\\[var\\(--shrink\\)\\] { flex-shrink: var(--shrink); }');
+        expect(result).toContain('.grow-\\[var\\(--grow\\)\\] { flex-grow: var(--grow); }');
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('should handle empty content', () => {
+        const result = extractCustomFlexClasses('');
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle content without flex classes', () => {
+        const content = '<div class="text-red-500 p-4">Content</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(0);
+      });
+
+      it('should handle malformed bracket classes', () => {
+        const content = '<div class="flex-[incomplete">Content</div>';
+        const result = extractCustomFlexClasses(content);
+        expect(result).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('extractCustomZIndexClasses', () => {
+    describe('Basic Z-Index Custom Values', () => {
+      it('should extract z-index custom values', () => {
+        const content = '<div class="z-[1] z-[2] z-[3]">Test</div>';
+        const result = extractCustomZIndexClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.z-\\[1\\] { z-index: 1; }');
+        expect(result).toContain('.z-\\[2\\] { z-index: 2; }');
+        expect(result).toContain('.z-\\[3\\] { z-index: 3; }');
+      });
+    });
+  });
+
+  describe('extractCustomOrderClasses', () => {
+    describe('Basic Order Values', () => {
+      it('should extract order custom values', () => {
+        const content = '<div class="order-[1] order-[2] order-[3]">Test</div>';
+        const result = extractCustomOrderClasses(content);
+
+        expect(result).toHaveLength(3);
+        expect(result).toContain('.order-\\[1\\] { order: 1; }');
+        expect(result).toContain('.order-\\[2\\] { order: 2; }');
+        expect(result).toContain('.order-\\[3\\] { order: 3; }');
       });
     });
   });

@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Gap Classes Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <a href="./spacing.html" class="nav-link">Spacing</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">📏 Gap Classes</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">📏 Gap Classes</h1>
+        <p class="page-subtitle">
+          Flexbox/Grid ギャップクラス - フィボナッチ数列ベース + Gap-X/Gap-Y対応
+        </p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. 基本Gap（フィボナッチ数列） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">基本Gap（フィボナッチ数列）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Flexbox Gap - 基本サイズ</div>
+            <div class="grid gap-[25px] mb-[40px]">
+              <div class="flex gap-2xs">
+                <div class="demo-box p-xs">gap-2xs (5px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-xs">
+                <div class="demo-box p-xs">gap-xs (8px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-sm">
+                <div class="demo-box p-xs">gap-sm (12px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-md">
+                <div class="demo-box p-xs">gap-md (20px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-lg">
+                <div class="demo-box p-xs">gap-lg (32px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-xl">
+                <div class="demo-box p-xs">gap-xl (52px)</div>
+                <div class="demo-box p-xs">Item</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+            </div>
+
+            <div class="test-label">Grid Gap - 基本サイズ</div>
+            <div class="grid gap-[25px] mb-[30px]">
+              <div class="grid gap-2xs" style="grid-template-columns: repeat(4, 1fr)">
+                <div class="demo-box p-2xs">gap-2xs</div>
+                <div class="demo-box p-2xs">5px</div>
+                <div class="demo-box p-2xs">Grid</div>
+                <div class="demo-box p-2xs">Gap</div>
+              </div>
+              <div class="grid gap-sm" style="grid-template-columns: repeat(3, 1fr)">
+                <div class="demo-box p-xs">gap-sm</div>
+                <div class="demo-box p-xs">12px</div>
+                <div class="demo-box p-xs">Grid</div>
+              </div>
+              <div class="grid gap-lg" style="grid-template-columns: repeat(2, 1fr)">
+                <div class="demo-box p-sm">gap-lg (32px)</div>
+                <div class="demo-box p-sm">Grid Gap</div>
+              </div>
+            </div>
+
+            <div class="test-label">フィボナッチ数列 Gap値</div>
+            <div class="code-example">
+              gap-2xs: 5px (基準値)<br />
+              gap-xs: 8px (5 + 3)<br />
+              gap-sm: 12px (フィボナッチ調整)<br />
+              gap-md: 20px (フィボナッチ調整)<br />
+              gap-lg: 32px (フィボナッチ調整)<br />
+              gap-xl: 52px (フィボナッチ調整)
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Gap-X / Gap-Y（方向別Gap） -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">Gap-X / Gap-Y（方向別Gap）</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">Flexbox Gap-X / Gap-Y</div>
+            <div class="grid gap-[30px] mb-[40px]">
+              <div>
+                <div class="caption mb-xs">水平ギャップのみ (gap-x)</div>
+                <div
+                  class="flex gap-x-lg gap-y-[0px] flex-wrap border border-dashed border-gray-300 p-md"
+                >
+                  <div class="demo-box p-xs">gap-x-lg</div>
+                  <div class="demo-box p-xs">水平32px</div>
+                  <div class="demo-box p-xs">垂直0px</div>
+                  <div class="demo-box p-xs">Item</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">垂直ギャップのみ (gap-y)</div>
+                <div
+                  class="flex gap-x-[0px] gap-y-md flex-col border border-dashed border-gray-300 p-md w-[200px]"
+                >
+                  <div class="demo-box p-xs">gap-y-md</div>
+                  <div class="demo-box p-xs">垂直20px</div>
+                  <div class="demo-box p-xs">水平0px</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">異なるX/Yギャップ</div>
+                <div
+                  class="flex gap-x-xl gap-y-sm flex-wrap border border-dashed border-gray-300 p-md"
+                >
+                  <div class="demo-box p-xs">gap-x-xl gap-y-sm</div>
+                  <div class="demo-box p-xs">水平52px</div>
+                  <div class="demo-box p-xs">垂直12px</div>
+                  <div class="demo-box p-xs">Item 4</div>
+                  <div class="demo-box p-xs">Item 5</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="test-label">Grid Gap-X / Gap-Y</div>
+            <div class="grid gap-[30px] mb-[30px]">
+              <div>
+                <div class="caption mb-xs">Grid 水平・垂直ギャップ個別指定</div>
+                <div class="grid gap-x-lg gap-y-sm" style="grid-template-columns: repeat(3, 1fr)">
+                  <div class="demo-box p-2xs">gap-x-lg gap-y-sm</div>
+                  <div class="demo-box p-2xs">水平32px</div>
+                  <div class="demo-box p-2xs">垂直12px</div>
+                  <div class="demo-box p-2xs">Item 4</div>
+                  <div class="demo-box p-2xs">Item 5</div>
+                  <div class="demo-box p-2xs">Item 6</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">大きなX軸ギャップ、小さなY軸ギャップ</div>
+                <div class="grid gap-x-xl gap-y-2xs" style="grid-template-columns: repeat(2, 1fr)">
+                  <div class="demo-box p-sm">gap-x-xl (52px)</div>
+                  <div class="demo-box p-sm">gap-y-2xs (5px)</div>
+                  <div class="demo-box p-sm">Grid Item 3</div>
+                  <div class="demo-box p-sm">Grid Item 4</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. カスタム値Gap -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">カスタム値Gap</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本Gap カスタム値</div>
+            <div class="grid gap-[30px] mb-[40px]">
+              <div>
+                <div class="caption mb-xs">ピクセル値</div>
+                <div class="flex gap-[25px]">
+                  <div class="demo-box p-sm">gap-[25px]</div>
+                  <div class="demo-box p-sm">カスタム</div>
+                  <div class="demo-box p-sm">25px</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">rem値</div>
+                <div class="flex gap-[2rem]">
+                  <div class="demo-box p-sm">gap-[2rem]</div>
+                  <div class="demo-box p-sm">2rem Gap</div>
+                  <div class="demo-box p-sm">Item</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">Grid カスタム値</div>
+                <div class="grid gap-[40px]" style="grid-template-columns: repeat(3, 1fr)">
+                  <div class="demo-box p-xs">gap-[40px]</div>
+                  <div class="demo-box p-xs">Grid</div>
+                  <div class="demo-box p-xs">40px</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="test-label">Gap-X / Gap-Y カスタム値</div>
+            <div class="grid gap-[30px] mb-[40px]">
+              <div>
+                <div class="caption mb-xs">異なるカスタム値</div>
+                <div
+                  class="flex gap-x-[60px] gap-y-[10px] flex-wrap border border-dashed border-gray-300 p-md"
+                >
+                  <div class="demo-box p-xs">gap-x-[60px]</div>
+                  <div class="demo-box p-xs">gap-y-[10px]</div>
+                  <div class="demo-box p-xs">水平60px</div>
+                  <div class="demo-box p-xs">垂直10px</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">Grid カスタムX/Yギャップ</div>
+                <div
+                  class="grid gap-x-[80px] gap-y-[15px]"
+                  style="grid-template-columns: repeat(3, 1fr)"
+                >
+                  <div class="demo-box p-2xs">gap-x-[80px]</div>
+                  <div class="demo-box p-2xs">gap-y-[15px]</div>
+                  <div class="demo-box p-2xs">Item 3</div>
+                  <div class="demo-box p-2xs">Item 4</div>
+                  <div class="demo-box p-2xs">Item 5</div>
+                  <div class="demo-box p-2xs">Item 6</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="test-label">CSS関数を使ったGap</div>
+            <div class="grid gap-[30px] mb-[30px]">
+              <div>
+                <div class="caption mb-xs">calc()関数</div>
+                <div class="flex gap-[calc(1rem+15px)]">
+                  <div class="demo-box p-sm">gap-[calc(1rem+15px)]</div>
+                  <div class="demo-box p-sm">calc関数</div>
+                  <div class="demo-box p-sm">Item</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">min/max関数</div>
+                <div class="flex gap-[min(3rem,60px)] mb-md">
+                  <div class="demo-box p-sm">gap-[min(3rem,60px)]</div>
+                  <div class="demo-box p-sm">min関数</div>
+                  <div class="demo-box p-sm">Item</div>
+                </div>
+                <div class="flex gap-[max(1.5rem,30px)]">
+                  <div class="demo-box p-sm">gap-[max(1.5rem,30px)]</div>
+                  <div class="demo-box p-sm">max関数</div>
+                  <div class="demo-box p-sm">Item</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="caption mb-xs">clamp()関数（レスポンシブ）</div>
+                <div class="flex gap-[clamp(1rem,4vw,3rem)]">
+                  <div class="demo-box p-sm">gap-[clamp(1rem,4vw,3rem)]</div>
+                  <div class="demo-box p-sm">レスポンシブ</div>
+                  <div class="demo-box p-sm">ギャップ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 実用例・レイアウトパターン -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">実用例・レイアウトパターン</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">カードグリッド</div>
+            <div
+              class="grid gap-lg mb-[40px]"
+              style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))"
+            >
+              <div class="demo-card p-md">
+                <h4 class="m-[0px] mb-sm">カードタイトル 1</h4>
+                <p class="m-[0px]">gap-lg (32px) でカード間隔を統一</p>
+              </div>
+              <div class="demo-card p-md">
+                <h4 class="m-[0px] mb-sm">カードタイトル 2</h4>
+                <p class="m-[0px]">レスポンシブグリッドレイアウト</p>
+              </div>
+              <div class="demo-card p-md">
+                <h4 class="m-[0px] mb-sm">カードタイトル 3</h4>
+                <p class="m-[0px]">フィボナッチ数列ベースの美しい間隔</p>
+              </div>
+            </div>
+
+            <div class="test-label">ナビゲーションメニュー</div>
+            <div class="flex gap-md mb-[40px] p-md bg-gray-100 rounded">
+              <a class="nav-item">ホーム</a>
+              <a class="nav-item">製品</a>
+              <a class="nav-item">サービス</a>
+              <a class="nav-item">会社情報</a>
+              <a class="nav-item">お問い合わせ</a>
+            </div>
+
+            <div class="test-label">ボタングループ</div>
+            <div class="grid gap-[20px] mb-[40px]">
+              <div class="flex gap-sm">
+                <button class="demo-btn-primary">保存</button>
+                <button class="demo-btn-secondary">キャンセル</button>
+                <button class="demo-btn-secondary">削除</button>
+              </div>
+              <div class="flex gap-[12px]">
+                <button class="demo-btn-sm">小ボタン</button>
+                <button class="demo-btn-sm">gap-[12px]</button>
+                <button class="demo-btn-sm">カスタム</button>
+              </div>
+            </div>
+
+            <div class="test-label">フォームレイアウト</div>
+            <form
+              class="grid gap-y-md gap-x-lg max-w-[500px]"
+              style="grid-template-columns: 1fr 1fr"
+            >
+              <div>
+                <label class="block mb-xs font-medium">名前</label>
+                <input type="text" class="w-full px-sm py-xs border" />
+              </div>
+              <div>
+                <label class="block mb-xs font-medium">メール</label>
+                <input type="email" class="w-full px-sm py-xs border" />
+              </div>
+              <div style="grid-column: 1 / -1">
+                <label class="block mb-xs font-medium">メッセージ</label>
+                <textarea class="w-full px-sm py-xs border h-[100px]"></textarea>
+              </div>
+              <div class="flex gap-sm" style="grid-column: 1 / -1">
+                <button type="submit" class="demo-btn-primary">送信</button>
+                <button type="button" class="demo-btn-secondary">リセット</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 5. 特殊ケース・エッジケース -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">特殊ケース・エッジケース</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">ゼロギャップ</div>
+            <div class="grid gap-[20px] mb-[40px]">
+              <div class="flex gap-[0px] border border-dashed border-red-300 p-sm">
+                <div class="demo-box p-xs bg-red-100">gap-[0px]</div>
+                <div class="demo-box p-xs bg-red-100">ギャップなし</div>
+                <div class="demo-box p-xs bg-red-100">隣接</div>
+              </div>
+              <div class="grid gap-[0px]" style="grid-template-columns: repeat(3, 1fr)">
+                <div class="demo-box p-xs bg-blue-100">Grid gap-[0px]</div>
+                <div class="demo-box p-xs bg-blue-100">隣接グリッド</div>
+                <div class="demo-box p-xs bg-blue-100">Item</div>
+              </div>
+            </div>
+
+            <div class="test-label">小数値ギャップ</div>
+            <div class="grid gap-[20px] mb-[40px]">
+              <div class="flex gap-[1.5px]">
+                <div class="demo-box p-xs">gap-[1.5px]</div>
+                <div class="demo-box p-xs">極小ギャップ</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+              <div class="flex gap-[0.25rem]">
+                <div class="demo-box p-xs">gap-[0.25rem]</div>
+                <div class="demo-box p-xs">小数rem</div>
+                <div class="demo-box p-xs">Item</div>
+              </div>
+            </div>
+
+            <div class="test-label">大きなギャップ</div>
+            <div class="grid gap-[30px] mb-[40px]">
+              <div class="flex gap-[100px]">
+                <div class="demo-box p-sm">gap-[100px]</div>
+                <div class="demo-box p-sm">大きなギャップ</div>
+              </div>
+              <div class="grid gap-[80px]" style="grid-template-columns: repeat(2, 1fr)">
+                <div class="demo-box p-sm">Grid gap-[80px]</div>
+                <div class="demo-box p-sm">80px間隔</div>
+              </div>
+            </div>
+
+            <div class="test-label">CSS変数ギャップ</div>
+            <div class="flex css-var-gap-30 gap-[var(--custom-gap-30)]">
+              <div class="demo-box p-sm">gap-[var(--custom-gap-30)]</div>
+              <div class="demo-box p-sm">CSS変数</div>
+              <div class="demo-box p-sm">30px</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. デバッグ情報 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">デバッグ情報</h2>
+          <div class="demo-content p-[30px]">
+            <div class="debug-info">
+              <h4 class="debug-info-title">使用中のGapクラス</h4>
+              <div class="debug-classes" id="gap-classes">
+                <!-- JavaScriptで動的に追加 -->
+              </div>
+              <button class="debug-btn mt-md" onclick="showGapClasses()">Gapクラス一覧表示</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">📏 Gap Classes テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              フィボナッチ数列ベース + Gap-X/Gap-Y + カスタム値対応
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./spacing.html" class="page-nav-btn">← Spacing</a>
+            <a href="./width-height.html" class="page-nav-btn">次: Width/Height →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showGapClasses() {
+        const gapPatterns = [
+          /^gap(-[xy])?-/, // gap, gap-x-, gap-y-
+          /^gap(-[xy])?-\[.*\]$/, // custom values
+        ];
+
+        const allClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => gapPatterns.some((pattern) => pattern.test(cls)))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        const container = document.getElementById('gap-classes');
+        container.innerHTML = allClasses
+          .map((cls) => `<span class="class-tag">${cls}</span>`)
+          .join('');
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showGapClasses);
+    </script>
+  </body>
+</html>
