@@ -13,6 +13,11 @@ interface SmsshCSSConfig {
     grid?: Record<string, string>;
     order?: Record<string, string>;
     zIndex?: Record<string, string>;
+    gridCols?: Record<string, string>;
+    gridRows?: Record<string, string>;
+    gridColumnSpan?: Record<string, string>;
+    gridRowSpan?: Record<string, string>;
+    components?: Record<string, string>;
   };
   purge?: {
     enabled?: boolean;
@@ -21,6 +26,259 @@ interface SmsshCSSConfig {
     blocklist?: string[];
   };
 }
+
+// ユーティリティクラスをCSSプロパティに変換する関数
+const parseUtilityClasses = (utilityClasses: string, config: SmsshCSSConfig): string => {
+  const classes = utilityClasses.split(/\s+/).filter(Boolean);
+  const cssProperties: string[] = [];
+
+  for (const className of classes) {
+    const cssProperty = parseUtilityClass(className, config);
+    if (cssProperty) {
+      cssProperties.push(cssProperty);
+    }
+  }
+
+  return cssProperties.length > 0 ? `\n  ${cssProperties.join('\n  ')}` : '';
+};
+
+// 単一のユーティリティクラスをCSSプロパティに変換
+const parseUtilityClass = (className: string, config: SmsshCSSConfig): string | null => {
+  // カスタム値 [value] の処理
+  const customValueMatch = className.match(/^(.+)-\[([^\]]+)\]$/);
+  if (customValueMatch) {
+    const [, prefix, value] = customValueMatch;
+    return parseUtilityWithValue(prefix, value);
+  }
+
+  // テーマ値の処理
+  const themeMatch = className.match(/^(.+)-(.+)$/);
+  if (themeMatch) {
+    const [, prefix, suffix] = themeMatch;
+
+    // テーマから値を取得
+    const themeValue = getThemeValue(prefix, suffix, config);
+    if (themeValue) {
+      return parseUtilityWithValue(prefix, themeValue);
+    }
+
+    // デフォルト値で処理
+    return parseUtilityWithDefaultValue(prefix, suffix);
+  }
+
+  // 単純なクラス名の処理
+  return parseSimpleUtilityClass(className);
+};
+
+// プレフィックスと値からCSSプロパティを生成
+const parseUtilityWithValue = (prefix: string, value: string): string | null => {
+  switch (prefix) {
+    // Margin
+    case 'm':
+      return `margin: ${value};`;
+    case 'mx':
+      return `margin-left: ${value}; margin-right: ${value};`;
+    case 'my':
+      return `margin-top: ${value}; margin-bottom: ${value};`;
+    case 'mt':
+      return `margin-top: ${value};`;
+    case 'mr':
+      return `margin-right: ${value};`;
+    case 'mb':
+      return `margin-bottom: ${value};`;
+    case 'ml':
+      return `margin-left: ${value};`;
+
+    // Padding
+    case 'p':
+      return `padding: ${value};`;
+    case 'px':
+      return `padding-left: ${value}; padding-right: ${value};`;
+    case 'py':
+      return `padding-top: ${value}; padding-bottom: ${value};`;
+    case 'pt':
+      return `padding-top: ${value};`;
+    case 'pr':
+      return `padding-right: ${value};`;
+    case 'pb':
+      return `padding-bottom: ${value};`;
+    case 'pl':
+      return `padding-left: ${value};`;
+
+    // Width
+    case 'w':
+      return `width: ${value};`;
+    case 'min-w':
+      return `min-width: ${value};`;
+    case 'max-w':
+      return `max-width: ${value};`;
+
+    // Height
+    case 'h':
+      return `height: ${value};`;
+    case 'min-h':
+      return `min-height: ${value};`;
+    case 'max-h':
+      return `max-height: ${value};`;
+
+    // Gap
+    case 'gap':
+      return `gap: ${value};`;
+    case 'gap-x':
+      return `column-gap: ${value};`;
+    case 'gap-y':
+      return `row-gap: ${value};`;
+
+    // Z-index
+    case 'z':
+      return `z-index: ${value};`;
+
+    // Order
+    case 'order':
+      return `order: ${value};`;
+
+    default:
+      return null;
+  }
+};
+
+// テーマから値を取得
+const getThemeValue = (prefix: string, suffix: string, config: SmsshCSSConfig): string | null => {
+  const theme = config.theme;
+  if (!theme) return null;
+
+  // Spacing
+  if (
+    [
+      'm',
+      'mx',
+      'my',
+      'mt',
+      'mr',
+      'mb',
+      'ml',
+      'p',
+      'px',
+      'py',
+      'pt',
+      'pr',
+      'pb',
+      'pl',
+      'gap',
+      'gap-x',
+      'gap-y',
+    ].includes(prefix)
+  ) {
+    return theme.spacing?.[suffix] || null;
+  }
+
+  // Width
+  if (['w', 'min-w', 'max-w'].includes(prefix)) {
+    return theme.width?.[suffix] || null;
+  }
+
+  // Height
+  if (['h', 'min-h', 'max-h'].includes(prefix)) {
+    return theme.height?.[suffix] || null;
+  }
+
+  // Z-index
+  if (prefix === 'z') {
+    return theme.zIndex?.[suffix] || null;
+  }
+
+  // Order
+  if (prefix === 'order') {
+    return theme.order?.[suffix] || null;
+  }
+
+  return null;
+};
+
+// デフォルト値で処理
+const parseUtilityWithDefaultValue = (prefix: string, suffix: string): string | null => {
+  // デフォルトサイズマッピング
+  const sizeMap: Record<string, string> = {
+    auto: 'auto',
+    xs: 'calc(var(--space-base) * 2)',
+    sm: 'calc(var(--space-base) * 3)',
+    md: 'calc(var(--space-base) * 5)',
+    lg: 'calc(var(--space-base) * 8)',
+    xl: 'calc(var(--space-base) * 13)',
+    full: '100%',
+    screen: '100vw',
+  };
+
+  const value = sizeMap[suffix];
+  if (value) {
+    return parseUtilityWithValue(prefix, value);
+  }
+
+  // 数値サフィックスの処理
+  if (/^\d+$/.test(suffix)) {
+    const numValue = parseInt(suffix);
+    const calcValue = `calc(var(--space-base) * ${numValue})`;
+    return parseUtilityWithValue(prefix, calcValue);
+  }
+
+  return null;
+};
+
+// 単純なクラス名の処理
+const parseSimpleUtilityClass = (className: string): string | null => {
+  switch (className) {
+    // Display
+    case 'block':
+      return 'display: block;';
+    case 'inline':
+      return 'display: inline;';
+    case 'inline-block':
+      return 'display: inline-block;';
+    case 'flex':
+      return 'display: flex;';
+    case 'grid':
+      return 'display: grid;';
+    case 'hidden':
+      return 'display: none;';
+
+    // Flexbox
+    case 'justify-center':
+      return 'justify-content: center;';
+    case 'justify-start':
+      return 'justify-content: flex-start;';
+    case 'justify-end':
+      return 'justify-content: flex-end;';
+    case 'justify-between':
+      return 'justify-content: space-between;';
+    case 'justify-around':
+      return 'justify-content: space-around;';
+    case 'items-center':
+      return 'align-items: center;';
+    case 'items-start':
+      return 'align-items: flex-start;';
+    case 'items-end':
+      return 'align-items: flex-end;';
+    case 'flex-col':
+      return 'flex-direction: column;';
+    case 'flex-row':
+      return 'flex-direction: row;';
+
+    // Position
+    case 'absolute':
+      return 'position: absolute;';
+    case 'relative':
+      return 'position: relative;';
+    case 'fixed':
+      return 'position: fixed;';
+    case 'static':
+      return 'position: static;';
+    case 'sticky':
+      return 'position: sticky;';
+
+    default:
+      return null;
+  }
+};
 
 // 共通のCSS生成関数
 const generateMockCSS = (config: SmsshCSSConfig): string => {
@@ -148,25 +406,21 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
     Object.entries(config.theme.spacing).forEach(([key, value]) => {
       css += `\n.m-${key} { margin: ${value}; }`;
       css += `\n.p-${key} { padding: ${value}; }`;
+      css += `\n.mx-${key} { margin-left: ${value}; margin-right: ${value}; }`;
+      css += `\n.my-${key} { margin-top: ${value}; margin-bottom: ${value}; }`;
+      css += `\n.mt-${key} { margin-top: ${value}; }`;
+      css += `\n.mr-${key} { margin-right: ${value}; }`;
+      css += `\n.mb-${key} { margin-bottom: ${value}; }`;
+      css += `\n.ml-${key} { margin-left: ${value}; }`;
+      css += `\n.px-${key} { padding-left: ${value}; padding-right: ${value}; }`;
+      css += `\n.py-${key} { padding-top: ${value}; padding-bottom: ${value}; }`;
+      css += `\n.pt-${key} { padding-top: ${value}; }`;
+      css += `\n.pr-${key} { padding-right: ${value}; }`;
+      css += `\n.pb-${key} { padding-bottom: ${value}; }`;
+      css += `\n.pl-${key} { padding-left: ${value}; }`;
       css += `\n.gap-${key} { gap: ${value}; }`;
       css += `\n.gap-x-${key} { column-gap: ${value}; }`;
       css += `\n.gap-y-${key} { row-gap: ${value}; }`;
-      css += `\n.w-${key} { width: ${value}; }`;
-      css += `\n.min-w-${key} { min-width: ${value}; }`;
-      css += `\n.max-w-${key} { max-width: ${value}; }`;
-      css += `\n.h-${key} { height: ${value}; }`;
-      css += `\n.min-h-${key} { min-height: ${value}; }`;
-      css += `\n.max-h-${key} { max-height: ${value}; }`;
-      css += `\n.grid-cols-${key} { grid-template-columns: repeat(${value}, minmax(0, 1fr)); }`;
-      css += `\n.grid-rows-${key} { grid-template-rows: repeat(${value}, minmax(0, 1fr)); }`;
-      css += `\n.col-span-${key} { grid-column: span ${value}; }`;
-      css += `\n.row-span-${key} { grid-row: span ${value}; }`;
-      css += `\n.col-start-${key} { grid-column-start: ${value}; }`;
-      css += `\n.row-start-${key} { grid-row-start: ${value}; }`;
-      css += `\n.col-end-${key} { grid-column-end: ${value}; }`;
-      css += `\n.row-end-${key} { grid-row-end: ${value}; }`;
-      css += `\n.order-${key} { order: ${value}; }`;
-      css += `\n.z-${key} { z-index: ${value}; }`;
     });
   }
 
@@ -202,6 +456,51 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
       css += `\n.row-start-${key} { grid-row-start: ${value}; }`;
       css += `\n.col-end-${key} { grid-column-end: ${value}; }`;
       css += `\n.row-end-${key} { grid-row-end: ${value}; }`;
+    });
+  }
+
+  if (config.theme?.zIndex) {
+    Object.entries(config.theme.zIndex).forEach(([key, value]) => {
+      css += `\n.z-${key} { z-index: ${value}; }`;
+    });
+  }
+
+  if (config.theme?.order) {
+    Object.entries(config.theme.order).forEach(([key, value]) => {
+      css += `\n.order-${key} { order: ${value}; }`;
+    });
+  }
+
+  if (config.theme?.gridCols) {
+    Object.entries(config.theme.gridCols).forEach(([key, value]) => {
+      css += `\n.grid-cols-${key} { grid-template-columns: repeat(${value}, minmax(0, 1fr)); }`;
+    });
+  }
+
+  if (config.theme?.gridRows) {
+    Object.entries(config.theme.gridRows).forEach(([key, value]) => {
+      css += `\n.grid-rows-${key} { grid-template-rows: repeat(${value}, minmax(0, 1fr)); }`;
+    });
+  }
+
+  if (config.theme?.gridColumnSpan) {
+    Object.entries(config.theme.gridColumnSpan).forEach(([key, value]) => {
+      css += `\n.col-span-${key} { grid-column: span ${value} / span ${value}; }`;
+    });
+  }
+
+  if (config.theme?.gridRowSpan) {
+    Object.entries(config.theme.gridRowSpan).forEach(([key, value]) => {
+      css += `\n.row-span-${key} { grid-row: span ${value} / span ${value}; }`;
+    });
+  }
+
+  if (config.theme?.components) {
+    Object.entries(config.theme.components).forEach(([componentName, utilityClasses]) => {
+      const componentCSS = parseUtilityClasses(utilityClasses, config);
+      if (componentCSS) {
+        css += `\n.${componentName} {${componentCSS}\n}`;
+      }
     });
   }
 
@@ -477,6 +776,40 @@ const mockExtractCustomGridClasses = (content: string): string[] => {
   return customGridClasses;
 };
 
+// カスタムオーダークラス抽出モック
+const mockExtractCustomOrderClasses = (content: string): string[] => {
+  const customValuePattern = /\border-\[([^\]]+)\]/g;
+  const matches = content.matchAll(customValuePattern);
+  const customOrderClasses: string[] = [];
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  for (const match of matches) {
+    const value = match[1];
+    const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+    customOrderClasses.push(`.order-\\[${escapeValue(value)}\\] { order: ${originalValue}; }`);
+  }
+
+  return customOrderClasses;
+};
+
+// カスタムZ-indexクラス抽出モック
+const mockExtractCustomZIndexClasses = (content: string): string[] => {
+  const customValuePattern = /\bz-\[([^\]]+)\]/g;
+  const matches = content.matchAll(customValuePattern);
+  const customZIndexClasses: string[] = [];
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  for (const match of matches) {
+    const value = match[1];
+    const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+
+    customZIndexClasses.push(`.z-\\[${escapeValue(value)}\\] { z-index: ${originalValue}; }`);
+  }
+
+  return customZIndexClasses;
+};
+
 // smsshcssパッケージをモック
 vi.mock('smsshcss', () => ({
   generateCSS: vi.fn().mockImplementation((config) => Promise.resolve(generateMockCSS(config))),
@@ -491,6 +824,8 @@ vi.mock('smsshcss', () => ({
   extractCustomWidthClasses: vi.fn().mockImplementation(mockExtractCustomWidthClasses),
   extractCustomHeightClasses: vi.fn().mockImplementation(mockExtractCustomHeightClasses),
   extractCustomGridClasses: vi.fn().mockImplementation(mockExtractCustomGridClasses),
+  extractCustomOrderClasses: vi.fn().mockImplementation(mockExtractCustomOrderClasses),
+  extractCustomZIndexClasses: vi.fn().mockImplementation(mockExtractCustomZIndexClasses),
 }));
 
 // モッククリア関数

@@ -1,32 +1,18 @@
-import {
-  ComponentsConfig,
-  SizeConfig,
-  SpacingConfig,
-  WidthConfig,
-  HeightConfig,
-} from '../core/types';
+import { ApplyConfig } from '../core/types';
 
 /**
- * コンポーネントクラスを生成する
- * @param config - コンポーネント設定
- * @param themeConfig - テーマ設定（カスタム値を含む）
+ * applyクラスを生成する
+ * @param config - apply設定
  * @returns 生成されたCSSクラス文字列
  */
-export function generateComponentClasses(
-  config?: ComponentsConfig,
-  themeConfig?: {
-    spacing?: SpacingConfig;
-    width?: WidthConfig;
-    height?: HeightConfig;
-  }
-): string {
+export function generateApplyClasses(config?: ApplyConfig): string {
   if (!config) {
     return '';
   }
 
   const classes: string[] = [];
 
-  for (const [componentName, utilities] of Object.entries(config)) {
+  for (const [className, utilities] of Object.entries(config)) {
     // ユーティリティクラスを分解
     const utilityClasses = utilities
       .trim()
@@ -42,15 +28,15 @@ export function generateComponentClasses(
 
     for (const utilityClass of utilityClasses) {
       // ユーティリティクラスからCSSプロパティを抽出
-      const cssRule = extractCSSFromUtility(utilityClass, themeConfig);
+      const cssRule = extractCSSFromUtility(utilityClass);
       if (cssRule) {
         cssRules.push(cssRule);
       }
     }
 
     if (cssRules.length > 0) {
-      // コンポーネントクラスを生成
-      classes.push(`.${componentName} {
+      // applyクラスを生成
+      classes.push(`.${className} {
 ${cssRules.map((rule) => `  ${rule}`).join('\n')}
 }`);
     }
@@ -62,23 +48,15 @@ ${cssRules.map((rule) => `  ${rule}`).join('\n')}
 /**
  * ユーティリティクラスからCSSプロパティを抽出する
  * @param utilityClass - ユーティリティクラス名
- * @param themeConfig - テーマ設定
  * @returns CSSプロパティと値のペア（例: "margin: 1rem;"）
  */
-function extractCSSFromUtility(
-  utilityClass: string,
-  themeConfig?: {
-    spacing?: SpacingConfig;
-    width?: WidthConfig;
-    height?: HeightConfig;
-  }
-): string | null {
+function extractCSSFromUtility(utilityClass: string): string | null {
   // マージン・パディング
   const spacingMatch = utilityClass.match(/^(m|p)(t|r|b|l|x|y)?-(.+)$/);
   if (spacingMatch) {
     const [, property, direction, size] = spacingMatch;
     const prop = property === 'm' ? 'margin' : 'padding';
-    const value = getSpacingValue(size, themeConfig?.spacing);
+    const value = getSpacingValue(size);
 
     if (!value) return null;
 
@@ -104,7 +82,7 @@ function extractCSSFromUtility(
   if (widthMatch) {
     const [, prefix, size] = widthMatch;
     const prop = prefix ? `${prefix.slice(0, -1)}-width` : 'width';
-    const value = getSizeValue(size, themeConfig?.width);
+    const value = getSizeValue(size);
     if (!value) return null;
     return `${prop}: ${value};`;
   }
@@ -114,29 +92,29 @@ function extractCSSFromUtility(
   if (heightMatch) {
     const [, prefix, size] = heightMatch;
     const prop = prefix ? `${prefix.slice(0, -1)}-height` : 'height';
-    const value = getSizeValue(size, themeConfig?.height);
+    const value = getSizeValue(size);
     if (!value) return null;
     return `${prop}: ${value};`;
   }
 
   // Display
-  const displayValues = [
-    'block',
-    'inline-block',
-    'inline',
-    'flex',
-    'inline-flex',
-    'grid',
-    'inline-grid',
-    'none',
-    'table',
-    'table-cell',
-    'table-row',
-    'hidden',
-  ];
-  if (displayValues.includes(utilityClass)) {
-    const value = utilityClass === 'hidden' ? 'none' : utilityClass;
-    return `display: ${value};`;
+  const displayMap: Record<string, string> = {
+    block: 'block',
+    'inline-block': 'inline-block',
+    inline: 'inline',
+    flex: 'flex',
+    'inline-flex': 'inline-flex',
+    grid: 'grid',
+    'inline-grid': 'inline-grid',
+    none: 'none',
+    table: 'table',
+    'table-cell': 'table-cell',
+    'table-row': 'table-row',
+    hidden: 'none',
+  };
+
+  if (displayMap[utilityClass]) {
+    return `display: ${displayMap[utilityClass]};`;
   }
 
   // Flexbox
@@ -168,7 +146,7 @@ function extractCSSFromUtility(
   const gapMatch = utilityClass.match(/^gap-(.+)$/);
   if (gapMatch) {
     const [, size] = gapMatch;
-    const value = getSpacingValue(size, themeConfig?.spacing);
+    const value = getSpacingValue(size);
     if (!value) return null;
     return `gap: ${value};`;
   }
@@ -213,34 +191,39 @@ function extractCSSFromUtility(
 /**
  * スペーシングサイズの値を取得
  */
-function getSpacingValue(size: string, customSpacing?: SpacingConfig): string | null {
+function getSpacingValue(size: string): string | null {
   const defaultSizes: Record<string, string> = {
     none: '0',
-    '2xs': '0.125rem',
-    xs: '0.25rem',
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem',
-    '2xl': '3rem',
-    '3xl': '4rem',
-    '4xl': '5rem',
-    '5xl': '6rem',
-    '6xl': '7rem',
-    '7xl': '8rem',
-    '8xl': '9rem',
-    '9xl': '10rem',
-    '10xl': '11rem',
-    '11xl': '12rem',
-    '12xl': '13rem',
-    full: '100%',
     auto: 'auto',
+    '2xs': 'var(--space-base)', // 0.25rem (4px)
+    xs: 'calc(var(--space-base) * 2)', // 0.5rem (8px)
+    sm: 'calc(var(--space-base) * 3)', // 0.75rem (12px)
+    md: 'calc(var(--space-base) * 5)', // 1.25rem (20px)
+    lg: 'calc(var(--space-base) * 8)', // 2rem (32px)
+    xl: 'calc(var(--space-base) * 13)', // 3.25rem (52px)
+    '2xl': 'calc(var(--space-base) * 21)', // 5.25rem (84px)
+    '3xl': 'calc(var(--space-base) * 34)', // 8.5rem (136px)
+    '4xl': 'calc(var(--space-base) * 55)', // 13.75rem (220px)
+    '5xl': 'calc(var(--space-base) * 89)', // 22.25rem (356px)
+    '6xl': 'calc(var(--space-base) * 144)', // 36rem (576px)
+    '7xl': 'calc(var(--space-base) * 192)', // 48rem (768px)
+    '8xl': 'calc(var(--space-base) * 256)', // 64rem (1024px)
+    '9xl': 'calc(var(--space-base) * 320)', // 80rem (1280px)
+    '10xl': 'calc(var(--space-base) * 384)', // 96rem (1536px)
+    '11xl': 'calc(var(--space-base) * 448)', // 112rem (1792px)
+    '12xl': 'calc(var(--space-base) * 512)', // 128rem (2048px)
+    full: '100%',
+    fit: 'fit-content',
+    min: 'min-content',
+    max: 'max-content',
+    screen: '100vw',
+    dvh: '100dvh',
+    dvw: '100dvw',
+    cqw: '100cqw',
+    cqi: '100cqi',
+    cqmin: '100cqmin',
+    cqmax: '100cqmax',
   };
-
-  // まずカスタム値をチェック
-  if (customSpacing && customSpacing[size]) {
-    return customSpacing[size];
-  }
 
   // デフォルト値をチェック
   if (defaultSizes[size]) {
@@ -258,50 +241,54 @@ function getSpacingValue(size: string, customSpacing?: SpacingConfig): string | 
 /**
  * サイズの値を取得
  */
-function getSizeValue(size: string, customSizes?: SizeConfig): string | null {
+function getSizeValue(size: string): string | null {
   const defaultSizes: Record<string, string> = {
     none: '0',
-    '2xs': '0.125rem',
-    xs: '0.25rem',
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem',
-    '2xl': '3rem',
-    '3xl': '4rem',
-    '4xl': '5rem',
-    '5xl': '6rem',
-    '6xl': '7rem',
-    '7xl': '8rem',
-    '8xl': '9rem',
-    '9xl': '10rem',
-    '10xl': '11rem',
-    '11xl': '12rem',
-    '12xl': '13rem',
+    '2xs': 'var(--size-base)', // 1rem (16px)
+    xs: 'calc(var(--size-base) * 1.5)', // 1.5rem (24px)
+    sm: 'calc(var(--size-base) * 2)', // 2rem (32px)
+    md: 'calc(var(--size-base) * 2.5)', // 2.5rem (40px)
+    lg: 'calc(var(--size-base) * 3)', // 3rem (48px)
+    xl: 'calc(var(--size-base) * 4)', // 4rem (64px)
+    '2xl': 'calc(var(--size-base) * 6)', // 6rem (96px)
+    '3xl': 'calc(var(--size-base) * 8)', // 8rem (128px)
+    '4xl': 'calc(var(--size-base) * 12)', // 12rem (192px)
+    '5xl': 'calc(var(--size-base) * 16)', // 16rem (256px)
+    '6xl': 'calc(var(--size-base) * 20)', // 20rem (320px)
+    '7xl': 'calc(var(--size-base) * 24)', // 24rem (384px)
+    '8xl': 'calc(var(--size-base) * 32)', // 32rem (512px)
+    '9xl': 'calc(var(--size-base) * 48)', // 48rem (768px)
+    '10xl': 'calc(var(--size-base) * 64)', // 64rem (1024px)
+    '11xl': 'calc(var(--size-base) * 80)', // 80rem (1280px)
+    '12xl': 'calc(var(--size-base) * 96)', // 96rem (1536px)
     full: '100%',
     auto: 'auto',
     fit: 'fit-content',
     min: 'min-content',
     max: 'max-content',
     screen: '100vw',
-    dvw: '100dvw',
     dvh: '100dvh',
-    svh: '100svh',
-    lvh: '100lvh',
+    dvw: '100dvw',
     cqw: '100cqw',
     cqi: '100cqi',
     cqmin: '100cqmin',
     cqmax: '100cqmax',
   };
 
-  // まずカスタム値をチェック
-  if (customSizes && customSizes[size]) {
-    return customSizes[size];
-  }
+  // Width/Height用のレスポンシブサイズ
+  const responsiveSizes: Record<string, string> = {
+    svh: '100svh', // スモールビューポートハイト
+    lvh: '100lvh', // ラージビューポートハイト
+  };
 
   // デフォルト値をチェック
   if (defaultSizes[size]) {
     return defaultSizes[size];
+  }
+
+  // レスポンシブサイズをチェック
+  if (responsiveSizes[size]) {
+    return responsiveSizes[size];
   }
 
   // カスタム値（[値]形式）の場合はそのまま返す

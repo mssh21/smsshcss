@@ -298,11 +298,9 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
         content: [`${tempDir}/**/*.html`],
         includeReset: false,
         includeBase: false,
-        theme: {
-          spacing: {
-            custom: '3rem',
-            special: '4.5rem',
-          },
+        apply: {
+          'btn-custom': 'p-md m-sm gap-lg',
+          'card-special': 'p-lg m-md gap-xl',
         },
       });
 
@@ -311,9 +309,9 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       // カスタム値クラス
       expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
 
-      // カスタムテーマクラス
-      expect(result?.code).toContain('.m-custom { margin: 3rem; }');
-      expect(result?.code).toContain('.p-special { padding: 4.5rem; }');
+      // 基本的なユーティリティクラスが含まれていることを確認
+      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
 
       // Reset/Base CSSは含まれない
       expect(result?.code).not.toContain('/* Reset CSS */');
@@ -670,22 +668,19 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const plugin = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
-        theme: {
-          spacing: {
-            'extreme-small': '0.001rem',
-            'extreme-large': '9999rem',
-            negative: '-100px',
-            complex: 'calc(100vw - 50% + 20px)',
-          },
+        apply: {
+          'btn-small': 'p-sm m-xs gap-xs',
+          'btn-large': 'p-xl m-lg gap-lg',
+          'btn-complex': 'p-md m-auto gap-md',
         },
       });
 
       const result = await plugin.transform('', 'extreme-config.css');
 
-      expect(result?.code).toContain('.p-extreme-small { padding: 0.001rem; }');
-      expect(result?.code).toContain('.p-extreme-large { padding: 9999rem; }');
-      expect(result?.code).toContain('.p-negative { padding: -100px; }');
-      expect(result?.code).toContain('.p-complex { padding: calc(100vw - 50% + 20px); }');
+      // カスタム値クラスとapply設定が正しく動作することを確認
+      expect(result?.code).toContain('.p-\\[10px\\] { padding: 10px; }');
+      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
     });
 
     it('should handle configuration updates correctly', async () => {
@@ -694,21 +689,24 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       // 最初の設定
       const plugin1 = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
-        theme: { spacing: { custom: '1rem' } },
+        apply: { 'btn-v1': 'p-md m-sm gap-xs' },
       });
 
       const result1 = await plugin1.transform('', 'config-update1.css');
-      expect(result1?.code).toContain('.p-custom { padding: 1rem; }');
+      expect(result1?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
 
       // 設定を変更
       const plugin2 = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
-        theme: { spacing: { custom: '2rem', newValue: '3rem' } },
+        apply: {
+          'btn-v2': 'p-lg m-md gap-sm',
+          'card-new': 'p-xl m-lg gap-md',
+        },
       });
 
       const result2 = await plugin2.transform('', 'config-update2.css');
-      expect(result2?.code).toContain('.p-custom { padding: 2rem; }');
-      expect(result2?.code).toContain('.p-newValue { padding: 3rem; }');
+      expect(result2?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result2?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
     });
   });
 });

@@ -149,7 +149,7 @@ describe('Spacing Utilities', () => {
 
   describe('generateAllSpacingClasses', () => {
     it('should generate all spacing classes', () => {
-      const result = generateAllSpacingClasses(spacingConfig);
+      const result = generateAllSpacingClasses();
 
       // マージン、パディング、ギャップのクラスがすべて含まれているか確認
       expect(result).toContain('.m-none { margin: 0; }');
@@ -165,7 +165,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include all directional classes', () => {
-      const result = generateAllSpacingClasses(spacingConfig);
+      const result = generateAllSpacingClasses();
 
       // すべての方向指定クラスが含まれているか確認
       expect(result).toContain('.mt-none { margin-top: 0; }');
@@ -183,7 +183,7 @@ describe('Spacing Utilities', () => {
     });
 
     it('should include all arbitrary value classes', () => {
-      const result = generateAllSpacingClasses(spacingConfig);
+      const result = generateAllSpacingClasses();
 
       // すべての任意の値クラスが含まれているか確認
       expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');

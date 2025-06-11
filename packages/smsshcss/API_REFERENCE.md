@@ -92,7 +92,7 @@ interface SmsshCSSConfig {
   includeResetCSS?: boolean; // リセットCSSを含める
   includeBaseCSS?: boolean; // ベースCSSを含める
   purge?: PurgeConfig; // パージ設定
-  theme?: ThemeConfig; // テーマ設定
+  apply?: ApplyConfig; // Apply設定
 }
 ```
 
@@ -188,19 +188,13 @@ interface PurgeConfig {
 }
 ```
 
-### `ThemeConfig`
+### `ApplyConfig`
 
-テーマの詳細設定：
+Apply設定の詳細：
 
 ```typescript
-interface ThemeConfig {
-  spacing?: SizeConfig; // スペーシング設定
-  display?: DisplayConfig; // ディスプレイ設定
-  width?: SizeConfig; // 幅設定
-  height?: SizeConfig; // 高さ設定
-  gridColumns?: GridColumnsConfig; // グリッド列設定
-  zIndex?: ZIndexConfig; // Z-indexユーティリティクラスのカスタマイズ設定
-  components?: Record<string, string>; // コンポーネントクラスの定義
+interface ApplyConfig {
+  [className: string]: string; // クラス名: 適用するユーティリティクラス
 }
 ```
 
@@ -208,69 +202,46 @@ interface ThemeConfig {
 
 ```javascript
 {
-  theme: {
-    spacing: {
-      // フィボナッチベースを拡張
-      '72': '18rem',
-      '84': '21rem',
-      '96': '24rem',
-      'custom': '2.5rem',
-      'project-specific': 'clamp(1rem, 4vw, 3rem)',
-    },
+  apply: {
+    // レイアウト系コンポーネント
+    'main-layout': 'w-lg mx-auto px-lg block',
+    'container': 'max-w-[var(--container-width)] mx-auto px-sm md:px-md lg:px-lg',
+    'flex-center': 'flex justify-center items-center',
+    'flex-between': 'flex justify-between items-center',
 
-    display: {
-      'custom-flex': 'flex',
-      'custom-grid': 'grid',
-      'custom-table': 'table',
-    },
+    // カード系コンポーネント
+    'card': 'p-md',
+    'card-header': 'pb-sm mb-sm',
+    'card-body': 'py-sm',
+    'card-footer': 'pt-sm mt-sm',
 
-    width: {
-      'sidebar': '250px',
-      'content': '1024px',
-      'full-screen': '100vw',
-    },
+    // ボタン系コンポーネント
+    'btn': 'inline-block px-md py-sm',
+    'btn-primary': 'btn',
+    'btn-secondary': 'btn',
 
-    height: {
-      'header': '60px',
-      'footer': '120px',
-      'screen-minus-header': 'calc(100vh - 60px)',
-    },
-
-    zIndex: {
-      '10': '10',
-      '11': '11',
-      '12': '12',
-    },
-
-    // コンポーネントクラスの定義
-    components: {
-      'component-name': 'utility-class-1 utility-class-2 utility-class-3',
-      // 例:
-      'main-layout': 'w-lg mx-auto px-lg block',
-      'card': 'p-md bg-white rounded-lg shadow-md',
-    }
+    // フォーム系コンポーネント
+    'form-group': 'mb-md',
+    'form-label': 'block mb-xs',
+    'form-input': 'w-full px-sm py-xs',
   }
 }
 ```
 
-#### theme.zIndex
+#### apply設定
 
-Z-indexユーティリティクラスのカスタマイズ設定。
-
-#### theme.components
-
-コンポーネントクラスの定義。よく使うユーティリティクラスの組み合わせを1つのクラス名として定義できます。
+よく使うユーティリティクラスの組み合わせを1つのクラス名として定義できます。
 
 - **型**: `Record<string, string>`
 - **デフォルト**: `undefined`
 
 ```javascript
-components: {
+apply: {
   'component-name': 'space-separated utility classes',
   // 実例:
-  'btn': 'inline-block px-md py-sm rounded',
-  'btn-primary': 'btn bg-blue-500 text-white',
-  'container': 'max-w-7xl mx-auto px-sm md:px-md lg:px-lg',
+  'btn': 'inline-block px-md py-sm',
+  'btn-primary': 'btn',
+  'container': 'max-w-[var(--container-width)] mx-auto px-sm md:px-md lg:px-lg',
 }
 ```
 
@@ -283,7 +254,6 @@ components: {
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  border-radius: 0.25rem;
 }
 ```
 
@@ -294,11 +264,8 @@ components: {
 ```typescript
 import { generateAllSpacingClasses, extractCustomSpacingClasses } from 'smsshcss/utils/spacing';
 
-// スペーシングクラス生成
-const spacingCSS = generateAllSpacingClasses({
-  custom: '2.5rem',
-  large: '4rem',
-});
+// デフォルトのスペーシングクラス生成
+const spacingCSS = generateAllSpacingClasses();
 
 // カスタムスペーシングクラス抽出
 const customClasses = extractCustomSpacingClasses(`
@@ -311,10 +278,8 @@ const customClasses = extractCustomSpacingClasses(`
 ```typescript
 import { generateDisplayClasses } from 'smsshcss/utils/display';
 
-const displayCSS = generateDisplayClasses({
-  'custom-flex': 'flex',
-  'custom-grid': 'grid',
-});
+// デフォルトのディスプレイクラス生成
+const displayCSS = generateDisplayClasses();
 ```
 
 ### 幅・高さ関連
@@ -322,15 +287,11 @@ const displayCSS = generateDisplayClasses({
 ```typescript
 import { generateAllWidthClasses, generateAllHeightClasses } from 'smsshcss/utils';
 
-const widthCSS = generateAllWidthClasses({
-  sidebar: '250px',
-  content: '1024px',
-});
+// デフォルトの幅クラス生成
+const widthCSS = generateAllWidthClasses();
 
-const heightCSS = generateAllHeightClasses({
-  header: '60px',
-  footer: '120px',
-});
+// デフォルトの高さクラス生成
+const heightCSS = generateAllHeightClasses();
 ```
 
 ## 🛠️ 開発ツール
@@ -469,50 +430,22 @@ const css = await generateCSS({
 });
 ```
 
-### カスタムテーマでの使用
+### Apply設定での使用
 
 ```typescript
 const css = await generateCSS({
   content: ['src/**/*.vue'],
-  theme: {
-    spacing: {
-      xs: '0.5rem',
-      sm: '1rem',
-      md: '1.5rem',
-      lg: '2rem',
-      xl: '3rem',
-      custom: 'clamp(1rem, 4vw, 3rem)',
-    },
-    colors: {
-      primary: '#007bff',
-      secondary: '#6c757d',
-      success: '#28a745',
-    },
+  apply: {
+    'main-layout': 'w-lg mx-auto px-lg block',
+    card: 'p-md',
+    'card-header': 'pb-sm mb-sm',
+    'card-body': 'py-sm',
+    'card-footer': 'pt-sm mt-sm',
+    btn: 'inline-block px-md py-sm',
+    'btn-primary': 'btn',
+    'flex-center': 'flex justify-center items-center',
   },
 });
-```
-
-### 開発モードでの使用
-
-```typescript
-import { CSSGenerator } from 'smsshcss';
-
-const generator = new CSSGenerator(config, {
-  development: true,
-  skipValidation: false,
-});
-
-try {
-  const css = await generator.generateFullCSS();
-  const report = await generator.generatePurgeReport();
-
-  if (report) {
-    console.log(`CSS generated: ${css.length} characters`);
-    console.log(`Classes purged: ${report.purgedClasses}`);
-  }
-} catch (error) {
-  console.error('CSS generation failed:', error);
-}
 ```
 
 ---

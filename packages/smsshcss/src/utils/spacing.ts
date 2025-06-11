@@ -161,13 +161,10 @@ export function generateGapClasses(config: SpacingConfig = defaultSpacing): stri
   return classes.join('\n');
 }
 
-export function generateAllSpacingClasses(customConfig?: SpacingConfig): string {
-  // デフォルトテーマとカスタムテーマをマージ
-  const config = customConfig ? { ...defaultSpacing, ...customConfig } : defaultSpacing;
-
+export function generateAllSpacingClasses(): string {
   return [
-    generateSpacingClasses(config, 'margin'),
-    generateSpacingClasses(config, 'padding'),
-    generateGapClasses(config),
+    generateSpacingClasses(defaultSpacing, 'margin'),
+    generateSpacingClasses(defaultSpacing, 'padding'),
+    generateGapClasses(defaultSpacing),
   ].join('\n\n');
 }

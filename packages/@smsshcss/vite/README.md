@@ -2,6 +2,14 @@
 
 SmsshCSSのViteプラグイン。CSSユーティリティクラスを自動生成し、プロジェクトに統合します。開発時は高速で、本番時はパージ機能により最適化されたCSSを提供します。
 
+## 🚀 v2.2.0 新機能
+
+- **Apply設定**: よく使うユーティリティクラスの組み合わせを定義可能
+- **キャッシュ機能**: ファイル変更時のみ再生成、大幅なパフォーマンス向上
+- **デバッグモード**: 詳細なログ出力で開発をサポート
+- **最適化されたファイルスキャン**: 並列処理によるファイル処理の高速化
+- **統合されたカスタムクラス抽出**: コード重複を削減し、メンテナンス性を向上
+
 ## インストール
 
 ```bash
@@ -74,22 +82,21 @@ export default defineConfig({
         variables: true, // CSS変数のパージ
       },
 
-      // テーマのカスタマイズ
-      theme: {
-        spacing: {
-          72: '18rem',
-          84: '21rem',
-          96: '24rem',
-          custom: '2.5rem',
-        },
-        display: {
-          'custom-flex': 'flex',
-          'custom-grid': 'grid',
-        },
+      // Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+      apply: {
+        'btn-primary': 'p-md bg-blue-500 text-white rounded hover:bg-blue-600',
+        card: 'p-lg bg-white rounded-lg shadow-md',
+        container: 'max-w-7xl mx-auto px-lg',
       },
 
       // パージレポートの表示
       showPurgeReport: true,
+
+      // キャッシュ機能（v2.2.0+）
+      cache: true,
+
+      // デバッグモード（v2.2.0+）
+      debug: process.env.NODE_ENV === 'development',
     }),
   ],
 });
@@ -132,12 +139,9 @@ interface SmsshCSSViteOptions {
   };
 
   /**
-   * テーマのカスタマイズ
+   * Apply設定（よく使うユーティリティクラスの組み合わせを定義）
    */
-  theme?: {
-    spacing?: Record<string, string>;
-    display?: Record<string, string>;
-  };
+  apply?: Record<string, string>;
 
   /**
    * 開発時にパージレポートを表示するかどうか
@@ -151,8 +155,104 @@ interface SmsshCSSViteOptions {
    * @default true
    */
   minify?: boolean;
+
+  /**
+   * キャッシュを有効にするかどうか
+   * 開発時のパフォーマンス向上のため
+   * @default true
+   */
+  cache?: boolean;
+
+  /**
+   * デバッグログを有効にするかどうか
+   * 開発時のトラブルシューティングに有用
+   * @default false
+   */
+  debug?: boolean;
 }
 ```
+
+## 💡 Apply設定
+
+Apply設定を使用すると、よく使うユーティリティクラスの組み合わせを再利用可能なクラスとして定義できます：
+
+```javascript
+smsshcss({
+  apply: {
+    // ボタンのスタイル
+    btn: 'p-md rounded cursor-pointer transition-all',
+    'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
+    'btn-secondary': 'btn bg-gray-300 text-gray-700 hover:bg-gray-400',
+
+    // カードコンポーネント
+    card: 'p-lg bg-white rounded-lg shadow-md',
+    'card-header': 'mb-md pb-md border-b',
+
+    // レイアウト
+    container: 'max-w-7xl mx-auto px-lg',
+    'flex-center': 'flex items-center justify-center',
+  },
+});
+```
+
+**Apply設定の利点：**
+
+- 🎨 **一貫性**: プロジェクト全体で統一されたスタイル
+- ♻️ **再利用性**: よく使うパターンを簡単に再利用
+- 📝 **可読性**: 意味のあるクラス名でコードが読みやすく
+- 🚀 **効率性**: 複数のユーティリティクラスを1つのクラスで適用
+
+## 🚀 パフォーマンス機能
+
+### ⚡ キャッシュ機能（v2.2.0+）
+
+自動的にファイルの変更を検知し、変更されたファイルのみを再処理します：
+
+```javascript
+smsshcss({
+  // キャッシュを有効化（デフォルト）
+  cache: true,
+
+  // デバッグモードでキャッシュ状況を確認
+  debug: true,
+});
+```
+
+**キャッシュの利点：**
+
+- 🔄 ファイル未変更時はキャッシュから高速取得
+- 💾 メモリ効率的なハッシュベースキャッシュ
+- 🧹 自動的な古いキャッシュの削除（10分ごと）
+- 🎯 プロダクションビルド時の自動キャッシュリセット
+
+### 🐛 デバッグモード（v2.2.0+）
+
+詳細なログ出力で開発をサポート：
+
+```javascript
+smsshcss({
+  debug: process.env.NODE_ENV === 'development',
+});
+```
+
+**デバッグ出力例：**
+
+```
+[smsshcss] Configured for development mode
+[smsshcss] Extracting custom classes from files...
+[smsshcss] Extracted 42 unique custom classes
+[smsshcss] Using cached CSS
+[smsshcss] Generated CSS length: 15248 characters
+```
+
+### 🔧 最適化されたファイルスキャン
+
+並列処理によるファイル処理の高速化：
+
+- 📁 **並列glob処理**: 複数のファイルパターンを同時実行
+- 🚀 **並列ファイル処理**: 全ファイルを同時に処理
+- 📋 **統合されたカスタムクラス抽出**: 重複コードを削減
+- 🎯 **正規表現の事前コンパイル**: パターンマッチングの高速化
 
 ## パージ機能
 
@@ -237,22 +337,31 @@ smsshcss({
 ### 🚀 開発時の最適化
 
 ```javascript
-// 開発時は同期処理で高速化
-configureServer(devServer) {
-  // ファイル変更時の自動リロード
-  devServer.watcher.on('change', async (file) => {
-    // CSSモジュールを無効化してリロード
-  });
-}
+// 開発時の推奨設定
+smsshcss({
+  cache: true, // キャッシュ有効
+  debug: true, // デバッグ有効
+  minify: false, // CSS圧縮無効（高速化）
+  purge: {
+    enabled: false, // パージ無効（高速化）
+  },
+});
 ```
 
 ### 🎯 本番時の最適化
 
 ```javascript
-// 本番時は非同期処理でパージ実行
-if (isProduction && purge.enabled) {
-  generatedCSS = await smsshGenerateCSS(smsshConfig);
-}
+// 本番時の推奨設定
+smsshcss({
+  cache: false,    // キャッシュ無効（確実性重視）
+  debug: false,    // デバッグ無効
+  minify: true,    // CSS圧縮有効
+  purge: {
+    enabled: true, // パージ有効
+    safelist: [...], // 必要なクラスを保護
+  },
+  showPurgeReport: true, // パージレポート表示
+});
 ```
 
 ## 生成されるユーティリティクラス
@@ -391,10 +500,10 @@ if (isProduction && purge.enabled) {
 <!-- カスタム値 -->
 <div class="p-[25px] m-[1.5rem] gap-[calc(1rem+10px)]">カスタム値の使用例</div>
 
-<!-- テーマカスタマイズ -->
-<div class="p-custom gap-72">
-  <div class="custom-flex">カスタムテーマの使用</div>
-</div>
+<!-- Apply設定の使用 -->
+<div class="btn-primary">プライマリボタン</div>
+<div class="card">カードコンポーネント</div>
+<div class="container">コンテナ要素</div>
 ```
 
 ### React/Vue での使用例
@@ -427,6 +536,7 @@ function Component() {
 
    - `content` パターンにファイルが含まれているか確認
    - ブロックリストに含まれていないか確認
+   - デバッグモードで詳細ログを確認
 
 2. **本番で意図しないクラスが削除される**
 
@@ -434,8 +544,33 @@ function Component() {
    - `showPurgeReport: true` でレポート確認
 
 3. **ビルドが遅い**
+
+   - `cache: true` でキャッシュを有効化
    - 開発時は `purge.enabled: false` に設定
    - `content` パターンを最適化
+
+4. **キャッシュが効かない**
+   - `debug: true` でキャッシュ状況を確認
+   - ファイル権限をチェック
+   - `cache: false` で一時的に無効化してテスト
+
+### デバッグのヒント
+
+```javascript
+// デバッグモードで詳細情報を確認
+smsshcss({
+  debug: true,
+  cache: true,
+  showPurgeReport: true,
+});
+```
+
+**デバッグ出力を確認：**
+
+- ファイルスキャン状況
+- キャッシュヒット/ミス
+- 生成されたCSS量
+- エラーの詳細情報
 
 ## 開発
 
@@ -443,12 +578,14 @@ function Component() {
 
 ```bash
 pnpm build
+yarn build
 ```
 
 ### テスト
 
 ```bash
 pnpm test
+yarn test
 ```
 
 ### デバッグ
@@ -456,6 +593,7 @@ pnpm test
 ```bash
 # パージレポートを有効にしてビルド
 pnpm build --debug
+yarn build --debug
 ```
 
 ## ライセンス

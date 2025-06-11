@@ -1,4 +1,4 @@
-import { SmsshCSSConfig, SizeConfig } from './types';
+import { SmsshCSSConfig } from './types';
 
 /**
  * 設定バリデーションの結果
@@ -42,11 +42,6 @@ export function validateConfig(config: SmsshCSSConfig): ValidationResult {
 
   // 基本的な設定チェック
   validateBasicConfig(config, errors, warnings);
-
-  // テーマ設定のチェック
-  if (config.theme) {
-    validateThemeConfig(config.theme, errors, warnings);
-  }
 
   // パージ設定のチェック
   if (config.purge) {
@@ -133,72 +128,35 @@ function validateBasicConfig(
       });
     }
   });
-}
 
-/**
- * テーマ設定のバリデーション
- */
-function validateThemeConfig(
-  theme: NonNullable<SmsshCSSConfig['theme']>,
-  errors: ValidationError[],
-  warnings: ValidationWarning[]
-): void {
-  // SizeConfig の妥当性チェック
-  const sizeConfigFields = ['spacing', 'width', 'height'] as const;
-
-  sizeConfigFields.forEach((field) => {
-    const config = theme[field] as SizeConfig | undefined;
-    if (config) {
-      validateSizeConfig(config, `theme.${field}`, errors, warnings);
-    }
-  });
-
-  // Display config のチェック
-  if (theme.display) {
-    Object.entries(theme.display).forEach(([key, value]) => {
-      if (typeof value !== 'string') {
-        errors.push({
-          type: 'error',
-          code: 'INVALID_DISPLAY_VALUE',
-          message: `theme.display.${key} must be a string`,
-          path: `theme.display.${key}`,
-        });
-      }
-    });
+  // apply設定のチェック
+  if (config.apply) {
+    validateApplyConfig(config.apply, errors, warnings);
   }
 }
 
 /**
- * SizeConfig の妥当性チェック
+ * Apply設定のバリデーション
  */
-function validateSizeConfig(
-  config: SizeConfig,
-  path: string,
+function validateApplyConfig(
+  apply: NonNullable<SmsshCSSConfig['apply']>,
   errors: ValidationError[],
   warnings: ValidationWarning[]
 ): void {
-  Object.entries(config).forEach(([key, value]) => {
-    if (value === undefined) {
-      warnings.push({
-        type: 'warning',
-        code: 'UNDEFINED_SIZE_VALUE',
-        message: `${path}.${key} is undefined`,
-        path: `${path}.${key}`,
-        suggestion: 'Remove undefined values or set to valid CSS value',
-      });
-    } else if (typeof value !== 'string') {
+  Object.entries(apply).forEach(([key, value]) => {
+    if (typeof value !== 'string') {
       errors.push({
         type: 'error',
-        code: 'INVALID_SIZE_VALUE',
-        message: `${path}.${key} must be a string`,
-        path: `${path}.${key}`,
+        code: 'INVALID_APPLY_VALUE',
+        message: `apply.${key} must be a string`,
+        path: `apply.${key}`,
       });
     } else if (value.trim() === '') {
       warnings.push({
         type: 'warning',
-        code: 'EMPTY_SIZE_VALUE',
-        message: `${path}.${key} is empty`,
-        path: `${path}.${key}`,
+        code: 'EMPTY_APPLY_VALUE',
+        message: `apply.${key} is empty`,
+        path: `apply.${key}`,
       });
     }
   });
@@ -275,9 +233,9 @@ function generateSuggestions(config: SmsshCSSConfig, suggestions: string[]): voi
     suggestions.push('Consider explicitly setting includeBaseCSS to true or false');
   }
 
-  // テーマカスタマイズの提案
-  if (!config.theme || Object.keys(config.theme).length === 0) {
-    suggestions.push('Consider customizing the theme to match your design system');
+  // applyクラスの提案
+  if (!config.apply || Object.keys(config.apply).length === 0) {
+    suggestions.push('Consider using apply to define reusable utility combinations');
   }
 
   // 開発体験の改善提案

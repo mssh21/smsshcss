@@ -118,19 +118,6 @@ export function generateArbitraryOrder(value: string): string {
 }
 
 // テーマ設定からクラスを生成
-export function generateAllOrderClasses(themeConfig?: { order?: Record<string, string> }): string {
-  const classes: string[] = [];
-
-  // デフォルトのクラスを生成
-  classes.push(generateOrderClasses());
-
-  // テーマ設定がある場合は、カスタムクラスを生成
-  if (themeConfig?.order) {
-    Object.entries(themeConfig.order).forEach(([key, value]) => {
-      // カスタムオーダーの値を正しく処理
-      classes.push(`.order-${key} { order: ${value}; }`);
-    });
-  }
-
-  return classes.join('\n');
+export function generateAllOrderClasses(): string {
+  return generateOrderClasses();
 }

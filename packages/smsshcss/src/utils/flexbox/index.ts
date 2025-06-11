@@ -94,30 +94,27 @@ export function generateCustomFlexClass(prefix: string, value: string): string |
   }
 }
 
-export function generateFlexboxClasses(customConfig?: FlexboxConfig): string {
-  // デフォルトテーマとカスタムテーマをマージ
-  const config = customConfig ? { ...flexConfig, ...customConfig } : flexConfig;
-
+export function generateFlexboxClasses(): string {
   const classes: string[] = [];
 
-  // 基本的なFlexboxクラスを生成
-  Object.entries(config).forEach(([key, value]) => {
+  // flexConfigとflexPropertyMapを使用してクラスを生成
+  Object.entries(flexConfig).forEach(([key, value]) => {
     const property = flexPropertyMap[key];
-    if (property) {
-      classes.push(`.${key} { ${property}: ${value}; }`);
+    if (property && value) {
+      // プロパティが単一の値の場合
+      if (typeof property === 'string' && typeof value === 'string') {
+        classes.push(`.${key} { ${property}: ${value}; }`);
+      }
+      // プロパティが複数のスタイルを含む場合（例：flex-1）
+      else if (typeof property === 'string' && property.includes(';')) {
+        classes.push(`.${key} { ${property} }`);
+      }
+      // valueが複数のプロパティを含む場合（例：directionやwrapの設定）
+      else if (typeof value === 'string' && value.includes(':')) {
+        classes.push(`.${key} { ${value} }`);
+      }
     }
   });
-
-  // 任意の値のFlexboxクラステンプレートを追加
-  const arbitraryValueTemplate = `
-/* Arbitrary flex values */
-.grow-\\[\\$\\{value\\}\\] { flex-grow: var(--value); }
-.shrink-\\[\\$\\{value\\}\\] { flex-shrink: var(--value); }
-.basis-\\[\\$\\{value\\}\\] { flex-basis: var(--value); }
-.flex-\\[\\$\\{value\\}\\] { flex: var(--value); }
-`;
-
-  classes.push(arbitraryValueTemplate);
 
   return classes.join('\n');
 }

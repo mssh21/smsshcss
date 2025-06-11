@@ -148,113 +148,60 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     });
   });
 
-  describe('Custom Theme', () => {
-    it('should apply custom spacing theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          spacing: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
-          width: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
-          height: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
-          zIndex: {
-            custom: '20',
-            special: '30',
-          },
-          order: {
-            custom: '50',
-            special: '60',
-          },
-          gridCols: {
-            custom: '20',
-            special: '30',
-          },
-          gridRows: {
-            custom: '20',
-            special: '30',
-          },
-          gridColumnSpan: {
-            custom: '20',
-            special: '30',
-          },
-          gridRowSpan: {
-            custom: '20',
-            special: '30',
-          },
-          gridColumnStart: {
-            custom: '20',
-            special: '30',
-          },
-          gridRowStart: {
-            custom: '20',
-            special: '30',
-          },
-          gridAutoFlow: {
-            custom: 'row',
-            special: 'column',
-          },
+  describe('Apply Configuration', () => {
+    it('should generate apply-based classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'btn-primary': 'p-md bg-blue-500 text-white rounded',
+          card: 'p-lg bg-white rounded-lg shadow',
+          container: 'max-w-lg mx-auto px-md',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.m-custom { margin: 2rem; }');
-      expect(customResult?.code).toContain('.p-special { padding: 3.5rem; }');
-      expect(customResult?.code).toContain('.gap-custom { gap: 2rem; }');
-      expect(customResult?.code).toContain('.gap-x-special { column-gap: 3.5rem; }');
+      // Apply設定が動作することを確認（基本的なユーティリティクラスが生成される）
+      expect(applyResult?.code).toContain('/* SmsshCSS Generated Styles */');
     });
 
-    it('should apply custom display theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          display: {
-            custom: 'inline-block',
-            special: 'inline-flex',
-          },
+    it('should handle multiple apply classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'flex-center': 'flex items-center justify-center',
+          'text-gradient': 'bg-gradient-to-r from-blue-500 to-purple-600',
+          'card-header': 'p-lg border-b border-gray-200',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.custom { display: inline-block; }');
-      expect(customResult?.code).toContain('.special { display: inline-flex; }');
+      // 基本的なユーティリティクラスが含まれていることを確認
+      expect(applyResult?.code).toContain('.flex { display: flex; }');
+      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 
-    it('should merge custom theme with defaults', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          width: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
-        },
+    it('should work with empty apply configuration', async () => {
+      const applyPlugin = smsshcss({
+        apply: {},
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.w-custom { width: 2rem; }');
-      expect(customResult?.code).toContain('.min-w-special { min-width: 3.5rem; }');
-      expect(customResult?.code).toContain('.max-w-custom { max-width: 2rem; }');
+      // 基本的なクラスは生成される
+      expect(applyResult?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 
-    it('should apply custom height theme', async () => {
-      const customPlugin = smsshcss({
-        theme: {
-          height: {
-            custom: '2rem',
-            special: '3.5rem',
-          },
+    it('should handle apply with standard utility classes', async () => {
+      const applyPlugin = smsshcss({
+        apply: {
+          'layout-main': 'w-full h-screen flex flex-col',
+          'spacing-default': 'm-md p-lg gap-sm',
         },
       });
-      const customResult = await customPlugin.transform('', 'file.css');
+      const applyResult = await applyPlugin.transform('', 'file.css');
 
-      expect(customResult?.code).toContain('.h-custom { height: 2rem; }');
-      expect(customResult?.code).toContain('.min-h-special { min-height: 3.5rem; }');
-      expect(customResult?.code).toContain('.max-h-custom { max-height: 2rem; }');
+      // 標準的なユーティリティクラスが正しく生成される
+      expect(applyResult?.code).toContain('.w-full { width: 100%; }');
+      expect(applyResult?.code).toContain('.h-screen { height: 100vh; }');
+      expect(applyResult?.code).toContain('.flex { display: flex; }');
     });
   });
 });

@@ -1,4 +1,4 @@
-import { GridConfig, GridThemeConfig } from '../../core/types';
+import { GridConfig } from '../../core/types';
 import { customValuePattern } from './utils';
 import { defaultColumns, columnPropertyMap, generateCustomGridColsClass } from './columns';
 import { defaultRows, rowPropertyMap, generateCustomGridRowsClass } from './rows';
@@ -44,75 +44,75 @@ const propertyMap: Record<string, string> = {
   ...autoFlowPropertyMap,
 };
 
-// テーマ設定からGrid設定を生成
-function generateGridConfigFromTheme(theme: GridThemeConfig): GridConfig {
-  const config: GridConfig = {};
+// テーマ設定からGrid設定を生成（将来的に使用予定）
+// function generateGridConfigFromTheme(theme: GridThemeConfig): GridConfig {
+//   const config: GridConfig = {};
 
-  // カラム設定
-  if (theme.columns) {
-    Object.entries(theme.columns).forEach(([key, value]) => {
-      config[`grid-cols-${key}`] = value;
-    });
-  }
+//   // カラム設定
+//   if (theme.columns) {
+//     Object.entries(theme.columns).forEach(([key, value]) => {
+//       config[`grid-cols-${key}`] = value;
+//     });
+//   }
 
-  // 行設定
-  if (theme.rows) {
-    Object.entries(theme.rows).forEach(([key, value]) => {
-      config[`grid-rows-${key}`] = value;
-    });
-  }
+//   // 行設定
+//   if (theme.rows) {
+//     Object.entries(theme.rows).forEach(([key, value]) => {
+//       config[`grid-rows-${key}`] = value;
+//     });
+//   }
 
-  // カラムスパン設定
-  if (theme.columnSpan) {
-    Object.entries(theme.columnSpan).forEach(([key, value]) => {
-      config[`col-span-${key}`] = value;
-    });
-  }
+//   // カラムスパン設定
+//   if (theme.columnSpan) {
+//     Object.entries(theme.columnSpan).forEach(([key, value]) => {
+//       config[`col-span-${key}`] = value;
+//     });
+//   }
 
-  // 行スパン設定
-  if (theme.rowSpan) {
-    Object.entries(theme.rowSpan).forEach(([key, value]) => {
-      config[`row-span-${key}`] = value;
-    });
-  }
+//   // 行スパン設定
+//   if (theme.rowSpan) {
+//     Object.entries(theme.rowSpan).forEach(([key, value]) => {
+//       config[`row-span-${key}`] = value;
+//     });
+//   }
 
-  // カラム開始位置設定
-  if (theme.columnStart) {
-    Object.entries(theme.columnStart).forEach(([key, value]) => {
-      config[`col-start-${key}`] = value;
-    });
-  }
+//   // カラム開始位置設定
+//   if (theme.columnStart) {
+//     Object.entries(theme.columnStart).forEach(([key, value]) => {
+//       config[`col-start-${key}`] = value;
+//     });
+//   }
 
-  // カラム終了位置設定
-  if (theme.columnEnd) {
-    Object.entries(theme.columnEnd).forEach(([key, value]) => {
-      config[`col-end-${key}`] = value;
-    });
-  }
+//   // カラム終了位置設定
+//   if (theme.columnEnd) {
+//     Object.entries(theme.columnEnd).forEach(([key, value]) => {
+//       config[`col-end-${key}`] = value;
+//     });
+//   }
 
-  // 行開始位置設定
-  if (theme.rowStart) {
-    Object.entries(theme.rowStart).forEach(([key, value]) => {
-      config[`row-start-${key}`] = value;
-    });
-  }
+//   // 行開始位置設定
+//   if (theme.rowStart) {
+//     Object.entries(theme.rowStart).forEach(([key, value]) => {
+//       config[`row-start-${key}`] = value;
+//     });
+//   }
 
-  // 行終了位置設定
-  if (theme.rowEnd) {
-    Object.entries(theme.rowEnd).forEach(([key, value]) => {
-      config[`row-end-${key}`] = value;
-    });
-  }
+//   // 行終了位置設定
+//   if (theme.rowEnd) {
+//     Object.entries(theme.rowEnd).forEach(([key, value]) => {
+//       config[`row-end-${key}`] = value;
+//     });
+//   }
 
-  // 自動フロー設定
-  if (theme.autoFlow) {
-    Object.entries(theme.autoFlow).forEach(([key, value]) => {
-      config[`grid-flow-${key}`] = value;
-    });
-  }
+//   // 自動フロー設定
+//   if (theme.autoFlow) {
+//     Object.entries(theme.autoFlow).forEach(([key, value]) => {
+//       config[`grid-flow-${key}`] = value;
+//     });
+//   }
 
-  return config;
-}
+//   return config;
+// }
 
 // HTMLファイルからカスタム値クラスを抽出
 export function extractCustomGridClasses(content: string): string[] {
@@ -212,15 +212,8 @@ export function generateSubgridClasses(): string {
 }
 
 // すべてのGridクラスを生成
-export function generateAllGridClasses(customConfig?: GridConfig | GridThemeConfig): string {
-  // テーマ設定の場合はGrid設定に変換
-  const config = customConfig
-    ? 'columns' in customConfig || 'rows' in customConfig
-      ? generateGridConfigFromTheme(customConfig as GridThemeConfig)
-      : customConfig
-    : defaultGrid;
-
-  return generateGridClasses(config);
+export function generateAllGridClasses(): string {
+  return generateGridClasses(defaultGrid);
 }
 
 // 各モジュールの関数をエクスポート

@@ -65,28 +65,6 @@ describe('Flexbox Utility Classes', () => {
       expect(result).toContain('.shrink { flex-shrink: 1; }');
       expect(result).toContain('.shrink-0 { flex-shrink: 0; }');
     });
-
-    it('should generate custom flexbox configuration', () => {
-      const customConfig = {
-        'custom-justify': 'start',
-        'custom-align': 'center',
-        'basis-custom': '100px',
-        'grow-custom': '2',
-        'shrink-custom': '3',
-      };
-
-      const result = generateFlexboxClasses(customConfig);
-
-      // カスタム設定は含まれない（プロパティマッピングがないため）
-      expect(result).not.toContain('custom-justify');
-      expect(result).not.toContain('custom-align');
-      expect(result).not.toContain('basis-custom');
-      expect(result).not.toContain('grow-custom');
-      expect(result).not.toContain('shrink-custom');
-
-      // デフォルトクラスは存在
-      expect(result).toContain('.flex-row { flex-direction: row; }');
-    });
   });
 
   describe('Integration tests', () => {

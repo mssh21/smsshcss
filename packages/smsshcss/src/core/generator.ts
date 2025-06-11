@@ -8,13 +8,14 @@ import { generateAllGridClasses } from '../utils/grid';
 import { generateAllZIndexClasses } from '../utils/z-index';
 import { generateAllOrderClasses } from '../utils/order';
 import { generateGridTemplateClasses } from '../utils/grid-template';
-import { generateComponentClasses } from '../utils/components';
+// import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
+import { generateApplyClasses } from '../utils/apply';
 
 // CJS環境での__dirnameの型宣言
 declare const __dirname: string;
@@ -196,42 +197,16 @@ export class CSSGenerator {
   }
 
   public async generate(): Promise<GeneratedCSS> {
-    const spacingConfig = this.config.theme?.spacing;
-    const displayConfig = this.config.theme?.display;
-    const flexboxConfig = this.config.theme?.flexbox;
-    const widthConfig = this.config.theme?.width;
-    const heightConfig = this.config.theme?.height;
-    const gridColumnsConfig = this.config.theme?.gridColumns;
-    const gridRowsConfig = this.config.theme?.gridRows;
-    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
-    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
-    const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
-    const gridRowSpanConfig = this.config.theme?.gridRowSpan;
-    const gridColumnStartConfig = this.config.theme?.gridColumnStart;
-    const gridRowStartConfig = this.config.theme?.gridRowStart;
-    const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
-    const zIndexConfig = this.config.theme?.zIndex;
-    const orderConfig = this.config.theme?.order;
-    const componentsConfig = this.config.theme?.components;
-
     let utilities = [
-      generateAllSpacingClasses(spacingConfig),
-      generateDisplayClasses(displayConfig),
-      generateFlexboxClasses(flexboxConfig),
-      generateAllWidthClasses(widthConfig),
-      generateAllHeightClasses(heightConfig),
-      generateAllGridClasses(
-        gridColumnsConfig,
-        gridRowsConfig,
-        gridColumnSpanConfig,
-        gridRowSpanConfig,
-        gridColumnStartConfig,
-        gridRowStartConfig,
-        gridAutoFlowConfig
-      ),
-      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
-      generateAllZIndexClasses({ zIndex: zIndexConfig }),
-      generateAllOrderClasses({ order: orderConfig }),
+      generateAllSpacingClasses(),
+      generateDisplayClasses(),
+      generateFlexboxClasses(),
+      generateAllWidthClasses(),
+      generateAllHeightClasses(),
+      generateAllGridClasses(),
+      generateGridTemplateClasses(),
+      generateAllZIndexClasses(),
+      generateAllOrderClasses(),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -243,12 +218,8 @@ export class CSSGenerator {
       utilities = `${utilities}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
     }
 
-    // コンポーネントクラスを生成
-    let components = generateComponentClasses(componentsConfig, {
-      spacing: spacingConfig,
-      width: widthConfig,
-      height: heightConfig,
-    });
+    // applyクラスを生成
+    let apply = generateApplyClasses(this.config.apply);
 
     // パージ処理を実行
     if (this.purger) {
@@ -258,7 +229,7 @@ export class CSSGenerator {
       utilities = this.purger.purgeCSS(utilities);
       base = this.purger.purgeCSS(base);
       reset = this.purger.purgeCSS(reset);
-      components = this.purger.purgeCSS(components);
+      apply = this.purger.purgeCSS(apply);
 
       // レポートを生成・表示
       const report = this.purger.generateReport(fileAnalysis);
@@ -267,7 +238,7 @@ export class CSSGenerator {
 
     return {
       utilities,
-      components,
+      components: apply, // 後方互換性のため、componentsフィールドにapplyの内容を設定
       base,
       reset,
     };
@@ -370,57 +341,28 @@ export class CSSGenerator {
     (this.purger as { startTime: number }).startTime = Date.now();
 
     const fileAnalysis = await this.purger.analyzeSourceFiles();
-    const spacingConfig = this.config.theme?.spacing;
-    const displayConfig = this.config.theme?.display;
-    const flexboxConfig = this.config.theme?.flexbox;
-    const widthConfig = this.config.theme?.width;
-    const heightConfig = this.config.theme?.height;
-    const gridColumnsConfig = this.config.theme?.gridColumns;
-    const gridRowsConfig = this.config.theme?.gridRows;
-    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
-    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
-    const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
-    const gridRowSpanConfig = this.config.theme?.gridRowSpan;
-    const gridColumnStartConfig = this.config.theme?.gridColumnStart;
-    const gridRowStartConfig = this.config.theme?.gridRowStart;
-    const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
-    const zIndexConfig = this.config.theme?.zIndex;
-    const orderConfig = this.config.theme?.order;
-    const componentsConfig = this.config.theme?.components;
 
     const utilities = [
-      generateAllSpacingClasses(spacingConfig),
-      generateDisplayClasses(displayConfig),
-      generateFlexboxClasses(flexboxConfig),
-      generateAllWidthClasses(widthConfig),
-      generateAllHeightClasses(heightConfig),
-      generateAllGridClasses(
-        gridColumnsConfig,
-        gridRowsConfig,
-        gridColumnSpanConfig,
-        gridRowSpanConfig,
-        gridColumnStartConfig,
-        gridRowStartConfig,
-        gridAutoFlowConfig
-      ),
-      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
-      generateAllZIndexClasses({ zIndex: zIndexConfig }),
-      generateAllOrderClasses({ order: orderConfig }),
+      generateAllSpacingClasses(),
+      generateDisplayClasses(),
+      generateFlexboxClasses(),
+      generateAllWidthClasses(),
+      generateAllHeightClasses(),
+      generateAllGridClasses(),
+      generateGridTemplateClasses(),
+      generateAllZIndexClasses(),
+      generateAllOrderClasses(),
     ].join('\n\n');
 
-    // コンポーネントクラスを生成
-    const components = generateComponentClasses(componentsConfig, {
-      spacing: spacingConfig,
-      width: widthConfig,
-      height: heightConfig,
-    });
+    // applyクラスを生成
+    const apply = generateApplyClasses(this.config.apply);
 
     // 全CSSを結合してパージャーに渡す
     const fullCSS = [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
       utilities,
-      components,
+      apply,
     ]
       .filter(Boolean)
       .join('\n\n');
@@ -431,56 +373,26 @@ export class CSSGenerator {
 
   // 後方互換性のため同期版も保持
   public generateFullCSSSync(): string {
-    const spacingConfig = this.config.theme?.spacing;
-    const displayConfig = this.config.theme?.display;
-    const flexboxConfig = this.config.theme?.flexbox;
-    const widthConfig = this.config.theme?.width;
-    const heightConfig = this.config.theme?.height;
-    const gridColumnsConfig = this.config.theme?.gridColumns;
-    const gridRowsConfig = this.config.theme?.gridRows;
-    const gridTemplateColumnsConfig = this.config.theme?.gridTemplateColumns;
-    const gridTemplateRowsConfig = this.config.theme?.gridTemplateRows;
-    const gridColumnSpanConfig = this.config.theme?.gridColumnSpan;
-    const gridRowSpanConfig = this.config.theme?.gridRowSpan;
-    const gridColumnStartConfig = this.config.theme?.gridColumnStart;
-    const gridRowStartConfig = this.config.theme?.gridRowStart;
-    const gridAutoFlowConfig = this.config.theme?.gridAutoFlow;
-    const zIndexConfig = this.config.theme?.zIndex;
-    const orderConfig = this.config.theme?.order;
-    const componentsConfig = this.config.theme?.components;
-
     const utilities = [
-      generateAllSpacingClasses(spacingConfig),
-      generateDisplayClasses(displayConfig),
-      generateFlexboxClasses(flexboxConfig),
-      generateAllWidthClasses(widthConfig),
-      generateAllHeightClasses(heightConfig),
-      generateAllGridClasses(
-        gridColumnsConfig,
-        gridRowsConfig,
-        gridColumnSpanConfig,
-        gridRowSpanConfig,
-        gridColumnStartConfig,
-        gridRowStartConfig,
-        gridAutoFlowConfig
-      ),
-      generateGridTemplateClasses(gridTemplateColumnsConfig, gridTemplateRowsConfig),
-      generateAllZIndexClasses({ zIndex: zIndexConfig }),
-      generateAllOrderClasses({ order: orderConfig }),
+      generateAllSpacingClasses(),
+      generateDisplayClasses(),
+      generateFlexboxClasses(),
+      generateAllWidthClasses(),
+      generateAllHeightClasses(),
+      generateAllGridClasses(),
+      generateGridTemplateClasses(),
+      generateAllZIndexClasses(),
+      generateAllOrderClasses(),
     ].join('\n\n');
 
-    // コンポーネントクラスを生成
-    const components = generateComponentClasses(componentsConfig, {
-      spacing: spacingConfig,
-      width: widthConfig,
-      height: heightConfig,
-    });
+    // applyクラスを生成
+    const apply = generateApplyClasses(this.config.apply);
 
     return [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
       utilities,
-      components,
+      apply,
     ]
       .filter(Boolean)
       .join('\n\n');

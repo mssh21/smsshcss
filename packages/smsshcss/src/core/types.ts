@@ -228,35 +228,7 @@ export interface SmsshCSSConfig {
   includeResetCSS?: boolean;
   includeBaseCSS?: boolean;
   purge?: PurgeConfig;
-  theme?: {
-    spacing?: SpacingConfig;
-    display?: DisplayConfig;
-    flexbox?: FlexboxConfig;
-    flexDirection?: FlexboxConfig;
-    flexWrap?: FlexboxConfig;
-    flexGrow?: FlexboxConfig;
-    flexShrink?: FlexboxConfig;
-    flexBasis?: FlexboxConfig;
-    width?: WidthConfig;
-    height?: HeightConfig;
-    gridColumns?: GridColumnsConfig;
-    gridRows?: GridRowsConfig;
-    gridTemplateColumns?: Record<string, string>;
-    gridTemplateRows?: Record<string, string>;
-    gridColumnSpan?: ColumnSpanConfig;
-    gridRowSpan?: RowSpanConfig;
-    gridColumnStart?: ColumnPositionConfig;
-    gridRowStart?: RowPositionConfig;
-    gridAutoFlow?: GridFlowConfig;
-    columnStart?: ColumnPositionConfig;
-    columnEnd?: ColumnPositionConfig;
-    rowStart?: RowPositionConfig;
-    rowEnd?: RowPositionConfig;
-    autoFlow?: GridFlowConfig;
-    order?: OrderConfig;
-    zIndex?: ZIndexConfig;
-    components?: ComponentsConfig;
-  };
+  apply?: ApplyConfig;
 }
 
 export interface GeneratedCSS {
@@ -354,6 +326,6 @@ export type ZIndexConfig = {
 };
 
 // コンポーネントクラスの設定
-export interface ComponentsConfig {
-  [componentName: string]: string; // コンポーネント名: 適用するユーティリティクラス
+export interface ApplyConfig {
+  [className: string]: string; // クラス名: 適用するユーティリティクラス
 }

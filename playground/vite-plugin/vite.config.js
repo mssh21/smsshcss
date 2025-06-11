@@ -36,20 +36,14 @@ export default defineConfig({
         variables: true,
       },
 
-      theme: {
-        spacing: {
-          72: '18rem',
-          84: '21rem',
-          96: '24rem',
-          custom: '2.5rem',
-        },
-        display: {
-          'custom-flex': 'flex',
-          'custom-grid': 'grid',
-        },
-        width: {
-          container: '1600px',
-        },
+      apply: {
+        'main-layout': 'w-lg mx-auto px-lg block',
+        card: 'p-md',
+        'card-header': 'pb-sm mb-sm',
+        'card-body': 'py-sm',
+        'card-footer': 'pt-sm mt-sm',
+        btn: 'inline-block px-md py-sm',
+        'flex-center': 'flex justify-center items-center',
       },
 
       showPurgeReport: true,

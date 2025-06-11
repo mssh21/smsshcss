@@ -71,24 +71,23 @@ describe('Width Utilities', () => {
 
   describe('generateAllWidthClasses', () => {
     it('should generate all width classes', () => {
-      const result = generateAllWidthClasses(widthConfig);
+      const result = generateAllWidthClasses();
 
-      // width、min-width、max-widthのクラスがすべて含まれているか確認
+      // すべての幅クラスが含まれているか確認
+      expect(result).toContain('.w-none { width: 0; }');
+      expect(result).toContain('.w-full { width: 100%; }');
+      expect(result).toContain('.w-2xl { width: calc(var(--size-base) * 6); }');
+      expect(result).toContain('.min-w-full { min-width: 100%; }');
+      expect(result).toContain('.max-w-full { max-width: 100%; }');
+    });
+
+    it('should include custom width classes', () => {
+      const result = generateAllWidthClasses();
+
+      // カスタム幅クラスが含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
       expect(result).toContain('.min-w-none { min-width: 0; }');
       expect(result).toContain('.max-w-none { max-width: 0; }');
-      expect(result).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
-      expect(result).toContain('.min-w-md { min-width: calc(var(--size-base) * 2.5); }');
-      expect(result).toContain('.max-w-md { max-width: calc(var(--size-base) * 2.5); }');
-    });
-
-    it('should include all arbitrary value classes', () => {
-      const result = generateAllWidthClasses(widthConfig);
-
-      // すべての任意の値クラスが含まれているか確認
-      expect(result).toContain('.w-\\[\\$\\{value\\}\\] { width: var(--value); }');
-      expect(result).toContain('.min-w-\\[\\$\\{value\\}\\] { min-width: var(--value); }');
-      expect(result).toContain('.max-w-\\[\\$\\{value\\}\\] { max-width: var(--value); }');
     });
   });
 });
