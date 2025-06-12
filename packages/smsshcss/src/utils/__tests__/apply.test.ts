@@ -121,6 +121,21 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('grid-template-rows: 1fr 100px 4fr;');
   });
 
+  it('should handle grid column span custom values', () => {
+    const config = {
+      'col-span-main': 'col-span-3 col-span-12',
+      'col-span-custom-numeric': 'col-span-[20]',
+      'col-span-custom-template': 'col-span-[var(--col-span)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('grid-column: span 3 / span 3;');
+    expect(result).toContain('grid-column: span 12 / span 12;');
+    expect(result).toContain('grid-column: span 20 / span 20;');
+    expect(result).toContain('grid-column: span var(--col-span) / span var(--col-span);');
+  });
+
   it('should return empty string for undefined config', () => {
     const result = generateApplyClasses(undefined);
     expect(result).toBe('');

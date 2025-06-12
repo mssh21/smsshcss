@@ -377,15 +377,19 @@ describe('Custom Value Extraction Functions', () => {
   describe('extractCustomGridClasses', () => {
     describe('Basic Grid Custom Values', () => {
       it('should extract grid-cols custom values', () => {
-        const content = '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px]">Test</div>';
+        const content =
+          '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px] grid-cols-[20]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(3);
         expect(result).toContain(
           '.grid-cols-\\[80\\] { grid-template-columns: repeat(80, minmax(0, 1fr)); }'
         );
         expect(result).toContain(
           '.grid-cols-\\[200px,1fr,100px\\] { grid-template-columns: 200px 1fr 100px; }'
+        );
+        expect(result).toContain(
+          '.grid-cols-\\[20\\] { grid-template-columns: repeat(20, minmax(0, 1fr)); }'
         );
       });
 
@@ -407,11 +411,16 @@ describe('Custom Value Extraction Functions', () => {
       });
 
       it('should extract span custom values', () => {
-        const content = '<div class="col-span-[15] row-span-[var(--row-span)]">Test</div>';
+        const content =
+          '<div class="col-span-[15] col-span-[var(--col-span)] row-span-[20] row-span-[var(--row-span)]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(4);
         expect(result).toContain('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
+        expect(result).toContain(
+          '.col-span-\\[var\\(--col-span\\)\\] { grid-column: span var(--col-span) / span var(--col-span); }'
+        );
+        expect(result).toContain('.row-span-\\[20\\] { grid-row: span 20 / span 20; }');
         expect(result).toContain(
           '.row-span-\\[var\\(--row-span\\)\\] { grid-row: span var(--row-span) / span var(--row-span); }'
         );
@@ -419,14 +428,26 @@ describe('Custom Value Extraction Functions', () => {
 
       it('should extract grid position custom values', () => {
         const content =
-          '<div class="col-start-[5] col-end-[10] row-start-[2] row-end-[4]">Test</div>';
+          '<div class="col-start-[5] col-start-[var(--col-start)] col-end-[10] col-end-[var(--col-end)] row-start-[2] row-start-[var(--row-start)] row-end-[4] row-end-[var(--row-end)]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(4);
+        expect(result).toHaveLength(8);
         expect(result).toContain('.col-start-\\[5\\] { grid-column-start: 5; }');
+        expect(result).toContain(
+          '.col-start-\\[var\\(--col-start\\)\\] { grid-column-start: var(--col-start); }'
+        );
         expect(result).toContain('.col-end-\\[10\\] { grid-column-end: 10; }');
+        expect(result).toContain(
+          '.col-end-\\[var\\(--col-end\\)\\] { grid-column-end: var(--col-end); }'
+        );
         expect(result).toContain('.row-start-\\[2\\] { grid-row-start: 2; }');
+        expect(result).toContain(
+          '.row-start-\\[var\\(--row-start\\)\\] { grid-row-start: var(--row-start); }'
+        );
         expect(result).toContain('.row-end-\\[4\\] { grid-row-end: 4; }');
+        expect(result).toContain(
+          '.row-end-\\[var\\(--row-end\\)\\] { grid-row-end: var(--row-end); }'
+        );
       });
     });
 

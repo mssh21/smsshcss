@@ -218,6 +218,40 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     return `grid-template-rows: ${value};`;
   }
 
+  // Grid Column Span
+  const gridColSpanMatch = utilityClass.match(/^col-span-(.+)$/);
+  if (gridColSpanMatch) {
+    const [, size] = gridColSpanMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = `span ${customValue} / span ${customValue}`;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      // 通常の数値の場合は span 形式を使用
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = `span ${size} / span ${size}`;
+      } else {
+        // 数値以外の場合（auto、full など）は getSizeValue を使用
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-column: ${value};`;
+  }
+
   // カスタム値のクラス（[値]形式）
   const customMatch = utilityClass.match(/^(m|p|gap|w|h|grid|col|row)?-\[([^\]]+)\]$/);
   if (customMatch) {
