@@ -130,7 +130,6 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     'table-row': 'table-row',
     hidden: 'none',
   };
-
   if (displayMap[utilityClass]) {
     return `display: ${displayMap[utilityClass]};`;
   }
@@ -155,9 +154,47 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     'items-center': 'align-items: center;',
     'items-baseline': 'align-items: baseline;',
     'items-stretch': 'align-items: stretch;',
+    'content-start': 'align-content: flex-start;',
+    'content-end': 'align-content: flex-end;',
+    'content-center': 'align-content: center;',
+    'content-between': 'align-content: space-between;',
+    'content-around': 'align-content: space-around;',
+    'content-evenly': 'align-content: space-evenly;',
+    'self-auto': 'align-self: auto;',
+    'self-start': 'align-self: flex-start;',
+    'self-end': 'align-self: flex-end;',
+    'self-center': 'align-self: center;',
+    'self-stretch': 'align-self: stretch;',
   };
   if (flexboxMap[utilityClass]) {
     return flexboxMap[utilityClass];
+  }
+
+  // Flex Basis
+  const basisMatch = utilityClass.match(/^basis-(.+)$/);
+  if (basisMatch) {
+    const [, size] = basisMatch;
+    let value: string | null = null;
+
+    // カスタム値（[値]形式）の場合
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
+
+      if (isNumeric || isCSSVariable || cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      // 通常のサイズ値
+      value = getSizeValue(size);
+    }
+
+    if (!value) return null;
+    return `flex-basis: ${value};`;
   }
 
   // Grid Columns
@@ -171,7 +208,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       const customValue = size.slice(1, -1);
       const isNumeric = /^\d+$/.test(customValue);
       const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
       if (isNumeric || isCSSVariable) {
         value = `repeat(${customValue}, minmax(0, 1fr))`;
@@ -201,7 +238,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       const customValue = size.slice(1, -1);
       const isNumeric = /^\d+$/.test(customValue);
       const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
       if (isNumeric || isCSSVariable) {
         value = `repeat(${customValue}, minmax(0, 1fr))`;
@@ -223,7 +260,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridColSpanMatch) {
     const [, size] = gridColSpanMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+    const cssFunctions = /\b(var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -252,10 +289,174 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     return `grid-column: ${value};`;
   }
 
+  // Grid Row Span
+  const gridRowSpanMatch = utilityClass.match(/^row-span-(.+)$/);
+  if (gridRowSpanMatch) {
+    const [, size] = gridRowSpanMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = `span ${customValue} / span ${customValue}`;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      // 通常の数値の場合は span 形式を使用
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = `span ${size} / span ${size}`;
+      } else {
+        // 数値以外の場合（auto、full など）は getSizeValue を使用
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-row: ${value};`;
+  }
+
+  // Grid Column Start
+  const gridColStartPositionMatch = utilityClass.match(/^col-start-(.+)$/);
+  if (gridColStartPositionMatch) {
+    const [, size] = gridColStartPositionMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = size;
+      } else {
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-column-start: ${value};`;
+  }
+
+  // Grid Column End
+  const gridColEndPositionMatch = utilityClass.match(/^col-end-(.+)$/);
+  if (gridColEndPositionMatch) {
+    const [, size] = gridColEndPositionMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = size;
+      } else {
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-column-end: ${value};`;
+  }
+
+  // Grid Row Start
+  const gridRowStartPositionMatch = utilityClass.match(/^row-start-(.+)$/);
+  if (gridRowStartPositionMatch) {
+    const [, size] = gridRowStartPositionMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = size;
+      } else {
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-row-start: ${value};`;
+  }
+
+  // Grid Row End
+  const gridRowEndPositionMatch = utilityClass.match(/^row-end-(.+)$/);
+  if (gridRowEndPositionMatch) {
+    const [, size] = gridRowEndPositionMatch;
+    let value: string | null = null;
+    const cssFunctions = /\b(var)\s*\(/;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      const isNumeric = /^\d+$/.test(size);
+      if (isNumeric) {
+        value = size;
+      } else {
+        value = getSizeValue(size);
+      }
+    }
+
+    if (!value) return null;
+    return `grid-row-end: ${value};`;
+  }
+
   // カスタム値のクラス（[値]形式）
-  const customMatch = utilityClass.match(/^(m|p|gap|w|h|grid|col|row)?-\[([^\]]+)\]$/);
+  const customMatch = utilityClass.match(
+    /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid|col|col-span|row|row-span|col-start|col-end|row-start|row-end|basis)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
+  );
   if (customMatch) {
-    const [, property, direction, value] = customMatch;
+    const [, property, , direction, value] = customMatch;
 
     if (property === 'm' || property === 'p') {
       const prop = property === 'm' ? 'margin' : 'padding';
@@ -279,12 +480,6 @@ function extractCSSFromUtility(utilityClass: string): string | null {
         return `column-gap: ${value};`;
       } else if (direction === 'y') {
         return `row-gap: ${value};`;
-      } else if (direction) {
-        const dirMap: Record<string, string> = {
-          x: 'column-gap',
-          y: 'row-gap',
-        };
-        return `${dirMap[direction]}: ${value};`;
       } else {
         return `gap: ${value};`;
       }
@@ -302,6 +497,22 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       return `max-height: ${value};`;
     } else if (property === 'grid-cols') {
       return `grid-template-columns: ${value};`;
+    } else if (property === 'grid-rows') {
+      return `grid-template-rows: ${value};`;
+    } else if (property === 'col-span') {
+      return `grid-column: ${value};`;
+    } else if (property === 'row-span') {
+      return `grid-row: ${value};`;
+    } else if (property === 'col-start') {
+      return `grid-column-start: ${value};`;
+    } else if (property === 'col-end') {
+      return `grid-column-end: ${value};`;
+    } else if (property === 'row-start') {
+      return `grid-row-start: ${value};`;
+    } else if (property === 'row-end') {
+      return `grid-row-end: ${value};`;
+    } else if (property === 'basis') {
+      return `flex-basis: ${value};`;
     }
   }
 
@@ -317,7 +528,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
 function getSpacingValue(size: string): string | null {
   if (!size) return null;
 
-  const defaultSizes: Record<string, string> = {
+  const defaultSpacingValues: Record<string, string> = {
     none: '0',
     auto: 'auto',
     '2xs': 'var(--space-base)', // 0.25rem (4px)
@@ -341,18 +552,11 @@ function getSpacingValue(size: string): string | null {
     fit: 'fit-content',
     min: 'min-content',
     max: 'max-content',
-    screen: '100vw',
-    dvh: '100dvh',
-    dvw: '100dvw',
-    cqw: '100cqw',
-    cqi: '100cqi',
-    cqmin: '100cqmin',
-    cqmax: '100cqmax',
   };
 
   // デフォルト値をチェック
-  if (defaultSizes[size]) {
-    return defaultSizes[size];
+  if (defaultSpacingValues[size]) {
+    return defaultSpacingValues[size];
   }
 
   // カスタム値（[値]形式）の場合はそのまま返す

@@ -533,13 +533,14 @@ describe('Custom Value Extraction Functions', () => {
     describe('CSS Functions', () => {
       it('should extract calc() with flex', () => {
         const content =
-          '<div class="flex-[5] basis-[calc(100%-20px)] shrink-[2] grow-[4]">Test</div>';
+          '<div class="flex-[5] basis-[calc(100%-20px)] basis-[40px] shrink-[2] grow-[4]">Test</div>';
         const result = extractCustomFlexClasses(content);
-        expect(result).toHaveLength(4);
+        expect(result).toHaveLength(5);
         expect(result).toContain('.flex-\\[5\\] { flex: 5; }');
         expect(result).toContain(
           '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
         );
+        expect(result).toContain('.basis-\\[40px\\] { flex-basis: 40px; }');
         expect(result).toContain('.shrink-\\[2\\] { flex-shrink: 2; }');
         expect(result).toContain('.grow-\\[4\\] { flex-grow: 4; }');
       });

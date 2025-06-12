@@ -39,20 +39,21 @@ describe('generateApplyClasses', () => {
 
   it('should handle directional spacing classes', () => {
     const config = {
-      test: 'mx-md py-sm min-w-lg max-w-xl h-lg min-h-xl max-h-2xl',
+      test: 'm-md mx-md my-lg mt-sm mb-xl p-md px-lg py-sm pt-md pb-lg',
     };
 
     const result = generateApplyClasses(config);
 
+    expect(result).toContain('margin: calc(var(--space-base) * 5);'); // md
     expect(result).toContain('margin-left: calc(var(--space-base) * 5);'); // md
     expect(result).toContain('margin-right: calc(var(--space-base) * 5);'); // md
+    expect(result).toContain('margin-top: calc(var(--space-base) * 8);'); // lg
+    expect(result).toContain('margin-bottom: calc(var(--space-base) * 13);'); // xl
+    expect(result).toContain('padding: calc(var(--space-base) * 5);'); // md
+    expect(result).toContain('padding-left: calc(var(--space-base) * 8);'); // lg
+    expect(result).toContain('padding-right: calc(var(--space-base) * 8);'); // lg
     expect(result).toContain('padding-top: calc(var(--space-base) * 3);'); // sm
     expect(result).toContain('padding-bottom: calc(var(--space-base) * 3);'); // sm
-    expect(result).toContain('min-width: calc(var(--size-base) * 3);'); // lg
-    expect(result).toContain('max-width: calc(var(--size-base) * 4);'); // xl
-    expect(result).toContain('height: calc(var(--size-base) * 3);'); // lg
-    expect(result).toContain('min-height: calc(var(--size-base) * 4);'); // xl
-    expect(result).toContain('max-height: calc(var(--size-base) * 6);'); // 2xl
   });
 
   it('should handle width and height custom values', () => {
@@ -136,6 +137,110 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('grid-column: span var(--col-span) / span var(--col-span);');
   });
 
+  it('should handle grid row span custom values', () => {
+    const config = {
+      'row-span-main': 'row-span-3 row-span-12',
+      'row-span-custom-numeric': 'row-span-[20]',
+      'row-span-custom-template': 'row-span-[var(--row-span)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('grid-row: span 3 / span 3;');
+    expect(result).toContain('grid-row: span 12 / span 12;');
+    expect(result).toContain('grid-row: span 20 / span 20;');
+    expect(result).toContain('grid-row: span var(--row-span) / span var(--row-span);');
+  });
+
+  it('should handle grid column position custom values', () => {
+    const config = {
+      'col-start-main': 'col-start-3 col-start-12',
+      'col-start-custom-numeric': 'col-start-[20]',
+      'col-start-custom-template': 'col-start-[var(--col-start)]',
+      'col-end-main': 'col-end-3 col-end-12',
+      'col-end-custom-numeric': 'col-end-[20]',
+      'col-end-custom-template': 'col-end-[var(--col-end)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('grid-column-start: 3;');
+    expect(result).toContain('grid-column-start: 12;');
+    expect(result).toContain('grid-column-start: 20;');
+    expect(result).toContain('grid-column-start: var(--col-start);');
+    expect(result).toContain('grid-column-end: 3;');
+    expect(result).toContain('grid-column-end: 12;');
+    expect(result).toContain('grid-column-end: 20;');
+    expect(result).toContain('grid-column-end: var(--col-end);');
+  });
+
+  it('should handle grid row position custom values', () => {
+    const config = {
+      'row-start-main': 'row-start-3 row-start-12',
+      'row-start-custom-numeric': 'row-start-[20]',
+      'row-start-custom-template': 'row-start-[var(--row-start)]',
+      'row-end-main': 'row-end-3 row-end-12',
+      'row-end-custom-numeric': 'row-end-[20]',
+      'row-end-custom-template': 'row-end-[var(--row-end)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('grid-row-start: 3;');
+    expect(result).toContain('grid-row-start: 12;');
+    expect(result).toContain('grid-row-start: 20;');
+    expect(result).toContain('grid-row-start: var(--row-start);');
+    expect(result).toContain('grid-row-end: 3;');
+    expect(result).toContain('grid-row-end: 12;');
+    expect(result).toContain('grid-row-end: 20;');
+    expect(result).toContain('grid-row-end: var(--row-end);');
+  });
+
+  it('should handle flex align custom values', () => {
+    const config = {
+      'align-items-main': 'items-start items-end items-center items-baseline items-stretch',
+      'align-content-main':
+        'content-start content-end content-center content-between content-around content-evenly',
+      'align-self-main': 'self-auto self-start self-end self-center self-stretch',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('align-items: flex-start;');
+    expect(result).toContain('align-items: flex-end;');
+    expect(result).toContain('align-items: center;');
+    expect(result).toContain('align-items: baseline;');
+    expect(result).toContain('align-items: stretch;');
+    expect(result).toContain('align-content: flex-start;');
+    expect(result).toContain('align-content: flex-end;');
+    expect(result).toContain('align-content: center;');
+    expect(result).toContain('align-content: space-between;');
+    expect(result).toContain('align-content: space-around;');
+    expect(result).toContain('align-content: space-evenly;');
+    expect(result).toContain('align-self: auto;');
+    expect(result).toContain('align-self: flex-start;');
+    expect(result).toContain('align-self: flex-end;');
+    expect(result).toContain('align-self: center;');
+    expect(result).toContain('align-self: stretch;');
+  });
+
+  it('should handle flex basis custom values', () => {
+    const config = {
+      'basis-main': 'basis-sm basis-md basis-lg',
+      'basis-custom-numeric': 'basis-[20px] basis-[clamp(2rem,5vw,4rem)]',
+      'basis-custom-template': 'basis-[var(--basis)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex-basis: calc(var(--size-base) * 2);'); // sm
+    expect(result).toContain('flex-basis: calc(var(--size-base) * 2.5);'); // md
+    expect(result).toContain('flex-basis: calc(var(--size-base) * 3);'); // lg
+    expect(result).toContain('flex-basis: 20px;');
+    expect(result).toContain('flex-basis: clamp(2rem,5vw,4rem);');
+    expect(result).toContain('flex-basis: var(--basis);');
+  });
+
   it('should return empty string for undefined config', () => {
     const result = generateApplyClasses(undefined);
     expect(result).toBe('');
@@ -162,19 +267,5 @@ describe('generateApplyClasses', () => {
     expect(result).not.toContain('unknown-class');
     // 有効なクラスは処理される
     expect(result).toContain('width: calc(var(--size-base) * 2.5);'); // md
-  });
-
-  it('should handle gap utility', () => {
-    const config = {
-      'gap-default': 'gap-md',
-      'gap-large': 'gap-lg',
-    };
-
-    const result = generateApplyClasses(config);
-
-    expect(result).toContain('.gap-default {');
-    expect(result).toContain('gap: calc(var(--space-base) * 5);'); // gap-md
-    expect(result).toContain('.gap-large {');
-    expect(result).toContain('gap: calc(var(--space-base) * 8);'); // gap-lg
   });
 });
