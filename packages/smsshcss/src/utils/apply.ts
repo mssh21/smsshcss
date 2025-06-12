@@ -77,6 +77,24 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     }
   }
 
+  // gap
+  const gapMatch = utilityClass.match(/^gap(-([xy]))?-(.+)$/);
+  if (gapMatch) {
+    const [, , direction, size] = gapMatch;
+    const prop = 'gap';
+    const value = getSpacingValue(size);
+
+    if (!value) return null;
+
+    if (direction === 'x') {
+      return `column-${prop}: ${value};`;
+    } else if (direction === 'y') {
+      return `row-${prop}: ${value};`;
+    } else {
+      return `${prop}: ${value};`;
+    }
+  }
+
   // 幅
   const widthMatch = utilityClass.match(/^(min-|max-)?w-(.+)$/);
   if (widthMatch) {
@@ -142,17 +160,66 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     return flexboxMap[utilityClass];
   }
 
-  // gap
-  const gapMatch = utilityClass.match(/^gap-(.+)$/);
-  if (gapMatch) {
-    const [, size] = gapMatch;
-    const value = getSpacingValue(size);
+  // Grid Columns
+  const gridColsMatch = utilityClass.match(/^grid-cols-(.+)$/);
+  if (gridColsMatch) {
+    const [, size] = gridColsMatch;
+    let value: string | null = null;
+
+    // カスタム値（[値]形式）の場合
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+
+      if (isNumeric || isCSSVariable) {
+        value = `repeat(${customValue}, minmax(0, 1fr))`;
+      } else if (cssFunctions.test(customValue)) {
+        // CSS関数が含まれている場合はそのまま使用
+        value = customValue;
+      } else {
+        // 通常の値の場合のみカンマをスペースに変換
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      // 通常のサイズ値
+      value = getSizeValue(size);
+    }
+
     if (!value) return null;
-    return `gap: ${value};`;
+    return `grid-template-columns: ${value};`;
+  }
+
+  // Grid Rows
+  const gridRowsMatch = utilityClass.match(/^grid-rows-(.+)$/);
+  if (gridRowsMatch) {
+    const [, size] = gridRowsMatch;
+    let value: string | null = null;
+
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|repeat|var)\s*\(/;
+
+      if (isNumeric || isCSSVariable) {
+        value = `repeat(${customValue}, minmax(0, 1fr))`;
+      } else if (cssFunctions.test(customValue)) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else {
+      value = getSizeValue(size);
+    }
+
+    if (!value) return null;
+    return `grid-template-rows: ${value};`;
   }
 
   // カスタム値のクラス（[値]形式）
-  const customMatch = utilityClass.match(/^(m|p|gap|w|h)(?:(t|r|b|l|x|y))?-\[([^\]]+)\]$/);
+  const customMatch = utilityClass.match(/^(m|p|gap|w|h|grid|col|row)?-\[([^\]]+)\]$/);
   if (customMatch) {
     const [, property, direction, value] = customMatch;
 
@@ -174,7 +241,19 @@ function extractCSSFromUtility(utilityClass: string): string | null {
         return `${prop}: ${value};`;
       }
     } else if (property === 'gap') {
-      return `gap: ${value};`;
+      if (direction === 'x') {
+        return `column-gap: ${value};`;
+      } else if (direction === 'y') {
+        return `row-gap: ${value};`;
+      } else if (direction) {
+        const dirMap: Record<string, string> = {
+          x: 'column-gap',
+          y: 'row-gap',
+        };
+        return `${dirMap[direction]}: ${value};`;
+      } else {
+        return `gap: ${value};`;
+      }
     } else if (property === 'w') {
       return `width: ${value};`;
     } else if (property === 'min-w') {
@@ -187,6 +266,8 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       return `min-height: ${value};`;
     } else if (property === 'max-h') {
       return `max-height: ${value};`;
+    } else if (property === 'grid-cols') {
+      return `grid-template-columns: ${value};`;
     }
   }
 
@@ -200,6 +281,8 @@ function extractCSSFromUtility(utilityClass: string): string | null {
  * スペーシングサイズの値を取得
  */
 function getSpacingValue(size: string): string | null {
+  if (!size) return null;
+
   const defaultSizes: Record<string, string> = {
     none: '0',
     auto: 'auto',
@@ -250,8 +333,23 @@ function getSpacingValue(size: string): string | null {
  * サイズの値を取得
  */
 function getSizeValue(size: string): string | null {
+  if (!size) return null;
+
   const defaultSizes: Record<string, string> = {
     none: '0',
+    '1': 'repeat(1, minmax(0, 1fr))',
+    '2': 'repeat(2, minmax(0, 1fr))',
+    '3': 'repeat(3, minmax(0, 1fr))',
+    '4': 'repeat(4, minmax(0, 1fr))',
+    '5': 'repeat(5, minmax(0, 1fr))',
+    '6': 'repeat(6, minmax(0, 1fr))',
+    '7': 'repeat(7, minmax(0, 1fr))',
+    '8': 'repeat(8, minmax(0, 1fr))',
+    '9': 'repeat(9, minmax(0, 1fr))',
+    '10': 'repeat(10, minmax(0, 1fr))',
+    '11': 'repeat(11, minmax(0, 1fr))',
+    '12': 'repeat(12, minmax(0, 1fr))',
+    subgrid: 'subgrid',
     '2xs': 'var(--size-base)', // 1rem (16px)
     xs: 'calc(var(--size-base) * 1.5)', // 1.5rem (24px)
     sm: 'calc(var(--size-base) * 2)', // 2rem (32px)

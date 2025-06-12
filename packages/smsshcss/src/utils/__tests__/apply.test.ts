@@ -4,7 +4,7 @@ import { generateApplyClasses } from '../apply';
 describe('generateApplyClasses', () => {
   it('should generate apply classes from config', () => {
     const config = {
-      'main-layout': 'w-lg mx-auto px-lg block',
+      'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',
       card: 'p-md',
     };
 
@@ -16,7 +16,9 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('margin-right: auto;');
     expect(result).toContain('padding-left: calc(var(--space-base) * 8);'); // lg
     expect(result).toContain('padding-right: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('display: block;');
+    expect(result).toContain('column-gap: calc(var(--space-base) * 5);'); // md
+    expect(result).toContain('row-gap: calc(var(--space-base) * 8);'); // lg
+    expect(result).toContain('gap: calc(var(--space-base) * 8);'); // lg
 
     expect(result).toContain('.card {');
     expect(result).toContain('padding: calc(var(--space-base) * 5);'); // md
@@ -53,7 +55,7 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('max-height: calc(var(--size-base) * 6);'); // 2xl
   });
 
-  it('should handle custom values', () => {
+  it('should handle width and height custom values', () => {
     const config = {
       custom:
         'w-[200px] h-[100px] p-[20px] min-w-[300px] max-w-[400px] min-h-[200px] max-h-[300px]',
@@ -68,6 +70,55 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('max-width: 400px;');
     expect(result).toContain('min-height: 200px;');
     expect(result).toContain('max-height: 300px;');
+  });
+
+  it('should handle spacing custom values', () => {
+    const config = {
+      custom: 'm-[20px] p-[20px] gap-[20px] gap-x-[20px] gap-y-[20px]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('margin: 20px;');
+    expect(result).toContain('padding: 20px;');
+    expect(result).toContain('gap: 20px;');
+    expect(result).toContain('column-gap: 20px;');
+    expect(result).toContain('row-gap: 20px;');
+  });
+
+  it('should handle grid columns custom values', () => {
+    const config = {
+      'grid-basic': 'grid-cols-3 grid-cols-12',
+      'grid-custom-numeric': 'grid-cols-[20]',
+      'grid-custom-template': 'grid-cols-[1fr,100px,4fr]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    // 基本的なgrid-cols
+    expect(result).toContain('grid-template-columns: repeat(3, minmax(0, 1fr));');
+    expect(result).toContain('grid-template-columns: repeat(12, minmax(0, 1fr));');
+
+    // 数値のカスタム値
+    expect(result).toContain('grid-template-columns: repeat(20, minmax(0, 1fr));');
+
+    // テンプレートのカスタム値（カンマがスペースに変換される）
+    expect(result).toContain('grid-template-columns: 1fr 100px 4fr;');
+  });
+
+  it('should handle grid rows custom values', () => {
+    const config = {
+      'grid-rows-basic': 'grid-rows-3 grid-rows-12',
+      'grid-rows-custom-numeric': 'grid-rows-[20]',
+      'grid-rows-custom-template': 'grid-rows-[1fr,100px,4fr]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('grid-template-rows: repeat(3, minmax(0, 1fr));');
+    expect(result).toContain('grid-template-rows: repeat(12, minmax(0, 1fr));');
+    expect(result).toContain('grid-template-rows: repeat(20, minmax(0, 1fr));');
+    expect(result).toContain('grid-template-rows: 1fr 100px 4fr;');
   });
 
   it('should return empty string for undefined config', () => {

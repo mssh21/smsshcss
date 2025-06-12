@@ -391,15 +391,18 @@ describe('Custom Value Extraction Functions', () => {
 
       it('should extract grid-rows custom values', () => {
         const content =
-          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto]">Test</div>';
+          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto] grid-rows-[10]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(3);
         expect(result).toContain(
           '.grid-rows-\\[var\\(--grid-rows\\)\\] { grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr)); }'
         );
         expect(result).toContain(
           '.grid-rows-\\[auto,1fr,auto\\] { grid-template-rows: auto 1fr auto; }'
+        );
+        expect(result).toContain(
+          '.grid-rows-\\[10\\] { grid-template-rows: repeat(10, minmax(0, 1fr)); }'
         );
       });
 
