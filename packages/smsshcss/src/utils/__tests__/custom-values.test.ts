@@ -6,6 +6,7 @@ import { extractCustomFlexClasses } from '../flexbox';
 import { extractCustomGridClasses } from '../grid';
 import { extractCustomZIndexClasses } from '../z-index';
 import { extractCustomOrderClasses } from '../order';
+import { extractCustomColorClasses } from '../color';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -579,6 +580,22 @@ describe('Custom Value Extraction Functions', () => {
         expect(result).toContain('.order-\\[2\\] { order: 2; }');
         expect(result).toContain('.order-\\[3\\] { order: 3; }');
       });
+    });
+  });
+
+  describe('extractCustomColorClasses', () => {
+    it('should extract color custom values', () => {
+      const content = '<div class="text-[var(--color)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[var\\(--color\\)\\] { color: var(--color); }');
+    });
+
+    it('should extract color custom values', () => {
+      const content = '<div class="text-[#555555]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[#555555\\] { color: #555555; }');
     });
   });
 

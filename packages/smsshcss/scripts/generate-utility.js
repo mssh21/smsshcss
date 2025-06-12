@@ -23,7 +23,7 @@ function generateUtilityTemplate(utilityName, options = {}) {
     hasDirections = false,
     supportsArbitraryValues = true,
     cssProperty = utilityName,
-    _prefix = utilityName.charAt(0),
+    prefix = utilityName.charAt(0),
     defaultValues = {},
   } = options;
 

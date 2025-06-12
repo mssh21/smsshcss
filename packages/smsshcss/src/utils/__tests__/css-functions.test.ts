@@ -2,6 +2,7 @@ import { extractCustomSpacingClasses } from '../spacing';
 import { extractCustomWidthClasses } from '../width';
 import { extractCustomHeightClasses } from '../height';
 import { extractCustomFlexClasses } from '../flexbox';
+import { extractCustomColorClasses } from '../color';
 
 describe('Enhanced CSS Functions Support', () => {
   describe('calc() function', () => {
@@ -239,6 +240,162 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe('.gap-y-\\[max\\(1rem\\,2vh\\)\\] { row-gap: max(1rem, 2vh); }');
+    });
+  });
+
+  describe('rgb() function', () => {
+    it('should handle rgb() with three values', () => {
+      const content = '<div class="text-[rgb(255,0,0)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[rgb\\(255\\,0\\,0\\)\\] { color: rgb(255, 0, 0); }');
+    });
+
+    it('should handle rgb() with three values', () => {
+      const content = '<div class="text-[rgb(255,0,0/1)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[rgb\\(255\\,0\\,0\\/1\\)\\] { color: rgb(255, 0, 0 / 1); }');
+    });
+
+    it('should handle rgba() with four values', () => {
+      const content = '<div class="text-[rgba(255,0,0,0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[rgba\\(255\\,0\\,0\\,0\\.5\\)\\] { color: rgba(255, 0, 0, 0.5); }'
+      );
+    });
+  });
+
+  describe('hsl() function', () => {
+    it('should handle hsl() with three values', () => {
+      const content = '<div class="text-[hsl(0,100%,50%)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hsl\\(0\\,100\\%\\,50\\%\\)\\] { color: hsl(0, 100%, 50%); }'
+      );
+    });
+
+    it('should handle hsl() with four values', () => {
+      const content = '<div class="text-[hsl(0,100%,50%/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hsl\\(0\\,100\\%\\,50\\%\\/0\\.5\\)\\] { color: hsl(0, 100%, 50% / 0.5); }'
+      );
+    });
+  });
+
+  describe('hwb() function', () => {
+    it('should handle hwb() with four values', () => {
+      const content = '<div class="text-[hwb(0.15turn,25%,0%)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hwb\\(0\\.15turn\\,25\\%\\,0\\%\\)\\] { color: hwb(0.15turn 25% 0%); }'
+      );
+    });
+
+    it('should handle hwb() with four values', () => {
+      const content = '<div class="text-[hwb(0.15turn,25%,0%/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hwb\\(0\\.15turn\\,25\\%\\,0\\%\\/0\\.5\\)\\] { color: hwb(0.15turn 25% 0% / 0.5); }'
+      );
+    });
+  });
+
+  describe('lab() function', () => {
+    it('should handle lab() with four values', () => {
+      const content = '<div class="text-[lab(50%,-100%,20)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[lab\\(50\\%\\,-100\\%\\,20\\)\\] { color: lab(50% -100% 20); }'
+      );
+    });
+
+    it('should handle lab() with four values', () => {
+      const content = '<div class="text-[lab(50%,20,20/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[lab\\(50\\%\\,20\\,20\\/0\\.5\\)\\] { color: lab(50% 20 20 / 0.5); }'
+      );
+    });
+  });
+
+  describe('oklab() function', () => {
+    it('should handle oklab() with four values', () => {
+      const content = '<div class="text-[oklab(50%,20,20)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[oklab\\(50\\%\\,20\\,20\\)\\] { color: oklab(50% 20 20); }');
+    });
+
+    it('should handle oklab() with four values', () => {
+      const content = '<div class="text-[oklab(50%,20,20/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[oklab\\(50\\%\\,20\\,20\\/0\\.5\\)\\] { color: oklab(50% 20 20 / 0.5); }'
+      );
+    });
+  });
+
+  describe('lch() function', () => {
+    it('should handle lch() with four values', () => {
+      const content = '<div class="text-[lch(50%,20,20)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[lch\\(50\\%\\,20\\,20\\)\\] { color: lch(50% 20 20); }');
+    });
+
+    it('should handle lch() with four values', () => {
+      const content = '<div class="text-[lch(50%,20,20/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[lch\\(50\\%\\,20\\,20\\/0\\.5\\)\\] { color: lch(50% 20 20 / 0.5); }'
+      );
+    });
+  });
+
+  describe('oklch() function', () => {
+    it('should handle oklch() with four values', () => {
+      const content = '<div class="text-[oklch(40.1%,0.123,21.57)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[oklch\\(40\\.1\\%\\,0\\.123\\,21\\.57\\)\\] { color: oklch(40.1% 0.123 21.57); }'
+      );
+    });
+
+    it('should handle oklch() with four values', () => {
+      const content = '<div class="text-[oklch(50%,20,20/0.5)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[oklch\\(50\\%\\,20\\,20\\/0\\.5\\)\\] { color: oklch(50% 20 20 / 0.5); }'
+      );
     });
   });
 
