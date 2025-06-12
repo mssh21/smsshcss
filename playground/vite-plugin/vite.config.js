@@ -11,13 +11,14 @@ export default defineConfig({
 
       content: [
         'index.html',
+        'spacing.html',
         'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
         'components/**/*.{js,ts,jsx,tsx,vue}',
         '**/*.html',
       ],
 
       purge: {
-        enabled: false,
+        enabled: true,
         safelist: [
           'm-2xl',
           'p-2xl',
