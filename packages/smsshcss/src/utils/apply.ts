@@ -177,8 +177,16 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       return `gap: ${value};`;
     } else if (property === 'w') {
       return `width: ${value};`;
+    } else if (property === 'min-w') {
+      return `min-width: ${value};`;
+    } else if (property === 'max-w') {
+      return `max-width: ${value};`;
     } else if (property === 'h') {
       return `height: ${value};`;
+    } else if (property === 'min-h') {
+      return `min-height: ${value};`;
+    } else if (property === 'max-h') {
+      return `max-height: ${value};`;
     }
   }
 

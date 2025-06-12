@@ -105,12 +105,6 @@ yarn generate:utility border \
    export interface ColorConfig {
      [key: string]: string;
    }
-
-   // SmsshCSSConfig の theme に追加
-   theme?: {
-     // ... 既存のテーマ
-     color?: ColorConfig;
-   };
    ```
 
 ### 手動での実装

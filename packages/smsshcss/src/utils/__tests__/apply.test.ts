@@ -37,7 +37,7 @@ describe('generateApplyClasses', () => {
 
   it('should handle directional spacing classes', () => {
     const config = {
-      test: 'mx-md py-sm',
+      test: 'mx-md py-sm min-w-lg max-w-xl h-lg min-h-xl max-h-2xl',
     };
 
     const result = generateApplyClasses(config);
@@ -46,11 +46,17 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('margin-right: calc(var(--space-base) * 5);'); // md
     expect(result).toContain('padding-top: calc(var(--space-base) * 3);'); // sm
     expect(result).toContain('padding-bottom: calc(var(--space-base) * 3);'); // sm
+    expect(result).toContain('min-width: calc(var(--size-base) * 3);'); // lg
+    expect(result).toContain('max-width: calc(var(--size-base) * 4);'); // xl
+    expect(result).toContain('height: calc(var(--size-base) * 3);'); // lg
+    expect(result).toContain('min-height: calc(var(--size-base) * 4);'); // xl
+    expect(result).toContain('max-height: calc(var(--size-base) * 6);'); // 2xl
   });
 
   it('should handle custom values', () => {
     const config = {
-      custom: 'w-[200px] h-[100px] p-[20px]',
+      custom:
+        'w-[200px] h-[100px] p-[20px] min-w-[300px] max-w-[400px] min-h-[200px] max-h-[300px]',
     };
 
     const result = generateApplyClasses(config);
@@ -58,6 +64,10 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('width: 200px;');
     expect(result).toContain('height: 100px;');
     expect(result).toContain('padding: 20px;');
+    expect(result).toContain('min-width: 300px;');
+    expect(result).toContain('max-width: 400px;');
+    expect(result).toContain('min-height: 200px;');
+    expect(result).toContain('max-height: 300px;');
   });
 
   it('should return empty string for undefined config', () => {

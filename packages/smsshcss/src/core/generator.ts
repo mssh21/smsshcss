@@ -1,13 +1,14 @@
 import { SmsshCSSConfig, GeneratedCSS, PurgeReport } from './types';
 import { generateAllSpacingClasses, extractCustomSpacingClasses } from '../utils/spacing';
 import { generateDisplayClasses } from '../utils/display';
-import { generateFlexboxClasses } from '../utils/flexbox';
+import { generateFlexboxClasses, extractCustomFlexClasses } from '../utils/flexbox';
 import { generateAllWidthClasses, extractCustomWidthClasses } from '../utils/width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from '../utils/height';
-import { generateAllGridClasses } from '../utils/grid';
-import { generateAllZIndexClasses } from '../utils/z-index';
-import { generateAllOrderClasses } from '../utils/order';
+import { generateAllGridClasses, extractCustomGridClasses } from '../utils/grid';
+import { generateAllZIndexClasses, extractCustomZIndexClasses } from '../utils/z-index';
+import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/order';
 import { generateGridTemplateClasses } from '../utils/grid-template';
+import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
 // import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -207,6 +208,7 @@ export class CSSGenerator {
       generateGridTemplateClasses(),
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
+      generateAllColorClasses(),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -289,9 +291,23 @@ export class CSSGenerator {
             Promise.resolve(extractCustomSpacingClasses(fileContent)),
             Promise.resolve(extractCustomWidthClasses(fileContent)),
             Promise.resolve(extractCustomHeightClasses(fileContent)),
+            Promise.resolve(extractCustomGridClasses(fileContent)),
+            Promise.resolve(extractCustomFlexClasses(fileContent)),
+            Promise.resolve(extractCustomZIndexClasses(fileContent)),
+            Promise.resolve(extractCustomOrderClasses(fileContent)),
+            Promise.resolve(extractCustomColorClasses(fileContent)),
           ]);
 
-          return [...spacingClasses, ...widthClasses, ...heightClasses];
+          return [
+            ...spacingClasses,
+            ...widthClasses,
+            ...heightClasses,
+            ...gridClasses,
+            ...flexClasses,
+            ...zIndexClasses,
+            ...orderClasses,
+            ...colorClasses,
+          ];
         } catch (error) {
           if (this.options.development && !this.options.suppressWarnings) {
             console.warn(
@@ -352,6 +368,7 @@ export class CSSGenerator {
       generateGridTemplateClasses(),
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
+      generateAllColorClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
@@ -383,6 +400,7 @@ export class CSSGenerator {
       generateGridTemplateClasses(),
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
+      generateAllColorClasses(),
     ].join('\n\n');
 
     // applyクラスを生成

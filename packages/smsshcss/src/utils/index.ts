@@ -8,6 +8,7 @@ import { generateOrderClasses, extractCustomOrderClasses } from './order';
 import { generateGridClasses, extractCustomGridClasses } from './grid';
 import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
+import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { formatCSSFunctionValue } from '../core/sizeConfig';
 
 // Reset CSS の内容を直接定義
@@ -381,6 +382,7 @@ export {
   generateGridClasses,
   generateAllWidthClasses,
   generateAllHeightClasses,
+  generateAllColorClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
   extractCustomZIndexClasses,
@@ -388,4 +390,5 @@ export {
   extractCustomGridClasses,
   extractCustomWidthClasses,
   extractCustomHeightClasses,
+  extractCustomColorClasses,
 };
