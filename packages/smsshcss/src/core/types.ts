@@ -352,11 +352,9 @@ export type FlexboxConfig = {
 
   // Flex Grow
   grow?: string;
-  'grow-0'?: string;
 
   // Flex Shrink
   shrink?: string;
-  'shrink-0'?: string;
 
   // Flex Basis (extends SizeConfig)
   basis?: SizeConfig;

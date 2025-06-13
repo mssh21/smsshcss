@@ -58,6 +58,10 @@ describe('generateApplyClasses', () => {
       'width-custom': 'w-md min-w-lg max-w-12xl',
       'height-custom': 'h-sm min-h-xl max-h-2xl',
       custom: 'w-[200px] h-[100px] min-w-[300px] max-w-[400px] min-h-[200px] max-h-[300px]',
+      'custom-template':
+        'w-[var(--width)] h-[var(--height)] min-w-[var(--min-width)] max-w-[var(--max-width)] min-h-[var(--min-height)] max-h-[var(--max-height)]',
+      'custom-function':
+        'w-[clamp(2rem,5vw,4rem)] h-[clamp(2rem,5vw,4rem)] min-w-[clamp(2rem,5vw,4rem)] max-w-[clamp(2rem,5vw,4rem)] min-h-[clamp(2rem,5vw,4rem)] max-h-[clamp(2rem,5vw,4rem)]',
     };
 
     const result = generateApplyClasses(config);
@@ -74,6 +78,18 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('max-width: 400px;');
     expect(result).toContain('min-height: 200px;');
     expect(result).toContain('max-height: 300px;');
+    expect(result).toContain('width: var(--width);');
+    expect(result).toContain('height: var(--height);');
+    expect(result).toContain('min-width: var(--min-width);');
+    expect(result).toContain('max-width: var(--max-width);');
+    expect(result).toContain('min-height: var(--min-height);');
+    expect(result).toContain('max-height: var(--max-height);');
+    expect(result).toContain('width: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('height: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('min-width: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('max-width: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('min-height: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('max-height: clamp(2rem, 5vw, 4rem);');
   });
 
   it('should handle spacing custom values', () => {
@@ -240,7 +256,7 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('flex-basis: calc(var(--size-base) * 2.5);'); // md
     expect(result).toContain('flex-basis: calc(var(--size-base) * 3);'); // lg
     expect(result).toContain('flex-basis: 20px;');
-    expect(result).toContain('flex-basis: clamp(2rem,5vw,4rem);');
+    expect(result).toContain('flex-basis: clamp(2rem, 5vw, 4rem);');
     expect(result).toContain('flex-basis: var(--basis);');
   });
 
@@ -271,6 +287,51 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('flex: none;');
     expect(result).toContain('flex: 20;');
     expect(result).toContain('flex: var(--flex);');
+  });
+
+  it('should handle flex grow custom values', () => {
+    const config = {
+      'flex-grow-main': 'grow',
+      'flex-grow-custom-numeric': 'grow-[20] grow-[50px]',
+      'flex-grow-custom-template': 'grow-[var(--grow)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex-grow: 1;');
+    expect(result).toContain('flex-grow: 20;');
+    expect(result).toContain('flex-grow: 50px;');
+    expect(result).toContain('flex-grow: var(--grow);');
+  });
+
+  it('should handle flex shrink custom values', () => {
+    const config = {
+      'flex-shrink-main': 'shrink',
+      'flex-shrink-custom-numeric':
+        'shrink-[20] shrink-[50px] shrink-[calc(100px-50px)] shrink-[clamp(2rem,5vw,4rem)]',
+      'flex-shrink-custom-template': 'shrink-[var(--shrink)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex-shrink: 1;');
+    expect(result).toContain('flex-shrink: 20;');
+    expect(result).toContain('flex-shrink: 50px;');
+    expect(result).toContain('flex-shrink: calc(100px - 50px);');
+    expect(result).toContain('flex-shrink: clamp(2rem, 5vw, 4rem);');
+    expect(result).toContain('flex-shrink: var(--shrink);');
+  });
+
+  it('should handle flex wrap custom values', () => {
+    const config = {
+      'flex-wrap-main': 'flex-wrap flex-wrap-reverse flex-nowrap',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex-wrap: wrap;');
+    expect(result).toContain('flex-wrap: wrap-reverse;');
+    expect(result).toContain('flex-wrap: nowrap;');
   });
 
   it('should return empty string for undefined config', () => {

@@ -75,11 +75,9 @@ describe('Flexbox Utility Classes', () => {
 
       // Flex Grow
       expect(result).toContain('.grow { flex-grow: 1; }');
-      expect(result).toContain('.grow-0 { flex-grow: 0; }');
 
       // Flex Shrink
       expect(result).toContain('.shrink { flex-shrink: 1; }');
-      expect(result).toContain('.shrink-0 { flex-shrink: 0; }');
     });
   });
 

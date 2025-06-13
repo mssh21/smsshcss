@@ -3,12 +3,10 @@ import { escapeFlexValue } from './utils';
 
 export const flexGrowConfig: Partial<FlexboxConfig> = {
   grow: '1',
-  'grow-0': '0',
 };
 
 export const flexGrowPropertyMap: Record<string, string> = {
   grow: 'flex-grow',
-  'grow-0': 'flex-grow',
 };
 
 export function generateCustomGrowClass(value: string): string {

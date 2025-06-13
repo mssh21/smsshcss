@@ -1,6 +1,19 @@
 import { ApplyConfig } from '../core/types';
 
 /**
+ * CSS関数値をフォーマットする（カンマとマイナス記号の前後にスペースを追加）
+ * @param value - CSS関数値
+ * @returns フォーマットされた値
+ */
+function formatCSSFunction(value: string): string {
+  // カンマの後にスペースがない場合は追加
+  let formatted = value.replace(/,(?!\s)/g, ', ');
+  // マイナス記号の前後にスペースがない場合は追加（ただし、すでにある場合は維持）
+  formatted = formatted.replace(/(\S)-(?!\s)/g, '$1 - ').replace(/(?<!\s)-(\S)/g, '- $1');
+  return formatted;
+}
+
+/**
  * applyクラスを生成する
  * @param config - apply設定
  * @returns 生成されたCSSクラス文字列
@@ -183,8 +196,11 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       const isCSSVariable = /^var\(--/.test(customValue);
       const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
-      if (isNumeric || isCSSVariable || cssFunctions.test(customValue)) {
+      if (isNumeric || isCSSVariable) {
         value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        // CSS関数の場合はフォーマット
+        value = formatCSSFunction(customValue);
       } else {
         value = customValue.replace(/,/g, ' ');
       }
@@ -221,16 +237,71 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       } else {
         value = customValue.replace(/,/g, ' ');
       }
-    } else if (flexValues[size]) {
+    } else {
       // 固定値の場合
       value = flexValues[size];
-    } else {
-      // 通常のサイズ値
-      value = getSizeValue(size);
     }
 
     if (!value) return null;
     return `flex: ${value};`;
+  }
+
+  // Flex Grow
+  if (utilityClass === 'grow') {
+    return 'flex-grow: 1;';
+  }
+
+  const flexGrowMatch = utilityClass.match(/^grow-(.+)$/);
+  if (flexGrowMatch) {
+    const [, size] = flexGrowMatch;
+    let value: string | null = null;
+
+    // カスタム値（[値]形式）の場合
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    }
+
+    if (!value) return null;
+    return `flex-grow: ${value};`;
+  }
+
+  // Flex Shrink
+  if (utilityClass === 'shrink') {
+    return 'flex-shrink: 1;';
+  }
+
+  const flexShrinkMatch = utilityClass.match(/^shrink-(.+)$/);
+  if (flexShrinkMatch) {
+    const [, size] = flexShrinkMatch;
+    let value: string | null = null;
+
+    // カスタム値（[値]形式）の場合
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else if (cssFunctions.test(customValue)) {
+        // CSS関数の場合はフォーマット
+        value = formatCSSFunction(customValue);
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    }
+
+    if (!value) return null;
+    return `flex-shrink: ${value};`;
   }
 
   // Grid Columns
@@ -627,9 +698,18 @@ function getSpacingValue(size: string): string | null {
     return defaultSpacingValues[size];
   }
 
-  // カスタム値（[値]形式）の場合はそのまま返す
+  // カスタム値（[値]形式）の場合
   if (size.startsWith('[') && size.endsWith(']')) {
-    return size.slice(1, -1);
+    let customValue = size.slice(1, -1);
+
+    // CSS関数（calc, clamp, min, max等）内のカンマの後にスペースを追加
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/gi;
+    if (cssFunctions.test(customValue)) {
+      // カンマの後にスペースがない場合は追加
+      customValue = customValue.replace(/,(?!\s)/g, ', ');
+    }
+
+    return customValue;
   }
 
   return null;
@@ -690,9 +770,18 @@ function getSizeValue(size: string): string | null {
     return responsiveSizes[size];
   }
 
-  // カスタム値（[値]形式）の場合はそのまま返す
+  // カスタム値（[値]形式）の場合
   if (size.startsWith('[') && size.endsWith(']')) {
-    return size.slice(1, -1);
+    let customValue = size.slice(1, -1);
+
+    // CSS関数（calc, clamp, min, max等）内のカンマの後にスペースを追加
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/gi;
+    if (cssFunctions.test(customValue)) {
+      // カンマの後にスペースがない場合は追加
+      customValue = customValue.replace(/,(?!\s)/g, ', ');
+    }
+
+    return customValue;
   }
 
   return null;
