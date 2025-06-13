@@ -302,6 +302,11 @@ export class CSSPurger {
    * パージレポートをコンソールに出力
    */
   printReport(report: PurgeReport): void {
+    // テスト環境またはサイレントモードでは出力しない
+    if (process.env.NODE_ENV === 'test' || process.env.SMSSHCSS_SILENT === 'true') {
+      return;
+    }
+
     console.log('\n🎯 CSS Purge Report');
     console.log('==================');
     console.log(`📊 Total classes: ${report.totalClasses}`);
@@ -315,10 +320,18 @@ export class CSSPurger {
       console.log(`📉 Size reduction: ${reductionPercentage}%`);
     }
 
+    // ファイル分析の出力を制限（10ファイルまで）
+    const maxFilesToShow = 10;
+    const filesToShow = report.fileAnalysis.slice(0, maxFilesToShow);
+
     console.log('\n📁 File Analysis:');
-    report.fileAnalysis.forEach((file) => {
+    filesToShow.forEach((file) => {
       console.log(`  ${file.file}: ${file.classesFound.length} classes (${file.size} bytes)`);
     });
+
+    if (report.fileAnalysis.length > maxFilesToShow) {
+      console.log(`  ... and ${report.fileAnalysis.length - maxFilesToShow} more files`);
+    }
 
     if (report.purgedClassNames.length > 0 && report.purgedClassNames.length <= 20) {
       console.log('\n🗑️  Purged classes:');

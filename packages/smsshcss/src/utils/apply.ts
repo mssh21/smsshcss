@@ -197,6 +197,42 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     return `flex-basis: ${value};`;
   }
 
+  // Flex
+  const flexMatch = utilityClass.match(/^flex-(.+)$/);
+  if (flexMatch) {
+    const [, size] = flexMatch;
+    let value: string | null = null;
+
+    // flex固定値のマッピング
+    const flexValues: Record<string, string> = {
+      auto: '1 1 auto',
+      initial: '0 1 auto',
+      none: 'none',
+    };
+
+    // カスタム値（[値]形式）の場合
+    if (size.startsWith('[') && size.endsWith(']')) {
+      const customValue = size.slice(1, -1);
+      const isNumeric = /^\d+$/.test(customValue);
+      const isCSSVariable = /^var\(--/.test(customValue);
+
+      if (isNumeric || isCSSVariable) {
+        value = customValue;
+      } else {
+        value = customValue.replace(/,/g, ' ');
+      }
+    } else if (flexValues[size]) {
+      // 固定値の場合
+      value = flexValues[size];
+    } else {
+      // 通常のサイズ値
+      value = getSizeValue(size);
+    }
+
+    if (!value) return null;
+    return `flex: ${value};`;
+  }
+
   // Grid Columns
   const gridColsMatch = utilityClass.match(/^grid-cols-(.+)$/);
   if (gridColsMatch) {
@@ -220,8 +256,8 @@ function extractCSSFromUtility(utilityClass: string): string | null {
         value = customValue.replace(/,/g, ' ');
       }
     } else {
-      // 通常のサイズ値
-      value = getSizeValue(size);
+      // Grid専用のサイズ値
+      value = getGridValue(size);
     }
 
     if (!value) return null;
@@ -248,7 +284,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
         value = customValue.replace(/,/g, ' ');
       }
     } else {
-      value = getSizeValue(size);
+      value = getGridValue(size);
     }
 
     if (!value) return null;
@@ -260,7 +296,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridColSpanMatch) {
     const [, size] = gridColSpanMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -280,8 +316,14 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = `span ${size} / span ${size}`;
       } else {
-        // 数値以外の場合（auto、full など）は getSizeValue を使用
-        value = getSizeValue(size);
+        // 数値以外の場合（auto、full など）は適切な値を設定
+        if (size === 'auto') {
+          value = 'auto';
+        } else if (size === 'full') {
+          value = '1 / -1';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -294,7 +336,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridRowSpanMatch) {
     const [, size] = gridRowSpanMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -314,8 +356,14 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = `span ${size} / span ${size}`;
       } else {
-        // 数値以外の場合（auto、full など）は getSizeValue を使用
-        value = getSizeValue(size);
+        // 数値以外の場合（auto、full など）は適切な値を設定
+        if (size === 'auto') {
+          value = 'auto';
+        } else if (size === 'full') {
+          value = '1 / -1';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -328,7 +376,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridColStartPositionMatch) {
     const [, size] = gridColStartPositionMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -347,7 +395,12 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = size;
       } else {
-        value = getSizeValue(size);
+        // Grid position では auto のみサポート
+        if (size === 'auto') {
+          value = 'auto';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -360,7 +413,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridColEndPositionMatch) {
     const [, size] = gridColEndPositionMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -379,7 +432,12 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = size;
       } else {
-        value = getSizeValue(size);
+        // Grid position では auto のみサポート
+        if (size === 'auto') {
+          value = 'auto';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -392,7 +450,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridRowStartPositionMatch) {
     const [, size] = gridRowStartPositionMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -411,7 +469,12 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = size;
       } else {
-        value = getSizeValue(size);
+        // Grid position では auto のみサポート
+        if (size === 'auto') {
+          value = 'auto';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -424,7 +487,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   if (gridRowEndPositionMatch) {
     const [, size] = gridRowEndPositionMatch;
     let value: string | null = null;
-    const cssFunctions = /\b(var)\s*\(/;
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
 
     if (size.startsWith('[') && size.endsWith(']')) {
       const customValue = size.slice(1, -1);
@@ -443,7 +506,12 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       if (isNumeric) {
         value = size;
       } else {
-        value = getSizeValue(size);
+        // Grid position では auto のみサポート
+        if (size === 'auto') {
+          value = 'auto';
+        } else {
+          value = null; // 不明な値は処理しない
+        }
       }
     }
 
@@ -575,19 +643,6 @@ function getSizeValue(size: string): string | null {
 
   const defaultSizes: Record<string, string> = {
     none: '0',
-    '1': 'repeat(1, minmax(0, 1fr))',
-    '2': 'repeat(2, minmax(0, 1fr))',
-    '3': 'repeat(3, minmax(0, 1fr))',
-    '4': 'repeat(4, minmax(0, 1fr))',
-    '5': 'repeat(5, minmax(0, 1fr))',
-    '6': 'repeat(6, minmax(0, 1fr))',
-    '7': 'repeat(7, minmax(0, 1fr))',
-    '8': 'repeat(8, minmax(0, 1fr))',
-    '9': 'repeat(9, minmax(0, 1fr))',
-    '10': 'repeat(10, minmax(0, 1fr))',
-    '11': 'repeat(11, minmax(0, 1fr))',
-    '12': 'repeat(12, minmax(0, 1fr))',
-    subgrid: 'subgrid',
     '2xs': 'var(--size-base)', // 1rem (16px)
     xs: 'calc(var(--size-base) * 1.5)', // 1.5rem (24px)
     sm: 'calc(var(--size-base) * 2)', // 2rem (32px)
@@ -633,6 +688,42 @@ function getSizeValue(size: string): string | null {
   // レスポンシブサイズをチェック
   if (responsiveSizes[size]) {
     return responsiveSizes[size];
+  }
+
+  // カスタム値（[値]形式）の場合はそのまま返す
+  if (size.startsWith('[') && size.endsWith(']')) {
+    return size.slice(1, -1);
+  }
+
+  return null;
+}
+
+/**
+ * Grid用のサイズ値を取得
+ */
+function getGridValue(size: string): string | null {
+  if (!size) return null;
+
+  const gridSizes: Record<string, string> = {
+    none: '0',
+    '1': 'repeat(1, minmax(0, 1fr))',
+    '2': 'repeat(2, minmax(0, 1fr))',
+    '3': 'repeat(3, minmax(0, 1fr))',
+    '4': 'repeat(4, minmax(0, 1fr))',
+    '5': 'repeat(5, minmax(0, 1fr))',
+    '6': 'repeat(6, minmax(0, 1fr))',
+    '7': 'repeat(7, minmax(0, 1fr))',
+    '8': 'repeat(8, minmax(0, 1fr))',
+    '9': 'repeat(9, minmax(0, 1fr))',
+    '10': 'repeat(10, minmax(0, 1fr))',
+    '11': 'repeat(11, minmax(0, 1fr))',
+    '12': 'repeat(12, minmax(0, 1fr))',
+    subgrid: 'subgrid',
+  };
+
+  // Grid専用値をチェック
+  if (gridSizes[size]) {
+    return gridSizes[size];
   }
 
   // カスタム値（[値]形式）の場合はそのまま返す

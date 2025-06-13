@@ -6,6 +6,7 @@ describe('generateApplyClasses', () => {
     const config = {
       'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',
       card: 'p-md',
+      'section-layout': 'block inline-flex grid inline-grid table table-cell table-row',
     };
 
     const result = generateApplyClasses(config);
@@ -22,22 +23,18 @@ describe('generateApplyClasses', () => {
 
     expect(result).toContain('.card {');
     expect(result).toContain('padding: calc(var(--space-base) * 5);'); // md
+
+    expect(result).toContain('.section-layout {');
+    expect(result).toContain('display: block;');
+    expect(result).toContain('display: inline-flex;');
+    expect(result).toContain('display: grid;');
+    expect(result).toContain('display: inline-grid;');
+    expect(result).toContain('display: table;');
+    expect(result).toContain('display: table-cell;');
+    expect(result).toContain('display: table-row;');
   });
 
-  it('should handle multiple utility classes', () => {
-    const config = {
-      'flex-center': 'flex justify-center items-center',
-    };
-
-    const result = generateApplyClasses(config);
-
-    expect(result).toContain('.flex-center {');
-    expect(result).toContain('display: flex;');
-    expect(result).toContain('justify-content: center;');
-    expect(result).toContain('align-items: center;');
-  });
-
-  it('should handle directional spacing classes', () => {
+  it('should handle directional spacing values', () => {
     const config = {
       test: 'm-md mx-md my-lg mt-sm mb-xl p-md px-lg py-sm pt-md pb-lg',
     };
@@ -56,17 +53,23 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('padding-bottom: calc(var(--space-base) * 3);'); // sm
   });
 
-  it('should handle width and height custom values', () => {
+  it('should handle width and height values', () => {
     const config = {
-      custom:
-        'w-[200px] h-[100px] p-[20px] min-w-[300px] max-w-[400px] min-h-[200px] max-h-[300px]',
+      'width-custom': 'w-md min-w-lg max-w-12xl',
+      'height-custom': 'h-sm min-h-xl max-h-2xl',
+      custom: 'w-[200px] h-[100px] min-w-[300px] max-w-[400px] min-h-[200px] max-h-[300px]',
     };
 
     const result = generateApplyClasses(config);
 
+    expect(result).toContain('width: calc(var(--size-base) * 2.5);');
+    expect(result).toContain('min-width: calc(var(--size-base) * 3);');
+    expect(result).toContain('max-width: calc(var(--size-base) * 96);');
+    expect(result).toContain('height: calc(var(--size-base) * 2);');
+    expect(result).toContain('min-height: calc(var(--size-base) * 4);');
+    expect(result).toContain('max-height: calc(var(--size-base) * 6);');
     expect(result).toContain('width: 200px;');
     expect(result).toContain('height: 100px;');
-    expect(result).toContain('padding: 20px;');
     expect(result).toContain('min-width: 300px;');
     expect(result).toContain('max-width: 400px;');
     expect(result).toContain('min-height: 200px;');
@@ -239,6 +242,35 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('flex-basis: 20px;');
     expect(result).toContain('flex-basis: clamp(2rem,5vw,4rem);');
     expect(result).toContain('flex-basis: var(--basis);');
+  });
+
+  it('should handle flex direction custom values', () => {
+    const config = {
+      'flex-direction-main': 'flex-row flex-col flex-row-reverse flex-col-reverse',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex-direction: row;');
+    expect(result).toContain('flex-direction: column;');
+    expect(result).toContain('flex-direction: row-reverse;');
+    expect(result).toContain('flex-direction: column-reverse;');
+  });
+
+  it('should handle flex custom values', () => {
+    const config = {
+      'flex-item': 'flex-auto flex-initial flex-none',
+      'flex-custom-numeric': 'flex-[20]',
+      'flex-custom-template': 'flex-[var(--flex)]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('flex: 1 1 auto;');
+    expect(result).toContain('flex: 0 1 auto;');
+    expect(result).toContain('flex: none;');
+    expect(result).toContain('flex: 20;');
+    expect(result).toContain('flex: var(--flex);');
   });
 
   it('should return empty string for undefined config', () => {

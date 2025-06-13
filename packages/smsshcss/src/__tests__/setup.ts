@@ -1,6 +1,9 @@
 import { vi } from 'vitest';
 import fs from 'fs';
 
+// テスト環境の設定
+process.env.NODE_ENV = 'test';
+
 // ファイルシステムのモック
 vi.mock('fs');
 vi.mock('fs-extra');

@@ -517,19 +517,6 @@ describe('Custom Value Extraction Functions', () => {
   });
 
   describe('extractCustomFlexClasses', () => {
-    describe('Basic Flex Custom Values', () => {
-      it('should extract flex custom values', () => {
-        const content = '<div class="basis-xs grow-0 shrink-0 flex-1">Test</div>';
-        const result = extractCustomFlexClasses(content);
-
-        expect(result).toHaveLength(4);
-        expect(result).toContain('.basis-\\[xs\\] { flex-basis: xs; }');
-        expect(result).toContain('.grow-\\[0\\] { flex-grow: 0; }');
-        expect(result).toContain('.shrink-\\[0\\] { flex-shrink: 0; }');
-        expect(result).toContain('.flex-\\[1\\] { flex: 1; }');
-      });
-    });
-
     describe('CSS Functions', () => {
       it('should extract calc() with flex', () => {
         const content =

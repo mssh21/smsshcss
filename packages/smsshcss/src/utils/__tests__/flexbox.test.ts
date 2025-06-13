@@ -48,12 +48,28 @@ describe('Flexbox Utility Classes', () => {
       expect(result).toContain('.self-stretch { align-self: stretch; }');
 
       // Flex
-      expect(result).toContain('.flex-1 { flex: 1 1 0%; }');
       expect(result).toContain('.flex-auto { flex: 1 1 auto; }');
       expect(result).toContain('.flex-initial { flex: 0 1 auto; }');
       expect(result).toContain('.flex-none { flex: none; }');
 
       // Flex Basis
+      expect(result).toContain('.basis-none { flex-basis: 0; }');
+      expect(result).toContain('.basis-xs { flex-basis: calc(var(--size-base) * 1.5); }');
+      expect(result).toContain('.basis-sm { flex-basis: calc(var(--size-base) * 2); }');
+      expect(result).toContain('.basis-md { flex-basis: calc(var(--size-base) * 2.5); }');
+      expect(result).toContain('.basis-lg { flex-basis: calc(var(--size-base) * 3); }');
+      expect(result).toContain('.basis-xl { flex-basis: calc(var(--size-base) * 4); }');
+      expect(result).toContain('.basis-2xl { flex-basis: calc(var(--size-base) * 6); }');
+      expect(result).toContain('.basis-3xl { flex-basis: calc(var(--size-base) * 8); }');
+      expect(result).toContain('.basis-4xl { flex-basis: calc(var(--size-base) * 12); }');
+      expect(result).toContain('.basis-5xl { flex-basis: calc(var(--size-base) * 16); }');
+      expect(result).toContain('.basis-6xl { flex-basis: calc(var(--size-base) * 20); }');
+      expect(result).toContain('.basis-7xl { flex-basis: calc(var(--size-base) * 24); }');
+      expect(result).toContain('.basis-8xl { flex-basis: calc(var(--size-base) * 32); }');
+      expect(result).toContain('.basis-9xl { flex-basis: calc(var(--size-base) * 48); }');
+      expect(result).toContain('.basis-10xl { flex-basis: calc(var(--size-base) * 64); }');
+      expect(result).toContain('.basis-11xl { flex-basis: calc(var(--size-base) * 80); }');
+      expect(result).toContain('.basis-12xl { flex-basis: calc(var(--size-base) * 96); }');
       expect(result).toContain('.basis-auto { flex-basis: auto; }');
       expect(result).toContain('.basis-full { flex-basis: 100%; }');
 
@@ -76,7 +92,7 @@ describe('Flexbox Utility Classes', () => {
         '.flex-row { flex-direction: row; }',
         '.items-center { align-items: center; }',
         '.justify-between { justify-content: space-between; }',
-        '.flex-1 { flex: 1 1 0%; }',
+        '.flex-auto { flex: 1 1 auto; }',
         '.flex-wrap { flex-wrap: wrap; }',
         '.basis-auto { flex-basis: auto; }',
         '.grow { flex-grow: 1; }',

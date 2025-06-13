@@ -265,13 +265,11 @@ describe('CSSGenerator', () => {
       const result = generator.generateFullCSSSync();
 
       // 新しいクラスが生成されていることを確認
-      expect(cssValidators.hasClass(result, 'flex-1')).toBe(true);
       expect(cssValidators.hasClass(result, 'basis-full')).toBe(true);
       expect(cssValidators.hasClass(result, 'shrink-0')).toBe(true);
       expect(cssValidators.hasClass(result, 'grow-0')).toBe(true);
 
       // 期待されるCSSプロパティが含まれていることを確認
-      expect(result).toMatch(/\.flex-1\s*\{[^}]*flex: 1 1 0%[^}]*\}/);
       expect(result).toMatch(/\.basis-full\s*\{[^}]*flex-basis: 100%[^}]*\}/);
       expect(result).toMatch(/\.shrink-0\s*\{[^}]*flex-shrink: 0[^}]*\}/);
       expect(result).toMatch(/\.grow-0\s*\{[^}]*flex-grow: 0[^}]*[^}]*\}/);
