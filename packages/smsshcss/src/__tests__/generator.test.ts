@@ -344,13 +344,13 @@ describe('CSSGenerator', () => {
       expect(cssValidators.hasClass(result, 'text-green-500')).toBe(true);
       expect(cssValidators.hasClass(result, 'text-yellow-500')).toBe(true);
 
-      expect(result).toMatch(/\.text-black\s*\{[^}]*color: hsl\(0, 0%, 0% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-white\s*\{[^}]*color: hsl\(0, 0%, 100% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-gray-500\s*\{[^}]*color: hsl\(210, 2%, 50% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-blue-500\s*\{[^}]*color: hsl\(214, 85%, 55% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-red-500\s*\{[^}]*color: hsl\(358, 85%, 55% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-green-500\s*\{[^}]*color: hsl\(125, 80%, 50% \/ 1\)[^}]*\}/);
-      expect(result).toMatch(/\.text-yellow-500\s*\{[^}]*color: hsl\(55, 90%, 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-black\s*\{[^}]*color: hsl\(0 0% 0% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-white\s*\{[^}]*color: hsl\(0 0% 100% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-gray-500\s*\{[^}]*color: hsl\(210 2% 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-blue-500\s*\{[^}]*color: hsl\(214 85% 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-red-500\s*\{[^}]*color: hsl\(358 85% 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-green-500\s*\{[^}]*color: hsl\(125 80% 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-yellow-500\s*\{[^}]*color: hsl\(55 90% 50% \/ 1\)[^}]*\}/);
     });
   });
 });

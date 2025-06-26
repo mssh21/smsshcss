@@ -148,6 +148,13 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     });
   });
 
+  describe('Color Classes', () => {
+    it('should generate color utility classes', () => {
+      expect(result?.code).toContain('.text-black { color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.text-white { color: hsl(0 0% 100% / 1); }');
+    });
+  });
+
   describe('Apply Configuration', () => {
     it('should generate apply-based classes', async () => {
       const applyPlugin = smsshcss({
@@ -167,14 +174,15 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       const applyPlugin = smsshcss({
         apply: {
           'flex-center': 'flex items-center justify-center',
-          'text-gradient': 'bg-gradient-to-r from-blue-500 to-purple-600',
-          'card-header': 'p-lg border-b border-gray-200',
+          'text-main': 'text-blue-500',
+          'card-header': 'p-lg',
         },
       });
       const applyResult = await applyPlugin.transform('', 'file.css');
 
       // 基本的なユーティリティクラスが含まれていることを確認
       expect(applyResult?.code).toContain('.flex { display: flex; }');
+      expect(applyResult?.code).toContain('.text-blue-500 { color: hsl(214 85% 55% / 1); }');
       expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 

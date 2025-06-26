@@ -116,6 +116,7 @@ export function ${name}() {
       expect(code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
       expect(code).toContain('.gap-xl { gap: calc(var(--space-base) * 13); }');
       expect(code).toContain('.flex { display: flex; }');
+      expect(code).toContain('.text-black { color: hsl(0 0% 0% / 1); }');
     },
 
     expectCustomClasses: (code: string, expectedClasses: string[]): void => {

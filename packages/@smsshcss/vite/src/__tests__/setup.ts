@@ -17,6 +17,7 @@ interface SmsshCSSConfig {
     gridRows?: Record<string, string>;
     gridColumnSpan?: Record<string, string>;
     gridRowSpan?: Record<string, string>;
+    color?: Record<string, string>;
     components?: Record<string, string>;
   };
   purge?: {
@@ -137,6 +138,10 @@ const parseUtilityWithValue = (prefix: string, value: string): string | null => 
     case 'order':
       return `order: ${value};`;
 
+    // Color
+    case 'text':
+      return `color: ${value};`;
+
     default:
       return null;
   }
@@ -190,6 +195,11 @@ const getThemeValue = (prefix: string, suffix: string, config: SmsshCSSConfig): 
   // Order
   if (prefix === 'order') {
     return theme.order?.[suffix] || null;
+  }
+
+  // Color
+  if (prefix === 'text') {
+    return theme.color?.[suffix] || null;
   }
 
   return null;
@@ -401,6 +411,15 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.z-50 { z-index: 50; }';
   css += '\n.z-auto { z-index: auto; }';
 
+  // Color classes
+  css += '\n.text-black { color: hsl(0 0% 0% / 1); }';
+  css += '\n.text-white { color: hsl(0 0% 100% / 1); }';
+  css += '\n.text-gray-500 { color: hsl(210 2% 50% / 1); }';
+  css += '\n.text-blue-500 { color: hsl(214 85% 55% / 1); }';
+  css += '\n.text-red-500 { color: hsl(358 85% 55% / 1); }';
+  css += '\n.text-green-500 { color: hsl(125 80% 50% / 1); }';
+  css += '\n.text-yellow-500 { color: hsl(55 90% 50% / 1); }';
+
   // カスタムテーマクラス
   if (config.theme?.spacing) {
     Object.entries(config.theme.spacing).forEach(([key, value]) => {
@@ -492,6 +511,12 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   if (config.theme?.gridRowSpan) {
     Object.entries(config.theme.gridRowSpan).forEach(([key, value]) => {
       css += `\n.row-span-${key} { grid-row: span ${value} / span ${value}; }`;
+    });
+  }
+
+  if (config.theme?.color) {
+    Object.entries(config.theme.color).forEach(([key, value]) => {
+      css += `\n.text-${key} { color: ${value}; }`;
     });
   }
 
@@ -810,6 +835,50 @@ const mockExtractCustomZIndexClasses = (content: string): string[] => {
   return customZIndexClasses;
 };
 
+// 色値用エスケープ関数（実際の実装に合わせる）
+const escapeColorValue = (val: string): string => {
+  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  const cssMathFunctions = /\b(rgb|rgba|hsl|hsla)\s*\(/;
+
+  // 新しいカラー関数（hwb, lab, oklab, lch, oklch）を検出する正規表現
+  const newColorFunctions = /\b(hwb|lab|oklab|lch|oklch)\s*\(/;
+
+  // 新しいカラー関数の場合は特別処理（ハイフンをエスケープしない、カンマもエスケープする）
+  if (newColorFunctions.test(val)) {
+    return val.replace(/[()[\]{}+*/.\\%,]/g, '\\$&');
+  }
+
+  // 従来のCSS数学関数の場合は特別処理（カンマもエスケープする）
+  if (cssMathFunctions.test(val)) {
+    return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+  }
+  // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+  if (val.includes('var(--')) {
+    return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+  }
+
+  // 通常の値の場合は-も含めてエスケープ
+  return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+};
+
+// カスタムカラークラス抽出モック
+const mockExtractCustomColorClasses = (content: string): string[] => {
+  const customValuePattern = /\b(text)-\[([^\]]+)\]/g;
+  const matches = content.matchAll(customValuePattern);
+  const customColorClasses: string[] = [];
+  const cssMathFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/;
+
+  for (const match of matches) {
+    const prefix = match[1];
+    const value = match[2]; // match[2]がカスタム値
+    const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+    customColorClasses.push(
+      `.${prefix}-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`
+    );
+  }
+  return customColorClasses;
+};
+
 // smsshcssパッケージをモック
 vi.mock('smsshcss', () => ({
   generateCSS: vi.fn().mockImplementation((config) => Promise.resolve(generateMockCSS(config))),
@@ -826,6 +895,7 @@ vi.mock('smsshcss', () => ({
   extractCustomGridClasses: vi.fn().mockImplementation(mockExtractCustomGridClasses),
   extractCustomOrderClasses: vi.fn().mockImplementation(mockExtractCustomOrderClasses),
   extractCustomZIndexClasses: vi.fn().mockImplementation(mockExtractCustomZIndexClasses),
+  extractCustomColorClasses: vi.fn().mockImplementation(mockExtractCustomColorClasses),
 }));
 
 // モッククリア関数

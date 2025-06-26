@@ -53,6 +53,19 @@ function createTestHelpers(tempDir: string): TestHelpers {
       expect(code).toContain('.row-end-5 { grid-row-end: 5; }');
       expect(code).toContain('.order-6 { order: 6; }');
       expect(code).toContain('.z-10 { z-index: 10; }');
+      expect(code).toContain('.flex { display: flex; }');
+      expect(code).toContain('.grid { display: grid; }');
+      expect(code).toContain('.block { display: block; }');
+      expect(code).toContain('.inline-block { display: inline-block; }');
+      expect(code).toContain('.inline { display: inline; }');
+      expect(code).toContain('.z-10 { z-index: 10; }');
+      expect(code).toContain('.text-black { color: hsl(0, 0%, 0% / 1); }');
+      expect(code).toContain('.text-white { color: hsl(0, 0%, 100% / 1); }');
+      expect(code).toContain('.text-gray-500 { color: hsl(210, 2%, 50% / 1); }');
+      expect(code).toContain('.text-blue-500 { color: hsl(214, 85%, 55% / 1); }');
+      expect(code).toContain('.text-red-500 { color: hsl(358, 85%, 55% / 1); }');
+      expect(code).toContain('.text-green-500 { color: hsl(125, 80%, 50% / 1); }');
+      expect(code).toContain('.text-yellow-500 { color: hsl(55, 90%, 50% / 1); }');
     },
   };
 }
@@ -111,6 +124,15 @@ const testCases = {
     { html: 'z-40', css: '.z-40 { z-index: 40; }' },
     { html: 'z-50', css: '.z-50 { z-index: 50; }' },
   ],
+  color: [
+    { html: 'text-black', css: '.text-black { color: hsl(0, 0%, 0% / 1); }' },
+    { html: 'text-white', css: '.text-white { color: hsl(0, 0%, 100% / 1); }' },
+    { html: 'text-gray-500', css: '.text-gray-500 { color: hsl(210, 2%, 50% / 1); }' },
+    { html: 'text-blue-500', css: '.text-blue-500 { color: hsl(214, 85%, 55% / 1); }' },
+    { html: 'text-red-500', css: '.text-red-500 { color: hsl(358, 85%, 55% / 1); }' },
+    { html: 'text-green-500', css: '.text-green-500 { color: hsl(125, 80%, 50% / 1); }' },
+    { html: 'text-yellow-500', css: '.text-yellow-500 { color: hsl(55, 90%, 50% / 1); }' },
+  ],
   complex: [
     { html: 'gap-[2rem]', css: '.gap-\\[2rem\\] { gap: 2rem; }' },
     { html: 'gap-x-[1.5em]', css: '.gap-x-\\[1\\.5em\\] { column-gap: 1.5em; }' },
@@ -153,6 +175,7 @@ const testCases = {
     },
     { html: 'order-[var(--order)]', css: '.order-\\[var\\(--order\\)\\] { order: var(--order); }' },
     { html: 'z-[var(--zIndex)]', css: '.z-\\[var\\(--zIndex\\)\\] { z-index: var(--zIndex); }' },
+    { html: 'text-[var(--color)]', css: '.text-\\[var\\(--color\\)\\] { color: var(--color); }' },
   ],
 };
 
@@ -285,6 +308,33 @@ describe('Custom Value Classes Integration', () => {
       }
     });
 
+    it('should process color custom values', async () => {
+      const htmlContent = `
+        <div class="text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500">
+          <span class="text-[var(--color)] text-[#000000] text-[rgb(0,0,0,0.5)] text-[hsl(0,0%,0%,1)]">Content</span>
+        </div>
+      `;
+      fs.writeFileSync(path.join(tempDir, 'color.html'), htmlContent);
+
+      const result = await plugin.transform('', 'styles.css');
+
+      expect(result?.code).toContain('.text-black { color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.text-white { color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.text-gray-500 { color: hsl(210 2% 50% / 1); }');
+      expect(result?.code).toContain('.text-blue-500 { color: hsl(214 85% 55% / 1); }');
+      expect(result?.code).toContain('.text-red-500 { color: hsl(358 85% 55% / 1); }');
+      expect(result?.code).toContain('.text-green-500 { color: hsl(125 80% 50% / 1); }');
+      expect(result?.code).toContain('.text-yellow-500 { color: hsl(55 90% 50% / 1); }');
+      expect(result?.code).toContain('.text-\\[var\\(--color\\)\\] { color: var(--color); }');
+      expect(result?.code).toContain('.text-\\[#000000\\] { color: #000000; }');
+      expect(result?.code).toContain(
+        '.text-\\[rgb\\(0\\,0\\,0\\,0\\.5\\)\\] { color: rgb(0, 0, 0, 0.5); }'
+      );
+      expect(result?.code).toContain(
+        '.text-\\[hsl\\(0\\,0\\%\\,0\\%\\,1\\)\\] { color: hsl(0, 0%, 0%, 1); }'
+      );
+    });
+
     it('should handle complex custom values', async () => {
       const htmlContent = `
         <div class="gap-[2rem] gap-x-[1.5em] gap-y-[24px] w-[100%] w-[var(--width)] min-w-[200px] max-w-[1000px]">
@@ -337,6 +387,10 @@ describe('Custom Value Classes Integration', () => {
       fs.writeFileSync(
         path.join(tempDir, 'page3.html'),
         '<div class="w-[100px] min-w-[200px] max-w-[300px]">Page 3</div>'
+      );
+      fs.writeFileSync(
+        path.join(tempDir, 'page4.html'),
+        '<div class="text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500">Page 4</div>'
       );
 
       const result = await plugin.transform('', 'styles.css');

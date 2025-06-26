@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Color Classes Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <a href="./spacing.html" class="nav-link">Spacing</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">🎨 Color Classes</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">🎨 Color Classes</h1>
+        <p class="page-subtitle">CSSカラークラス - 基本色、カスタム値、</p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. 基本色 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">基本色</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">基本色</div>
+            <div class="grid gap-[25px] mb-[40px]">
+              <div class="text-black">text-black</div>
+              <div class="text-white">text-white</div>
+              <div class="text-gray-500">text-gray-500</div>
+              <div class="text-gray-050">text-gray-050</div>
+              <div class="text-blue-500">text-blue-500</div>
+              <div class="text-blue-050">text-blue-050</div>
+              <div class="text-red-500">text-red-500</div>
+              <div class="text-green-500">text-green-500</div>
+              <div class="text-yellow-500">text-yellow-500</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. カスタム値 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">カスタム値</h2>
+          <div class="demo-content p-[30px]">
+            <div class="test-label">カスタム値</div>
+            <div class="grid gap-[25px] mb-[40px]">
+              <div class="p-xs">
+                <div class="text-[var(--color)]" style="--color: #ff0000">text-[var(--color)]</div>
+                <div class="text-[#259270]">text-[#259270]</div>
+                <div class="text-[rgb(149,11,218)]">text-[rgb(149,11,218)]</div>
+                <div class="text-[hsl(210,100%,50%,1)]">text-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">🎨 Color Classes テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              基本色 + カスタム値（HEX、RGB、HSL、CSS変数）対応
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./spacing.html" class="page-nav-btn">← Spacing</a>
+            <a href="./width-height.html" class="page-nav-btn">次: Width/Height →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showColorClasses() {
+        const colorPatterns = [
+          /^text-/, // text-* classes
+          /^text-\[.*\]$/, // custom values
+        ];
+
+        const allClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => colorPatterns.some((pattern) => pattern.test(cls)))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        // デバッグ情報をコンソールに出力
+        console.log('Found color classes:', allClasses);
+
+        // 色クラス表示用の要素があれば更新
+        const container = document.getElementById('color-classes');
+        if (container) {
+          container.innerHTML = allClasses
+            .map((cls) => `<span class="class-tag">${cls}</span>`)
+            .join('');
+        }
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showColorClasses);
+    </script>
+  </body>
+</html>

@@ -12,6 +12,10 @@ export default defineConfig({
       content: [
         'index.html',
         'spacing.html',
+        'color.html',
+        'width-height.html',
+        'gap.html',
+        'apply.html',
         'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
         'components/**/*.{js,ts,jsx,tsx,vue}',
         '**/*.html',
@@ -101,6 +105,19 @@ export default defineConfig({
       showPurgeReport: true,
     }),
   ],
+
+  build: {
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        spacing: 'spacing.html',
+        color: 'color.html',
+        'width-height': 'width-height.html',
+        gap: 'gap.html',
+        apply: 'apply.html',
+      },
+    },
+  },
 
   server: {
     port: 3000,
