@@ -330,4 +330,27 @@ describe('CSSGenerator', () => {
       expect(result).toMatch(/\.order-10\s*\{[^}]*order: 10[^}]*\}/);
     });
   });
+
+  describe('Color Generation', () => {
+    it('should generate color utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      expect(cssValidators.hasClass(result, 'text-black')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-white')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-gray-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-blue-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-red-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-green-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-yellow-500')).toBe(true);
+
+      expect(result).toMatch(/\.text-black\s*\{[^}]*color: hsl\(0, 0%, 0% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-white\s*\{[^}]*color: hsl\(0, 0%, 100% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-gray-500\s*\{[^}]*color: hsl\(210, 2%, 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-blue-500\s*\{[^}]*color: hsl\(214, 85%, 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-red-500\s*\{[^}]*color: hsl\(358, 85%, 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-green-500\s*\{[^}]*color: hsl\(125, 80%, 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-yellow-500\s*\{[^}]*color: hsl\(55, 90%, 50% \/ 1\)[^}]*\}/);
+    });
+  });
 });
