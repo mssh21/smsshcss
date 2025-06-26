@@ -6,22 +6,8 @@ import { ColorConfig } from '../core/types';
  */
 export const defaultColorConfig: ColorConfig = {
   transparent: 'transparent',
-  black: 'hsla(0, 0%, 0%, 1)',
-  white: 'hsla(0, 0%, 100%, 1)',
-
-  // alpha
-  'alpha-050': '0',
-  'alpha-050': '0.05',
-  'alpha-100': '0.1',
-  'alpha-200': '0.2',
-  'alpha-300': '0.3',
-  'alpha-400': '0.4',
-  'alpha-500': '0.5',
-  'alpha-600': '0.6',
-  'alpha-700': '0.7',
-  'alpha-800': '0.8',
-  'alpha-900': '0.9',
-  'alpha-1000': '1',
+  black: 'hsl(0, 0%, 0% / 1)',
+  white: 'hsl(0, 0%, 100% / 1)',
 
   // gray - Primary: gray-500
   'gray-050': 'hsl(210, 8%, 98% / 1)',

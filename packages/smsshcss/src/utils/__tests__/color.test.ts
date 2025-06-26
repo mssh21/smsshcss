@@ -15,6 +15,8 @@ describe('Color Utilities', () => {
       const result = generateColorClasses(defaultColor);
 
       // 基本的なcolorクラスが含まれているか確認
+      expect(result).toContain('.text-black { color: hsl(0, 0%, 0% / 1); }');
+      expect(result).toContain('.text-white { color: hsl(0, 0%, 100% / 1); }');
       expect(result).toContain('.text-gray-050 { color: hsl(210, 8%, 98% / 1); }');
       expect(result).toContain('.text-gray-900 { color: hsl(210, 6%, 10% / 1); }');
       expect(result).toContain('.text-blue-050 { color: hsl(214, 100%, 98% / 1); }');
