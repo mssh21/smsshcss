@@ -176,20 +176,20 @@ export const escapeColorValue = (val: string): string => {
 
   // 新しいカラー関数の場合は特別処理（ハイフンをエスケープしない、カンマもエスケープする）
   if (newColorFunctions.test(val)) {
-    return val.replace(/[()[\]{}+*/.\\%,]/g, '\\$&');
+    return val.replace(/[()[\]{}+*/.\\%,#]/g, '\\$&');
   }
 
   // 従来のCSS数学関数の場合は特別処理（カンマもエスケープする）
   if (cssMathFunctions.test(val)) {
-    return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+    return val.replace(/[()[\]{}+\-*/.\\%,#]/g, '\\$&');
   }
   // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
   if (val.includes('var(--')) {
-    return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+    return val.replace(/[()[\]{}+*/.\\%#]/g, '\\$&');
   }
 
-  // 通常の値の場合は-も含めてエスケープ
-  return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+  // 通常の値の場合は-も含めてエスケープ（#も追加）
+  return val.replace(/[()[\]{}+\-*/.\\%#]/g, '\\$&');
 };
 
 // CSS関数内の値を再帰的にフォーマットする関数

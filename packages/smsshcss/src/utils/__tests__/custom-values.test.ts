@@ -603,11 +603,36 @@ describe('Custom Value Extraction Functions', () => {
       expect(result[0]).toBe('.text-\\[var\\(--color\\)\\] { color: var(--color); }');
     });
 
-    it('should extract color custom values', () => {
+    it('should extract hex color custom values', () => {
       const content = '<div class="text-[#555555]">Test</div>';
       const result = extractCustomColorClasses(content);
       expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.text-\\[#555555\\] { color: #555555; }');
+      expect(result[0]).toBe('.text-\\[\\#555555\\] { color: #555555; }');
+    });
+
+    it('should extract multiple hex color values', () => {
+      const content = '<div class="text-[#259270] text-[#ff0000] text-[#00ff00]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(3);
+      expect(result[0]).toBe('.text-\\[\\#259270\\] { color: #259270; }');
+      expect(result[1]).toBe('.text-\\[\\#ff0000\\] { color: #ff0000; }');
+      expect(result[2]).toBe('.text-\\[\\#00ff00\\] { color: #00ff00; }');
+    });
+
+    it('should extract rgb color values', () => {
+      const content = '<div class="text-[rgb(149,11,218)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[rgb\\(149\\,11\\,218\\)\\] { color: rgb(149, 11, 218); }');
+    });
+
+    it('should extract hsl color values', () => {
+      const content = '<div class="text-[hsl(210,100%,50%,1)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hsl\\(210\\,100\\%\\,50\\%\\,1\\)\\] { color: hsl(210, 100%, 50%, 1); }'
+      );
     });
   });
 
