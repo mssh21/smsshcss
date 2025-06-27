@@ -152,6 +152,12 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     it('should generate color utility classes', () => {
       expect(result?.code).toContain('.text-black { color: hsl(0 0% 0% / 1); }');
       expect(result?.code).toContain('.text-white { color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.bg-black { background-color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.bg-white { background-color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.border-black { border-color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.border-white { border-color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.fill-black { fill: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.fill-white { fill: hsl(0 0% 100% / 1); }');
     });
   });
 
@@ -159,7 +165,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     it('should generate apply-based classes', async () => {
       const applyPlugin = smsshcss({
         apply: {
-          'btn-primary': 'p-md bg-blue-500 text-white rounded',
+          'btn-primary': 'p-md bg-blue-500 border-blue-500 fill-blue-500 text-white rounded',
           card: 'p-lg bg-white rounded-lg shadow',
           container: 'max-w-lg mx-auto px-md',
         },
@@ -174,7 +180,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       const applyPlugin = smsshcss({
         apply: {
           'flex-center': 'flex items-center justify-center',
-          'text-main': 'text-blue-500',
+          'text-main': 'text-blue-500 bg-blue-500 border-blue-500 fill-blue-500',
           'card-header': 'p-lg',
         },
       });
@@ -183,6 +189,13 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       // 基本的なユーティリティクラスが含まれていることを確認
       expect(applyResult?.code).toContain('.flex { display: flex; }');
       expect(applyResult?.code).toContain('.text-blue-500 { color: hsl(214 85% 55% / 1); }');
+      expect(applyResult?.code).toContain(
+        '.bg-blue-500 { background-color: hsl(214 85% 55% / 1); }'
+      );
+      expect(applyResult?.code).toContain(
+        '.border-blue-500 { border-color: hsl(214 85% 55% / 1); }'
+      );
+      expect(applyResult?.code).toContain('.fill-blue-500 { fill: hsl(214 85% 55% / 1); }');
       expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
     });
 

@@ -14,7 +14,7 @@ export const defaultColor: ColorConfig = defaultColorConfig;
 /**
  * Custom value pattern for color classes
  */
-const customValuePattern = /\b(text)-\[([^\]]+)\]/g;
+const customValuePattern = /\b(text|bg|border|fill)-\[([^\]]+)\]/g;
 
 /**
  * Generate custom color class from prefix and value
@@ -23,7 +23,23 @@ function generateCustomColorClass(prefix: string, value: string): string | null 
   const cssMathFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/;
   const originalValue = cssMathFunctions.test(value) ? formatColorFunctionValue(value) : value;
 
-  return `.${prefix}-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`;
+  if (prefix === 'text') {
+    return `.text-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`;
+  }
+
+  if (prefix === 'bg') {
+    return `.bg-\\[${escapeColorValue(value)}\\] { background-color: ${originalValue}; }`;
+  }
+
+  if (prefix === 'border') {
+    return `.border-\\[${escapeColorValue(value)}\\] { border-color: ${originalValue}; }`;
+  }
+
+  if (prefix === 'fill') {
+    return `.fill-\\[${escapeColorValue(value)}\\] { fill: ${originalValue}; }`;
+  }
+
+  return null;
 }
 
 /**
@@ -61,10 +77,51 @@ export function generateColorClasses(config: Record<string, string> = defaultCol
   );
 }
 
+export function generateBgClasses(config: Record<string, string> = defaultColor): string {
+  return generateUtilityClasses(
+    {
+      prefix: 'bg',
+      property: 'background-color',
+      hasDirections: false,
+      supportsArbitraryValues: true,
+    },
+    config
+  );
+}
+
+export function generateBorderClasses(config: Record<string, string> = defaultColor): string {
+  return generateUtilityClasses(
+    {
+      prefix: 'border',
+      property: 'border-color',
+      hasDirections: false,
+      supportsArbitraryValues: true,
+    },
+    config
+  );
+}
+
+export function generateFillClasses(config: Record<string, string> = defaultColor): string {
+  return generateUtilityClasses(
+    {
+      prefix: 'fill',
+      property: 'fill',
+      hasDirections: false,
+      supportsArbitraryValues: true,
+    },
+    config
+  );
+}
+
 /**
  * Generate all color classes with custom configuration support
  */
 export function generateAllColorClasses(customConfig?: Record<string, string>): string {
   const config = customConfig ? { ...defaultColor, ...customConfig } : defaultColor;
-  return generateColorClasses(config);
+  return [
+    generateColorClasses(config),
+    generateBgClasses(config),
+    generateBorderClasses(config),
+    generateFillClasses(config),
+  ].join('\n\n');
 }

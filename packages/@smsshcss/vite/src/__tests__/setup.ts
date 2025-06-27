@@ -198,7 +198,7 @@ const getThemeValue = (prefix: string, suffix: string, config: SmsshCSSConfig): 
   }
 
   // Color
-  if (prefix === 'text') {
+  if (['text', 'bg', 'border', 'fill'].includes(prefix)) {
     return theme.color?.[suffix] || null;
   }
 
@@ -419,6 +419,27 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.text-red-500 { color: hsl(358 85% 55% / 1); }';
   css += '\n.text-green-500 { color: hsl(125 80% 50% / 1); }';
   css += '\n.text-yellow-500 { color: hsl(55 90% 50% / 1); }';
+  css += '\n.bg-black { background-color: hsl(0 0% 0% / 1); }';
+  css += '\n.bg-white { background-color: hsl(0 0% 100% / 1); }';
+  css += '\n.bg-gray-500 { background-color: hsl(210 2% 50% / 1); }';
+  css += '\n.bg-blue-500 { background-color: hsl(214 85% 55% / 1); }';
+  css += '\n.bg-red-500 { background-color: hsl(358 85% 55% / 1); }';
+  css += '\n.bg-green-500 { background-color: hsl(125 80% 50% / 1); }';
+  css += '\n.bg-yellow-500 { background-color: hsl(55 90% 50% / 1); }';
+  css += '\n.border-black { border-color: hsl(0 0% 0% / 1); }';
+  css += '\n.border-white { border-color: hsl(0 0% 100% / 1); }';
+  css += '\n.border-gray-500 { border-color: hsl(210 2% 50% / 1); }';
+  css += '\n.border-blue-500 { border-color: hsl(214 85% 55% / 1); }';
+  css += '\n.border-red-500 { border-color: hsl(358 85% 55% / 1); }';
+  css += '\n.border-green-500 { border-color: hsl(125 80% 50% / 1); }';
+  css += '\n.border-yellow-500 { border-color: hsl(55 90% 50% / 1); }';
+  css += '\n.fill-black { fill: hsl(0 0% 0% / 1); }';
+  css += '\n.fill-white { fill: hsl(0 0% 100% / 1); }';
+  css += '\n.fill-gray-500 { fill: hsl(210 2% 50% / 1); }';
+  css += '\n.fill-blue-500 { fill: hsl(214 85% 55% / 1); }';
+  css += '\n.fill-red-500 { fill: hsl(358 85% 55% / 1); }';
+  css += '\n.fill-green-500 { fill: hsl(125 80% 50% / 1); }';
+  css += '\n.fill-yellow-500 { fill: hsl(55 90% 50% / 1); }';
 
   // カスタムテーマクラス
   if (config.theme?.spacing) {
@@ -517,6 +538,9 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   if (config.theme?.color) {
     Object.entries(config.theme.color).forEach(([key, value]) => {
       css += `\n.text-${key} { color: ${value}; }`;
+      css += `\n.bg-${key} { background-color: ${value}; }`;
+      css += `\n.border-${key} { border-color: ${value}; }`;
+      css += `\n.fill-${key} { fill: ${value}; }`;
     });
   }
 
@@ -863,7 +887,7 @@ const escapeColorValue = (val: string): string => {
 
 // カスタムカラークラス抽出モック
 const mockExtractCustomColorClasses = (content: string): string[] => {
-  const customValuePattern = /\b(text)-\[([^\]]+)\]/g;
+  const customValuePattern = /\b(text|bg|border|fill)-\[([^\]]+)\]/g;
   const matches = content.matchAll(customValuePattern);
   const customColorClasses: string[] = [];
   const cssMathFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/;
@@ -873,7 +897,10 @@ const mockExtractCustomColorClasses = (content: string): string[] => {
     const value = match[2]; // match[2]がカスタム値
     const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
     customColorClasses.push(
-      `.${prefix}-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`
+      `.${prefix}-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`,
+      `.${prefix}-\\[${escapeColorValue(value)}\\] { background-color: ${originalValue}; }`,
+      `.${prefix}-\\[${escapeColorValue(value)}\\] { border-color: ${originalValue}; }`,
+      `.${prefix}-\\[${escapeColorValue(value)}\\] { fill: ${originalValue}; }`
     );
   }
   return customColorClasses;

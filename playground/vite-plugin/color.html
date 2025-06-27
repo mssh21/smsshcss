@@ -27,34 +27,187 @@
       <main class="grid gap-[30px]">
         <!-- 1. 基本色 -->
         <section class="demo-section">
-          <h2 class="demo-title p-[20px]">基本色</h2>
+          <h2 class="demo-title p-[20px]">テキスト色</h2>
           <div class="demo-content p-[30px]">
-            <div class="test-label">基本色</div>
-            <div class="grid gap-[25px] mb-[40px]">
+            <div class="grid gap-2xs">
               <div class="text-black">text-black</div>
-              <div class="text-white">text-white</div>
+              <div class="text-white bg-black">text-white</div>
               <div class="text-gray-500">text-gray-500</div>
-              <div class="text-gray-050">text-gray-050</div>
               <div class="text-blue-500">text-blue-500</div>
-              <div class="text-blue-050">text-blue-050</div>
               <div class="text-red-500">text-red-500</div>
               <div class="text-green-500">text-green-500</div>
               <div class="text-yellow-500">text-yellow-500</div>
+              <div class="text-[var(--color)]" style="--color: #ff0000">text-[var(--color)]</div>
+              <div class="text-[#259270]">text-[#259270]</div>
+              <div class="text-[rgb(149,11,218)]">text-[rgb(149,11,218)]</div>
+              <div class="text-[hsl(210,100%,50%,1)]">text-[hsl(210,100%,50%,1)]</div>
             </div>
           </div>
         </section>
 
         <!-- 2. カスタム値 -->
         <section class="demo-section">
-          <h2 class="demo-title p-[20px]">カスタム値</h2>
+          <h2 class="demo-title p-[20px]">背景色</h2>
           <div class="demo-content p-[30px]">
-            <div class="test-label">カスタム値</div>
-            <div class="grid gap-[25px] mb-[40px]">
-              <div class="p-xs">
-                <div class="text-[var(--color)]" style="--color: #ff0000">text-[var(--color)]</div>
-                <div class="text-[#259270]">text-[#259270]</div>
-                <div class="text-[rgb(149,11,218)]">text-[rgb(149,11,218)]</div>
-                <div class="text-[hsl(210,100%,50%,1)]">text-[hsl(210,100%,50%,1)]</div>
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-gray-500"></div>
+                <div class="text-gray-500">bg-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[var(--bg-color)]" style="--bg-color: #ff0000"></div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">bg-[var(--bg-color)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[#259270]"></div>
+                <div class="text-[#259270]">bg-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[rgb(149,11,218)]"></div>
+                <div class="text-[rgb(149,11,218)]">bg-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[hsl(210,100%,50%,1)]"></div>
+                <div class="text-[hsl(210,100%,50%,1)]">bg-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">ボーダーカラー</h2>
+          <div class="demo-content p-[30px]">
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-gray-500"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-gray-500">border-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[var(--border-color)]"
+                  style="--border-color: #ff0000; border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">
+                  border-[var(--border-color)]
+                </div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[#259270]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[#259270]">border-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[rgb(149,11,218)]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[rgb(149,11,218)]">border-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[hsl(210,100%,50%,1)]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[hsl(210,100%,50%,1)]">border-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">fill-color</h2>
+          <div class="demo-content p-[30px]">
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="50" cy="50" r="40" fill="currentColor" class="fill-gray-500" />
+                  </svg>
+                </div>
+                <div class="text-gray-500">fill-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[var(--fill-color)]"
+                      style="--fill-color: #ff0000"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">
+                  fill-[var(--fill-color)]
+                </div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="50" cy="50" r="40" fill="currentColor" class="fill-[#259270]" />
+                  </svg>
+                </div>
+                <div class="text-[#259270]">fill-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[rgb(149,11,218)]"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[rgb(149,11,218)]">fill-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[hsl(210,100%,50%,1)]"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[hsl(210,100%,50%,1)]">fill-[hsl(210,100%,50%,1)]</div>
               </div>
             </div>
           </div>

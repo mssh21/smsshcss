@@ -35,19 +35,8 @@ export interface SizeConfig {
 
 // カラー設定
 export interface ColorConfig {
-  // alpha
-  'alpha-000': string;
-  'alpha-050': string;
-  'alpha-100': string;
-  'alpha-200': string;
-  'alpha-300': string;
-  'alpha-400': string;
-  'alpha-500': string;
-  'alpha-600': string;
-  'alpha-700': string;
-  'alpha-800': string;
-  'alpha-900': string;
-  'alpha-1000': string;
+  black: string;
+  white: string;
 
   // gray
   'gray-050': string;
@@ -62,7 +51,7 @@ export interface ColorConfig {
   'gray-900': string;
 
   // blue
-  'blue-000': string;
+  'blue-050': string;
   'blue-100': string;
   'blue-200': string;
   'blue-300': string;
@@ -74,7 +63,7 @@ export interface ColorConfig {
   'blue-900': string;
 
   // red
-  'red-000': string;
+  'red-050': string;
   'red-100': string;
   'red-200': string;
   'red-300': string;

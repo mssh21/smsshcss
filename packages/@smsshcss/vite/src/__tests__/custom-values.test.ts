@@ -66,6 +66,27 @@ function createTestHelpers(tempDir: string): TestHelpers {
       expect(code).toContain('.text-red-500 { color: hsl(358, 85%, 55% / 1); }');
       expect(code).toContain('.text-green-500 { color: hsl(125, 80%, 50% / 1); }');
       expect(code).toContain('.text-yellow-500 { color: hsl(55, 90%, 50% / 1); }');
+      expect(code).toContain('.bg-black { background-color: hsl(0, 0%, 0% / 1); }');
+      expect(code).toContain('.bg-white { background-color: hsl(0, 0%, 100% / 1); }');
+      expect(code).toContain('.bg-gray-500 { background-color: hsl(210, 2%, 50% / 1); }');
+      expect(code).toContain('.bg-blue-500 { background-color: hsl(214, 85%, 55% / 1); }');
+      expect(code).toContain('.bg-red-500 { background-color: hsl(358, 85%, 55% / 1); }');
+      expect(code).toContain('.bg-green-500 { background-color: hsl(125, 80%, 50% / 1); }');
+      expect(code).toContain('.bg-yellow-500 { background-color: hsl(55, 90%, 50% / 1); }');
+      expect(code).toContain('.border-black { border-color: hsl(0, 0%, 0% / 1); }');
+      expect(code).toContain('.border-white { border-color: hsl(0, 0%, 100% / 1); }');
+      expect(code).toContain('.border-gray-500 { border-color: hsl(210, 2%, 50% / 1); }');
+      expect(code).toContain('.border-blue-500 { border-color: hsl(214, 85%, 55% / 1); }');
+      expect(code).toContain('.border-red-500 { border-color: hsl(358, 85%, 55% / 1); }');
+      expect(code).toContain('.border-green-500 { border-color: hsl(125, 80%, 50% / 1); }');
+      expect(code).toContain('.border-yellow-500 { border-color: hsl(55, 90%, 50% / 1); }');
+      expect(code).toContain('.fill-black { fill: hsl(0, 0%, 0% / 1); }');
+      expect(code).toContain('.fill-white { fill: hsl(0, 0%, 100% / 1); }');
+      expect(code).toContain('.fill-gray-500 { fill: hsl(210, 2%, 50% / 1); }');
+      expect(code).toContain('.fill-blue-500 { fill: hsl(214, 85%, 55% / 1); }');
+      expect(code).toContain('.fill-red-500 { fill: hsl(358, 85%, 55% / 1); }');
+      expect(code).toContain('.fill-green-500 { fill: hsl(125, 80%, 50% / 1); }');
+      expect(code).toContain('.fill-yellow-500 { fill: hsl(55, 90%, 50% / 1); }');
     },
   };
 }
@@ -132,6 +153,33 @@ const testCases = {
     { html: 'text-red-500', css: '.text-red-500 { color: hsl(358, 85%, 55% / 1); }' },
     { html: 'text-green-500', css: '.text-green-500 { color: hsl(125, 80%, 50% / 1); }' },
     { html: 'text-yellow-500', css: '.text-yellow-500 { color: hsl(55, 90%, 50% / 1); }' },
+    { html: 'bg-black', css: '.bg-black { background-color: hsl(0, 0%, 0% / 1); }' },
+    { html: 'bg-white', css: '.bg-white { background-color: hsl(0, 0%, 100% / 1); }' },
+    { html: 'bg-gray-500', css: '.bg-gray-500 { background-color: hsl(210, 2%, 50% / 1); }' },
+    { html: 'bg-blue-500', css: '.bg-blue-500 { background-color: hsl(214, 85%, 55% / 1); }' },
+    { html: 'bg-red-500', css: '.bg-red-500 { background-color: hsl(358, 85%, 55% / 1); }' },
+    { html: 'bg-green-500', css: '.bg-green-500 { background-color: hsl(125, 80%, 50% / 1); }' },
+    { html: 'bg-yellow-500', css: '.bg-yellow-500 { background-color: hsl(55, 90%, 50% / 1); }' },
+    { html: 'border-black', css: '.border-black { border-color: hsl(0, 0%, 0% / 1); }' },
+    { html: 'border-white', css: '.border-white { border-color: hsl(0, 0%, 100% / 1); }' },
+    { html: 'border-gray-500', css: '.border-gray-500 { border-color: hsl(210, 2%, 50% / 1); }' },
+    { html: 'border-blue-500', css: '.border-blue-500 { border-color: hsl(214, 85%, 55% / 1); }' },
+    { html: 'border-red-500', css: '.border-red-500 { border-color: hsl(358, 85%, 55% / 1); }' },
+    {
+      html: 'border-green-500',
+      css: '.border-green-500 { border-color: hsl(125, 80%, 50% / 1); }',
+    },
+    {
+      html: 'border-yellow-500',
+      css: '.border-yellow-500 { border-color: hsl(55, 90%, 50% / 1); }',
+    },
+    { html: 'fill-black', css: '.fill-black { fill: hsl(0, 0%, 0% / 1); }' },
+    { html: 'fill-white', css: '.fill-white { fill: hsl(0, 0%, 100% / 1); }' },
+    { html: 'fill-gray-500', css: '.fill-gray-500 { fill: hsl(210, 2%, 50% / 1); }' },
+    { html: 'fill-blue-500', css: '.fill-blue-500 { fill: hsl(214, 85%, 55% / 1); }' },
+    { html: 'fill-red-500', css: '.fill-red-500 { fill: hsl(358, 85%, 55% / 1); }' },
+    { html: 'fill-green-500', css: '.fill-green-500 { fill: hsl(125, 80%, 50% / 1); }' },
+    { html: 'fill-yellow-500', css: '.fill-yellow-500 { fill: hsl(55, 90%, 50% / 1); }' },
   ],
   complex: [
     { html: 'gap-[2rem]', css: '.gap-\\[2rem\\] { gap: 2rem; }' },
@@ -310,8 +358,8 @@ describe('Custom Value Classes Integration', () => {
 
     it('should process color custom values', async () => {
       const htmlContent = `
-        <div class="text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500">
-          <span class="text-[var(--color)] text-[#000000] text-[rgb(0,0,0,0.5)] text-[hsl(0,0%,0%,1)]">Content</span>
+        <div class="text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500 bg-black bg-white bg-gray-500 bg-blue-500 bg-red-500 bg-green-500 bg-yellow-500 border-black border-white border-gray-500 border-blue-500 border-red-500 border-green-500 border-yellow-500 fill-black fill-white fill-gray-500 fill-blue-500 fill-red-500 fill-green-500 fill-yellow-500">
+          <span class="text-[var(--color)] text-[#000000] text-[rgb(0,0,0,0.5)] text-[hsl(0,0%,0%,1)] bg-[var(--bg-color)] bg-[#000000] bg-[rgb(0,0,0,0.5)] bg-[hsl(0,0%,0%,1)] border-[var(--border-color)] border-[#000000] border-[rgb(0,0,0,0.5)] border-[hsl(0,0%,0%,1)] fill-[var(--fill-color)] fill-[#000000] fill-[rgb(0,0,0,0.5)] fill-[hsl(0,0%,0%,1)]">Content</span>
         </div>
       `;
       fs.writeFileSync(path.join(tempDir, 'color.html'), htmlContent);
@@ -332,6 +380,54 @@ describe('Custom Value Classes Integration', () => {
       );
       expect(result?.code).toContain(
         '.text-\\[hsl\\(0\\,0\\%\\,0\\%\\,1\\)\\] { color: hsl(0, 0%, 0%, 1); }'
+      );
+      expect(result?.code).toContain('.bg-black { background-color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.bg-white { background-color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.bg-gray-500 { background-color: hsl(210 2% 50% / 1); }');
+      expect(result?.code).toContain('.bg-blue-500 { background-color: hsl(214 85% 55% / 1); }');
+      expect(result?.code).toContain('.bg-red-500 { background-color: hsl(358 85% 55% / 1); }');
+      expect(result?.code).toContain('.bg-green-500 { background-color: hsl(125 80% 50% / 1); }');
+      expect(result?.code).toContain('.bg-yellow-500 { background-color: hsl(55 90% 50% / 1); }');
+      expect(result?.code).toContain(
+        '.bg-\\[var\\(--bg-color\\)\\] { background-color: var(--bg-color); }'
+      );
+      expect(result?.code).toContain('.bg-\\[#000000\\] { background-color: #000000; }');
+      expect(result?.code).toContain(
+        '.bg-\\[rgb\\(0\\,0\\,0\\,0\\.5\\)\\] { background-color: rgb(0, 0, 0, 0.5); }'
+      );
+      expect(result?.code).toContain(
+        '.bg-\\[hsl\\(0\\,0\\%\\,0\\%\\,1\\)\\] { background-color: hsl(0, 0%, 0%, 1); }'
+      );
+      expect(result?.code).toContain('.border-black { border-color: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.border-white { border-color: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.border-gray-500 { border-color: hsl(210 2% 50% / 1); }');
+      expect(result?.code).toContain('.border-blue-500 { border-color: hsl(214 85% 55% / 1); }');
+      expect(result?.code).toContain('.border-red-500 { border-color: hsl(358 85% 55% / 1); }');
+      expect(result?.code).toContain('.border-green-500 { border-color: hsl(125 80% 50% / 1); }');
+      expect(result?.code).toContain('.border-yellow-500 { border-color: hsl(55 90% 50% / 1); }');
+      expect(result?.code).toContain(
+        '.border-\\[var\\(--border-color\\)\\] { border-color: var(--border-color); }'
+      );
+      expect(result?.code).toContain('.border-\\[#000000\\] { border-color: #000000; }');
+      expect(result?.code).toContain(
+        '.border-\\[rgb\\(0\\,0\\,0\\,0\\.5\\)\\] { border-color: rgb(0, 0, 0, 0.5); }'
+      );
+      expect(result?.code).toContain(
+        '.border-\\[hsl\\(0\\,0\\%\\,0\\%\\,1\\)\\] { border-color: hsl(0, 0%, 0%, 1); }'
+      );
+      expect(result?.code).toContain('.fill-black { fill: hsl(0 0% 0% / 1); }');
+      expect(result?.code).toContain('.fill-white { fill: hsl(0 0% 100% / 1); }');
+      expect(result?.code).toContain('.fill-gray-500 { fill: hsl(210 2% 50% / 1); }');
+      expect(result?.code).toContain('.fill-blue-500 { fill: hsl(214 85% 55% / 1); }');
+      expect(result?.code).toContain('.fill-red-500 { fill: hsl(358 85% 55% / 1); }');
+      expect(result?.code).toContain('.fill-green-500 { fill: hsl(125 80% 50% / 1); }');
+      expect(result?.code).toContain('.fill-yellow-500 { fill: hsl(55 90% 50% / 1); }');
+      expect(result?.code).toContain(
+        '.fill-\\[var\\(--fill-color\\)\\] { fill: var(--fill-color); }'
+      );
+      expect(result?.code).toContain('.fill-\\[#000000\\] { fill: #000000; }');
+      expect(result?.code).toContain(
+        '.fill-\\[rgb\\(0\\,0\\,0\\,0\\.5\\)\\] { fill: rgb(0, 0, 0, 0.5); }'
       );
     });
 
