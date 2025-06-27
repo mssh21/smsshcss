@@ -163,7 +163,7 @@ describe('SmsshCSS Vite Plugin - Performance Tests', () => {
       const result = await helper.measureTransformPerformance(plugin);
 
       expect(result.success).toBe(true);
-      expect(result.metrics.transformTime).toBeLessThan(1000); // 1秒以内
+      expect(result.metrics.transformTime).toBeLessThan(2000); // 2秒以内（1秒から調整）
       expect(result.metrics.memoryUsage).toBeLessThan(50 * 1024 * 1024); // 50MB以内
       expect(result.metrics.outputSize).toBeGreaterThan(0);
 

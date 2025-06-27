@@ -28,24 +28,9 @@ export interface SmsshCSSViteOptions {
     variables?: boolean;
   };
   /**
-   * テーマのカスタマイズ
+   * Apply設定（よく使うユーティリティクラスの組み合わせを定義）
    */
-  theme?: {
-    spacing?: Record<string, string>;
-    display?: Record<string, string>;
-    width?: Record<string, string>;
-    height?: Record<string, string>;
-    gridCols?: Record<string, string>;
-    gridRows?: Record<string, string>;
-    gridColumnSpan?: Record<string, string>;
-    gridRowSpan?: Record<string, string>;
-    gridColumnPosition?: Record<string, string>;
-    gridRowPosition?: Record<string, string>;
-    gridAutoFlow?: Record<string, string>;
-    zIndex?: Record<string, string>;
-    order?: Record<string, string>;
-    color?: Record<string, string>;
-  };
+  apply?: Record<string, string>;
   /**
    * 開発時にパージレポートを表示するかどうか
    * @default false

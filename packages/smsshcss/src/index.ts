@@ -23,7 +23,7 @@ export type {
  * @returns Generated CSS string
  */
 export async function generateCSS(config: SmsshCSSConfig): Promise<string> {
-  const generator = new CSSGenerator(config);
+  const generator = new CSSGenerator(config, { suppressWarnings: true });
   return generator.generateFullCSS();
 }
 
@@ -33,7 +33,7 @@ export async function generateCSS(config: SmsshCSSConfig): Promise<string> {
  * @returns Generated CSS string
  */
 export function generateCSSSync(config: SmsshCSSConfig): string {
-  const generator = new CSSGenerator(config);
+  const generator = new CSSGenerator(config, { suppressWarnings: true });
   return generator.generateFullCSSSync();
 }
 
@@ -43,7 +43,7 @@ export function generateCSSSync(config: SmsshCSSConfig): string {
  * @returns Purge report or null if purging is disabled
  */
 export async function generatePurgeReport(config: SmsshCSSConfig): Promise<PurgeReport | null> {
-  const generator = new CSSGenerator(config);
+  const generator = new CSSGenerator(config, { suppressWarnings: true });
   return generator.generatePurgeReport();
 }
 

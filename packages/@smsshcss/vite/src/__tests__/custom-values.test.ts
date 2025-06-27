@@ -243,6 +243,7 @@ describe('Custom Value Classes Integration', () => {
     plugin = smsshcss({
       content: [`${tempDir}/**/*.html`],
       minify: false,
+      debug: true,
     });
   });
 
