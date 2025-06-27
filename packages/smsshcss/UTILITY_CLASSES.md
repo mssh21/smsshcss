@@ -20,30 +20,30 @@
 
 ### 基本的な表示タイプ
 
-| クラス          | CSS                          |
-| --------------- | ---------------------------- |
-| `.block`        | `display: block;`            |
-| `.inline`       | `display: inline;`           |
-| `.inline-block` | `display: inline-block;`     |
-| `.flex`         | `display: flex;`             |
-| `.inline-flex`  | `display: inline-flex;`      |
-| `.grid`         | `display: grid;`             |
-| `.inline-grid`  | `display: inline-grid;`      |
-| `.none`         | `display: none;`             |
-| `.hidden`       | `display: none;`             |
-| `.contents`     | `display: contents;`         |
+| クラス          | CSS                      |
+| --------------- | ------------------------ |
+| `.block`        | `display: block;`        |
+| `.inline`       | `display: inline;`       |
+| `.inline-block` | `display: inline-block;` |
+| `.flex`         | `display: flex;`         |
+| `.inline-flex`  | `display: inline-flex;`  |
+| `.grid`         | `display: grid;`         |
+| `.inline-grid`  | `display: inline-grid;`  |
+| `.none`         | `display: none;`         |
+| `.hidden`       | `display: none;`         |
+| `.contents`     | `display: contents;`     |
 
 ### 追加の表示タイプ
 
-| クラス           | CSS                              |
-| ---------------- | -------------------------------- |
-| `.flow-root`     | `display: flow-root;`            |
-| `.list-item`     | `display: list-item;`            |
-| `.inline-table`  | `display: inline-table;`         |
-| `.table`         | `display: table;`                |
-| `.table-cell`    | `display: table-cell;`           |
-| `.table-row`     | `display: table-row;`            |
-| `.table-caption` | `display: table-caption;`        |
+| クラス           | CSS                       |
+| ---------------- | ------------------------- |
+| `.flow-root`     | `display: flow-root;`     |
+| `.list-item`     | `display: list-item;`     |
+| `.inline-table`  | `display: inline-table;`  |
+| `.table`         | `display: table;`         |
+| `.table-cell`    | `display: table-cell;`    |
+| `.table-row`     | `display: table-row;`     |
+| `.table-caption` | `display: table-caption;` |
 
 ## Spacing
 
@@ -327,39 +327,39 @@
 
 Width用の特殊な値:
 
-| 値       | 説明                                               |
-| -------- | -------------------------------------------------- |
-| `full`   | `100%`                                             |
-| `auto`   | `auto`                                             |
-| `fit`    | `fit-content`                                      |
-| `min`    | `min-content`                                      |
-| `max`    | `max-content`                                      |
-| `screen` | `100vw`                                            |
-| `svh`    | `100svw` (Small viewport width)                    |
-| `lvh`    | `100lvw` (Large viewport width)                    |
-| `dvw`    | `100dvw` (Dynamic viewport width)                  |
-| `cqw`    | `100cqw` (Container query width)                   |
-| `cqi`    | `100cqi` (Container query inline)                  |
-| `cqmin`  | `100cqmin` (Container query min)                   |
-| `cqmax`  | `100cqmax` (Container query max)                   |
+| 値       | 説明                              |
+| -------- | --------------------------------- |
+| `full`   | `100%`                            |
+| `auto`   | `auto`                            |
+| `fit`    | `fit-content`                     |
+| `min`    | `min-content`                     |
+| `max`    | `max-content`                     |
+| `screen` | `100vw`                           |
+| `svh`    | `100svw` (Small viewport width)   |
+| `lvh`    | `100lvw` (Large viewport width)   |
+| `dvw`    | `100dvw` (Dynamic viewport width) |
+| `cqw`    | `100cqw` (Container query width)  |
+| `cqi`    | `100cqi` (Container query inline) |
+| `cqmin`  | `100cqmin` (Container query min)  |
+| `cqmax`  | `100cqmax` (Container query max)  |
 
 Height用の特殊な値:
 
-| 値       | 説明                                               |
-| -------- | -------------------------------------------------- |
-| `full`   | `100%`                                             |
-| `auto`   | `auto`                                             |
-| `fit`    | `fit-content`                                      |
-| `min`    | `min-content`                                      |
-| `max`    | `max-content`                                      |
-| `screen` | `100vh`                                            |
-| `svh`    | `100svh` (Small viewport height)                   |
-| `lvh`    | `100lvh` (Large viewport height)                   |
-| `dvh`    | `100dvh` (Dynamic viewport height)                 |
-| `cqw`    | `100cqh` (Container query height)                  |
-| `cqi`    | `100cqb` (Container query block)                   |
-| `cqmin`  | `100cqmin` (Container query min)                   |
-| `cqmax`  | `100cqmax` (Container query max)                   |
+| 値       | 説明                               |
+| -------- | ---------------------------------- |
+| `full`   | `100%`                             |
+| `auto`   | `auto`                             |
+| `fit`    | `fit-content`                      |
+| `min`    | `min-content`                      |
+| `max`    | `max-content`                      |
+| `screen` | `100vh`                            |
+| `svh`    | `100svh` (Small viewport height)   |
+| `lvh`    | `100lvh` (Large viewport height)   |
+| `dvh`    | `100dvh` (Dynamic viewport height) |
+| `cqw`    | `100cqh` (Container query height)  |
+| `cqi`    | `100cqb` (Container query block)   |
+| `cqmin`  | `100cqmin` (Container query min)   |
+| `cqmax`  | `100cqmax` (Container query max)   |
 
 ### カスタム値
 

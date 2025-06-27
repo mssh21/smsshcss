@@ -24,7 +24,7 @@ export const performanceTiming = {
     if (debugGenerator.enabled) {
       console.timeEnd(`[SmsshCSS] ${label}`);
     }
-  }
+  },
 };
 
 // Structured log output for reports
@@ -48,7 +48,7 @@ export const logReport = {
       }
     }
   },
-  
+
   cache: (stats: {
     hits: number;
     misses: number;
@@ -68,13 +68,13 @@ export const logReport = {
       });
     }
   },
-  
+
   validation: (formatted: string): void => {
     if (debugConfig.enabled || process.env.SMSSHCSS_SHOW_VALIDATION === 'true') {
       console.log('\n📋 SmsshCSS Configuration Validation:');
       console.log(formatted);
     }
-  }
+  },
 };
 
 // Warning system with deprecation tracking
@@ -83,22 +83,22 @@ export const logWarning = {
     if (process.env.NODE_ENV === 'development' && process.env.SMSSHCSS_SILENT !== 'true') {
       console.warn(
         `⚠️  [SmsshCSS] ${functionName} は非推奨です。${replacement} への移行を検討してください。` +
-        (migrationUrl ? `\n詳細: ${migrationUrl}` : '')
+          (migrationUrl ? `\n詳細: ${migrationUrl}` : '')
       );
     }
   },
-  
-  performance: (message: string, context?: Record<string, any>): void => {
+
+  performance: (message: string, context?: Record<string, unknown>): void => {
     if (debugGenerator.enabled) {
       debugGenerator(`Performance warning: ${message}`, context);
     }
   },
-  
+
   fileProcessing: (file: string, error: Error): void => {
     if (debugGenerator.enabled) {
       debugGenerator(`Failed to process file ${file}: ${error.message}`);
     }
-  }
+  },
 };
 
 // Development helpers
@@ -111,7 +111,7 @@ export const devHelpers = {
       });
     }
   },
-  
+
   logClassExtraction: (source: string, classes: string[]): void => {
     if (debugPurger.enabled) {
       debugPurger(`Extracted ${classes.length} classes from ${source}`);
@@ -120,34 +120,36 @@ export const devHelpers = {
       }
     }
   },
-  
+
   logCacheHit: (key: string, type: string): void => {
     if (debugCache.enabled) {
       debugCache(`Cache hit for ${type}: ${key}`);
     }
   },
-  
+
   logCacheMiss: (key: string, type: string): void => {
     if (debugCache.enabled) {
       debugCache(`Cache miss for ${type}: ${key}`);
     }
-  }
+  },
 };
 
 // Check if any debug namespace is enabled
 export const isDebugEnabled = (): boolean => {
-  return debugGenerator.enabled || 
-         debugPurger.enabled || 
-         debugValidator.enabled || 
-         debugCache.enabled || 
-         debugConfig.enabled ||
-         debugPlugin.enabled ||
-         debugUtils.enabled;
+  return (
+    debugGenerator.enabled ||
+    debugPurger.enabled ||
+    debugValidator.enabled ||
+    debugCache.enabled ||
+    debugConfig.enabled ||
+    debugPlugin.enabled ||
+    debugUtils.enabled
+  );
 };
 
 // Legacy console.log replacement for gradual migration
-export const legacyLog = (...args: any[]): void => {
+export const legacyLog = (...args: unknown[]): void => {
   if (process.env.NODE_ENV === 'development' && process.env.SMSSHCSS_LEGACY_LOGS === 'true') {
     console.log('[SmsshCSS Legacy]', ...args);
   }
-}; 
+};

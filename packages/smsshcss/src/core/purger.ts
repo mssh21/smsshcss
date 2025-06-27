@@ -11,7 +11,8 @@ import { debugPurger, logReport, logWarning, devHelpers } from '../utils/debug';
 class CSSRuleParser {
   private css: string;
   private position: number = 0;
-  private rules: Array<{ selector: string; content: string; startPos: number; endPos: number }> = [];
+  private rules: Array<{ selector: string; content: string; startPos: number; endPos: number }> =
+    [];
 
   constructor(css: string) {
     this.css = css;
@@ -20,31 +21,31 @@ class CSSRuleParser {
   parse(): Array<{ selector: string; content: string; startPos: number; endPos: number }> {
     this.position = 0;
     this.rules = [];
-    
+
     while (this.position < this.css.length) {
       this.skipWhitespaceAndComments();
-      
+
       if (this.position >= this.css.length) break;
-      
+
       const rule = this.parseRule();
       if (rule) {
         this.rules.push(rule);
       }
     }
-    
+
     return this.rules;
   }
 
   private skipWhitespaceAndComments(): void {
     while (this.position < this.css.length) {
       const char = this.css[this.position];
-      
+
       // Skip whitespace
       if (/\s/.test(char)) {
         this.position++;
         continue;
       }
-      
+
       // Skip comments
       if (char === '/' && this.css[this.position + 1] === '*') {
         this.position += 2;
@@ -57,23 +58,28 @@ class CSSRuleParser {
         }
         continue;
       }
-      
+
       break;
     }
   }
 
-  private parseRule(): { selector: string; content: string; startPos: number; endPos: number } | null {
+  private parseRule(): {
+    selector: string;
+    content: string;
+    startPos: number;
+    endPos: number;
+  } | null {
     const startPos = this.position;
-    
+
     // Find the opening brace
     let selectorEnd = this.position;
     let braceCount = 0;
     let inString = false;
     let stringChar = '';
-    
+
     while (selectorEnd < this.css.length) {
       const char = this.css[selectorEnd];
-      
+
       // Handle strings
       if (!inString && (char === '"' || char === "'")) {
         inString = true;
@@ -82,7 +88,7 @@ class CSSRuleParser {
         inString = false;
         stringChar = '';
       }
-      
+
       if (!inString) {
         if (char === '{') {
           braceCount++;
@@ -93,26 +99,26 @@ class CSSRuleParser {
           braceCount--;
         }
       }
-      
+
       selectorEnd++;
     }
-    
+
     if (selectorEnd >= this.css.length) {
       return null; // No opening brace found
     }
-    
+
     const selector = this.css.substring(startPos, selectorEnd).trim();
-    
+
     // Parse the content inside braces
-    let contentStart = selectorEnd + 1;
+    const contentStart = selectorEnd + 1;
     let contentEnd = contentStart;
     braceCount = 1;
     inString = false;
     stringChar = '';
-    
+
     while (contentEnd < this.css.length && braceCount > 0) {
       const char = this.css[contentEnd];
-      
+
       // Handle strings
       if (!inString && (char === '"' || char === "'")) {
         inString = true;
@@ -121,7 +127,7 @@ class CSSRuleParser {
         inString = false;
         stringChar = '';
       }
-      
+
       if (!inString) {
         if (char === '{') {
           braceCount++;
@@ -129,22 +135,22 @@ class CSSRuleParser {
           braceCount--;
         }
       }
-      
+
       contentEnd++;
     }
-    
+
     if (braceCount > 0) {
       return null; // Unclosed braces
     }
-    
+
     const content = this.css.substring(contentStart, contentEnd - 1).trim();
     this.position = contentEnd;
-    
+
     return {
       selector,
       content,
       startPos,
-      endPos: contentEnd
+      endPos: contentEnd,
     };
   }
 }
@@ -163,7 +169,7 @@ export class CSSPurger {
       variables: true,
       ...config,
     };
-    
+
     debugPurger('CSSPurger initialized', { config: this.config });
   }
 
@@ -202,10 +208,13 @@ export class CSSPurger {
             classesFound,
             size,
           });
-          
+
           devHelpers.logClassExtraction(file, classesFound);
         } catch (error) {
-          logWarning.fileProcessing(file, error instanceof Error ? error : new Error(String(error)));
+          logWarning.fileProcessing(
+            file,
+            error instanceof Error ? error : new Error(String(error))
+          );
         }
       }
 
@@ -239,43 +248,55 @@ export class CSSPurger {
       {
         name: 'HTML class attributes',
         pattern: /class\s*=\s*["']([^"']*?)["']/g,
-        processor: (match: string) => match.split(/\s+/).filter(Boolean)
+        processor: (match: string) => match.split(/\s+/).filter(Boolean),
       },
       {
         name: 'React className attributes',
         pattern: /className\s*=\s*["']([^"']*?)["']/g,
-        processor: (match: string) => match.split(/\s+/).filter(Boolean)
+        processor: (match: string) => match.split(/\s+/).filter(Boolean),
       },
       {
         name: 'Template literals with classes',
         pattern: /[`"']\s*([^`"']*?(?:class|className)[^`"']*?)\s*[`"']/g,
-        processor: (match: string) => {
+        processor: (match: string): string[] => {
           const classMatches = match.match(/\b[a-zA-Z][\w-]*(?:-\[([^\]]+)\])?\b/g) || [];
           return classMatches;
-        }
+        },
       },
       {
         name: 'Template literal dynamic classes',
         pattern: /\$\{[^}]*?\?\s*["']([^"']+)["'][^}]*?\}/g,
-        processor: (match: string, className: string) => [className]
+        processor: (match: string, className: string) => [className],
       },
       {
         name: 'Arbitrary value classes',
         pattern: /\b([mp][trlbxy]?|gap(?:-[xy])?|w|h|text|bg|border|rounded)-\[([^\]]+)\]/g,
-        processor: (match: string, prefix: string, value: string) => [`${prefix}-[${value}]`]
+        processor: (match: string, prefix: string, value: string) => [`${prefix}-[${value}]`],
       },
       {
         name: 'CSS-in-JS patterns',
         pattern: /(?:css|className|class)\s*[`"']\s*([^`"']+)\s*[`"']/g,
-        processor: (match: string) => {
+        processor: (match: string): string[] => {
           // Extract potential class names from CSS-in-JS
           const possibleClasses = match.match(/\b[a-zA-Z][\w-]*\b/g) || [];
-          return possibleClasses.filter(cls => 
-            // Filter out CSS properties and values
-            !['css', 'className', 'class', 'px', 'rem', 'em', 'auto', 'none', 'block', 'inline'].includes(cls)
+          return possibleClasses.filter(
+            (cls) =>
+              // Filter out CSS properties and values
+              ![
+                'css',
+                'className',
+                'class',
+                'px',
+                'rem',
+                'em',
+                'auto',
+                'none',
+                'block',
+                'inline',
+              ].includes(cls)
           );
-        }
-      }
+        },
+      },
     ];
 
     for (const { name, pattern, processor } of extractionPatterns) {
@@ -284,7 +305,7 @@ export class CSSPurger {
         try {
           const extracted = processor(match[1] || match[0], match[1], match[2]);
           classes.push(...extracted);
-          
+
           debugPurger(`Extracted via ${name}: ${extracted.join(', ')}`);
         } catch (error) {
           debugPurger(`Error in ${name} extraction:`, error);
@@ -295,7 +316,7 @@ export class CSSPurger {
     // Remove duplicates and empty strings
     const uniqueClasses = [...new Set(classes.filter(Boolean))];
     debugPurger(`Total unique classes extracted from ${filePath}: ${uniqueClasses.length}`);
-    
+
     return uniqueClasses;
   }
 
@@ -336,24 +357,24 @@ export class CSSPurger {
    */
   extractAllClasses(css: string): void {
     debugPurger('Extracting all classes from CSS');
-    
+
     // Enhanced class extraction patterns
     const classPatterns = [
       {
         name: 'Standard classes',
         pattern: /\.([a-zA-Z][\w-]*)/g,
-        processor: (match: RegExpExecArray) => match[1]
+        processor: (match: RegExpExecArray) => match[1],
       },
       {
         name: 'Arbitrary value classes',
         pattern: /\.([a-zA-Z][\w-]*)-\\?\[([^\]\\]+)\\?\]/g,
-        processor: (match: RegExpExecArray) => `${match[1]}-[${match[2]}]`
+        processor: (match: RegExpExecArray) => `${match[1]}-[${match[2]}]`,
       },
       {
         name: 'Escaped arbitrary values',
         pattern: /\.([a-zA-Z][\w-]*-\\[0-9a-fA-F]+\\])/g,
-        processor: (match: RegExpExecArray) => match[1].replace(/\\/g, '')
-      }
+        processor: (match: RegExpExecArray) => match[1].replace(/\\/g, ''),
+      },
     ];
 
     for (const { name, pattern, processor } of classPatterns) {
@@ -367,7 +388,7 @@ export class CSSPurger {
         }
       }
     }
-    
+
     debugPurger(`Extracted ${this.allClasses.size} total classes from CSS`);
   }
 
@@ -386,7 +407,7 @@ export class CSSPurger {
     // Use the improved CSS parser for more robust processing
     const parser = new CSSRuleParser(css);
     const rules = parser.parse();
-    
+
     debugPurger(`Parsed ${rules.length} CSS rules`);
 
     const keptRules: string[] = [];
@@ -404,17 +425,22 @@ export class CSSPurger {
 
     // Handle any remaining CSS that wasn't parsed as rules (imports, etc.)
     const remainingCSS = this.extractNonRuleCSS(css, rules);
-    
+
     const result = [...remainingCSS, ...keptRules].join('\n\n');
-    
-    debugPurger(`CSS purging complete: ${purgedCount} rules purged, ${keptRules.length} rules kept`);
+
+    debugPurger(
+      `CSS purging complete: ${purgedCount} rules purged, ${keptRules.length} rules kept`
+    );
     return result;
   }
 
   /**
    * Extract CSS that isn't part of rules (imports, comments, etc.)
    */
-  private extractNonRuleCSS(css: string, parsedRules: Array<{ startPos: number; endPos: number }>): string[] {
+  private extractNonRuleCSS(
+    css: string,
+    parsedRules: Array<{ startPos: number; endPos: number }>
+  ): string[] {
     const nonRuleCSS: string[] = [];
     let lastPos = 0;
 
@@ -523,22 +549,23 @@ export class CSSPurger {
     }
 
     // Use the new structured logging system
-    const reductionPercentage = report.purgedClasses > 0 
-      ? parseFloat(((report.purgedClasses / report.totalClasses) * 100).toFixed(1))
-      : undefined;
+    const reductionPercentage =
+      report.purgedClasses > 0
+        ? parseFloat(((report.purgedClasses / report.totalClasses) * 100).toFixed(1))
+        : undefined;
 
     logReport.purge({
       totalClasses: report.totalClasses,
       usedClasses: report.usedClasses,
       purgedClasses: report.purgedClasses,
       buildTime: report.buildTime,
-      reductionPercentage
+      reductionPercentage,
     });
 
     // Additional detailed output for debug mode
     if (debugPurger.enabled) {
       debugPurger(`Safelist: ${report.safelist.length} items`);
-      
+
       // File analysis details
       const maxFilesToShow = 10;
       const filesToShow = report.fileAnalysis.slice(0, maxFilesToShow);

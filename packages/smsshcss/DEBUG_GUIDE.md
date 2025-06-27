@@ -104,9 +104,9 @@ devHelpers.logGeneratedSections(sections);
 ```javascript
 import { debugGenerator } from 'smsshcss/utils';
 
-debugGenerator('Custom message', { 
+debugGenerator('Custom message', {
   context: 'additional data',
-  count: 42 
+  count: 42,
 });
 ```
 
@@ -154,15 +154,17 @@ process.env.SMSSHCSS_SILENT = 'true';
 ### よくある問題
 
 1. **デバッグログが表示されない**
+
    ```bash
    # DEBUG環境変数を確認
    echo $DEBUG
-   
+
    # 正しく設定
    DEBUG=smsshcss:* npm run build
    ```
 
 2. **パフォーマンスが低下している**
+
    ```bash
    # キャッシュ統計を確認
    SMSSHCSS_SHOW_CACHE_STATS=true npm run build
@@ -192,4 +194,4 @@ export SMSSHCSS_SILENT=true
 3. **プラグインAPI**: カスタムデバッグ拡張
 4. **TypeScript型**: 完全な型安全性
 
-詳細な情報については、[API Reference](./API_REFERENCE.md)および[Migration Guide](./MIGRATION_GUIDE.md)を参照してください。 
+詳細な情報については、[API Reference](./API_REFERENCE.md)および[Migration Guide](./MIGRATION_GUIDE.md)を参照してください。

@@ -15,24 +15,26 @@
 #### 1. `generateCSSSync` → `generateCSS`
 
 **Before (同期版):**
+
 ```javascript
 import { generateCSSSync } from 'smsshcss';
 
 const css = generateCSSSync({
   content: ['src/**/*.{html,js,tsx}'],
-  includeResetCSS: true
+  includeResetCSS: true,
 });
 console.log(css);
 ```
 
 **After (非同期版):**
+
 ```javascript
 import { generateCSS } from 'smsshcss';
 
 async function buildCSS() {
   const css = await generateCSS({
     content: ['src/**/*.{html,js,tsx}'],
-    includeResetCSS: true
+    includeResetCSS: true,
   });
   console.log(css);
 }
@@ -43,21 +45,23 @@ buildCSS();
 #### 2. `initSync` → `init`
 
 **Before (同期版):**
+
 ```javascript
 import { initSync } from 'smsshcss';
 
 const css = initSync({
-  content: ['src/**/*.html']
+  content: ['src/**/*.html'],
 });
 ```
 
 **After (非同期版):**
+
 ```javascript
 import { init } from 'smsshcss';
 
 async function initializeCSS() {
   const css = await init({
-    content: ['src/**/*.html']
+    content: ['src/**/*.html'],
   });
   return css;
 }
@@ -66,6 +70,7 @@ async function initializeCSS() {
 #### 3. `CSSGenerator.generateFullCSSSync` → `CSSGenerator.generateFullCSS`
 
 **Before (同期版):**
+
 ```javascript
 import { CSSGenerator } from 'smsshcss';
 
@@ -74,6 +79,7 @@ const css = generator.generateFullCSSSync();
 ```
 
 **After (非同期版):**
+
 ```javascript
 import { CSSGenerator } from 'smsshcss';
 
@@ -97,15 +103,16 @@ export default defineConfig({
   plugins: [
     smsshcss({
       content: ['src/**/*.{html,js,ts,jsx,tsx}'],
-      includeReset: true
-    })
-  ]
+      includeReset: true,
+    }),
+  ],
 });
 ```
 
 ### 🧪 テストでの移行
 
 **Before (同期版):**
+
 ```javascript
 import { generateCSSSync } from 'smsshcss';
 
@@ -116,6 +123,7 @@ test('CSS generation', () => {
 ```
 
 **After (非同期版):**
+
 ```javascript
 import { generateCSS } from 'smsshcss';
 
@@ -149,4 +157,4 @@ test('CSS generation', async () => {
 
 - [API Reference](./API_REFERENCE.md)
 - [Best Practices](../../BEST_PRACTICES.md)
-- [Examples](../../EXAMPLES.md) 
+- [Examples](../../EXAMPLES.md)

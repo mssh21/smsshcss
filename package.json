@@ -4,7 +4,8 @@
   "version": "1.0.1",
   "scripts": {
     "format": "prettier --write .",
-    "lint": "prettier --check . && turbo lint",
+    "lint": "prettier --write . && eslint --fix '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
+    "lint:check": "prettier --check . && turbo lint",
     "lint:fix": "prettier --write . && eslint --fix",
     "build": "turbo build",
     "dev": "turbo dev",

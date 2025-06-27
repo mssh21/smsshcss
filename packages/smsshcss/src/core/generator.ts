@@ -280,7 +280,16 @@ export class CSSGenerator {
           }
 
           // 各種カスタムクラスを抽出（同期関数なのでPromise.resolveは不要）
-          const [spacingClasses, widthClasses, heightClasses, gridClasses, flexClasses, zIndexClasses, orderClasses, colorClasses] = [
+          const [
+            spacingClasses,
+            widthClasses,
+            heightClasses,
+            gridClasses,
+            flexClasses,
+            zIndexClasses,
+            orderClasses,
+            colorClasses,
+          ] = [
             extractCustomSpacingClasses(fileContent),
             extractCustomWidthClasses(fileContent),
             extractCustomHeightClasses(fileContent),

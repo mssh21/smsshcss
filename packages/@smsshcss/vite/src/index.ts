@@ -95,7 +95,7 @@ export interface SmsshCSSViteOptions {
  */
 function matchesPattern(filePath: string, patterns: string[]): boolean {
   const normalizedPath = filePath.replace(/\\/g, '/');
-  return patterns.some(pattern => isMatch(normalizedPath, pattern));
+  return patterns.some((pattern) => isMatch(normalizedPath, pattern));
 }
 
 /**
