@@ -2,7 +2,7 @@ import type { Plugin, ViteDevServer } from 'vite';
 import {
   SmsshCSSConfig,
   generateCSS as smsshGenerateCSS,
-  generateCSSSync as smsshGenerateCSSSync,
+  generatePurgeReport,
   extractCustomSpacingClasses,
   extractCustomWidthClasses,
   extractCustomHeightClasses,
@@ -14,6 +14,8 @@ import {
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
+import micromatch from 'micromatch';
+const { isMatch } = micromatch;
 import { createHash } from 'crypto';
 
 export interface SmsshCSSViteOptions {
@@ -88,16 +90,12 @@ export interface SmsshCSSViteOptions {
 // };
 
 /**
- * ファイルパターンをマッチングするための正規表現を生成
+ * ファイルパターンがマッチするかどうかを判定
+ * micromatchを使用してglobパターンを正確に処理
  */
-function createPatternRegex(pattern: string): RegExp {
-  const regexPattern = pattern
-    .replace(/\*\*/g, '.*')
-    .replace(/\*/g, '[^/]*')
-    .replace(/\{([^}]+)\}/g, '($1)')
-    .replace(/,/g, '|')
-    .replace(/\./g, '\\.');
-  return new RegExp(regexPattern);
+function matchesPattern(filePath: string, patterns: string[]): boolean {
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  return patterns.some(pattern => isMatch(normalizedPath, pattern));
 }
 
 /**
@@ -239,15 +237,15 @@ async function extractAllCustomClassesFromFiles(
         }
 
         // 各種カスタムクラスを抽出
-        const extractionResults = await Promise.all([
-          Promise.resolve(extractCustomSpacingClasses(fileContent)),
-          Promise.resolve(extractCustomWidthClasses(fileContent)),
-          Promise.resolve(extractCustomHeightClasses(fileContent)),
-          Promise.resolve(extractCustomGridClasses(fileContent)),
-          Promise.resolve(extractCustomOrderClasses(fileContent)),
-          Promise.resolve(extractCustomZIndexClasses(fileContent)),
-          Promise.resolve(extractCustomColorClasses(fileContent)),
-        ]);
+        const extractionResults = [
+          extractCustomSpacingClasses(fileContent),
+          extractCustomWidthClasses(fileContent),
+          extractCustomHeightClasses(fileContent),
+          extractCustomGridClasses(fileContent),
+          extractCustomOrderClasses(fileContent),
+          extractCustomZIndexClasses(fileContent),
+          extractCustomColorClasses(fileContent),
+        ];
 
         const fileClasses = extractionResults.flat();
 
@@ -310,16 +308,12 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
   let isProduction = false;
   const cssCache = new CSSCache(cache);
-  let patternRegexes: RegExp[] = [];
 
   return {
     name: 'smsshcss',
 
     configResolved(config): void {
       isProduction = config.command === 'build';
-
-      // パターンの正規表現を事前に作成
-      patternRegexes = content.map(createPatternRegex);
 
       // minifyオプションがfalseの場合、ViteのCSS minifyを無効化
       if (!minify && isProduction) {
@@ -350,8 +344,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
        * ファイルが監視対象かどうかを判定
        */
       const shouldReload = (file: string): boolean => {
-        const normalizedFile = file.replace(/\\/g, '/');
-        return patternRegexes.some((regex) => regex.test(normalizedFile));
+        return matchesPattern(file, content);
       };
 
       /**
@@ -389,12 +382,20 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
       });
 
       // 定期的にキャッシュをクリーンアップ
-      setInterval(
+      const cleanupInterval = setInterval(
         () => {
           cssCache.cleanup();
         },
         10 * 60 * 1000
       ); // 10分ごと
+
+      // サーバー終了時にクリーンアップ間隔をクリア
+      devServer.watcher.on('close', () => {
+        clearInterval(cleanupInterval);
+        if (debug) {
+          console.log('[smsshcss] Dev server closed, cleanup interval cleared');
+        }
+      });
     },
 
     async transform(code: string, id: string): Promise<{ code: string } | null> {
@@ -434,7 +435,6 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
             if (showPurgeReport) {
               // パージレポートを表示
-              const { generatePurgeReport } = await import('smsshcss');
               const report = await generatePurgeReport(smsshConfig);
               if (report) {
                 console.log('\n🎯 SmsshCSS Purge Report (Vite Plugin)');
@@ -454,14 +454,14 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
               }
             }
           } else {
-            // 開発時は同期版を使用（パフォーマンス重視）
+            // 開発時も非同期版を使用（将来的な同期API削除に対応）
             if (debug) {
               console.log(
                 '[smsshcss] Generating CSS with config:',
                 JSON.stringify(smsshConfig, null, 2)
               );
             }
-            generatedCSS = smsshGenerateCSSSync(smsshConfig);
+            generatedCSS = await smsshGenerateCSS(smsshConfig);
             if (debug) {
               console.log(
                 '[smsshcss] Generated CSS includes Apply:',

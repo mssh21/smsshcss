@@ -8,7 +8,7 @@
   "numFailedTests": 0,
   "numPendingTests": 0,
   "numTodoTests": 0,
-  "startTime": 1751029484977,
+  "startTime": 1751038120440,
   "success": true,
   "testResults": [
     {
@@ -22,7 +22,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Node.js Version Compatibility should work with current Node.js version",
           "status": "passed",
           "title": "should work with current Node.js version",
-          "duration": 46,
+          "duration": 51,
           "failureMessages": []
         },
         {
@@ -34,7 +34,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Node.js Version Compatibility should handle ES modules correctly",
           "status": "passed",
           "title": "should handle ES modules correctly",
-          "duration": 77,
+          "duration": 22,
           "failureMessages": []
         },
         {
@@ -46,7 +46,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Node.js Version Compatibility should handle file system operations across platforms",
           "status": "passed",
           "title": "should handle file system operations across platforms",
-          "duration": 58,
+          "duration": 61,
           "failureMessages": []
         },
         {
@@ -58,7 +58,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Vite Version Compatibility should be compatible with Vite plugin API",
           "status": "passed",
           "title": "should be compatible with Vite plugin API",
-          "duration": 0,
+          "duration": 1,
           "failureMessages": []
         },
         {
@@ -70,7 +70,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Vite Version Compatibility should handle different file types correctly",
           "status": "passed",
           "title": "should handle different file types correctly",
-          "duration": 36,
+          "duration": 18,
           "failureMessages": []
         },
         {
@@ -94,7 +94,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Browser CSS Compatibility should generate basic CSS that works in all browsers",
           "status": "passed",
           "title": "should generate basic CSS that works in all browsers",
-          "duration": 24,
+          "duration": 6,
           "failureMessages": []
         },
         {
@@ -106,7 +106,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Browser CSS Compatibility should handle modern CSS units appropriately",
           "status": "passed",
           "title": "should handle modern CSS units appropriately",
-          "duration": 25,
+          "duration": 42,
           "failureMessages": []
         },
         {
@@ -118,7 +118,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Browser CSS Compatibility should generate vendor-prefix-free CSS",
           "status": "passed",
           "title": "should generate vendor-prefix-free CSS",
-          "duration": 25,
+          "duration": 12,
           "failureMessages": []
         },
         {
@@ -154,7 +154,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Framework Integration Compatibility should handle TypeScript files correctly",
           "status": "passed",
           "title": "should handle TypeScript files correctly",
-          "duration": 39,
+          "duration": 45,
           "failureMessages": []
         },
         {
@@ -166,7 +166,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Build Tool Integration should work with different bundlers",
           "status": "passed",
           "title": "should work with different bundlers",
-          "duration": 25,
+          "duration": 33,
           "failureMessages": []
         },
         {
@@ -178,7 +178,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Build Tool Integration should handle sourcemap generation",
           "status": "passed",
           "title": "should handle sourcemap generation",
-          "duration": 50,
+          "duration": 22,
           "failureMessages": []
         },
         {
@@ -190,7 +190,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Configuration Compatibility should handle various content patterns",
           "status": "passed",
           "title": "should handle various content patterns",
-          "duration": 35,
+          "duration": 53,
           "failureMessages": []
         },
         {
@@ -202,7 +202,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Configuration Compatibility should work with different apply configurations",
           "status": "passed",
           "title": "should work with different apply configurations",
-          "duration": 31,
+          "duration": 21,
           "failureMessages": []
         },
         {
@@ -214,7 +214,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Configuration Compatibility should handle malformed configurations gracefully",
           "status": "passed",
           "title": "should handle malformed configurations gracefully",
-          "duration": 52,
+          "duration": 41,
           "failureMessages": []
         },
         {
@@ -226,7 +226,7 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Performance Across Environments should maintain performance in CI environments",
           "status": "passed",
           "title": "should maintain performance in CI environments",
-          "duration": 44,
+          "duration": 107,
           "failureMessages": []
         },
         {
@@ -238,12 +238,12 @@
           "fullName": " SmsshCSS Vite Plugin - Compatibility Tests Performance Across Environments should work consistently across different OS",
           "status": "passed",
           "title": "should work consistently across different OS",
-          "duration": 25,
+          "duration": 47,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486546,
-      "endTime": 1751029487185,
+      "startTime": 1751038121862,
+      "endTime": 1751038122492,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/compatibility.test.ts"
@@ -259,7 +259,7 @@
           "fullName": " Custom Value Classes Integration HTML Content Processing should process gap custom values in HTML files",
           "status": "passed",
           "title": "should process gap custom values in HTML files",
-          "duration": 25,
+          "duration": 35,
           "failureMessages": []
         },
         {
@@ -271,7 +271,7 @@
           "fullName": " Custom Value Classes Integration HTML Content Processing should process margin and padding custom values",
           "status": "passed",
           "title": "should process margin and padding custom values",
-          "duration": 6,
+          "duration": 10,
           "failureMessages": []
         },
         {
@@ -283,7 +283,7 @@
           "fullName": " Custom Value Classes Integration HTML Content Processing should process width and height custom values",
           "status": "passed",
           "title": "should process width and height custom values",
-          "duration": 14,
+          "duration": 5,
           "failureMessages": []
         },
         {
@@ -295,7 +295,7 @@
           "fullName": " Custom Value Classes Integration HTML Content Processing should process color custom values",
           "status": "passed",
           "title": "should process color custom values",
-          "duration": 12,
+          "duration": 26,
           "failureMessages": []
         },
         {
@@ -307,7 +307,7 @@
           "fullName": " Custom Value Classes Integration HTML Content Processing should handle complex custom values",
           "status": "passed",
           "title": "should handle complex custom values",
-          "duration": 6,
+          "duration": 7,
           "failureMessages": []
         },
         {
@@ -331,7 +331,7 @@
           "fullName": " Custom Value Classes Integration Multiple File Processing should deduplicate identical custom values",
           "status": "passed",
           "title": "should deduplicate identical custom values",
-          "duration": 5,
+          "duration": 6,
           "failureMessages": []
         },
         {
@@ -343,7 +343,7 @@
           "fullName": " Custom Value Classes Integration CSS Functions Support should handle calc() functions correctly",
           "status": "passed",
           "title": "should handle calc() functions correctly",
-          "duration": 37,
+          "duration": 4,
           "failureMessages": []
         },
         {
@@ -355,7 +355,7 @@
           "fullName": " Custom Value Classes Integration CSS Functions Support should handle min(), max(), and clamp() functions",
           "status": "passed",
           "title": "should handle min(), max(), and clamp() functions",
-          "duration": 5,
+          "duration": 4,
           "failureMessages": []
         },
         {
@@ -367,7 +367,7 @@
           "fullName": " Custom Value Classes Integration CSS Functions Support should handle nested CSS functions",
           "status": "passed",
           "title": "should handle nested CSS functions",
-          "duration": 4,
+          "duration": 20,
           "failureMessages": []
         },
         {
@@ -379,7 +379,7 @@
           "fullName": " Custom Value Classes Integration CSS Variables Support should handle CSS variables correctly",
           "status": "passed",
           "title": "should handle CSS variables correctly",
-          "duration": 7,
+          "duration": 13,
           "failureMessages": []
         },
         {
@@ -391,7 +391,7 @@
           "fullName": " Custom Value Classes Integration Edge Cases and Error Handling should handle invalid class names gracefully",
           "status": "passed",
           "title": "should handle invalid class names gracefully",
-          "duration": 4,
+          "duration": 7,
           "failureMessages": []
         },
         {
@@ -403,7 +403,7 @@
           "fullName": " Custom Value Classes Integration Edge Cases and Error Handling should handle extreme values",
           "status": "passed",
           "title": "should handle extreme values",
-          "duration": 6,
+          "duration": 4,
           "failureMessages": []
         },
         {
@@ -415,7 +415,7 @@
           "fullName": " Custom Value Classes Integration Edge Cases and Error Handling should handle special characters safely",
           "status": "passed",
           "title": "should handle special characters safely",
-          "duration": 9,
+          "duration": 6,
           "failureMessages": []
         },
         {
@@ -427,7 +427,7 @@
           "fullName": " Custom Value Classes Integration Performance Tests should handle large number of custom values efficiently",
           "status": "passed",
           "title": "should handle large number of custom values efficiently",
-          "duration": 104,
+          "duration": 110,
           "failureMessages": []
         },
         {
@@ -439,7 +439,7 @@
           "fullName": " Custom Value Classes Integration Performance Tests should handle many files efficiently",
           "status": "passed",
           "title": "should handle many files efficiently",
-          "duration": 166,
+          "duration": 171,
           "failureMessages": []
         },
         {
@@ -451,7 +451,7 @@
           "fullName": " Custom Value Classes Integration Unit Values and Browser Compatibility should support all CSS units",
           "status": "passed",
           "title": "should support all CSS units",
-          "duration": 7,
+          "duration": 4,
           "failureMessages": []
         },
         {
@@ -463,7 +463,7 @@
           "fullName": " Custom Value Classes Integration Unit Values and Browser Compatibility should support modern CSS units",
           "status": "passed",
           "title": "should support modern CSS units",
-          "duration": 5,
+          "duration": 3,
           "failureMessages": []
         },
         {
@@ -475,7 +475,7 @@
           "fullName": " Custom Value Classes Integration Data-driven Tests should process all gap test cases correctly",
           "status": "passed",
           "title": "should process all gap test cases correctly",
-          "duration": 29,
+          "duration": 40,
           "failureMessages": []
         },
         {
@@ -487,7 +487,7 @@
           "fullName": " Custom Value Classes Integration Data-driven Tests should process all spacing test cases correctly",
           "status": "passed",
           "title": "should process all spacing test cases correctly",
-          "duration": 4,
+          "duration": 8,
           "failureMessages": []
         },
         {
@@ -499,12 +499,12 @@
           "fullName": " Custom Value Classes Integration Data-driven Tests should process all size test cases correctly",
           "status": "passed",
           "title": "should process all size test cases correctly",
-          "duration": 3,
+          "duration": 15,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486635,
-      "endTime": 1751029487126,
+      "startTime": 1751038121866,
+      "endTime": 1751038122389,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/custom-values.test.ts"
@@ -520,7 +520,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Real-world Scenarios should handle a typical React project structure",
           "status": "passed",
           "title": "should handle a typical React project structure",
-          "duration": 30,
+          "duration": 26,
           "failureMessages": []
         },
         {
@@ -532,7 +532,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Real-world Scenarios should handle Vue.js project with complex layouts",
           "status": "passed",
           "title": "should handle Vue.js project with complex layouts",
-          "duration": 6,
+          "duration": 5,
           "failureMessages": []
         },
         {
@@ -544,7 +544,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Real-world Scenarios should handle mixed standard and custom classes efficiently",
           "status": "passed",
           "title": "should handle mixed standard and custom classes efficiently",
-          "duration": 10,
+          "duration": 5,
           "failureMessages": []
         },
         {
@@ -556,7 +556,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Configuration Scenarios should work with custom theme and minimal options",
           "status": "passed",
           "title": "should work with custom theme and minimal options",
-          "duration": 6,
+          "duration": 5,
           "failureMessages": []
         },
         {
@@ -604,7 +604,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Advanced Integration Scenarios should handle large-scale projects efficiently",
           "status": "passed",
           "title": "should handle large-scale projects efficiently",
-          "duration": 201,
+          "duration": 215,
           "failureMessages": []
         },
         {
@@ -616,7 +616,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Advanced Integration Scenarios should handle mixed framework project (React + Vue + HTML)",
           "status": "passed",
           "title": "should handle mixed framework project (React + Vue + HTML)",
-          "duration": 26,
+          "duration": 9,
           "failureMessages": []
         },
         {
@@ -628,7 +628,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Advanced Integration Scenarios should handle real-world project structure with nested directories",
           "status": "passed",
           "title": "should handle real-world project structure with nested directories",
-          "duration": 16,
+          "duration": 29,
           "failureMessages": []
         },
         {
@@ -640,7 +640,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Performance and Scalability should maintain performance with increasing file count",
           "status": "passed",
           "title": "should maintain performance with increasing file count",
-          "duration": 498,
+          "duration": 385,
           "failureMessages": []
         },
         {
@@ -652,7 +652,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Performance and Scalability should handle memory efficiently with large class count",
           "status": "passed",
           "title": "should handle memory efficiently with large class count",
-          "duration": 326,
+          "duration": 308,
           "failureMessages": []
         },
         {
@@ -664,7 +664,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Production Environment Simulation should work correctly with minification enabled",
           "status": "passed",
           "title": "should work correctly with minification enabled",
-          "duration": 35,
+          "duration": 10,
           "failureMessages": []
         },
         {
@@ -676,7 +676,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Production Environment Simulation should handle production optimizations",
           "status": "passed",
           "title": "should handle production optimizations",
-          "duration": 92,
+          "duration": 122,
           "failureMessages": []
         },
         {
@@ -688,7 +688,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Plugin Compatibility and Edge Cases should handle concurrent transform calls",
           "status": "passed",
           "title": "should handle concurrent transform calls",
-          "duration": 13,
+          "duration": 58,
           "failureMessages": []
         },
         {
@@ -700,7 +700,7 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Plugin Compatibility and Edge Cases should handle file watch scenarios",
           "status": "passed",
           "title": "should handle file watch scenarios",
-          "duration": 8,
+          "duration": 7,
           "failureMessages": []
         },
         {
@@ -736,12 +736,12 @@
           "fullName": " SmsshCSS Vite Plugin - Integration Tests Configuration Edge Cases should handle configuration updates correctly",
           "status": "passed",
           "title": "should handle configuration updates correctly",
-          "duration": 6,
+          "duration": 7,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486539,
-      "endTime": 1751029487834,
+      "startTime": 1751038121771,
+      "endTime": 1751038122981,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/integration.test.ts"
@@ -757,7 +757,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Transform Performance should transform small projects efficiently",
           "status": "passed",
           "title": "should transform small projects efficiently",
-          "duration": 50,
+          "duration": 100,
           "failureMessages": []
         },
         {
@@ -769,7 +769,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Transform Performance should handle medium projects within reasonable limits",
           "status": "passed",
           "title": "should handle medium projects within reasonable limits",
-          "duration": 218,
+          "duration": 200,
           "failureMessages": []
         },
         {
@@ -781,7 +781,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Transform Performance should scale reasonably with large projects",
           "status": "passed",
           "title": "should scale reasonably with large projects",
-          "duration": 654,
+          "duration": 554,
           "failureMessages": []
         },
         {
@@ -793,7 +793,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Memory Efficiency should not have memory leaks during multiple transforms",
           "status": "passed",
           "title": "should not have memory leaks during multiple transforms",
-          "duration": 529,
+          "duration": 496,
           "failureMessages": []
         },
         {
@@ -805,7 +805,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Memory Efficiency should clean up resources properly",
           "status": "passed",
           "title": "should clean up resources properly",
-          "duration": 217,
+          "duration": 190,
           "failureMessages": []
         },
         {
@@ -817,7 +817,7 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Concurrent Processing should handle concurrent transforms efficiently",
           "status": "passed",
           "title": "should handle concurrent transforms efficiently",
-          "duration": 601,
+          "duration": 282,
           "failureMessages": []
         },
         {
@@ -829,12 +829,12 @@
           "fullName": " SmsshCSS Vite Plugin - Performance Tests Output Size Optimization should generate reasonable output sizes for different project scales",
           "status": "passed",
           "title": "should generate reasonable output sizes for different project scales",
-          "duration": 247,
+          "duration": 253,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486616,
-      "endTime": 1751029489132,
+      "startTime": 1751038121750,
+      "endTime": 1751038123847,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/performance.test.ts"
@@ -874,7 +874,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Apply Classes should generate apply classes with color utilities",
           "status": "passed",
           "title": "should generate apply classes with color utilities",
-          "duration": 17,
+          "duration": 15,
           "failureMessages": []
         },
         {
@@ -886,7 +886,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Apply Classes should handle apply classes with custom color values",
           "status": "passed",
           "title": "should handle apply classes with custom color values",
-          "duration": 51,
+          "duration": 20,
           "failureMessages": []
         },
         {
@@ -898,7 +898,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Apply Classes should handle mixed utility classes in apply",
           "status": "passed",
           "title": "should handle mixed utility classes in apply",
-          "duration": 39,
+          "duration": 28,
           "failureMessages": []
         },
         {
@@ -910,7 +910,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Apply Classes should generate apply classes directly from smsshcss",
           "status": "passed",
           "title": "should generate apply classes directly from smsshcss",
-          "duration": 24,
+          "duration": 13,
           "failureMessages": []
         },
         {
@@ -922,7 +922,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality File Transformation should transform CSS files",
           "status": "passed",
           "title": "should transform CSS files",
-          "duration": 14,
+          "duration": 22,
           "failureMessages": []
         },
         {
@@ -946,7 +946,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality File Transformation should preserve original CSS content",
           "status": "passed",
           "title": "should preserve original CSS content",
-          "duration": 41,
+          "duration": 19,
           "failureMessages": []
         },
         {
@@ -958,7 +958,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality File Transformation should handle empty CSS content",
           "status": "passed",
           "title": "should handle empty CSS content",
-          "duration": 15,
+          "duration": 22,
           "failureMessages": []
         },
         {
@@ -971,7 +971,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Reset CSS should include reset CSS by default",
           "status": "passed",
           "title": "should include reset CSS by default",
-          "duration": 31,
+          "duration": 12,
           "failureMessages": []
         },
         {
@@ -984,7 +984,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Reset CSS should include reset CSS when explicitly enabled",
           "status": "passed",
           "title": "should include reset CSS when explicitly enabled",
-          "duration": 34,
+          "duration": 65,
           "failureMessages": []
         },
         {
@@ -997,7 +997,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Reset CSS should exclude reset CSS when disabled",
           "status": "passed",
           "title": "should exclude reset CSS when disabled",
-          "duration": 18,
+          "duration": 19,
           "failureMessages": []
         },
         {
@@ -1010,7 +1010,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Base CSS should include base CSS by default",
           "status": "passed",
           "title": "should include base CSS by default",
-          "duration": 29,
+          "duration": 15,
           "failureMessages": []
         },
         {
@@ -1023,7 +1023,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Base CSS should include base CSS when explicitly enabled",
           "status": "passed",
           "title": "should include base CSS when explicitly enabled",
-          "duration": 37,
+          "duration": 14,
           "failureMessages": []
         },
         {
@@ -1036,7 +1036,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Base CSS should exclude base CSS when disabled",
           "status": "passed",
           "title": "should exclude base CSS when disabled",
-          "duration": 129,
+          "duration": 18,
           "failureMessages": []
         },
         {
@@ -1049,7 +1049,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality CSS Options Combined Options should handle both reset and base CSS disabled",
           "status": "passed",
           "title": "should handle both reset and base CSS disabled",
-          "duration": 20,
+          "duration": 21,
           "failureMessages": []
         },
         {
@@ -1061,7 +1061,7 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Error Handling should handle invalid file extensions gracefully",
           "status": "passed",
           "title": "should handle invalid file extensions gracefully",
-          "duration": 1,
+          "duration": 2,
           "failureMessages": []
         },
         {
@@ -1073,12 +1073,12 @@
           "fullName": " SmsshCSS Vite Plugin - Core Functionality Error Handling should handle malformed CSS gracefully",
           "status": "passed",
           "title": "should handle malformed CSS gracefully",
-          "duration": 78,
+          "duration": 23,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486907,
-      "endTime": 1751029487492,
+      "startTime": 1751038122117,
+      "endTime": 1751038122450,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/plugin.test.ts"
@@ -1094,7 +1094,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Spacing Classes should generate margin classes",
           "status": "passed",
           "title": "should generate margin classes",
-          "duration": 54,
+          "duration": 20,
           "failureMessages": []
         },
         {
@@ -1106,7 +1106,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Spacing Classes should generate padding classes",
           "status": "passed",
           "title": "should generate padding classes",
-          "duration": 25,
+          "duration": 22,
           "failureMessages": []
         },
         {
@@ -1118,7 +1118,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Spacing Classes should generate gap classes",
           "status": "passed",
           "title": "should generate gap classes",
-          "duration": 42,
+          "duration": 13,
           "failureMessages": []
         },
         {
@@ -1130,7 +1130,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Display Classes should generate display utility classes",
           "status": "passed",
           "title": "should generate display utility classes",
-          "duration": 31,
+          "duration": 14,
           "failureMessages": []
         },
         {
@@ -1142,7 +1142,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Width Classes should generate width utility classes",
           "status": "passed",
           "title": "should generate width utility classes",
-          "duration": 37,
+          "duration": 98,
           "failureMessages": []
         },
         {
@@ -1154,7 +1154,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Height Classes should generate height utility classes",
           "status": "passed",
           "title": "should generate height utility classes",
-          "duration": 14,
+          "duration": 36,
           "failureMessages": []
         },
         {
@@ -1178,7 +1178,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Order Classes should generate order utility classes",
           "status": "passed",
           "title": "should generate order utility classes",
-          "duration": 26,
+          "duration": 30,
           "failureMessages": []
         },
         {
@@ -1190,7 +1190,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Grid Classes should generate grid utility classes",
           "status": "passed",
           "title": "should generate grid utility classes",
-          "duration": 18,
+          "duration": 13,
           "failureMessages": []
         },
         {
@@ -1202,7 +1202,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Flex Classes should generate flex utility classes",
           "status": "passed",
           "title": "should generate flex utility classes",
-          "duration": 63,
+          "duration": 11,
           "failureMessages": []
         },
         {
@@ -1214,7 +1214,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Color Classes should generate color utility classes",
           "status": "passed",
           "title": "should generate color utility classes",
-          "duration": 42,
+          "duration": 52,
           "failureMessages": []
         },
         {
@@ -1226,7 +1226,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Apply Configuration should generate apply-based classes",
           "status": "passed",
           "title": "should generate apply-based classes",
-          "duration": 48,
+          "duration": 83,
           "failureMessages": []
         },
         {
@@ -1238,7 +1238,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Apply Configuration should handle multiple apply classes",
           "status": "passed",
           "title": "should handle multiple apply classes",
-          "duration": 52,
+          "duration": 46,
           "failureMessages": []
         },
         {
@@ -1250,7 +1250,7 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Apply Configuration should work with empty apply configuration",
           "status": "passed",
           "title": "should work with empty apply configuration",
-          "duration": 51,
+          "duration": 60,
           "failureMessages": []
         },
         {
@@ -1262,12 +1262,12 @@
           "fullName": " SmsshCSS Vite Plugin - Utility Classes Generation Apply Configuration should handle apply with standard utility classes",
           "status": "passed",
           "title": "should handle apply with standard utility classes",
-          "duration": 68,
+          "duration": 40,
           "failureMessages": []
         }
       ],
-      "startTime": 1751029486593,
-      "endTime": 1751029487195,
+      "startTime": 1751038121762,
+      "endTime": 1751038122332,
       "status": "passed",
       "message": "",
       "name": "/Users/MasashiOhtsubo/Projects/smsshcss/packages/@smsshcss/vite/src/__tests__/utility-classes.test.ts"

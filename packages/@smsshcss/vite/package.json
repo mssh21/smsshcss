@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "glob": "^10.3.10",
+    "micromatch": "^4.0.5",
     "smsshcss": "workspace:*"
   },
   "devDependencies": {

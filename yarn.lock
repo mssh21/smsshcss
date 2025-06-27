@@ -964,6 +964,7 @@ __metadata:
     "@types/node": "npm:^20.11.5"
     "@vitest/ui": "npm:^0.34.6"
     glob: "npm:^10.3.10"
+    micromatch: "npm:^4.0.5"
     smsshcss: "workspace:*"
     tsup: "npm:^8.0.2"
     typescript: "npm:^5.3.3"
@@ -3210,7 +3211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.8":
+"micromatch@npm:^4.0.5, micromatch@npm:^4.0.8":
   version: 4.0.8
   resolution: "micromatch@npm:4.0.8"
   dependencies:
@@ -4559,7 +4560,7 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
-  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=b45daf"
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=8c6c40"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
