@@ -5,21 +5,7 @@ interface SmsshCSSConfig {
   content?: string[];
   includeResetCSS?: boolean;
   includeBaseCSS?: boolean;
-  theme?: {
-    spacing?: Record<string, string>;
-    display?: Record<string, string>;
-    width?: Record<string, string>;
-    height?: Record<string, string>;
-    grid?: Record<string, string>;
-    order?: Record<string, string>;
-    zIndex?: Record<string, string>;
-    gridCols?: Record<string, string>;
-    gridRows?: Record<string, string>;
-    gridColumnSpan?: Record<string, string>;
-    gridRowSpan?: Record<string, string>;
-    color?: Record<string, string>;
-    components?: Record<string, string>;
-  };
+  apply?: Record<string, string>;
   purge?: {
     enabled?: boolean;
     content?: string[];
@@ -49,11 +35,17 @@ const parseUtilityClass = (className: string, config: SmsshCSSConfig): string | 
   const customValueMatch = className.match(/^(.+)-\[([^\]]+)\]$/);
   if (customValueMatch) {
     const [, prefix, value] = customValueMatch;
-    return parseUtilityWithValue(prefix, value);
+    // カスタム値の場合は値をそのまま使用
+    let cleanValue = value;
+    // カンマ付きのCSS関数を適切にフォーマット
+    if (value.includes('rgb') || value.includes('hsl')) {
+      cleanValue = value.replace(/,/g, ', ');
+    }
+    return parseUtilityWithValue(prefix, cleanValue);
   }
 
-  // テーマ値の処理
-  const themeMatch = className.match(/^(.+)-(.+)$/);
+  // テーマ値の処理 - 最初のハイフンで分割
+  const themeMatch = className.match(/^([^-]+)-(.+)$/);
   if (themeMatch) {
     const [, prefix, suffix] = themeMatch;
 
@@ -141,6 +133,16 @@ const parseUtilityWithValue = (prefix: string, value: string): string | null => 
     // Color
     case 'text':
       return `color: ${value};`;
+    case 'bg':
+      return `background-color: ${value};`;
+    case 'border':
+      return `border-color: ${value};`;
+    case 'fill':
+      return `fill: ${value};`;
+
+    // Border radius
+    case 'rounded':
+      return `border-radius: ${value};`;
 
     default:
       return null;
@@ -207,6 +209,35 @@ const getThemeValue = (prefix: string, suffix: string, config: SmsshCSSConfig): 
 
 // デフォルト値で処理
 const parseUtilityWithDefaultValue = (prefix: string, suffix: string): string | null => {
+  // カラーマッピング
+  const colorMap: Record<string, string> = {
+    'red-500': 'hsl(358 85% 55% / 1)',
+    'red-600': 'hsl(358 90% 45% / 1)',
+    'red-800': 'hsl(358 100% 25% / 1)',
+    'red-100': 'hsl(358 100% 95% / 1)',
+    'red-300': 'hsl(358 85% 75% / 1)',
+    'blue-500': 'hsl(214 85% 55% / 1)',
+    'blue-600': 'hsl(214 90% 45% / 1)',
+    'purple-500': 'hsl(280 85% 55% / 1)',
+    'yellow-100': 'hsl(55 100% 95% / 1)',
+    'yellow-500': 'hsl(55 90% 50% / 1)',
+    'yellow-600': 'hsl(55 85% 40% / 1)',
+    'gray-900': 'hsl(210 6% 10% / 1)',
+    white: 'hsl(0 0% 100% / 1)',
+    black: 'hsl(0 0% 0% / 1)',
+  };
+
+  // カラークラス処理
+  if (prefix === 'text' && colorMap[suffix]) {
+    return `color: ${colorMap[suffix]};`;
+  }
+  if (prefix === 'bg' && colorMap[suffix]) {
+    return `background-color: ${colorMap[suffix]};`;
+  }
+  if (prefix === 'border' && colorMap[suffix]) {
+    return `border-color: ${colorMap[suffix]};`;
+  }
+
   // デフォルトサイズマッピング
   const sizeMap: Record<string, string> = {
     auto: 'auto',
@@ -549,6 +580,16 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
       const componentCSS = parseUtilityClasses(utilityClasses, config);
       if (componentCSS) {
         css += `\n.${componentName} {${componentCSS}\n}`;
+      }
+    });
+  }
+
+  // Apply classes
+  if (config.apply) {
+    Object.entries(config.apply).forEach(([className, utilityClasses]) => {
+      const applyCSS = parseUtilityClasses(utilityClasses, config);
+      if (applyCSS) {
+        css += `\n\n.${className} {${applyCSS}\n}`;
       }
     });
   }

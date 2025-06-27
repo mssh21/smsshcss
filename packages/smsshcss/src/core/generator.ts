@@ -41,6 +41,9 @@ export class CSSGenerator {
   private purger?: CSSPurger;
 
   constructor(config: SmsshCSSConfig, options: GeneratorOptions = {}) {
+    console.log('[CSSGenerator] Constructor called');
+    console.log('[CSSGenerator] Config:', JSON.stringify(config, null, 2));
+
     this.config = config;
     this.options = {
       development: process.env.NODE_ENV === 'development',
@@ -48,6 +51,8 @@ export class CSSGenerator {
       suppressWarnings: false,
       ...options,
     };
+
+    console.log('[CSSGenerator] Options merged:', JSON.stringify(this.options, null, 2));
 
     // 開発モードまたは明示的に指定された場合、設定をバリデーション
     if (!this.options.skipValidation) {
@@ -405,8 +410,10 @@ export class CSSGenerator {
 
     // applyクラスを生成
     const apply = generateApplyClasses(this.config.apply);
+    console.log('[generator] Apply config:', this.config.apply);
+    console.log('[generator] Generated apply CSS length:', apply.length);
 
-    return [
+    const result = [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
       utilities,
@@ -414,5 +421,9 @@ export class CSSGenerator {
     ]
       .filter(Boolean)
       .join('\n\n');
+
+    console.log('[generator] Total CSS sections:', result.split('\n\n').filter((s) => s).length);
+
+    return result;
   }
 }

@@ -100,6 +100,9 @@ export default defineConfig({
         'w-content': 'flex-1 min-w-0',
         'h-screen-minus-header': 'h-[calc(100vh-64px)]',
         'h-full-minus-footer': 'h-[calc(100%-80px)]',
+
+        'text-notification': 'text-red-500',
+        'text-primary': 'text-[#259270]',
       },
 
       showPurgeReport: true,

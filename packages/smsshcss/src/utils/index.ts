@@ -11,6 +11,7 @@ import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { formatCSSFunctionValue } from '../core/sizeConfig';
 import { formatColorFunctionValue } from '../core/colorConfig';
+import { generateApplyClasses } from './apply';
 
 // Reset CSS の内容を直接定義
 const RESET_CSS = `/* Reset CSS */
@@ -389,6 +390,7 @@ export {
   generateAllWidthClasses,
   generateAllHeightClasses,
   generateAllColorClasses,
+  generateApplyClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
   extractCustomZIndexClasses,

@@ -1,4 +1,5 @@
 import { ApplyConfig } from '../core/types';
+import { defaultColorConfig } from '../core/colorConfig';
 
 /**
  * CSS関数値をフォーマットする（カンマとマイナス記号の前後にスペースを追加）
@@ -20,8 +21,11 @@ function formatCSSFunction(value: string): string {
  */
 export function generateApplyClasses(config?: ApplyConfig): string {
   if (!config) {
+    console.log('[apply] No config provided');
     return '';
   }
+
+  console.log('[apply] Generating apply classes for:', Object.keys(config));
 
   const classes: string[] = [];
 
@@ -44,17 +48,22 @@ export function generateApplyClasses(config?: ApplyConfig): string {
       const cssRule = extractCSSFromUtility(utilityClass);
       if (cssRule) {
         cssRules.push(cssRule);
+      } else {
+        console.log(`[apply] No CSS rule extracted for: ${utilityClass}`);
       }
     }
 
     if (cssRules.length > 0) {
       // applyクラスを生成
-      classes.push(`.${className} {
+      const generatedClass = `.${className} {
 ${cssRules.map((rule) => `  ${rule}`).join('\n')}
-}`);
+}`;
+      classes.push(generatedClass);
+      console.log(`[apply] Generated class: ${className}`);
     }
   }
 
+  console.log(`[apply] Total generated classes: ${classes.length}`);
   return classes.join('\n\n');
 }
 
@@ -64,6 +73,46 @@ ${cssRules.map((rule) => `  ${rule}`).join('\n')}
  * @returns CSSプロパティと値のペア（例: "margin: 1rem;"）
  */
 function extractCSSFromUtility(utilityClass: string): string | null {
+  // 色関連のクラス - text
+  const textColorMatch = utilityClass.match(/^text-(.+)$/);
+  if (textColorMatch) {
+    const [, colorName] = textColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - bg
+  const bgColorMatch = utilityClass.match(/^bg-(.+)$/);
+  if (bgColorMatch) {
+    const [, colorName] = bgColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `background-color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - border
+  const borderColorMatch = utilityClass.match(/^border-(.+)$/);
+  if (borderColorMatch) {
+    const [, colorName] = borderColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `border-color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - fill
+  const fillColorMatch = utilityClass.match(/^fill-(.+)$/);
+  if (fillColorMatch) {
+    const [, colorName] = fillColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `fill: ${colorValue};`;
+    }
+  }
+
   // マージン・パディング
   const spacingMatch = utilityClass.match(/^(m|p)(t|r|b|l|x|y)?-(.+)$/);
   if (spacingMatch) {
@@ -818,6 +867,34 @@ function getGridValue(size: string): string | null {
   // カスタム値（[値]形式）の場合はそのまま返す
   if (size.startsWith('[') && size.endsWith(']')) {
     return size.slice(1, -1);
+  }
+
+  return null;
+}
+
+/**
+ * 色の値を取得
+ */
+function getColorValue(colorName: string): string | null {
+  if (!colorName) return null;
+
+  // デフォルトの色値をチェック
+  if (defaultColorConfig[colorName]) {
+    return defaultColorConfig[colorName];
+  }
+
+  // カスタム値（[値]形式）の場合
+  if (colorName.startsWith('[') && colorName.endsWith(']')) {
+    let customValue = colorName.slice(1, -1);
+
+    // CSS関数（rgb, hsl等）内のカンマの後にスペースを追加
+    const cssFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/gi;
+    if (cssFunctions.test(customValue)) {
+      // カンマの後にスペースがない場合は追加
+      customValue = customValue.replace(/,(?!\s)/g, ', ');
+    }
+
+    return customValue;
   }
 
   return null;
