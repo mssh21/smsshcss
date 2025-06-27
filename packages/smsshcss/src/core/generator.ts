@@ -9,6 +9,7 @@ import { generateAllZIndexClasses, extractCustomZIndexClasses } from '../utils/z
 import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/order';
 import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
+import { generatePositioningClasses } from '../utils/positioning';
 // import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -201,6 +202,7 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -372,6 +374,7 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
@@ -427,6 +430,7 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
