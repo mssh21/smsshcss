@@ -8,7 +8,9 @@ import { generateOrderClasses, extractCustomOrderClasses } from './order';
 import { generateGridClasses, extractCustomGridClasses } from './grid';
 import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
+import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { formatCSSFunctionValue } from '../core/sizeConfig';
+import { formatColorFunctionValue } from '../core/colorConfig';
 
 // Reset CSS の内容を直接定義
 const RESET_CSS = `/* Reset CSS */
@@ -315,6 +317,11 @@ export function processCSSValue(value: string): string {
   return cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
 }
 
+export function processCSSColorValue(value: string): string {
+  const cssColorFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/;
+  return cssColorFunctions.test(value) ? formatColorFunctionValue(value) : value;
+}
+
 /**
  * 開発用デバッグヘルパー
  */
@@ -381,6 +388,7 @@ export {
   generateGridClasses,
   generateAllWidthClasses,
   generateAllHeightClasses,
+  generateAllColorClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
   extractCustomZIndexClasses,
@@ -388,4 +396,5 @@ export {
   extractCustomGridClasses,
   extractCustomWidthClasses,
   extractCustomHeightClasses,
+  extractCustomColorClasses,
 };

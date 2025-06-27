@@ -6,6 +6,7 @@ import { extractCustomFlexClasses } from '../flexbox';
 import { extractCustomGridClasses } from '../grid';
 import { extractCustomZIndexClasses } from '../z-index';
 import { extractCustomOrderClasses } from '../order';
+import { extractCustomColorClasses } from '../color';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -376,38 +377,50 @@ describe('Custom Value Extraction Functions', () => {
   describe('extractCustomGridClasses', () => {
     describe('Basic Grid Custom Values', () => {
       it('should extract grid-cols custom values', () => {
-        const content = '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px]">Test</div>';
+        const content =
+          '<div class="grid-cols-[80] grid-cols-[200px,1fr,100px] grid-cols-[20]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(3);
         expect(result).toContain(
           '.grid-cols-\\[80\\] { grid-template-columns: repeat(80, minmax(0, 1fr)); }'
         );
         expect(result).toContain(
           '.grid-cols-\\[200px,1fr,100px\\] { grid-template-columns: 200px 1fr 100px; }'
         );
+        expect(result).toContain(
+          '.grid-cols-\\[20\\] { grid-template-columns: repeat(20, minmax(0, 1fr)); }'
+        );
       });
 
       it('should extract grid-rows custom values', () => {
         const content =
-          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto]">Test</div>';
+          '<div class="grid-rows-[var(--grid-rows)] grid-rows-[auto,1fr,auto] grid-rows-[10]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(3);
         expect(result).toContain(
           '.grid-rows-\\[var\\(--grid-rows\\)\\] { grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr)); }'
         );
         expect(result).toContain(
           '.grid-rows-\\[auto,1fr,auto\\] { grid-template-rows: auto 1fr auto; }'
         );
+        expect(result).toContain(
+          '.grid-rows-\\[10\\] { grid-template-rows: repeat(10, minmax(0, 1fr)); }'
+        );
       });
 
       it('should extract span custom values', () => {
-        const content = '<div class="col-span-[15] row-span-[var(--row-span)]">Test</div>';
+        const content =
+          '<div class="col-span-[15] col-span-[var(--col-span)] row-span-[20] row-span-[var(--row-span)]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(2);
+        expect(result).toHaveLength(4);
         expect(result).toContain('.col-span-\\[15\\] { grid-column: span 15 / span 15; }');
+        expect(result).toContain(
+          '.col-span-\\[var\\(--col-span\\)\\] { grid-column: span var(--col-span) / span var(--col-span); }'
+        );
+        expect(result).toContain('.row-span-\\[20\\] { grid-row: span 20 / span 20; }');
         expect(result).toContain(
           '.row-span-\\[var\\(--row-span\\)\\] { grid-row: span var(--row-span) / span var(--row-span); }'
         );
@@ -415,14 +428,26 @@ describe('Custom Value Extraction Functions', () => {
 
       it('should extract grid position custom values', () => {
         const content =
-          '<div class="col-start-[5] col-end-[10] row-start-[2] row-end-[4]">Test</div>';
+          '<div class="col-start-[5] col-start-[var(--col-start)] col-end-[10] col-end-[var(--col-end)] row-start-[2] row-start-[var(--row-start)] row-end-[4] row-end-[var(--row-end)]">Test</div>';
         const result = extractCustomGridClasses(content);
 
-        expect(result).toHaveLength(4);
+        expect(result).toHaveLength(8);
         expect(result).toContain('.col-start-\\[5\\] { grid-column-start: 5; }');
+        expect(result).toContain(
+          '.col-start-\\[var\\(--col-start\\)\\] { grid-column-start: var(--col-start); }'
+        );
         expect(result).toContain('.col-end-\\[10\\] { grid-column-end: 10; }');
+        expect(result).toContain(
+          '.col-end-\\[var\\(--col-end\\)\\] { grid-column-end: var(--col-end); }'
+        );
         expect(result).toContain('.row-start-\\[2\\] { grid-row-start: 2; }');
+        expect(result).toContain(
+          '.row-start-\\[var\\(--row-start\\)\\] { grid-row-start: var(--row-start); }'
+        );
         expect(result).toContain('.row-end-\\[4\\] { grid-row-end: 4; }');
+        expect(result).toContain(
+          '.row-end-\\[var\\(--row-end\\)\\] { grid-row-end: var(--row-end); }'
+        );
       });
     });
 
@@ -492,29 +517,17 @@ describe('Custom Value Extraction Functions', () => {
   });
 
   describe('extractCustomFlexClasses', () => {
-    describe('Basic Flex Custom Values', () => {
-      it('should extract flex custom values', () => {
-        const content = '<div class="basis-xs grow-0 shrink-0 flex-1">Test</div>';
-        const result = extractCustomFlexClasses(content);
-
-        expect(result).toHaveLength(4);
-        expect(result).toContain('.basis-\\[xs\\] { flex-basis: xs; }');
-        expect(result).toContain('.grow-\\[0\\] { flex-grow: 0; }');
-        expect(result).toContain('.shrink-\\[0\\] { flex-shrink: 0; }');
-        expect(result).toContain('.flex-\\[1\\] { flex: 1; }');
-      });
-    });
-
     describe('CSS Functions', () => {
       it('should extract calc() with flex', () => {
         const content =
-          '<div class="flex-[5] basis-[calc(100%-20px)] shrink-[2] grow-[4]">Test</div>';
+          '<div class="flex-[5] basis-[calc(100%-20px)] basis-[40px] shrink-[2] grow-[4]">Test</div>';
         const result = extractCustomFlexClasses(content);
-        expect(result).toHaveLength(4);
+        expect(result).toHaveLength(5);
         expect(result).toContain('.flex-\\[5\\] { flex: 5; }');
         expect(result).toContain(
           '.basis-\\[calc\\(100\\%\\-20px\\)\\] { flex-basis: calc(100% - 20px); }'
         );
+        expect(result).toContain('.basis-\\[40px\\] { flex-basis: 40px; }');
         expect(result).toContain('.shrink-\\[2\\] { flex-shrink: 2; }');
         expect(result).toContain('.grow-\\[4\\] { flex-grow: 4; }');
       });
@@ -579,6 +592,47 @@ describe('Custom Value Extraction Functions', () => {
         expect(result).toContain('.order-\\[2\\] { order: 2; }');
         expect(result).toContain('.order-\\[3\\] { order: 3; }');
       });
+    });
+  });
+
+  describe('extractCustomColorClasses', () => {
+    it('should extract color custom values', () => {
+      const content = '<div class="text-[var(--color)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[var\\(--color\\)\\] { color: var(--color); }');
+    });
+
+    it('should extract hex color custom values', () => {
+      const content = '<div class="text-[#555555]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[\\#555555\\] { color: #555555; }');
+    });
+
+    it('should extract multiple hex color values', () => {
+      const content = '<div class="text-[#259270] text-[#ff0000] text-[#00ff00]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(3);
+      expect(result[0]).toBe('.text-\\[\\#259270\\] { color: #259270; }');
+      expect(result[1]).toBe('.text-\\[\\#ff0000\\] { color: #ff0000; }');
+      expect(result[2]).toBe('.text-\\[\\#00ff00\\] { color: #00ff00; }');
+    });
+
+    it('should extract rgb color values', () => {
+      const content = '<div class="text-[rgb(149,11,218)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.text-\\[rgb\\(149\\,11\\,218\\)\\] { color: rgb(149, 11, 218); }');
+    });
+
+    it('should extract hsl color values', () => {
+      const content = '<div class="text-[hsl(210,100%,50%,1)]">Test</div>';
+      const result = extractCustomColorClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.text-\\[hsl\\(210\\,100\\%\\,50\\%\\,1\\)\\] { color: hsl(210, 100%, 50%, 1); }'
+      );
     });
   });
 

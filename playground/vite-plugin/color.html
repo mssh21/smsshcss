@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Color Classes Test</title>
+  </head>
+  <body>
+    <div class="main-layout">
+      <!-- ナビゲーション -->
+      <nav class="page-nav mb-[40px]">
+        <div class="flex gap-[20px] items-center">
+          <a href="./index.html" class="nav-link">← ホーム</a>
+          <div class="nav-divider"></div>
+          <a href="./spacing.html" class="nav-link">Spacing</a>
+          <div class="nav-divider"></div>
+          <span class="nav-current">🎨 Color Classes</span>
+        </div>
+      </nav>
+
+      <header class="mb-[40px]">
+        <h1 class="page-title">🎨 Color Classes</h1>
+        <p class="page-subtitle">CSSカラークラス - 基本色、カスタム値、</p>
+      </header>
+
+      <main class="grid gap-[30px]">
+        <!-- 1. 基本色 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">テキスト色</h2>
+          <div class="demo-content p-[30px]">
+            <div class="grid gap-2xs">
+              <div class="text-black">text-black</div>
+              <div class="text-white bg-black">text-white</div>
+              <div class="text-gray-500">text-gray-500</div>
+              <div class="text-blue-500">text-blue-500</div>
+              <div class="text-red-500">text-red-500</div>
+              <div class="text-green-500">text-green-500</div>
+              <div class="text-yellow-500">text-yellow-500</div>
+              <div class="text-[var(--color)]" style="--color: #ff0000">text-[var(--color)]</div>
+              <div class="text-[#259270]">text-[#259270]</div>
+              <div class="text-[rgb(149,11,218)]">text-[rgb(149,11,218)]</div>
+              <div class="text-[hsl(210,100%,50%,1)]">text-[hsl(210,100%,50%,1)]</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. カスタム値 -->
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">背景色</h2>
+          <div class="demo-content p-[30px]">
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-gray-500"></div>
+                <div class="text-gray-500">bg-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[var(--bg-color)]" style="--bg-color: #ff0000"></div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">bg-[var(--bg-color)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[#259270]"></div>
+                <div class="text-[#259270]">bg-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[rgb(149,11,218)]"></div>
+                <div class="text-[rgb(149,11,218)]">bg-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg bg-[hsl(210,100%,50%,1)]"></div>
+                <div class="text-[hsl(210,100%,50%,1)]">bg-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">ボーダーカラー</h2>
+          <div class="demo-content p-[30px]">
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-gray-500"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-gray-500">border-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[var(--border-color)]"
+                  style="--border-color: #ff0000; border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">
+                  border-[var(--border-color)]
+                </div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[#259270]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[#259270]">border-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[rgb(149,11,218)]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[rgb(149,11,218)]">border-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div
+                  class="w-lg h-lg border-[hsl(210,100%,50%,1)]"
+                  style="border-width: 1px; border-style: solid"
+                ></div>
+                <div class="text-[hsl(210,100%,50%,1)]">border-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section">
+          <h2 class="demo-title p-[20px]">fill-color</h2>
+          <div class="demo-content p-[30px]">
+            <div class="flex gap-xl flex-wrap">
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="50" cy="50" r="40" fill="currentColor" class="fill-gray-500" />
+                  </svg>
+                </div>
+                <div class="text-gray-500">fill-gray-500</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[var(--fill-color)]"
+                      style="--fill-color: #ff0000"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[var(--color)]" style="--color: #ff0000">
+                  fill-[var(--fill-color)]
+                </div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="50" cy="50" r="40" fill="currentColor" class="fill-[#259270]" />
+                  </svg>
+                </div>
+                <div class="text-[#259270]">fill-[#259270]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[rgb(149,11,218)]"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[rgb(149,11,218)]">fill-[rgb(149,11,218)]</div>
+              </div>
+              <div class="flex gap-2xs items-center flex-col">
+                <div class="w-lg h-lg">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      fill="currentColor"
+                      class="fill-[hsl(210,100%,50%,1)]"
+                    />
+                  </svg>
+                </div>
+                <div class="text-[hsl(210,100%,50%,1)]">fill-[hsl(210,100%,50%,1)]</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ページフッター -->
+      <footer class="page-footer mt-[60px] p-[30px]">
+        <div class="flex gap-[20px] items-center justify-between flex-wrap">
+          <div>
+            <p class="m-[0px] font-medium">🎨 Color Classes テスト完了</p>
+            <p class="m-[0px] mt-[5px] text-sm opacity-70">
+              基本色 + カスタム値（HEX、RGB、HSL、CSS変数）対応
+            </p>
+          </div>
+          <div class="flex gap-[15px]">
+            <a href="./spacing.html" class="page-nav-btn">← Spacing</a>
+            <a href="./width-height.html" class="page-nav-btn">次: Width/Height →</a>
+            <a href="./index.html" class="page-nav-btn">ホーム</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      function showColorClasses() {
+        const colorPatterns = [
+          /^text-/, // text-* classes
+          /^text-\[.*\]$/, // custom values
+        ];
+
+        const allClasses = Array.from(document.querySelectorAll('*'))
+          .map((el) => Array.from(el.classList))
+          .flat()
+          .filter((cls) => colorPatterns.some((pattern) => pattern.test(cls)))
+          .filter((cls, index, arr) => arr.indexOf(cls) === index)
+          .sort();
+
+        // デバッグ情報をコンソールに出力
+        console.log('Found color classes:', allClasses);
+
+        // 色クラス表示用の要素があれば更新
+        const container = document.getElementById('color-classes');
+        if (container) {
+          container.innerHTML = allClasses
+            .map((cls) => `<span class="class-tag">${cls}</span>`)
+            .join('');
+        }
+      }
+
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', showColorClasses);
+    </script>
+  </body>
+</html>

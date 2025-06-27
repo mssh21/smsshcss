@@ -1,6 +1,9 @@
 import { vi } from 'vitest';
 import fs from 'fs';
 
+// テスト環境の設定
+process.env.NODE_ENV = 'test';
+
 // ファイルシステムのモック
 vi.mock('fs');
 vi.mock('fs-extra');
@@ -15,9 +18,9 @@ export const mockGlob = vi.mocked((await import('fast-glob')).default);
 // 共通のモックファイル内容
 export const mockFileContents = {
   'test.html':
-    '<div class="p-md m-sm block flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Test</div>',
+    '<div class="p-md m-sm block flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink grow z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500">Test</div>',
   'component.tsx':
-    '<div className="flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink-0 grow-0 z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid">Component</div>',
+    '<div className="flex p-lg flex-col flex-wrap justify-center items-center content-center self-center flex-1 basis-full shrink grow z-10 order-10 grid-cols-2 grid-rows-2 col-span-2 row-span-2 col-start-2 row-start-2 grid inline-grid text-black text-white text-gray-500 text-blue-500 text-red-500 text-green-500 text-yellow-500">Component</div>',
   'app.vue': '<div class="grid gap-md">Vue Component</div>',
   'reset.css': '* { margin: 0; padding: 0; }',
   'base.css': 'body { font-family: sans-serif; }',
@@ -112,11 +115,8 @@ export const testConfigs = {
   },
   withTheme: {
     content: ['src/**/*.html'],
-    theme: {
-      spacing: {
-        custom: '2rem',
-        special: '3rem',
-      },
+    apply: {
+      'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',
     },
   },
   full: {
@@ -129,10 +129,8 @@ export const testConfigs = {
       safelist: ['protected-class', /^dynamic-/],
       blocklist: ['blocked-class'],
     },
-    theme: {
-      spacing: {
-        custom: '2rem',
-      },
+    apply: {
+      'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',
     },
   },
 };
@@ -163,6 +161,9 @@ export const customValueSamples = {
     <div class="order-[var(--order)]">
       <div class="order-[5]">Order Values</div>
     </div>
+  `,
+  color: `
+    <div class="text-[hsl(0,0%,0%/1)]">Color Values</div>
   `,
   complex: `
     <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)]">

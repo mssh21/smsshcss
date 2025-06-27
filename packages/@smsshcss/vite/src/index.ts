@@ -9,6 +9,7 @@ import {
   extractCustomGridClasses,
   extractCustomOrderClasses,
   extractCustomZIndexClasses,
+  extractCustomColorClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -83,6 +84,7 @@ const CUSTOM_CLASS_EXTRACTORS: Record<string, CustomClassExtractor> = {
   grid: extractCustomGridClasses,
   order: extractCustomOrderClasses,
   zIndex: extractCustomZIndexClasses,
+  color: extractCustomColorClasses,
 };
 
 /**

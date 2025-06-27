@@ -33,6 +33,49 @@ export interface SizeConfig {
   [key: string]: string | undefined;
 }
 
+// カラー設定
+export interface ColorConfig {
+  black: string;
+  white: string;
+
+  // gray
+  'gray-050': string;
+  'gray-100': string;
+  'gray-200': string;
+  'gray-300': string;
+  'gray-400': string;
+  'gray-500': string;
+  'gray-600': string;
+  'gray-700': string;
+  'gray-800': string;
+  'gray-900': string;
+
+  // blue
+  'blue-050': string;
+  'blue-100': string;
+  'blue-200': string;
+  'blue-300': string;
+  'blue-400': string;
+  'blue-500': string;
+  'blue-600': string;
+  'blue-700': string;
+  'blue-800': string;
+  'blue-900': string;
+
+  // red
+  'red-050': string;
+  'red-100': string;
+  'red-200': string;
+  'red-300': string;
+  'red-400': string;
+  'red-500': string;
+  'red-600': string;
+  'red-700': string;
+  'red-800': string;
+  'red-900': string;
+  [key: string]: string;
+}
+
 // SpacingConfigをSizeConfigのエイリアスとして定義（後方互換性のため）
 export interface SpacingConfig extends SizeConfig {}
 
@@ -298,11 +341,9 @@ export type FlexboxConfig = {
 
   // Flex Grow
   grow?: string;
-  'grow-0'?: string;
 
   // Flex Shrink
   shrink?: string;
-  'shrink-0'?: string;
 
   // Flex Basis (extends SizeConfig)
   basis?: SizeConfig;

@@ -31,6 +31,7 @@ export declare function generateAllGridClasses(
 ): string;
 export declare function generateAllWidthClasses(config?: Record<string, string>): string;
 export declare function generateAllHeightClasses(config?: Record<string, string>): string;
+export declare function generateAllColorClasses(config?: Record<string, string>): string;
 
 // Custom class extractors
 export declare function extractCustomSpacingClasses(content: string): string[];
@@ -40,3 +41,4 @@ export declare function extractCustomOrderClasses(content: string): string[];
 export declare function extractCustomGridClasses(content: string): string[];
 export declare function extractCustomWidthClasses(content: string): string[];
 export declare function extractCustomHeightClasses(content: string): string[];
+export declare function extractCustomColorClasses(content: string): string[];

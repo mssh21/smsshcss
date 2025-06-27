@@ -265,16 +265,14 @@ describe('CSSGenerator', () => {
       const result = generator.generateFullCSSSync();
 
       // 新しいクラスが生成されていることを確認
-      expect(cssValidators.hasClass(result, 'flex-1')).toBe(true);
       expect(cssValidators.hasClass(result, 'basis-full')).toBe(true);
-      expect(cssValidators.hasClass(result, 'shrink-0')).toBe(true);
-      expect(cssValidators.hasClass(result, 'grow-0')).toBe(true);
+      expect(cssValidators.hasClass(result, 'shrink')).toBe(true);
+      expect(cssValidators.hasClass(result, 'grow')).toBe(true);
 
       // 期待されるCSSプロパティが含まれていることを確認
-      expect(result).toMatch(/\.flex-1\s*\{[^}]*flex: 1 1 0%[^}]*\}/);
       expect(result).toMatch(/\.basis-full\s*\{[^}]*flex-basis: 100%[^}]*\}/);
-      expect(result).toMatch(/\.shrink-0\s*\{[^}]*flex-shrink: 0[^}]*\}/);
-      expect(result).toMatch(/\.grow-0\s*\{[^}]*flex-grow: 0[^}]*[^}]*\}/);
+      expect(result).toMatch(/\.shrink\s*\{[^}]*flex-shrink: 1[^}]*\}/);
+      expect(result).toMatch(/\.grow\s*\{[^}]*flex-grow: 1[^}]*\}/);
     });
   });
 
@@ -330,6 +328,29 @@ describe('CSSGenerator', () => {
 
       // 期待されるCSSプロパティが含まれていることを確認
       expect(result).toMatch(/\.order-10\s*\{[^}]*order: 10[^}]*\}/);
+    });
+  });
+
+  describe('Color Generation', () => {
+    it('should generate color utility class', () => {
+      const generator = new CSSGenerator(testConfigs.minimal);
+      const result = generator.generateFullCSSSync();
+
+      expect(cssValidators.hasClass(result, 'text-black')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-white')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-gray-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-blue-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-red-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-green-500')).toBe(true);
+      expect(cssValidators.hasClass(result, 'text-yellow-500')).toBe(true);
+
+      expect(result).toMatch(/\.text-black\s*\{[^}]*color: hsl\(0 0% 0% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-white\s*\{[^}]*color: hsl\(0 0% 100% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-gray-500\s*\{[^}]*color: hsl\(210 2% 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-blue-500\s*\{[^}]*color: hsl\(214 85% 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-red-500\s*\{[^}]*color: hsl\(358 85% 55% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-green-500\s*\{[^}]*color: hsl\(125 80% 50% \/ 1\)[^}]*\}/);
+      expect(result).toMatch(/\.text-yellow-500\s*\{[^}]*color: hsl\(55 90% 50% \/ 1\)[^}]*\}/);
     });
   });
 });

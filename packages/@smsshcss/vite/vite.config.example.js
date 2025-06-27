@@ -30,44 +30,58 @@ export default defineConfig({
 
     // 🎨 SmsshCSS Vite Plugin
     smsshcss({
-      // 📁 スキャンするファイルパターン
+      // 📁 スキャン対象のファイルパターン
       content: [
         'index.html',
-        'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}',
-        'components/**/*.{js,ts,jsx,tsx,vue,svelte}',
-        'pages/**/*.{js,ts,jsx,tsx,vue,svelte}',
-        'app/**/*.{js,ts,jsx,tsx,vue,svelte}',
-        // Astro の場合
-        // 'src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte}',
+        'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
+        'components/**/*.{js,ts,jsx,tsx,vue}',
+        'pages/**/*.{js,ts,jsx,tsx,vue}',
+        // '**/*.html', // すべてのHTMLファイル（パフォーマンスに注意）
+      ],
+
+      // 🔒 常に含める CSS クラス（パージされない）
+      safelist: [
+        // 動的に生成されるクラス
+        'm-2xl',
+        'p-2xl',
+        'mt-2xl',
+        'mb-2xl',
+        'mx-2xl',
+        'py-2xl',
+        'gap-2xl',
+        'gap-x-2xl',
+        'gap-y-2xl',
+
+        // 正規表現パターン
+        /^hover:p-/,
+        /^focus:m-/,
+        /^sm:/, // レスポンシブクラス（将来の実装）
+        /^md:/,
+        /^lg:/,
       ],
 
       // 📝 基本CSS・リセットCSSの包含設定
-      includeReset: true, // Normalize/Reset CSSを含める
-      includeBase: true, // 基本スタイルを含める
+      includeResetCSS: true, // Normalize/Reset CSSを含める
+      includeBaseCSS: true, // 基本スタイルを含める
 
-      // 🗜️ CSS パージ設定（本番環境で最適化）
+      // 🗜️ CSS パージ設定（本番環境で推奨）
       purge: {
-        enabled: true, // 自動で本番環境でのみ有効化
+        enabled: process.env.NODE_ENV === 'production', // 本番環境でのみ有効化
+
+        // パージ対象のファイル（通常はcontentと同じ）
+        content: [
+          'index.html',
+          'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
+          'components/**/*.{js,ts,jsx,tsx,vue}',
+        ],
 
         // 保護対象のクラス（削除されない）
         safelist: [
-          // 動的に生成されるクラス
           'm-2xl',
           'p-2xl',
           'gap-2xl',
-
-          // パターンマッチング（正規表現）
           /^hover:/, // hover系の疑似クラス
           /^focus:/, // focus系の疑似クラス
-          /^sm:/, // レスポンシブクラス（将来の実装）
-          /^md:/,
-          /^lg:/,
-          /^xl:/,
-
-          // よく使われる動的クラス
-          /^bg-/,
-          /^text-/,
-          /^border-/,
         ],
 
         // 除外対象のクラス（強制的に削除）
@@ -75,145 +89,79 @@ export default defineConfig({
           'm-2xs', // 使用しない小さすぎるマージン
           'p-2xs', // 使用しない小さすぎるパディング
           'gap-2xs', // 使用しない小さすぎるギャップ
-          /^deprecated-/, // 廃止されたクラス
-          /^old-/, // 古いクラス
+          /^gap-x-2xs/,
+          /^gap-y-2xs/,
         ],
 
-        // CSS内の特殊構文の処理
+        // CSS内の@keyframes、@font-face、CSS変数の処理
         keyframes: true, // @keyframesを保持
         fontFace: true, // @font-faceを保持
         variables: true, // CSS変数を保持
+
+        // カスタム抽出器（特定の拡張子に対する処理）
+        extractors: [
+          {
+            extensions: ['vue'],
+            /**
+             * @param {string} content
+             * @returns {string[]}
+             */
+            extractor: (content) => {
+              // Vue.jsのテンプレート内のクラス抽出
+              const matches = content.match(/class\s*=\s*["']([^"']*)["']/g) || [];
+              return matches
+                .map((match) => match.replace(/class\s*=\s*["']/, '').replace(/["']$/, ''))
+                .join(' ')
+                .split(/\s+/);
+            },
+          },
+        ],
       },
 
-      // 🎨 テーマ設定（ユーティリティクラスの値をカスタマイズ）
-      theme: {
-        // 📏 スペーシング値の拡張（m-*, p-*, gap-* で使用）
-        spacing: {
-          // 数値ベースのサイズ
-          72: '18rem', // m-72, p-72, gap-72
-          80: '20rem', // m-80, p-80, gap-80
-          96: '24rem', // m-96, p-96, gap-96
-          128: '32rem', // m-128, p-128, gap-128
+      // 🎨 Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+      apply: {
+        // レイアウト系コンポーネント
+        'main-layout': 'w-lg mx-auto px-lg block',
+        container: 'max-w-[var(--container-width)] mx-auto px-sm md:px-md lg:px-lg',
+        section: 'py-xl md:py-2xl',
 
-          // セマンティックな名前（プロジェクト固有）
-          sidebar: '280px', // m-sidebar, p-sidebar
-          header: '64px', // m-header, p-header
-          footer: '120px', // m-footer, p-footer
-          card: '1.5rem', // m-card, p-card
-          section: '3rem', // m-section, p-section
+        // カード系コンポーネント
+        card: 'p-md',
+        'card-header': 'pb-sm mb-sm',
+        'card-body': 'py-sm',
+        'card-footer': 'pt-sm mt-sm',
 
-          // デザインシステムに合わせたカスタム値
-          'component-padding': '24px',
-          'layout-gap': '32px',
-        },
+        // ボタン系コンポーネント
+        btn: 'inline-block px-md py-sm',
+        'btn-primary': 'btn',
+        'btn-secondary': 'btn',
 
-        // 📐 幅の値の拡張（w-*, min-w-*, max-w-* で使用）
-        width: {
-          // 大きなサイズ
-          128: '32rem', // w-128
-          144: '36rem', // w-144
-          160: '40rem', // w-160
+        // フォーム系コンポーネント
+        'form-group': 'mb-md',
+        'form-label': 'block mb-xs',
+        'form-input': 'w-full px-sm py-xs',
 
-          // プロジェクト固有の幅
-          sidebar: '280px', // w-sidebar
-          'sidebar-mini': '64px', // w-sidebar-mini
-          content: '1024px', // w-content
-          container: '1200px', // w-container
-          'container-wide': '1400px', // w-container-wide
+        // グリッド系コンポーネント
+        'grid-container': 'grid grid-cols-12 gap-md',
+        'grid-item': 'col-span-12',
 
-          // レスポンシブ幅
-          mobile: '375px', // w-mobile
-          tablet: '768px', // w-tablet
-          desktop: '1024px', // w-desktop
-        },
+        // ヘッダー・フッター
+        header: 'py-md',
+        footer: 'py-lg mt-auto',
 
-        // 📏 高さの値の拡張（h-*, min-h-*, max-h-* で使用）
-        height: {
-          // 大きなサイズ
-          128: '32rem', // h-128
-          144: '36rem', // h-144
-          160: '40rem', // h-160
+        // カスタムコンポーネントの例
+        'hero-section': 'py-2xl md:py-3xl',
+        'feature-box': 'p-lg',
 
-          // プロジェクト固有の高さ
-          header: '64px', // h-header
-          'header-mobile': '56px', // h-header-mobile
-          footer: '120px', // h-footer
-          toolbar: '48px', // h-toolbar
-          nav: '80px', // h-nav
+        // よく使うユーティリティの組み合わせ
+        'flex-center': 'flex justify-center items-center',
+        'flex-between': 'flex justify-between items-center',
+        'absolute-center': 'absolute',
 
-          // ビューポート単位
-          'vh-minus-header': 'calc(100vh - 64px)', // h-vh-minus-header
-          'vh-minus-nav': 'calc(100vh - 80px)', // h-vh-minus-nav
-        },
-
-        // 🏗️ グリッドカラムの設定
-        gridCols: {
-          16: '16', // grid-cols-16
-          20: '20', // grid-cols-20
-          24: '24', // grid-cols-24
-        },
-
-        // 🏗️ グリッドローの設定
-        gridRows: {
-          7: '7', // grid-rows-7
-          8: '8', // grid-rows-8
-          12: '12', // grid-rows-12
-        },
-
-        // 📚 Z-index値の拡張（z-* で使用）
-        zIndex: {
-          // 数値ベース
-          60: '60', // z-60
-          70: '70', // z-70
-          80: '80', // z-80
-          90: '90', // z-90
-          100: '100', // z-100
-
-          // セマンティックな名前
-          dropdown: '1000', // z-dropdown
-          modal: '2000', // z-modal
-          overlay: '2500', // z-overlay
-          tooltip: '3000', // z-tooltip
-          notification: '4000', // z-notification
-          debug: '9999', // z-debug
-        },
-
-        // 📋 Order値の拡張（order-* で使用）
-        order: {
-          // 数値ベース
-          13: '13', // order-13
-          14: '14', // order-14
-          15: '15', // order-15
-          16: '16', // order-16
-
-          // セマンティックな名前（レイアウト順序）
-          header: '-10', // order-header
-          nav: '-5', // order-nav
-          main: '0', // order-main（デフォルト）
-          aside: '5', // order-aside
-          footer: '10', // order-footer
-        },
-
-        // 📺 Display値の拡張（必要に応じて）
-        display: {
-          // 通常は不要ですが、カスタムディスプレイ値が必要な場合
-          // 'custom-flex': 'flex',
-          // 'custom-grid': 'grid',
-        },
+        // レスポンシブなコンポーネント
+        'responsive-grid': 'grid grid-cols-1 gap-md',
+        'sidebar-layout': 'flex flex-col gap-lg',
       },
-
-      // 🚀 パフォーマンス設定（v2.2.0+）
-      cache: true, // キャッシュを有効化（開発時の高速化）
-
-      // 🐛 デバッグ設定（v2.2.0+）
-      debug: import.meta.env.DEV, // 開発時のみデバッグログを表示
-
-      // 📊 パージレポート表示（本番ビルド時）
-      showPurgeReport: import.meta.env.PROD,
-
-      // ⚠️ CSS Minify設定
-      // arbitrary value syntax（gap-[min(1rem, 3vw)]など）使用時は false に設定
-      minify: true,
     }),
   ],
 

@@ -44,7 +44,6 @@ const propertyMap: Record<string, string> = {
   ...autoFlowPropertyMap,
 };
 
-// テーマ設定からGrid設定を生成（将来的に使用予定）
 // function generateGridConfigFromTheme(theme: GridThemeConfig): GridConfig {
 //   const config: GridConfig = {};
 

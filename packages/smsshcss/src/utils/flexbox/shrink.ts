@@ -3,12 +3,10 @@ import { escapeFlexValue } from './utils';
 
 export const flexShrinkConfig: Partial<FlexboxConfig> = {
   shrink: '1',
-  'shrink-0': '0',
 };
 
 export const flexShrinkPropertyMap: Record<string, string> = {
   shrink: 'flex-shrink',
-  'shrink-0': 'flex-shrink',
 };
 
 export function generateCustomShrinkClass(value: string): string {

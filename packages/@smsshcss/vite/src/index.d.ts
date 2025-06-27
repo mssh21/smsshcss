@@ -44,6 +44,7 @@ export interface SmsshCSSViteOptions {
     gridAutoFlow?: Record<string, string>;
     zIndex?: Record<string, string>;
     order?: Record<string, string>;
+    color?: Record<string, string>;
   };
   /**
    * 開発時にパージレポートを表示するかどうか
