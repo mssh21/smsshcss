@@ -1,19 +1,21 @@
 # SmsshCSS - 軽量ユーティリティファーストCSSフレームワーク
 
-SmsshCSSは、軽量なユーティリティファーストCSSフレームワークです。HTMLファイル内で使用されるクラスのみを生成し、最適化されたCSSを提供します。
+SmsshCSSは、高性能なユーティリティファーストCSSフレームワークです。型安全性とDeveloper Experienceを重視し、HTMLファイル内で使用されるクラスのみを生成する最適化されたCSSを提供します。
 
-## 特徴
+## ✨ 主な特徴
 
-- **ユーティリティファースト**: 再利用可能なユーティリティクラスを使用してUIを素早く構築
-- **パージ機能**: HTMLで使用されたクラスのみを含む最適化されたCSSを生成
-- **カスタマイズ可能**: 設定ファイルを通じてトークンやスタイルをカスタマイズ可能
-- **高速**: 最小限のCSSでパフォーマンスを最適化
-- **多様な統合**: PostCSSプラグインとViteプラグインの両方をサポート
-- **コンポーネントクラス**: よく使うユーティリティの組み合わせを設定ファイルで定義できる独自機能 🆕
+- **🚀 高性能**: Just-In-Time生成と高速キャッシュシステムでミリ秒レベルの処理速度
+- **🛡️ 型安全**: TypeScriptによる完全な型サポートと厳密なバリデーション
+- **⚡ 直感的**: ユーティリティファーストの再利用可能なクラス設計
+- **🎯 最適化**: 使用されたクラスのみを含む最小限のCSS生成
+- **🔧 柔軟性**: 設定ファイルによる完全なカスタマイズ機能
+- **📦 統合性**: PostCSSプラグインとViteプラグインの両方をサポート
+- **🎨 独自機能**: Apply設定による再利用可能なコンポーネントクラス定義 🆕
+- **🧪 開発体験**: 豊富なデバッグツールとパフォーマンス分析機能
 
-## インストール
+## 🚀 クイックスタート
 
-### Viteプラグイン
+### インストール
 
 ```bash
 # npm
@@ -26,9 +28,7 @@ yarn add smsshcss @smsshcss/vite
 pnpm add smsshcss @smsshcss/vite
 ```
 
-## 利用方法
-
-### 1. Viteプラグインを使用する場合（推奨）
+### Vite設定（推奨）
 
 `vite.config.js`にプラグインを追加：
 
@@ -44,20 +44,38 @@ export default defineConfig({
       minify: false,
       debug: true,
 
+      // コンテンツファイルの指定
       content: ['src/**/*.{html,js,ts,jsx,tsx,vue,svelte}'],
 
+      // パージ設定（プロダクション最適化）
       purge: {
         enabled: true,
-        safelist: [/^hover:p-/, /^focus:m-/],
+        safelist: [/^hover:/, /^focus:/],
         blocklist: [/^old-/],
         keyframes: true,
         fontFace: true,
         variables: true,
       },
 
+      // Apply設定（コンポーネントクラス定義）
       apply: {
-        'main-layout': 'w-full max-w-12xl mx-auto px-md',
+        // レイアウト
+        'main-layout': 'w-full max-w-6xl mx-auto px-md',
         container: 'w-full max-w-4xl mx-auto px-md',
+
+        // フレックスボックス
+        'flex-center': 'flex justify-center items-center',
+        'flex-between': 'flex justify-between items-center',
+
+        // カード系コンポーネント
+        card: 'p-md rounded-lg border border-gray-200',
+        'card-header': 'pb-sm mb-sm border-b',
+        'card-body': 'py-sm',
+
+        // ボタン
+        btn: 'inline-block px-md py-sm rounded cursor-pointer',
+        'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
+        'btn-secondary': 'btn bg-gray-200 text-gray-800 hover:bg-gray-300',
       },
 
       showPurgeReport: true,
@@ -66,27 +84,97 @@ export default defineConfig({
 });
 ```
 
-HTMLでユーティリティクラスを使用：
+### HTMLでの使用
 
 ```html
-<div class="p-md m-lg flex">
-  <h1 class="mb-sm">Hello SmsshCSS!</h1>
-  <p class="px-md py-sm">軽量で高速なCSSフレームワーク</p>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SmsshCSS Example</title>
+  </head>
+  <body>
+    <!-- レイアウト -->
+    <div class="main-layout">
+      <!-- ヘッダー -->
+      <header class="flex-between py-lg">
+        <h1 class="text-2xl font-bold">SmsshCSS</h1>
+        <nav class="flex gap-md">
+          <a href="#" class="btn-secondary">ドキュメント</a>
+          <a href="#" class="btn-primary">開始する</a>
+        </nav>
+      </header>
 
-<!-- コンポーネントクラスの使用例 -->
-<div class="main-layout">
-  <div class="card">
-    <h2>便利なコンポーネントクラス</h2>
-    <p>設定ファイルで定義したクラスを使用</p>
-    <button class="btn-primary">クリック</button>
-  </div>
-</div>
+      <!-- メインコンテンツ -->
+      <main class="py-xl">
+        <!-- ヒーローセクション -->
+        <section class="flex-center flex-col text-center py-2xl">
+          <h2 class="text-4xl font-bold mb-lg">高性能なユーティリティファーストCSS</h2>
+          <p class="text-lg text-gray-600 mb-xl">型安全で最適化されたCSSフレームワーク</p>
+          <div class="flex gap-md">
+            <button class="btn-primary">今すぐ始める</button>
+            <button class="btn-secondary">例を見る</button>
+          </div>
+        </section>
+
+        <!-- 特徴カード -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-lg py-xl">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-xl font-semibold">🚀 高性能</h3>
+            </div>
+            <div class="card-body">
+              <p>JIT生成とキャッシュシステムでミリ秒レベルの処理速度</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-xl font-semibold">🛡️ 型安全</h3>
+            </div>
+            <div class="card-body">
+              <p>TypeScriptによる完全な型サポートと厳密なバリデーション</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-xl font-semibold">⚡ 最適化</h3>
+            </div>
+            <div class="card-body">
+              <p>使用されたクラスのみを含む最小限のCSS生成</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 任意値とCSS関数のサポート -->
+        <section class="py-xl">
+          <h3 class="text-2xl font-bold mb-lg">高度なCSS関数サポート</h3>
+
+          <!-- レスポンシブスペーシング -->
+          <div class="p-[clamp(1rem,4vw,3rem)] bg-gray-100 rounded-lg mb-md">
+            <p>レスポンシブパディング: clamp(1rem, 4vw, 3rem)</p>
+          </div>
+
+          <!-- 計算値 -->
+          <div class="h-[calc(100vh-200px)] bg-blue-50 rounded-lg p-md">
+            <p>計算された高さ: calc(100vh - 200px)</p>
+          </div>
+        </section>
+      </main>
+
+      <!-- フッター -->
+      <footer class="py-lg border-t text-center text-gray-600">
+        <p>&copy; 2024 SmsshCSS. MIT License.</p>
+      </footer>
+    </div>
+  </body>
+</html>
 ```
 
-Viteプラグインが自動的に使用されたクラスを検出し、必要なCSSを生成します。
+Viteプラグインが自動的に使用されたクラスを検出し、最適化されたCSSを生成します。
 
-## 開発ツール
+## 🛠️ 開発ツール
 
 SmsshCSSには開発効率を向上させるための豊富なツールが付属しています：
 
@@ -97,6 +185,8 @@ SmsshCSSには開発効率を向上させるための豊富なツールが付属
 cp node_modules/smsshcss/smsshcss.config.example.js smsshcss.config.js
 
 # 設定の妥当性をチェック
+npm run validate:config
+# または
 yarn validate:config
 # または
 pnpm validate:config
@@ -106,136 +196,149 @@ pnpm validate:config
 
 ```bash
 # 基本的なユーティリティクラスを生成
+npm run generate:utility color --css-property=color --prefix=text
 yarn generate:utility color --css-property=color --prefix=text
+pnpm generate:utility color --css-property=color --prefix=text
 
 # 方向指定あり（margin, paddingのような）
+npm run generate:utility border --directions --default-values='{"sm":"1px","md":"2px"}'
 yarn generate:utility border --directions --default-values='{"sm":"1px","md":"2px"}'
-
-# pnpmの場合
-pnpm generate:utility color --css-property=color --prefix=text
+pnpm generate:utility border --directions --default-values='{"sm":"1px","md":"2px"}'
 ```
 
 ### デバッグとパフォーマンス分析
 
 ```bash
 # CSS生成の詳細情報を表示
+npm run debug:classes
 yarn debug:classes
 pnpm debug:classes
 
 # 重複するCSSセレクターをチェック
+npm run check:duplicates
 yarn check:duplicates
 pnpm check:duplicates
 
 # CSSサイズレポートを生成
+npm run size:report
 yarn size:report
 pnpm size:report
 
 # 利用可能な分析ツールを表示
+npm run analyze:css
 yarn analyze:css
 pnpm analyze:css
 ```
 
-## ドキュメント
+## 📖 ドキュメント
 
-- [📚 ドキュメント目次](packages/smsshcss/DOCUMENTATION_INDEX.md) - 全ドキュメントへのアクセスポイント
-- [🎨 ユーティリティクラス リファレンス](packages/smsshcss/UTILITY_CLASSES.md) - 全ユーティリティクラスの詳細な一覧
-- [🎨 テーマカスタマイズガイド](packages/smsshcss/THEME_CUSTOMIZATION.md) - ユーティリティクラスの値のカスタマイズ方法
-- [👨‍💻 開発者ガイド](packages/smsshcss/DEVELOPER_GUIDE.md) - 開発環境のセットアップと新機能の追加方法
-- [📖 API リファレンス](packages/smsshcss/API_REFERENCE.md) - 全API関数の詳細説明
+### 📚 包括的なドキュメントガイド
 
-## 利用可能なユーティリティクラス
+- **[� ドキュメント目次](packages/smsshcss/DOCUMENTATION_INDEX.md)** - 全ドキュメントへのアクセスポイント
+- **[� ベストプラクティスガイド](BEST_PRACTICES.md)** - 設計思想、最適化、品質管理の包括的なガイド 🆕
+- **[💡 実用例集](EXAMPLES.md)** - レイアウト、UI、フォーム、レスポンシブの具体例 🆕
 
-#### スペース
+### 📖 コア仕様とAPI
 
-フィボナッチ数列（1, 2, 3, 5, 8, 13, 21, 34, 55, 89...）を基準に、4pxを基本単位として計算：
+- **[�🎨 ユーティリティクラス リファレンス](packages/smsshcss/UTILITY_CLASSES.md)** - 全ユーティリティクラスの詳細な一覧
+- **[⚙️ Apply設定ガイド](packages/smsshcss/APPLY_CONFIGURATION.md)** - コンポーネントクラス定義のガイド
+- **[🔧 API リファレンス](packages/smsshcss/API_REFERENCE.md)** - 全API関数の詳細説明
 
-- `2xs`: 0.25rem (4px) - フィボナッチ: 1
-- `xs`: 0.5rem (8px) - フィボナッチ: 2
-- `sm`: 0.75rem (12px) - フィボナッチ: 3
-- `md`: calc(var(--space-base) \* 5) = 1.25rem (20px) - フィボナッチ: 5
-- `lg`: calc(var(--space-base) \* 8) = 2rem (32px) - フィボナッチ: 8
-- `xl`: 3.25rem (52px) - フィボナッチ: 13
-- `2xl`: 5.25rem (84px) - フィボナッチ: 21
-- `3xl`: 8.5rem (136px) - フィボナッチ: 34
-- `4xl`: 13.75rem (220px) - フィボナッチ: 55
-- `5xl`: 22.25rem (356px) - フィボナッチ: 89
+### 👨‍💻 開発者向け
 
-#### Margin
+- **[👨‍💻 開発者ガイド](packages/smsshcss/DEVELOPER_GUIDE.md)** - 開発環境のセットアップと新機能の追加方法
+- **[🧹 パージ機能ガイド](docs/purging.md)** - CSS最適化とパージ設定
+- **[� 設定ファイル例](packages/smsshcss/smsshcss.config.example.js)** - 完全な設定のサンプル
+
+## 🎨 ユーティリティクラス
+
+### フィボナッチスペーシングシステム
+
+SmsshCSSは、フィボナッチ数列（1, 2, 3, 5, 8, 13, 21, 34, 55, 89...）を基準とした直感的なスペーシングシステムを採用。4pxを基本単位として計算：
+
+| トークン | 値               | 計算     | フィボナッチ数 |
+| -------- | ---------------- | -------- | -------------- |
+| `2xs`    | 4px (0.25rem)    | 4px × 1  | 1              |
+| `xs`     | 8px (0.5rem)     | 4px × 2  | 2              |
+| `sm`     | 12px (0.75rem)   | 4px × 3  | 3              |
+| `md`     | 20px (1.25rem)   | 4px × 5  | 5              |
+| `lg`     | 32px (2rem)      | 4px × 8  | 8              |
+| `xl`     | 52px (3.25rem)   | 4px × 13 | 13             |
+| `2xl`    | 84px (5.25rem)   | 4px × 21 | 21             |
+| `3xl`    | 136px (8.5rem)   | 4px × 34 | 34             |
+| `4xl`    | 220px (13.75rem) | 4px × 55 | 55             |
+| `5xl`    | 356px (22.25rem) | 4px × 89 | 89             |
+
+### Margin & Padding
 
 ```html
-<!-- 全方向 -->
-<div class="m-md">margin: 1.25rem</div>
+<!-- 基本的なスペーシング -->
+<div class="m-md p-lg">margin: 20px, padding: 32px</div>
 
 <!-- 方向指定 -->
-<div class="mt-lg">margin-top: 2rem</div>
-<div class="mr-sm">margin-right: 0.75rem</div>
-<div class="mb-xl">margin-bottom: 3.25rem</div>
-<div class="ml-xs">margin-left: 0.5rem</div>
+<div class="mt-lg mr-sm mb-xl ml-xs">個別方向指定</div>
 
 <!-- 軸指定 -->
-<div class="mx-md">margin-left: 1.25rem; margin-right: 1.25rem</div>
-<div class="my-lg">margin-top: 2rem; margin-bottom: 2rem</div>
+<div class="mx-md my-lg">水平・垂直軸指定</div>
 
-<!-- 任意の値 -->
-<div class="m-[20px]">margin: 20px</div>
-<div class="mt-[1.5rem]">margin-top: 1.5rem</div>
-
-<!-- CSS関数サポート -->
-<div class="m-[calc(1rem+10px)]">margin: calc(1rem + 10px)</div>
-<div class="p-[min(2rem,5vw)]">padding: min(2rem, 5vw)</div>
-<div class="mt-[max(1rem,20px)]">margin-top: max(1rem, 20px)</div>
-<div class="px-[clamp(1rem,4vw,3rem)]">padding-left/right: clamp(1rem, 4vw, 3rem)</div>
-
-<!-- 複雑なネスト関数 -->
-<div class="m-[calc(min(2rem,5vw)+10px)]">margin: calc(min(2rem, 5vw) + 10px)</div>
-<div class="p-[max(calc(1rem*2),clamp(1rem,3vw,2rem))]">複雑なネスト関数</div>
+<!-- 任意値（CSS関数サポート） -->
+<div class="m-[20px] p-[1.5rem]">カスタム値</div>
+<div class="mt-[calc(100vh/4)]">計算値</div>
+<div class="p-[clamp(1rem,4vw,3rem)]">レスポンシブ値</div>
 ```
 
-#### Padding
+### Gap（Flexbox/Grid）
 
 ```html
-<!-- 全方向 -->
-<div class="p-md">padding: 1.25rem</div>
-
-<!-- 方向指定 -->
-<div class="pt-lg">padding-top: 2rem</div>
-<div class="pr-sm">padding-right: 0.75rem</div>
-<div class="pb-xl">padding-bottom: 3.25rem</div>
-<div class="pl-xs">padding-left: 0.5rem</div>
-
-<!-- 軸指定 -->
-<div class="px-md">padding-left: 1.25rem; padding-right: 1.25rem</div>
-<div class="py-lg">padding-top: 2rem; padding-bottom: 2rem</div>
-
-<!-- 任意の値 -->
-<div class="p-[1.5rem]">padding: 1.5rem</div>
-```
-
-#### Gap（Flexbox/Grid）
-
-```html
+<!-- Flexboxのgap -->
 <div class="flex gap-md">
   <div>Item 1</div>
   <div>Item 2</div>
 </div>
 
-<div class="grid gap-lg">
+<!-- Gridのgap -->
+<div class="grid grid-cols-3 gap-lg">
   <div>Grid Item 1</div>
   <div>Grid Item 2</div>
+  <div>Grid Item 3</div>
 </div>
+
+<!-- レスポンシブgap -->
+<div class="flex gap-[clamp(1rem,3vw,2rem)]">レスポンシブなアイテム間隔</div>
 ```
 
-#### 拡張CSS関数サポート
+### Display
+
+```html
+<!-- 基本的なdisplay -->
+<div class="block">display: block</div>
+<div class="inline">display: inline</div>
+<div class="inline-block">display: inline-block</div>
+<div class="flex">display: flex</div>
+<div class="inline-flex">display: inline-flex</div>
+<div class="grid">display: grid</div>
+<div class="inline-grid">display: inline-grid</div>
+<div class="none">display: none</div>
+<div class="hidden">display: none</div>
+
+<!-- 特殊なdisplay -->
+<div class="contents">display: contents</div>
+<div class="flow-root">display: flow-root</div>
+<div class="table">display: table</div>
+<div class="table-cell">display: table-cell</div>
+```
+
+## 🚀 高度なCSS関数サポート
 
 SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数学関数をサポートしています：
 
-#### 基本的なCSS関数
+### 基本的なCSS関数
 
 ```html
 <!-- calc() - 数学的計算 -->
 <div class="m-[calc(1rem+10px)]">margin: calc(1rem + 10px)</div>
 <div class="p-[calc(100%-20px)]">padding: calc(100% - 20px)</div>
-<div class="mt-[calc(100vh/4)]">margin-top: calc(100vh / 4)</div>
+<div class="h-[calc(100vh-64px)]">height: calc(100vh - 64px)</div>
 
 <!-- min() - 最小値を選択 -->
 <div class="m-[min(2rem,5vw)]">margin: min(2rem, 5vw)</div>
@@ -245,15 +348,14 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <!-- max() - 最大値を選択 -->
 <div class="m-[max(1rem,20px)]">margin: max(1rem, 20px)</div>
 <div class="p-[max(0.5rem,1vw)]">padding: max(0.5rem, 1vw)</div>
-<div class="py-[max(1rem,2vh)]">padding-top/bottom: max(1rem, 2vh)</div>
 
 <!-- clamp() - 値を範囲内に制限 -->
 <div class="m-[clamp(1rem,4vw,3rem)]">margin: clamp(1rem, 4vw, 3rem)</div>
 <div class="p-[clamp(0.5rem,2vw,2rem)]">padding: clamp(0.5rem, 2vw, 2rem)</div>
-<div class="px-[clamp(1rem,5vw,4rem)]">padding-left/right: clamp(1rem, 5vw, 4rem)</div>
+<div class="px-[clamp(1rem,5vw,4rem)]">レスポンシブな水平パディング</div>
 ```
 
-#### 高度な数学関数
+### 高度な数学関数
 
 ```html
 <!-- 数学演算関数 -->
@@ -272,7 +374,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 <div class="mt-[tan(30deg)]">margin-top: tan(30deg)</div>
 ```
 
-#### 複雑なネスト関数
+### 複雑なネスト関数
 
 ```html
 <!-- calc()内でのmin/max/clamp使用 -->
@@ -289,7 +391,7 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 </div>
 ```
 
-#### CSS変数との組み合わせ
+### CSS変数との組み合わせ
 
 ```html
 <!-- CSS変数とCSS関数の組み合わせ -->
@@ -308,37 +410,17 @@ SmsshCSSは、レスポンシブデザインに最適化された豊富なCSS数
 - **min()** - 複数の値から最小値を選択
 - **max()** - 複数の値から最大値を選択
 - **clamp()** - 最小値、推奨値、最大値の間で値を制限
+- **abs()**, **sign()**, **mod()** - 基本的な数学演算
+- **pow()**, **sqrt()**, **log()** - 指数・対数関数
+- **sin()**, **cos()**, **tan()** - 三角関数
 
 すべての関数は、margin (m-), padding (p-), gap の各ユーティリティで、全方向（t, r, b, l, x, y）に対応しています。
 
-### Display
-
-```html
-<!-- 基本的なdisplay -->
-<div class="block">display: block</div>
-<div class="inline">display: inline</div>
-<div class="inline-block">display: inline-block</div>
-<div class="flex">display: block flex</div>
-<div class="inline-flex">display: inline flex</div>
-<div class="grid">display: block grid</div>
-<div class="inline-grid">display: inline grid</div>
-<div class="none">display: none</div>
-<div class="hidden">display: none</div>
-
-<!-- 追加のdisplay -->
-<div class="contents">display: contents</div>
-<div class="flow-root">display: block flow-root</div>
-<div class="list-item">display: block flow list-item</div>
-<div class="table">display: block table</div>
-<div class="table-cell">display: table-cell</div>
-<div class="table-row">display: table-row</div>
-```
-
-## 🚀 最新の改善機能
-
-### 型安全性の向上
+## 🚀 TypeScript統合と型安全性
 
 SmsshCSSは任意値の型安全性を大幅に改善しました：
+
+### 基本的な型安全性チェック
 
 ```typescript
 import { validateArbitraryValue, isSafeArbitraryValue } from 'smsshcss';
@@ -424,7 +506,7 @@ import { validateConfig, formatValidationResult } from 'smsshcss';
 
 const config = {
   content: ['src/**/*.html'],
-  // 不正な設定...
+  // 設定オプション...
 };
 
 const validation = validateConfig(config);
@@ -436,29 +518,6 @@ if (!validation.isValid) {
   //   Path: content
   //   Fix: Add content: ["./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}"]
 }
-```
-
-### Display
-
-```html
-<!-- 基本的なdisplay -->
-<div class="block">display: block</div>
-<div class="inline">display: inline</div>
-<div class="inline-block">display: inline-block</div>
-<div class="flex">display: block flex</div>
-<div class="inline-flex">display: inline flex</div>
-<div class="grid">display: block grid</div>
-<div class="inline-grid">display: inline grid</div>
-<div class="none">display: none</div>
-<div class="hidden">display: none</div>
-
-<!-- 追加のdisplay -->
-<div class="contents">display: contents</div>
-<div class="flow-root">display: block flow-root</div>
-<div class="list-item">display: block flow list-item</div>
-<div class="table">display: block table</div>
-<div class="table-cell">display: table-cell</div>
-<div class="table-row">display: table-row</div>
 ```
 
 ## 🧪 デバッグとパフォーマンス分析
@@ -499,10 +558,20 @@ const developmentValidator = new ArbitraryValueValidator({
 });
 ```
 
-## ライセンス
+## 📄 ライセンス
 
 MIT License
 
-## 貢献
+## 🤝 貢献
 
 プルリクエストやイシューの報告を歓迎します。詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+## 🔗 関連リソース
+
+- **[📚 ベストプラクティスガイド](BEST_PRACTICES.md)** - 設計思想、パフォーマンス最適化、品質管理の包括的なガイド
+- **[💡 実用例集](EXAMPLES.md)** - レイアウト、UI、フォーム、レスポンシブの具体例
+- **[🎮 プレイグラウンド](playground/vite-plugin/)** - インタラクティブなデモとサンプル
+
+---
+
+**SmsshCSS** - 高性能で型安全なユーティリティファーストCSSフレームワーク
