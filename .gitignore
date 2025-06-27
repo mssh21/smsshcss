@@ -32,6 +32,7 @@ Thumbs.db
 # テスト
 coverage/
 .nyc_output/
+test-results.json
 
 # env
 .env
@@ -39,3 +40,4 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local 
+

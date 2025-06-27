@@ -24,11 +24,11 @@
 | --------------- | ---------------------------- |
 | `.block`        | `display: block;`            |
 | `.inline`       | `display: inline;`           |
-| `.inline-block` | `display: inline flow-root;` |
-| `.flex`         | `display: block flex;`       |
-| `.inline-flex`  | `display: inline flex;`      |
-| `.grid`         | `display: block grid;`       |
-| `.inline-grid`  | `display: inline grid;`      |
+| `.inline-block` | `display: inline-block;`     |
+| `.flex`         | `display: flex;`             |
+| `.inline-flex`  | `display: inline-flex;`      |
+| `.grid`         | `display: grid;`             |
+| `.inline-grid`  | `display: inline-grid;`      |
 | `.none`         | `display: none;`             |
 | `.hidden`       | `display: none;`             |
 | `.contents`     | `display: contents;`         |
@@ -37,10 +37,10 @@
 
 | クラス           | CSS                              |
 | ---------------- | -------------------------------- |
-| `.flow-root`     | `display: block flow-root;`      |
-| `.list-item`     | `display: block flow list-item;` |
-| `.inline-table`  | `display: inline table;`         |
-| `.table`         | `display: block table;`          |
+| `.flow-root`     | `display: flow-root;`            |
+| `.list-item`     | `display: list-item;`            |
+| `.inline-table`  | `display: inline-table;`         |
+| `.table`         | `display: table;`                |
 | `.table-cell`    | `display: table-cell;`           |
 | `.table-row`     | `display: table-row;`            |
 | `.table-caption` | `display: table-caption;`        |
@@ -54,13 +54,38 @@
 デフォルトのサイズスケール（フィボナッチ数列ベース）:
 
 - `none`: `0`
-- `2xs`: `0.125rem` (2px)
-- `xs`: `0.25rem` (4px)
-- `sm`: `0.5rem` (8px)
-- `md`: `1rem` (16px)
-- `lg`: `1.5rem` (24px)
-- `xl`: `2.5rem` (40px)
-- `2xl`: `4rem` (64px)
+- `auto`: `auto`
+- `2xs`: `0.25rem` (4px) - `var(--space-base)`
+- `xs`: `0.5rem` (8px) - `calc(var(--space-base) * 2)`
+- `sm`: `0.75rem` (12px) - `calc(var(--space-base) * 3)`
+- `md`: `1.25rem` (20px) - `calc(var(--space-base) * 5)`
+- `lg`: `2rem` (32px) - `calc(var(--space-base) * 8)`
+- `xl`: `3.25rem` (52px) - `calc(var(--space-base) * 13)`
+- `2xl`: `5.25rem` (84px) - `calc(var(--space-base) * 21)`
+- `3xl`: `8.5rem` (136px) - `calc(var(--space-base) * 34)`
+- `4xl`: `13.75rem` (220px) - `calc(var(--space-base) * 55)`
+- `5xl`: `22.25rem` (356px) - `calc(var(--space-base) * 89)`
+- `6xl`: `36rem` (576px) - `calc(var(--space-base) * 144)`
+- `7xl`: `48rem` (768px) - `calc(var(--space-base) * 192)`
+- `8xl`: `64rem` (1024px) - `calc(var(--space-base) * 256)`
+- `9xl`: `80rem` (1280px) - `calc(var(--space-base) * 320)`
+- `10xl`: `96rem` (1536px) - `calc(var(--space-base) * 384)`
+- `11xl`: `112rem` (1792px) - `calc(var(--space-base) * 448)`
+- `12xl`: `128rem` (2048px) - `calc(var(--space-base) * 512)`
+
+### レスポンシブ・動的な値
+
+- `full`: `100%`
+- `fit`: `fit-content`
+- `min`: `min-content`
+- `max`: `max-content`
+- `screen`: `100vw`
+- `dvh`: `100dvh`
+- `dvw`: `100dvw`
+- `cqw`: `100cqw`
+- `cqi`: `100cqi`
+- `cqmin`: `100cqmin`
+- `cqmax`: `100cqmax`
 
 ### Margin
 
@@ -300,15 +325,39 @@
 
 ### 特殊な値
 
+Width用の特殊な値:
+
 | 値       | 説明                                               |
 | -------- | -------------------------------------------------- |
 | `full`   | `100%`                                             |
-| `screen` | `100vw` / `100vh`                                  |
-| `svh`    | `100svw` / `100svh` (Small viewport)               |
-| `lvh`    | `100lvw` / `100lvh` (Large viewport)               |
-| `dvh`    | `100dvw` / `100dvh` (Dynamic viewport)             |
-| `cqw`    | `100cqw` / `100cqh` (Container query)              |
-| `cqi`    | `100cqi` / `100cqb` (Container query inline/block) |
+| `auto`   | `auto`                                             |
+| `fit`    | `fit-content`                                      |
+| `min`    | `min-content`                                      |
+| `max`    | `max-content`                                      |
+| `screen` | `100vw`                                            |
+| `svh`    | `100svw` (Small viewport width)                    |
+| `lvh`    | `100lvw` (Large viewport width)                    |
+| `dvw`    | `100dvw` (Dynamic viewport width)                  |
+| `cqw`    | `100cqw` (Container query width)                   |
+| `cqi`    | `100cqi` (Container query inline)                  |
+| `cqmin`  | `100cqmin` (Container query min)                   |
+| `cqmax`  | `100cqmax` (Container query max)                   |
+
+Height用の特殊な値:
+
+| 値       | 説明                                               |
+| -------- | -------------------------------------------------- |
+| `full`   | `100%`                                             |
+| `auto`   | `auto`                                             |
+| `fit`    | `fit-content`                                      |
+| `min`    | `min-content`                                      |
+| `max`    | `max-content`                                      |
+| `screen` | `100vh`                                            |
+| `svh`    | `100svh` (Small viewport height)                   |
+| `lvh`    | `100lvh` (Large viewport height)                   |
+| `dvh`    | `100dvh` (Dynamic viewport height)                 |
+| `cqw`    | `100cqh` (Container query height)                  |
+| `cqi`    | `100cqb` (Container query block)                   |
 | `cqmin`  | `100cqmin` (Container query min)                   |
 | `cqmax`  | `100cqmax` (Container query max)                   |
 

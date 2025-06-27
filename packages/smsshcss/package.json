@@ -51,11 +51,13 @@
     }
   },
   "dependencies": {
+    "debug": "^4.3.4",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.2.0",
     "glob": "^10.3.10"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.5",
     "@vitest/coverage-v8": "^0.34.6",

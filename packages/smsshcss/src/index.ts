@@ -3,6 +3,7 @@
  */
 import { SmsshCSSConfig, PurgeReport } from './core/types';
 import { CSSGenerator } from './core/generator';
+import { logWarning } from './utils/debug';
 
 // Export types
 export type { SmsshCSSConfig, PurgeReport };
@@ -29,10 +30,22 @@ export async function generateCSS(config: SmsshCSSConfig): Promise<string> {
 
 /**
  * Generate CSS based on configuration (sync version for backward compatibility)
+ * @deprecated この関数は非推奨です。generateCSS()を使用してください。
+ * 同期版では以下の問題があります：
+ * - ファイルからのカスタムクラス抽出が実行されない
+ * - 大規模なファイル群でブロッキングを引き起こす可能性
+ * - 将来のバージョンで削除される予定
  * @param config Configuration options
  * @returns Generated CSS string
  */
 export function generateCSSSync(config: SmsshCSSConfig): string {
+  // 新しい警告システムを使用
+  logWarning.deprecation(
+    'generateCSSSync()',
+    'generateCSS()',
+    'https://github.com/mssh21/smsshcss/docs/migration-guide.md'
+  );
+
   const generator = new CSSGenerator(config, { suppressWarnings: true });
   return generator.generateFullCSSSync();
 }
@@ -68,6 +81,11 @@ export async function init(
 
 /**
  * Initialize SmsshCSS with default configuration (sync version)
+ * @deprecated この関数は非推奨です。init()を使用してください。
+ * 同期版では以下の問題があります：
+ * - ファイルからのカスタムクラス抽出が実行されない
+ * - 大規模なファイル群でブロッキングを引き起こす可能性
+ * - 将来のバージョンで削除される予定
  * @param config Optional configuration to override defaults
  * @returns Generated CSS string
  */
@@ -78,6 +96,13 @@ export function initSync(
     includeBaseCSS: true,
   }
 ): string {
+  // 新しい警告システムを使用
+  logWarning.deprecation(
+    'initSync()',
+    'init()',
+    'https://github.com/mssh21/smsshcss/docs/migration-guide.md'
+  );
+
   return generateCSSSync(config);
 }
 
