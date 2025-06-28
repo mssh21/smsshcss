@@ -1,6 +1,6 @@
 {
   "name": "smsshcss",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "description": "A utility-first CSS framework for rapid UI development",
   "license": "MIT",
   "main": "dist/index.js",
