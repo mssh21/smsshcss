@@ -17,7 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
-import { generateApplyClasses } from '../utils/apply';
+import { generateApplyClasses } from '../utils';
 import { debugGenerator, logWarning } from '../utils/debug';
 import { promisify } from 'util';
 

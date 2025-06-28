@@ -11,7 +11,12 @@ import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from './font-size';
 
-import { generateApplyClasses } from './apply';
+// 新しいプラグインベースのApplyシステム
+import './apply-plugins'; // プラグインの自動登録を実行
+export * from './apply-plugins';
+
+// 従来のApply機能（後方互換性のため）
+export { generateApplyClasses as legacyGenerateApplyClasses } from './apply-plugins';
 
 // Export debug utilities for enhanced development experience
 export * from './debug';
@@ -237,7 +242,6 @@ export {
   generateAllHeightClasses,
   generateAllColorClasses,
   generateFontSizeClasses,
-  generateApplyClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
   extractCustomZIndexClasses,
