@@ -87,7 +87,7 @@ yarn generate:utility border \
    // generate() メソッド内で追加
    const utilities = [
      // ... 既存のユーティリティ
-     generateAllColorClasses(colorConfig),
+     generateAllColorClasses(),
    ].join('\n\n');
    ```
 

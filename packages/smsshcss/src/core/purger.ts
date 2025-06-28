@@ -2,6 +2,158 @@ import fs from 'fs';
 import path from 'path';
 import fastGlob from 'fast-glob';
 import { PurgeConfig, PurgeReport } from './types';
+import { debugPurger, logReport, logWarning, devHelpers } from '../utils/debug';
+
+/**
+ * Improved CSS Rule Parser
+ * Handles complex CSS structures more robustly than simple brace counting
+ */
+class CSSRuleParser {
+  private css: string;
+  private position: number = 0;
+  private rules: Array<{ selector: string; content: string; startPos: number; endPos: number }> =
+    [];
+
+  constructor(css: string) {
+    this.css = css;
+  }
+
+  parse(): Array<{ selector: string; content: string; startPos: number; endPos: number }> {
+    this.position = 0;
+    this.rules = [];
+
+    while (this.position < this.css.length) {
+      this.skipWhitespaceAndComments();
+
+      if (this.position >= this.css.length) break;
+
+      const rule = this.parseRule();
+      if (rule) {
+        this.rules.push(rule);
+      }
+    }
+
+    return this.rules;
+  }
+
+  private skipWhitespaceAndComments(): void {
+    while (this.position < this.css.length) {
+      const char = this.css[this.position];
+
+      // Skip whitespace
+      if (/\s/.test(char)) {
+        this.position++;
+        continue;
+      }
+
+      // Skip comments
+      if (char === '/' && this.css[this.position + 1] === '*') {
+        this.position += 2;
+        while (this.position < this.css.length - 1) {
+          if (this.css[this.position] === '*' && this.css[this.position + 1] === '/') {
+            this.position += 2;
+            break;
+          }
+          this.position++;
+        }
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  private parseRule(): {
+    selector: string;
+    content: string;
+    startPos: number;
+    endPos: number;
+  } | null {
+    const startPos = this.position;
+
+    // Find the opening brace
+    let selectorEnd = this.position;
+    let braceCount = 0;
+    let inString = false;
+    let stringChar = '';
+
+    while (selectorEnd < this.css.length) {
+      const char = this.css[selectorEnd];
+
+      // Handle strings
+      if (!inString && (char === '"' || char === "'")) {
+        inString = true;
+        stringChar = char;
+      } else if (inString && char === stringChar && this.css[selectorEnd - 1] !== '\\') {
+        inString = false;
+        stringChar = '';
+      }
+
+      if (!inString) {
+        if (char === '{') {
+          braceCount++;
+          if (braceCount === 1) {
+            break; // Found the opening brace
+          }
+        } else if (char === '}') {
+          braceCount--;
+        }
+      }
+
+      selectorEnd++;
+    }
+
+    if (selectorEnd >= this.css.length) {
+      return null; // No opening brace found
+    }
+
+    const selector = this.css.substring(startPos, selectorEnd).trim();
+
+    // Parse the content inside braces
+    const contentStart = selectorEnd + 1;
+    let contentEnd = contentStart;
+    braceCount = 1;
+    inString = false;
+    stringChar = '';
+
+    while (contentEnd < this.css.length && braceCount > 0) {
+      const char = this.css[contentEnd];
+
+      // Handle strings
+      if (!inString && (char === '"' || char === "'")) {
+        inString = true;
+        stringChar = char;
+      } else if (inString && char === stringChar && this.css[contentEnd - 1] !== '\\') {
+        inString = false;
+        stringChar = '';
+      }
+
+      if (!inString) {
+        if (char === '{') {
+          braceCount++;
+        } else if (char === '}') {
+          braceCount--;
+        }
+      }
+
+      contentEnd++;
+    }
+
+    if (braceCount > 0) {
+      return null; // Unclosed braces
+    }
+
+    const content = this.css.substring(contentStart, contentEnd - 1).trim();
+    this.position = contentEnd;
+
+    return {
+      selector,
+      content,
+      startPos,
+      endPos: contentEnd,
+    };
+  }
+}
 
 export class CSSPurger {
   private config: PurgeConfig;
@@ -17,6 +169,8 @@ export class CSSPurger {
       variables: true,
       ...config,
     };
+
+    debugPurger('CSSPurger initialized', { config: this.config });
   }
 
   /**
@@ -28,6 +182,7 @@ export class CSSPurger {
     this.startTime = Date.now(); // 処理開始時間を記録
 
     if (!this.config.enabled) {
+      debugPurger('Purging disabled, skipping analysis');
       return [];
     }
 
@@ -36,6 +191,7 @@ export class CSSPurger {
         ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
       });
 
+      debugPurger(`Found ${files.length} files to analyze`);
       const results: Array<{ file: string; classesFound: string[]; size: number }> = [];
 
       for (const file of files) {
@@ -52,20 +208,26 @@ export class CSSPurger {
             classesFound,
             size,
           });
+
+          devHelpers.logClassExtraction(file, classesFound);
         } catch (error) {
-          console.warn(`Failed to process file ${file}:`, error);
+          logWarning.fileProcessing(
+            file,
+            error instanceof Error ? error : new Error(String(error))
+          );
         }
       }
 
+      debugPurger(`Analysis complete: ${this.usedClasses.size} unique classes found`);
       return results;
     } catch (error) {
-      console.warn('Failed to analyze source files:', error);
+      debugPurger('Failed to analyze source files:', error);
       return [];
     }
   }
 
   /**
-   * ファイル内容からクラス名を抽出
+   * Improved class name extraction with better pattern matching
    */
   private extractClassNames(content: string, filePath: string): string[] {
     const classes: string[] = [];
@@ -77,43 +239,87 @@ export class CSSPurger {
     );
 
     if (customExtractor) {
+      debugPurger(`Using custom extractor for ${extension}`);
       return customExtractor.extractor(content);
     }
 
-    // デフォルトのクラス名抽出パターン
-    const patterns = [
-      // HTML class属性
-      /class\s*=\s*["']([^"']*?)["']/g,
-      /className\s*=\s*["']([^"']*?)["']/g,
-      // CSS-in-JS パターン
-      /css\s*`[^`]*?\.([a-zA-Z][\w-]*)/g,
-      // Tailwind風のクラス名（通常のクラス名）
-      /['"]\s*([a-zA-Z][\w-]*(?:\s+[a-zA-Z][\w-]*)*)\s*['"]/g,
-      // カスタム値クラス（任意の値）- [...]形式
-      /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g,
-      // 動的クラス名パターン
-      /\$\{[^}]*\}/g,
+    // Improved extraction patterns with better handling of edge cases
+    const extractionPatterns = [
+      {
+        name: 'HTML class attributes',
+        pattern: /class\s*=\s*["']([^"']*?)["']/g,
+        processor: (match: string): string[] => match.split(/\s+/).filter(Boolean),
+      },
+      {
+        name: 'React className attributes',
+        pattern: /className\s*=\s*["']([^"']*?)["']/g,
+        processor: (match: string): string[] => match.split(/\s+/).filter(Boolean),
+      },
+      {
+        name: 'Template literals with classes',
+        pattern: /[`"']\s*([^`"']*?(?:class|className)[^`"']*?)\s*[`"']/g,
+        processor: (match: string): string[] => {
+          const classMatches = match.match(/\b[a-zA-Z][\w-]*(?:-\[([^\]]+)\])?\b/g) || [];
+          return classMatches;
+        },
+      },
+      {
+        name: 'Template literal dynamic classes',
+        pattern: /\$\{[^}]*?\?\s*["']([^"']+)["'][^}]*?\}/g,
+        processor: (match: string, className: string): string[] => [className],
+      },
+      {
+        name: 'Arbitrary value classes',
+        pattern: /\b([mp][trlbxy]?|gap(?:-[xy])?|w|h|text|bg|border|rounded)-\[([^\]]+)\]/g,
+        processor: (match: string, prefix: string, value: string): string[] => [
+          `${prefix}-[${value}]`,
+        ],
+      },
+      {
+        name: 'CSS-in-JS patterns',
+        pattern: /(?:css|className|class)\s*[`"']\s*([^`"']+)\s*[`"']/g,
+        processor: (match: string): string[] => {
+          // Extract potential class names from CSS-in-JS
+          const possibleClasses = match.match(/\b[a-zA-Z][\w-]*\b/g) || [];
+          return possibleClasses.filter(
+            (cls) =>
+              // Filter out CSS properties and values
+              ![
+                'css',
+                'className',
+                'class',
+                'px',
+                'rem',
+                'em',
+                'auto',
+                'none',
+                'block',
+                'inline',
+              ].includes(cls)
+          );
+        },
+      },
     ];
 
-    patterns.forEach((pattern) => {
+    for (const { name, pattern, processor } of extractionPatterns) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
-        if (match[1]) {
-          // カスタム値クラスの場合は特別処理
-          if (pattern.source.includes('\\[')) {
-            // カスタム値クラス全体をクラス名として追加
-            const fullClassName = `${match[1]}-[${match[2]}]`;
-            classes.push(fullClassName);
-          } else {
-            // スペースで区切られたクラス名を分割
-            const classNames = match[1].split(/\s+/).filter(Boolean);
-            classes.push(...classNames);
-          }
+        try {
+          const extracted = processor(match[1] || match[0], match[1], match[2]);
+          classes.push(...extracted);
+
+          debugPurger(`Extracted via ${name}: ${extracted.join(', ')}`);
+        } catch (error) {
+          debugPurger(`Error in ${name} extraction:`, error);
         }
       }
-    });
+    }
 
-    return [...new Set(classes)];
+    // Remove duplicates and empty strings
+    const uniqueClasses = [...new Set(classes.filter(Boolean))];
+    debugPurger(`Total unique classes extracted from ${filePath}: ${uniqueClasses.length}`);
+
+    return uniqueClasses;
   }
 
   /**
@@ -149,79 +355,116 @@ export class CSSPurger {
   }
 
   /**
-   * CSSを解析して全てのクラス名を抽出
+   * CSSを解析して全てのクラス名を抽出 - Improved version
    */
   extractAllClasses(css: string): void {
-    // 通常のクラス名パターン
-    const classPattern = /\.([a-zA-Z][\w-]*)/g;
-    // カスタム値クラスパターン（エスケープされた文字を含む）
-    const customClassPattern = /\.([mp][trlbxy]?|gap(?:-[xy])?)-\\?\[([^\]\\]+)\\?\]/g;
+    debugPurger('Extracting all classes from CSS');
 
-    let match;
+    // Enhanced class extraction patterns
+    const classPatterns = [
+      {
+        name: 'Standard classes',
+        pattern: /\.([a-zA-Z][\w-]*)/g,
+        processor: (match: RegExpExecArray): string => match[1],
+      },
+      {
+        name: 'Arbitrary value classes',
+        pattern: /\.([a-zA-Z][\w-]*)-\\?\[([^\]\\]+)\\?\]/g,
+        processor: (match: RegExpExecArray): string => `${match[1]}-[${match[2]}]`,
+      },
+      {
+        name: 'Escaped arbitrary values',
+        pattern: /\.([a-zA-Z][\w-]*-\\[0-9a-fA-F]+\\])/g,
+        processor: (match: RegExpExecArray): string => match[1].replace(/\\/g, ''),
+      },
+    ];
 
-    // 通常のクラス名を抽出
-    while ((match = classPattern.exec(css)) !== null) {
-      this.allClasses.add(match[1]);
+    for (const { name, pattern, processor } of classPatterns) {
+      let match;
+      while ((match = pattern.exec(css)) !== null) {
+        try {
+          const className = processor(match);
+          this.allClasses.add(className);
+        } catch (error) {
+          debugPurger(`Error processing ${name}:`, error);
+        }
+      }
     }
 
-    // カスタム値クラスを抽出
-    while ((match = customClassPattern.exec(css)) !== null) {
-      const fullClassName = `${match[1]}-[${match[2]}]`;
-      this.allClasses.add(fullClassName);
-    }
+    debugPurger(`Extracted ${this.allClasses.size} total classes from CSS`);
   }
 
   /**
-   * 未使用のCSSクラスを削除
+   * 未使用のCSSクラスを削除 - Improved with robust CSS parsing
    */
   purgeCSS(css: string): string {
     if (!this.config.enabled) {
+      debugPurger('Purging disabled, returning original CSS');
       return css;
     }
 
+    debugPurger('Starting CSS purging process');
     this.extractAllClasses(css);
 
-    // CSSルールを行ごとに処理
-    const lines = css.split('\n');
-    const purgedLines: string[] = [];
-    let currentRule = '';
-    let inRule = false;
-    let braceCount = 0;
+    // Use the improved CSS parser for more robust processing
+    const parser = new CSSRuleParser(css);
+    const rules = parser.parse();
 
-    for (const line of lines) {
-      const trimmedLine = line.trim();
+    debugPurger(`Parsed ${rules.length} CSS rules`);
 
-      // 空行やコメントはそのまま保持
-      if (!trimmedLine || trimmedLine.startsWith('/*') || trimmedLine.startsWith('//')) {
-        purgedLines.push(line);
-        continue;
-      }
+    const keptRules: string[] = [];
+    let purgedCount = 0;
 
-      currentRule += line + '\n';
-
-      // 波括弧の数をカウント
-      braceCount += (line.match(/{/g) || []).length;
-      braceCount -= (line.match(/}/g) || []).length;
-
-      if (trimmedLine.includes('{')) {
-        inRule = true;
-      }
-
-      if (inRule && braceCount === 0) {
-        // ルールの終了
-        if (this.shouldKeepRule(currentRule)) {
-          purgedLines.push(...currentRule.split('\n').slice(0, -1));
-        }
-        currentRule = '';
-        inRule = false;
-      } else if (!inRule) {
-        // ルール外の行（@import, @media等）
-        purgedLines.push(line);
-        currentRule = '';
+    for (const rule of rules) {
+      if (this.shouldKeepRule(rule.selector + '{' + rule.content + '}')) {
+        // Reconstruct the rule with proper formatting
+        keptRules.push(`${rule.selector} {\n  ${rule.content.replace(/;\s*/g, ';\n  ')}\n}`);
+      } else {
+        purgedCount++;
+        debugPurger(`Purged rule: ${rule.selector}`);
       }
     }
 
-    return purgedLines.join('\n');
+    // Handle any remaining CSS that wasn't parsed as rules (imports, etc.)
+    const remainingCSS = this.extractNonRuleCSS(css, rules);
+
+    const result = [...remainingCSS, ...keptRules].join('\n\n');
+
+    debugPurger(
+      `CSS purging complete: ${purgedCount} rules purged, ${keptRules.length} rules kept`
+    );
+    return result;
+  }
+
+  /**
+   * Extract CSS that isn't part of rules (imports, comments, etc.)
+   */
+  private extractNonRuleCSS(
+    css: string,
+    parsedRules: Array<{ startPos: number; endPos: number }>
+  ): string[] {
+    const nonRuleCSS: string[] = [];
+    let lastPos = 0;
+
+    for (const rule of parsedRules.sort((a, b) => a.startPos - b.startPos)) {
+      if (rule.startPos > lastPos) {
+        const beforeRule = css.substring(lastPos, rule.startPos).trim();
+        if (beforeRule) {
+          nonRuleCSS.push(beforeRule);
+        }
+      }
+      lastPos = rule.endPos;
+    }
+
+    // Handle any remaining CSS after the last rule
+    if (lastPos < css.length) {
+      const afterRules = css.substring(lastPos).trim();
+      if (afterRules) {
+        nonRuleCSS.push(afterRules);
+      }
+    }
+
+    return nonRuleCSS.filter(Boolean);
   }
 
   /**
@@ -299,7 +542,7 @@ export class CSSPurger {
   }
 
   /**
-   * パージレポートをコンソールに出力
+   * パージレポートをコンソールに出力 - Enhanced with structured logging
    */
   printReport(report: PurgeReport): void {
     // テスト環境またはサイレントモードでは出力しない
@@ -307,42 +550,49 @@ export class CSSPurger {
       return;
     }
 
-    console.log('\n🎯 CSS Purge Report');
-    console.log('==================');
-    console.log(`📊 Total classes: ${report.totalClasses}`);
-    console.log(`✅ Used classes: ${report.usedClasses}`);
-    console.log(`🗑️  Purged classes: ${report.purgedClasses}`);
-    console.log(`⏱️  Build time: ${report.buildTime}ms`);
-    console.log(`🛡️  Safelist: ${report.safelist.length} items`);
+    // Use the new structured logging system
+    const reductionPercentage =
+      report.purgedClasses > 0
+        ? parseFloat(((report.purgedClasses / report.totalClasses) * 100).toFixed(1))
+        : undefined;
 
-    if (report.purgedClasses > 0) {
-      const reductionPercentage = ((report.purgedClasses / report.totalClasses) * 100).toFixed(1);
-      console.log(`📉 Size reduction: ${reductionPercentage}%`);
-    }
-
-    // ファイル分析の出力を制限（10ファイルまで）
-    const maxFilesToShow = 10;
-    const filesToShow = report.fileAnalysis.slice(0, maxFilesToShow);
-
-    console.log('\n📁 File Analysis:');
-    filesToShow.forEach((file) => {
-      console.log(`  ${file.file}: ${file.classesFound.length} classes (${file.size} bytes)`);
+    logReport.purge({
+      totalClasses: report.totalClasses,
+      usedClasses: report.usedClasses,
+      purgedClasses: report.purgedClasses,
+      buildTime: report.buildTime,
+      reductionPercentage,
     });
 
-    if (report.fileAnalysis.length > maxFilesToShow) {
-      console.log(`  ... and ${report.fileAnalysis.length - maxFilesToShow} more files`);
-    }
+    // Additional detailed output for debug mode
+    if (debugPurger.enabled) {
+      debugPurger(`Safelist: ${report.safelist.length} items`);
 
-    if (report.purgedClassNames.length > 0 && report.purgedClassNames.length <= 20) {
-      console.log('\n🗑️  Purged classes:');
-      report.purgedClassNames.forEach((className) => {
-        console.log(`  - ${className}`);
+      // File analysis details
+      const maxFilesToShow = 10;
+      const filesToShow = report.fileAnalysis.slice(0, maxFilesToShow);
+
+      debugPurger('\nFile Analysis:');
+      filesToShow.forEach((file) => {
+        debugPurger(`  ${file.file}: ${file.classesFound.length} classes (${file.size} bytes)`);
       });
-    } else if (report.purgedClassNames.length > 20) {
-      console.log(`\n🗑️  Purged classes (showing first 20 of ${report.purgedClassNames.length}):`);
-      report.purgedClassNames.slice(0, 20).forEach((className) => {
-        console.log(`  - ${className}`);
-      });
+
+      if (report.fileAnalysis.length > maxFilesToShow) {
+        debugPurger(`  ... and ${report.fileAnalysis.length - maxFilesToShow} more files`);
+      }
+
+      // Purged classes details
+      if (report.purgedClassNames.length > 0 && report.purgedClassNames.length <= 20) {
+        debugPurger('\nPurged classes:');
+        report.purgedClassNames.forEach((className) => {
+          debugPurger(`  - ${className}`);
+        });
+      } else if (report.purgedClassNames.length > 20) {
+        debugPurger(`\nPurged classes (showing first 20 of ${report.purgedClassNames.length}):`);
+        report.purgedClassNames.slice(0, 20).forEach((className) => {
+          debugPurger(`  - ${className}`);
+        });
+      }
     }
   }
 }

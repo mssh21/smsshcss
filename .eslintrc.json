@@ -22,6 +22,21 @@
   },
   "overrides": [
     {
+      "files": ["*.js"],
+      "parser": "espree",
+      "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module"
+      },
+      "extends": ["eslint:recommended"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+      }
+    },
+    {
       "files": ["*.config.js", "*.config.ts"],
       "rules": {
         "@typescript-eslint/no-require-imports": "off"
@@ -29,10 +44,13 @@
     }
   ],
   "ignorePatterns": [
-    "postcss.config.js",
     "**/*.d.ts",
     "**/scripts/**/*",
     "**/*.example.js",
-    "**/*.example.ts"
+    "**/*.example.ts",
+    "**/dist/**/*",
+    "**/build/**/*",
+    "**/node_modules/**/*",
+    "**/*.min.js"
   ]
 }

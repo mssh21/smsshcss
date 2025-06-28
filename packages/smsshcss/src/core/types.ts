@@ -77,10 +77,10 @@ export interface ColorConfig {
 }
 
 // SpacingConfigをSizeConfigのエイリアスとして定義（後方互換性のため）
-export interface SpacingConfig extends SizeConfig {}
+export type SpacingConfig = SizeConfig;
 
 // WidthConfigをSizeConfigのエイリアスとして定義（後方互換性のため）
-export interface WidthConfig extends SizeConfig {}
+export type WidthConfig = SizeConfig;
 
 // HeightConfig用のインターフェース
 export interface HeightConfig extends SizeConfig {

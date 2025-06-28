@@ -1,0 +1,141 @@
+[smsshcss] Configured for development mode
+Port 3000 is in use, trying another one...
+
+  VITE v5.4.19  ready in 1676 ms
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+[smsshcss] Generating CSS with config: {
+  "content": [
+    "./index.html",
+    "./spacing.html",
+    "./color.html",
+    "./width-height.html",
+    "./gap.html",
+    "./apply.html",
+    "./src/**/*.{html,js,ts,jsx,tsx,vue,svelte}",
+    "./components/**/*.{js,ts,jsx,tsx,vue}",
+    "./**/*.html"
+  ],
+  "includeResetCSS": true,
+  "includeBaseCSS": true,
+  "apply": {
+    "main-layout": "w-full max-w-12xl mx-auto px-md",
+    "container": "w-full max-w-4xl mx-auto px-md",
+    "text-notification": "text-[rgb(255,0,0)]",
+    "text-primary": "text-[#259270]"
+  },
+  "purge": {
+    "enabled": true,
+    "content": [
+      "./index.html",
+      "./spacing.html",
+      "./color.html",
+      "./width-height.html",
+      "./gap.html",
+      "./apply.html",
+      "./src/**/*.{html,js,ts,jsx,tsx,vue,svelte}",
+      "./components/**/*.{js,ts,jsx,tsx,vue}",
+      "./**/*.html"
+    ]
+  }
+}
+[apply] Generating apply classes for: [ 'main-layout', 'container', 'text-notification', 'text-primary' ]
+[apply] Generated class: main-layout
+[apply] Generated class: container
+[apply] Generated class: text-notification
+[apply] Generated class: text-primary
+[apply] Total generated classes: 4
+[smsshcss] Generated CSS includes Apply: false
+[smsshcss] Generated CSS includes Custom: true
+[smsshcss] Generated CSS sample: /* Reset CSS - ブラウザのデフォルトスタイルをリセット */
+
+/* すべての要素のマージン・パディング・ボーダーをリセット */
+
+/* HTML5要素を明示的にブロック要素として定義 */
+
+/* body要素の設定 */
+
+/* リストスタイルをリセット */
+
+/* 引用符をリセット */
+
+/* テーブルの設定 */
+
+/* フォーム要素のスタイルリセット */
+
+/* ボタンの設定 */
+
+/* リンクの下線を削除 */
+
+/* 画像の設定 */
+
+/* フィールドセットのリセット */
+
+/* IEのクリアボタンを非表示 */
+
+/* WebKit系ブラウザの検索フィールドスタイルをリセット */
+
+/* Firefox の outline を削除 */
+
+/* テキストエリアのリサイズ制御 */
+
+/* select要素の矢印を削除 */
+
+/* iOS Safari でのタップ時のハイライトを削除 */
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+  
+}
+
+body {
+  line-height: 1;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+}
+
+ol,
+ul {
+  list-style: none;
+  
+}
+
+blockquote,
+q {
+  quotes: none;
+  
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+  
+}
+[smsshcss] Generated CSS length: 23980 characters
+[smsshcss] Final CSS includes Custom: true

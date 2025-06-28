@@ -28,7 +28,9 @@ const css = await generateCSS({
 console.log(css); // 生成されたCSS文字列
 ```
 
-### `generateCSSSync(config: SmsshCSSConfig): string`
+### `generateCSSSync(config: SmsshCSSConfig): string` ⚠️ **非推奨**
+
+> **⚠️ 非推奨**: この関数は非推奨となりました。代わりに非同期版の `generateCSS()` を使用してください。詳細は [マイグレーションガイド](MIGRATION_GUIDE.md) を参照してください。
 
 同期的にCSS を生成します。後方互換性のために提供されています。
 

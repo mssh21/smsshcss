@@ -19,9 +19,9 @@ describe('Width Utilities', () => {
 
       // 基本的なwidthクラスが含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
-      expect(result).toContain('.w-2xs { width: var(--size-base); }');
-      expect(result).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
-      expect(result).toContain('.w-5xl { width: calc(var(--size-base) * 16); }');
+      expect(result).toContain('.w-2xs { width: 1rem; }');
+      expect(result).toContain('.w-md { width: 2.5rem; }');
+      expect(result).toContain('.w-5xl { width: 16rem; }');
     });
 
     it('should generate min-width classes with default config', () => {
@@ -29,9 +29,9 @@ describe('Width Utilities', () => {
 
       // 基本的なmin-widthクラスが含まれているか確認
       expect(result).toContain('.min-w-none { min-width: 0; }');
-      expect(result).toContain('.min-w-2xs { min-width: var(--size-base); }');
-      expect(result).toContain('.min-w-md { min-width: calc(var(--size-base) * 2.5); }');
-      expect(result).toContain('.min-w-5xl { min-width: calc(var(--size-base) * 16); }');
+      expect(result).toContain('.min-w-2xs { min-width: 1rem; }');
+      expect(result).toContain('.min-w-md { min-width: 2.5rem; }');
+      expect(result).toContain('.min-w-5xl { min-width: 16rem; }');
     });
 
     it('should generate max-width classes with default config', () => {
@@ -39,9 +39,9 @@ describe('Width Utilities', () => {
 
       // 基本的なmax-widthクラスが含まれているか確認
       expect(result).toContain('.max-w-none { max-width: 0; }');
-      expect(result).toContain('.max-w-2xs { max-width: var(--size-base); }');
-      expect(result).toContain('.max-w-md { max-width: calc(var(--size-base) * 2.5); }');
-      expect(result).toContain('.max-w-5xl { max-width: calc(var(--size-base) * 16); }');
+      expect(result).toContain('.max-w-2xs { max-width: 1rem; }');
+      expect(result).toContain('.max-w-md { max-width: 2.5rem; }');
+      expect(result).toContain('.max-w-5xl { max-width: 16rem; }');
     });
 
     it('should include arbitrary value classes', () => {
@@ -76,7 +76,7 @@ describe('Width Utilities', () => {
       // すべての幅クラスが含まれているか確認
       expect(result).toContain('.w-none { width: 0; }');
       expect(result).toContain('.w-full { width: 100%; }');
-      expect(result).toContain('.w-2xl { width: calc(var(--size-base) * 6); }');
+      expect(result).toContain('.w-2xl { width: 6rem; }');
       expect(result).toContain('.min-w-full { min-width: 100%; }');
       expect(result).toContain('.max-w-full { max-width: 100%; }');
     });

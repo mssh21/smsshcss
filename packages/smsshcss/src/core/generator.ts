@@ -9,6 +9,7 @@ import { generateAllZIndexClasses, extractCustomZIndexClasses } from '../utils/z
 import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/order';
 import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
+import { generatePositioningClasses } from '../utils/positioning';
 // import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -17,9 +18,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
 import { generateApplyClasses } from '../utils/apply';
-
-// CJS環境での__dirnameの型宣言
-declare const __dirname: string;
+import { debugGenerator, logWarning, performanceTiming, devHelpers } from '../utils/debug';
 
 /**
  * CSS Generator のオプション
@@ -41,8 +40,8 @@ export class CSSGenerator {
   private purger?: CSSPurger;
 
   constructor(config: SmsshCSSConfig, options: GeneratorOptions = {}) {
-    console.log('[CSSGenerator] Constructor called');
-    console.log('[CSSGenerator] Config:', JSON.stringify(config, null, 2));
+    debugGenerator('CSSGenerator constructor called');
+    debugGenerator('Config:', JSON.stringify(config, null, 2));
 
     this.config = config;
     this.options = {
@@ -52,7 +51,7 @@ export class CSSGenerator {
       ...options,
     };
 
-    console.log('[CSSGenerator] Options merged:', JSON.stringify(this.options, null, 2));
+    debugGenerator('Options merged:', JSON.stringify(this.options, null, 2));
 
     // 開発モードまたは明示的に指定された場合、設定をバリデーション
     if (!this.options.skipValidation) {
@@ -83,8 +82,8 @@ export class CSSGenerator {
 
     if (!result.isValid || result.warnings.length > 0 || result.suggestions.length > 0) {
       if (this.options.development && !this.options.suppressWarnings) {
-        console.log('\n📋 SmsshCSS Configuration Validation:');
-        console.log(formatValidationResult(result));
+        const formatted = formatValidationResult(result);
+        debugGenerator('Configuration validation result:', formatted);
       }
 
       if (!result.isValid) {
@@ -103,9 +102,7 @@ export class CSSGenerator {
       try {
         if (fs.existsSync(filePath)) {
           const content = fs.readFileSync(filePath, 'utf-8');
-          if (this.options.development) {
-            console.log(`✅ Loaded reset.css from: ${filePath}`);
-          }
+          debugGenerator(`Loaded reset.css from: ${filePath}`);
           return content;
         }
       } catch (error) {
@@ -116,9 +113,9 @@ export class CSSGenerator {
 
     if (this.options.development && !this.options.suppressWarnings) {
       if (errors.length > 0) {
-        console.warn(`⚠️  Failed to load reset.css. Tried paths:\n${errors.join('\n')}`);
+        debugGenerator(`Failed to load reset.css. Tried paths:\n${errors.join('\n')}`);
       } else {
-        console.warn('⚠️  Failed to load reset.css, no valid paths found');
+        debugGenerator('Failed to load reset.css, no valid paths found');
       }
     }
     return '';
@@ -133,9 +130,7 @@ export class CSSGenerator {
       try {
         if (fs.existsSync(filePath)) {
           const content = fs.readFileSync(filePath, 'utf-8');
-          if (this.options.development) {
-            console.log(`✅ Loaded base.css from: ${filePath}`);
-          }
+          debugGenerator(`Loaded base.css from: ${filePath}`);
           return content;
         }
       } catch (error) {
@@ -146,9 +141,9 @@ export class CSSGenerator {
 
     if (this.options.development && !this.options.suppressWarnings) {
       if (errors.length > 0) {
-        console.warn(`⚠️  Failed to load base.css. Tried paths:\n${errors.join('\n')}`);
+        debugGenerator(`Failed to load base.css. Tried paths:\n${errors.join('\n')}`);
       } else {
-        console.warn('⚠️  Failed to load base.css, no valid paths found');
+        debugGenerator('Failed to load base.css, no valid paths found');
       }
     }
     return '';
@@ -157,25 +152,24 @@ export class CSSGenerator {
   private getCSSFilePaths(filename: string): string[] {
     const paths: string[] = [];
 
-    // ESM/CJS互換の方法でディレクトリパスを取得
+    // ESMファーストのパス解決
     let currentDir: string;
 
     try {
-      // ESM環境の場合
+      // import.meta.urlを使用してESM環境でパスを解決
       if (typeof import.meta !== 'undefined' && import.meta.url) {
-        const __filename = fileURLToPath(import.meta.url);
-        currentDir = path.dirname(__filename);
+        const currentFile = fileURLToPath(import.meta.url);
+        currentDir = path.dirname(currentFile);
       } else {
-        // CJS環境またはフォールバック
-        currentDir =
-          typeof __dirname !== 'undefined' ? __dirname : path.join(process.cwd(), 'dist');
+        // フォールバック: プロセスの作業ディレクトリを基準
+        currentDir = path.join(process.cwd(), 'dist');
       }
-    } catch (error) {
-      // フォールバック: 現在の作業ディレクトリから相対パスで解決
+    } catch {
+      // 最終フォールバック
       currentDir = path.join(process.cwd(), 'dist');
     }
 
-    // 様々なパスパターンを追加
+    // 様々なパスパターンを追加（ESMベース）
     paths.push(
       // ビルド後のパス（同じディレクトリ）
       path.join(currentDir, filename),
@@ -187,17 +181,11 @@ export class CSSGenerator {
       path.join(process.cwd(), 'packages/smsshcss/src/styles', filename),
       // node_modulesからの相対パス
       path.join(process.cwd(), 'node_modules/smsshcss/dist', filename),
-      path.join(process.cwd(), 'node_modules/smsshcss/src/styles', filename)
+      path.join(process.cwd(), 'node_modules/smsshcss/src/styles', filename),
+      // 追加のフォールバックパス
+      path.join(process.cwd(), 'src/styles', filename),
+      path.join(process.cwd(), 'styles', filename)
     );
-
-    // __dirnameが利用可能な場合のみ追加
-    if (typeof __dirname !== 'undefined') {
-      paths.push(
-        // テスト環境用のパス
-        path.join(__dirname, '../styles', filename),
-        path.join(__dirname, '../../styles', filename)
-      );
-    }
 
     return paths;
   }
@@ -214,6 +202,7 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -270,8 +259,9 @@ export class CSSGenerator {
           files.forEach((file) => allFiles.add(file));
         } catch (error) {
           if (this.options.development && !this.options.suppressWarnings) {
-            console.warn(
-              `Failed to glob pattern "${pattern}": ${error instanceof Error ? error.message : String(error)}`
+            logWarning.fileProcessing(
+              pattern,
+              error instanceof Error ? error : new Error(String(error))
             );
           }
         }
@@ -291,17 +281,26 @@ export class CSSGenerator {
             fileCache.set(filePath, fileContent);
           }
 
-          // 各種カスタムクラスを抽出
-          const [spacingClasses, widthClasses, heightClasses] = await Promise.all([
-            Promise.resolve(extractCustomSpacingClasses(fileContent)),
-            Promise.resolve(extractCustomWidthClasses(fileContent)),
-            Promise.resolve(extractCustomHeightClasses(fileContent)),
-            Promise.resolve(extractCustomGridClasses(fileContent)),
-            Promise.resolve(extractCustomFlexClasses(fileContent)),
-            Promise.resolve(extractCustomZIndexClasses(fileContent)),
-            Promise.resolve(extractCustomOrderClasses(fileContent)),
-            Promise.resolve(extractCustomColorClasses(fileContent)),
-          ]);
+          // 各種カスタムクラスを抽出（同期関数なのでPromise.resolveは不要）
+          const [
+            spacingClasses,
+            widthClasses,
+            heightClasses,
+            gridClasses,
+            flexClasses,
+            zIndexClasses,
+            orderClasses,
+            colorClasses,
+          ] = [
+            extractCustomSpacingClasses(fileContent),
+            extractCustomWidthClasses(fileContent),
+            extractCustomHeightClasses(fileContent),
+            extractCustomGridClasses(fileContent),
+            extractCustomFlexClasses(fileContent),
+            extractCustomZIndexClasses(fileContent),
+            extractCustomOrderClasses(fileContent),
+            extractCustomColorClasses(fileContent),
+          ];
 
           return [
             ...spacingClasses,
@@ -315,8 +314,9 @@ export class CSSGenerator {
           ];
         } catch (error) {
           if (this.options.development && !this.options.suppressWarnings) {
-            console.warn(
-              `Failed to process file "${file}": ${error instanceof Error ? error.message : String(error)}`
+            logWarning.fileProcessing(
+              file,
+              error instanceof Error ? error : new Error(String(error))
             );
           }
           return [];
@@ -336,7 +336,7 @@ export class CSSGenerator {
       }
     } catch (error) {
       if (this.options.development) {
-        console.error(
+        debugGenerator(
           `Error extracting custom classes: ${error instanceof Error ? error.message : String(error)}`
         );
       }
@@ -374,6 +374,7 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
@@ -393,8 +394,31 @@ export class CSSGenerator {
     return this.purger.generateReport(fileAnalysis);
   }
 
-  // 後方互換性のため同期版も保持
+  /**
+   * 同期版CSS生成（非推奨）
+   * @deprecated この関数は非推奨です。generateFullCSS()を使用してください。
+   * 同期版では以下の問題があります：
+   * - ファイルからのカスタムクラス抽出が実行されない
+   * - 大規模なファイル群でブロッキングを引き起こす可能性
+   * - 将来のバージョンで削除される予定
+   * この関数は将来のバージョンで削除される予定です。
+   */
   public generateFullCSSSync(): string {
+    // 強化された非推奨警告
+    logWarning.deprecation(
+      'generateFullCSSSync()',
+      'generateFullCSS()',
+      'https://github.com/mssh21/smsshcss/docs/migration-guide.md'
+    );
+
+    // パフォーマンス警告
+    logWarning.performance(
+      'generateFullCSSSync() は同期処理のため、大規模なプロジェクトではブロッキングが発生する可能性があります',
+      { method: 'generateFullCSSSync', fileCount: this.config.content?.length || 0 }
+    );
+
+    performanceTiming.start('generateFullCSSSync');
+
     const utilities = [
       generateAllSpacingClasses(),
       generateDisplayClasses(),
@@ -406,12 +430,13 @@ export class CSSGenerator {
       generateAllZIndexClasses(),
       generateAllOrderClasses(),
       generateAllColorClasses(),
+      generatePositioningClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
     const apply = generateApplyClasses(this.config.apply);
-    console.log('[generator] Apply config:', this.config.apply);
-    console.log('[generator] Generated apply CSS length:', apply.length);
+    debugGenerator('Apply config:', this.config.apply);
+    debugGenerator('Generated apply CSS length:', apply.length);
 
     const result = [
       this.config.includeResetCSS ? this.resetCSS : '',
@@ -422,7 +447,11 @@ export class CSSGenerator {
       .filter(Boolean)
       .join('\n\n');
 
-    console.log('[generator] Total CSS sections:', result.split('\n\n').filter((s) => s).length);
+    const sections = result.split('\n\n').filter((s) => s);
+    debugGenerator('Total CSS sections:', sections.length);
+    devHelpers.logGeneratedSections(sections);
+
+    performanceTiming.end('generateFullCSSSync');
 
     return result;
   }
