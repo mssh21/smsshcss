@@ -1,6 +1,6 @@
 {
   "name": "@smsshcss/vite",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "description": "Vite plugin for SmsshCSS",
   "type": "module",
   "main": "./dist/index.js",
@@ -26,7 +26,7 @@
   "dependencies": {
     "glob": "^10.3.10",
     "micromatch": "^4.0.5",
-    "smsshcss": "workspace:*"
+    "smsshcss": "workspace:packages/smsshcss"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",

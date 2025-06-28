@@ -334,6 +334,21 @@ describe('generateApplyClasses', () => {
     expect(result).toContain('flex-wrap: nowrap;');
   });
 
+  it('should handle font-size custom values', () => {
+    const config = {
+      'font-size-main':
+        'font-size-[clamp(1rem,4vw,3rem)] font-size-[max(20px,2rem)] font-size-[min(1rem,3vw)] font-size-2xl font-size-[55px]',
+    };
+
+    const result = generateApplyClasses(config);
+
+    expect(result).toContain('font-size: clamp(1rem, 4vw, 3rem);');
+    expect(result).toContain('font-size: max(20px, 2rem);');
+    expect(result).toContain('font-size: min(1rem, 3vw);');
+    expect(result).toContain('font-size: 2rem;');
+    expect(result).toContain('font-size: 55px;');
+  });
+
   it('should return empty string for undefined config', () => {
     const result = generateApplyClasses(undefined);
     expect(result).toBe('');

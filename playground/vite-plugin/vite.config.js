@@ -27,6 +27,9 @@ export default defineConfig({
 
         'text-notification': 'text-[rgb(255,0,0)]',
         'text-primary': 'text-[#259270]',
+
+        'demo-title': 'font-size-xl bg-[#343a40] text-white',
+        'test-card-title': 'font-size-[18px] text-[#1e293b]',
       },
 
       showPurgeReport: false,

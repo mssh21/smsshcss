@@ -165,8 +165,11 @@ export const customValueSamples = {
   color: `
     <div class="text-[hsl(0,0%,0%/1)]">Color Values</div>
   `,
+  fontSize: `
+    <div class="font-size-[clamp(1rem,4vw,3rem)]">Font Size Values</div>
+  `,
   complex: `
-    <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)]">
+    <div class="p-[clamp(1rem,4vw,3rem)] m-[max(20px,2rem)] font-size-[clamp(1rem,4vw,3rem)]">
       <span class="gap-[min(1rem,3%)] w-[calc(50%-10px)] h-[minmax(200px)]">Complex</span>
     </div>
   `,

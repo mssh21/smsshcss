@@ -1,18 +1,6 @@
 import { ApplyConfig } from '../core/types';
 import { defaultColorConfig } from '../core/colorConfig';
-
-/**
- * CSS関数値をフォーマットする（カンマとマイナス記号の前後にスペースを追加）
- * @param value - CSS関数値
- * @returns フォーマットされた値
- */
-function formatCSSFunction(value: string): string {
-  // カンマの後にスペースがない場合は追加
-  let formatted = value.replace(/,(?!\s)/g, ', ');
-  // マイナス記号の前後にスペースがない場合は追加（ただし、すでにある場合は維持）
-  formatted = formatted.replace(/(\S)-(?!\s)/g, '$1 - ').replace(/(?<!\s)-(\S)/g, '- $1');
-  return formatted;
-}
+import { defaultFontSizeConfig } from '../core/fontSizeConfig';
 
 /**
  * applyクラスを生成する
@@ -21,11 +9,8 @@ function formatCSSFunction(value: string): string {
  */
 export function generateApplyClasses(config?: ApplyConfig): string {
   if (!config) {
-    console.log('[apply] No config provided');
     return '';
   }
-
-  console.log('[apply] Generating apply classes for:', Object.keys(config));
 
   const classes: string[] = [];
 
@@ -48,8 +33,6 @@ export function generateApplyClasses(config?: ApplyConfig): string {
       const cssRule = extractCSSFromUtility(utilityClass);
       if (cssRule) {
         cssRules.push(cssRule);
-      } else {
-        console.log(`[apply] No CSS rule extracted for: ${utilityClass}`);
       }
     }
 
@@ -59,11 +42,9 @@ export function generateApplyClasses(config?: ApplyConfig): string {
 ${cssRules.map((rule) => `  ${rule}`).join('\n')}
 }`;
       classes.push(generatedClass);
-      console.log(`[apply] Generated class: ${className}`);
     }
   }
 
-  console.log(`[apply] Total generated classes: ${classes.length}`);
   return classes.join('\n\n');
 }
 
@@ -73,43 +54,13 @@ ${cssRules.map((rule) => `  ${rule}`).join('\n')}
  * @returns CSSプロパティと値のペア（例: "margin: 1rem;"）
  */
 function extractCSSFromUtility(utilityClass: string): string | null {
-  // 色関連のクラス - text
-  const textColorMatch = utilityClass.match(/^text-(.+)$/);
-  if (textColorMatch) {
-    const [, colorName] = textColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - bg
-  const bgColorMatch = utilityClass.match(/^bg-(.+)$/);
-  if (bgColorMatch) {
-    const [, colorName] = bgColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `background-color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - border
-  const borderColorMatch = utilityClass.match(/^border-(.+)$/);
-  if (borderColorMatch) {
-    const [, colorName] = borderColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `border-color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - fill
-  const fillColorMatch = utilityClass.match(/^fill-(.+)$/);
-  if (fillColorMatch) {
-    const [, colorName] = fillColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `fill: ${colorValue};`;
+  // フォントサイズの処理を最初に移動（他の条件にマッチする前に処理）
+  const fontSizeMatch = utilityClass.match(/^font-size-(.+)$/);
+  if (fontSizeMatch) {
+    const [, fontSize] = fontSizeMatch;
+    const fontSizeValue = getFontSizeValue(fontSize);
+    if (fontSizeValue) {
+      return `font-size: ${fontSizeValue};`;
     }
   }
 
@@ -228,6 +179,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     'self-center': 'align-self: center;',
     'self-stretch': 'align-self: stretch;',
   };
+
   if (flexboxMap[utilityClass]) {
     return flexboxMap[utilityClass];
   }
@@ -236,150 +188,64 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   const basisMatch = utilityClass.match(/^basis-(.+)$/);
   if (basisMatch) {
     const [, size] = basisMatch;
-    let value: string | null = null;
-
-    // カスタム値（[値]形式）の場合
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        // CSS関数の場合はフォーマット
-        value = formatCSSFunction(customValue);
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      // 通常のサイズ値
-      value = getSizeValue(size);
-    }
-
+    const value = getSizeValue(size);
     if (!value) return null;
     return `flex-basis: ${value};`;
   }
 
-  // Flex
-  const flexMatch = utilityClass.match(/^flex-(.+)$/);
-  if (flexMatch) {
-    const [, size] = flexMatch;
-    let value: string | null = null;
-
-    // flex固定値のマッピング
-    const flexValues: Record<string, string> = {
-      auto: '1 1 auto',
-      initial: '0 1 auto',
-      none: 'none',
-    };
-
-    // カスタム値（[値]形式）の場合
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      // 固定値の場合
-      value = flexValues[size];
-    }
-
-    if (!value) return null;
-    return `flex: ${value};`;
-  }
-
   // Flex Grow
-  if (utilityClass === 'grow') {
-    return 'flex-grow: 1;';
-  }
-
-  const flexGrowMatch = utilityClass.match(/^grow-(.+)$/);
-  if (flexGrowMatch) {
-    const [, size] = flexGrowMatch;
-    let value: string | null = null;
-
-    // カスタム値（[値]形式）の場合
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
+  const growMatch = utilityClass.match(/^grow(-(.+))?$/);
+  if (growMatch) {
+    const [, , value] = growMatch;
+    if (!value || value === undefined) {
+      return 'flex-grow: 1;';
+    } else {
+      // カスタム値（[値]形式）の場合
+      if (value.startsWith('[') && value.endsWith(']')) {
+        return `flex-grow: ${normalizeCustomValue(value.slice(1, -1))};`;
       }
+      return `flex-grow: ${value};`;
     }
-
-    if (!value) return null;
-    return `flex-grow: ${value};`;
   }
 
   // Flex Shrink
-  if (utilityClass === 'shrink') {
-    return 'flex-shrink: 1;';
+  const shrinkMatch = utilityClass.match(/^shrink(-(.+))?$/);
+  if (shrinkMatch) {
+    const [, , value] = shrinkMatch;
+    if (!value || value === undefined) {
+      return 'flex-shrink: 1;';
+    } else {
+      // カスタム値（[値]形式）の場合
+      if (value.startsWith('[') && value.endsWith(']')) {
+        return `flex-shrink: ${normalizeCustomValue(value.slice(1, -1))};`;
+      }
+      return `flex-shrink: ${value};`;
+    }
   }
 
-  const flexShrinkMatch = utilityClass.match(/^shrink-(.+)$/);
-  if (flexShrinkMatch) {
-    const [, size] = flexShrinkMatch;
-    let value: string | null = null;
+  // Flex
+  const flexShorthandMap: Record<string, string> = {
+    'flex-auto': 'flex: 1 1 auto;',
+    'flex-initial': 'flex: 0 1 auto;',
+    'flex-none': 'flex: none;',
+  };
 
-    // カスタム値（[値]形式）の場合
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
+  if (flexShorthandMap[utilityClass]) {
+    return flexShorthandMap[utilityClass];
+  }
 
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        // CSS関数の場合はフォーマット
-        value = formatCSSFunction(customValue);
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    }
-
-    if (!value) return null;
-    return `flex-shrink: ${value};`;
+  // Flex カスタム値
+  const flexMatch = utilityClass.match(/^flex-\[(.+)\]$/);
+  if (flexMatch) {
+    const [, value] = flexMatch;
+    return `flex: ${normalizeCustomValue(value)};`;
   }
 
   // Grid Columns
   const gridColsMatch = utilityClass.match(/^grid-cols-(.+)$/);
   if (gridColsMatch) {
     const [, size] = gridColsMatch;
-    let value: string | null = null;
-
-    // カスタム値（[値]形式）の場合
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-      if (isNumeric || isCSSVariable) {
-        value = `repeat(${customValue}, minmax(0, 1fr))`;
-      } else if (cssFunctions.test(customValue)) {
-        // CSS関数が含まれている場合はそのまま使用
-        value = customValue;
-      } else {
-        // 通常の値の場合のみカンマをスペースに変換
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      // Grid専用のサイズ値
-      value = getGridValue(size);
-    }
-
+    const value = getGridValue(size);
     if (!value) return null;
     return `grid-template-columns: ${value};`;
   }
@@ -388,262 +254,123 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   const gridRowsMatch = utilityClass.match(/^grid-rows-(.+)$/);
   if (gridRowsMatch) {
     const [, size] = gridRowsMatch;
-    let value: string | null = null;
-
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-      const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-      if (isNumeric || isCSSVariable) {
-        value = `repeat(${customValue}, minmax(0, 1fr))`;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      value = getGridValue(size);
-    }
-
+    const value = getGridValue(size);
     if (!value) return null;
     return `grid-template-rows: ${value};`;
   }
 
   // Grid Column Span
-  const gridColSpanMatch = utilityClass.match(/^col-span-(.+)$/);
-  if (gridColSpanMatch) {
-    const [, size] = gridColSpanMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
+  const colSpanMatch = utilityClass.match(/^col-span-(.+)$/);
+  if (colSpanMatch) {
+    const [, size] = colSpanMatch;
+    // カスタム値（[値]形式）の場合
     if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = `span ${customValue} / span ${customValue}`;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      // 通常の数値の場合は span 形式を使用
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = `span ${size} / span ${size}`;
-      } else {
-        // 数値以外の場合（auto、full など）は適切な値を設定
-        if (size === 'auto') {
-          value = 'auto';
-        } else if (size === 'full') {
-          value = '1 / -1';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
-      }
+      const value = size.slice(1, -1);
+      return `grid-column: span ${value} / span ${value};`;
     }
-
-    if (!value) return null;
-    return `grid-column: ${value};`;
+    // 数値の場合
+    return `grid-column: span ${size} / span ${size};`;
   }
 
   // Grid Row Span
-  const gridRowSpanMatch = utilityClass.match(/^row-span-(.+)$/);
-  if (gridRowSpanMatch) {
-    const [, size] = gridRowSpanMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
+  const rowSpanMatch = utilityClass.match(/^row-span-(.+)$/);
+  if (rowSpanMatch) {
+    const [, size] = rowSpanMatch;
+    // カスタム値（[値]形式）の場合
     if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = `span ${customValue} / span ${customValue}`;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      // 通常の数値の場合は span 形式を使用
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = `span ${size} / span ${size}`;
-      } else {
-        // 数値以外の場合（auto、full など）は適切な値を設定
-        if (size === 'auto') {
-          value = 'auto';
-        } else if (size === 'full') {
-          value = '1 / -1';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
-      }
+      const value = size.slice(1, -1);
+      return `grid-row: span ${value} / span ${value};`;
     }
-
-    if (!value) return null;
-    return `grid-row: ${value};`;
+    // 数値の場合
+    return `grid-row: span ${size} / span ${size};`;
   }
 
   // Grid Column Start
-  const gridColStartPositionMatch = utilityClass.match(/^col-start-(.+)$/);
-  if (gridColStartPositionMatch) {
-    const [, size] = gridColStartPositionMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = size;
-      } else {
-        // Grid position では auto のみサポート
-        if (size === 'auto') {
-          value = 'auto';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
-      }
+  const colStartMatch = utilityClass.match(/^col-start-(.+)$/);
+  if (colStartMatch) {
+    const [, position] = colStartMatch;
+    // カスタム値（[値]形式）の場合
+    if (position.startsWith('[') && position.endsWith(']')) {
+      return `grid-column-start: ${position.slice(1, -1)};`;
     }
-
-    if (!value) return null;
-    return `grid-column-start: ${value};`;
+    return `grid-column-start: ${position};`;
   }
 
   // Grid Column End
-  const gridColEndPositionMatch = utilityClass.match(/^col-end-(.+)$/);
-  if (gridColEndPositionMatch) {
-    const [, size] = gridColEndPositionMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = size;
-      } else {
-        // Grid position では auto のみサポート
-        if (size === 'auto') {
-          value = 'auto';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
-      }
+  const colEndMatch = utilityClass.match(/^col-end-(.+)$/);
+  if (colEndMatch) {
+    const [, position] = colEndMatch;
+    // カスタム値（[値]形式）の場合
+    if (position.startsWith('[') && position.endsWith(']')) {
+      return `grid-column-end: ${position.slice(1, -1)};`;
     }
-
-    if (!value) return null;
-    return `grid-column-end: ${value};`;
+    return `grid-column-end: ${position};`;
   }
 
   // Grid Row Start
-  const gridRowStartPositionMatch = utilityClass.match(/^row-start-(.+)$/);
-  if (gridRowStartPositionMatch) {
-    const [, size] = gridRowStartPositionMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
-
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
-
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = size;
-      } else {
-        // Grid position では auto のみサポート
-        if (size === 'auto') {
-          value = 'auto';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
-      }
+  const rowStartMatch = utilityClass.match(/^row-start-(.+)$/);
+  if (rowStartMatch) {
+    const [, position] = rowStartMatch;
+    // カスタム値（[値]形式）の場合
+    if (position.startsWith('[') && position.endsWith(']')) {
+      return `grid-row-start: ${position.slice(1, -1)};`;
     }
-
-    if (!value) return null;
-    return `grid-row-start: ${value};`;
+    return `grid-row-start: ${position};`;
   }
 
   // Grid Row End
-  const gridRowEndPositionMatch = utilityClass.match(/^row-end-(.+)$/);
-  if (gridRowEndPositionMatch) {
-    const [, size] = gridRowEndPositionMatch;
-    let value: string | null = null;
-    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/;
+  const rowEndMatch = utilityClass.match(/^row-end-(.+)$/);
+  if (rowEndMatch) {
+    const [, position] = rowEndMatch;
+    // カスタム値（[値]形式）の場合
+    if (position.startsWith('[') && position.endsWith(']')) {
+      return `grid-row-end: ${position.slice(1, -1)};`;
+    }
+    return `grid-row-end: ${position};`;
+  }
 
-    if (size.startsWith('[') && size.endsWith(']')) {
-      const customValue = size.slice(1, -1);
-      const isNumeric = /^\d+$/.test(customValue);
-      const isCSSVariable = /^var\(--/.test(customValue);
+  // Order
+  const orderMatch = utilityClass.match(/^order-(.+)$/);
+  if (orderMatch) {
+    const [, value] = orderMatch;
+    return `order: ${value};`;
+  }
 
-      if (isNumeric || isCSSVariable) {
-        value = customValue;
-      } else if (cssFunctions.test(customValue)) {
-        value = customValue;
-      } else {
-        value = customValue.replace(/,/g, ' ');
-      }
-    } else {
-      const isNumeric = /^\d+$/.test(size);
-      if (isNumeric) {
-        value = size;
-      } else {
-        // Grid position では auto のみサポート
-        if (size === 'auto') {
-          value = 'auto';
-        } else {
-          value = null; // 不明な値は処理しない
-        }
+  // Z-Index
+  const zIndexMatch = utilityClass.match(/^z-(.+)$/);
+  if (zIndexMatch) {
+    const [, value] = zIndexMatch;
+    return `z-index: ${value};`;
+  }
+
+  // カラー関連のユーティリティクラス
+  const colorClasses = ['text', 'bg', 'border', 'fill'];
+  for (const colorClass of colorClasses) {
+    const colorMatch = utilityClass.match(new RegExp(`^${colorClass}-(.+)$`));
+    if (colorMatch) {
+      const [, colorName] = colorMatch;
+      const colorValue = getColorValue(colorName);
+      if (!colorValue) continue;
+
+      switch (colorClass) {
+        case 'text':
+          return `color: ${colorValue};`;
+        case 'bg':
+          return `background-color: ${colorValue};`;
+        case 'border':
+          return `border-color: ${colorValue};`;
+        case 'fill':
+          return `fill: ${colorValue};`;
       }
     }
-
-    if (!value) return null;
-    return `grid-row-end: ${value};`;
   }
 
   // カスタム値のクラス（[値]形式）
   const customMatch = utilityClass.match(
-    /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid|col|col-span|row|row-span|col-start|col-end|row-start|row-end|basis)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
+    /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid-cols|grid-rows|col-span|row-span|col-start|col-end|row-start|row-end|basis|grow|shrink|flex|text|bg|border|fill|font-size)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
   );
   if (customMatch) {
+    console.log(`[apply] Custom value match found:`, customMatch);
     const [, property, , direction, value] = customMatch;
 
     if (property === 'm' || property === 'p') {
@@ -701,13 +428,59 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       return `grid-row-end: ${value};`;
     } else if (property === 'basis') {
       return `flex-basis: ${value};`;
+    } else if (property === 'grow') {
+      return `flex-grow: ${normalizeCustomValue(value)};`;
+    } else if (property === 'shrink') {
+      return `flex-shrink: ${normalizeCustomValue(value)};`;
+    } else if (property === 'flex') {
+      return `flex: ${normalizeCustomValue(value)};`;
+    } else if (property === 'text') {
+      return `color: ${value};`;
+    } else if (property === 'bg') {
+      return `background-color: ${value};`;
+    } else if (property === 'border') {
+      return `border: ${value};`;
+    } else if (property === 'fill') {
+      return `fill: ${value};`;
+    } else if (property === 'font-size') {
+      console.log(`[apply] Custom font-size value: ${value}`);
+      return `font-size: ${value};`;
     }
   }
 
   // その他のユーティリティクラスは今後追加予定
   // 現時点では基本的なものに対応
+  console.log(`[apply] No match found for: ${utilityClass}`);
 
   return null;
+}
+
+/**
+ * カスタム値を正規化（スペースの適切な挿入）
+ */
+function normalizeCustomValue(value: string): string {
+  if (!value) return value;
+
+  let normalizedValue = value;
+
+  // CSS関数（calc, clamp, min, max等）内のカンマの後にスペースを追加
+  const cssFunctions =
+    /\b(calc|min|max|clamp|minmax|var|rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/gi;
+  if (cssFunctions.test(normalizedValue)) {
+    // カンマの後にスペースがない場合は追加
+    normalizedValue = normalizedValue.replace(/,(?!\s)/g, ', ');
+  }
+
+  // calc関数内の演算子周りにスペースを追加
+  if (/\bcalc\s*\(/i.test(normalizedValue)) {
+    // +, -, *, / の周りにスペースを追加（既にスペースがある場合は追加しない）
+    normalizedValue = normalizedValue.replace(/([+\-*/])(?!\s)/g, '$1 ');
+    normalizedValue = normalizedValue.replace(/(?<!\s)([+\-*/])/g, ' $1');
+    // 連続するスペースを1つにまとめる
+    normalizedValue = normalizedValue.replace(/\s+/g, ' ');
+  }
+
+  return normalizedValue;
 }
 
 /**
@@ -864,9 +637,26 @@ function getGridValue(size: string): string | null {
     return gridSizes[size];
   }
 
-  // カスタム値（[値]形式）の場合はそのまま返す
+  // 数値の場合は repeat() で包む（col-span、row-spanでは単純な数値として使用）
+  if (/^\d+$/.test(size)) {
+    return `repeat(${size}, minmax(0, 1fr))`;
+  }
+
+  // カスタム値（[値]形式）の場合
   if (size.startsWith('[') && size.endsWith(']')) {
-    return size.slice(1, -1);
+    let customValue = size.slice(1, -1);
+
+    // 数値の場合
+    if (/^\d+$/.test(customValue)) {
+      return `repeat(${customValue}, minmax(0, 1fr))`;
+    }
+
+    // カンマ区切りのテンプレート値の場合、カンマをスペースに変換
+    if (customValue.includes(',')) {
+      customValue = customValue.replace(/,/g, ' ');
+    }
+
+    return customValue;
   }
 
   return null;
@@ -889,6 +679,34 @@ function getColorValue(colorName: string): string | null {
 
     // CSS関数（rgb, hsl等）内のカンマの後にスペースを追加
     const cssFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/gi;
+    if (cssFunctions.test(customValue)) {
+      // カンマの後にスペースがない場合は追加
+      customValue = customValue.replace(/,(?!\s)/g, ', ');
+    }
+
+    return customValue;
+  }
+
+  return null;
+}
+
+/**
+ * フォントサイズの値を取得
+ */
+function getFontSizeValue(fontSize: string): string | null {
+  if (!fontSize) return null;
+
+  // デフォルトのfont-size値をチェック
+  if (defaultFontSizeConfig[fontSize]) {
+    return defaultFontSizeConfig[fontSize];
+  }
+
+  // カスタム値（[値]形式）の場合
+  if (fontSize.startsWith('[') && fontSize.endsWith(']')) {
+    let customValue = fontSize.slice(1, -1);
+
+    // CSS関数（calc, clamp, min, max等）内のカンマの後にスペースを追加
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/gi;
     if (cssFunctions.test(customValue)) {
       // カンマの後にスペースがない場合は追加
       customValue = customValue.replace(/,(?!\s)/g, ', ');

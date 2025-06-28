@@ -1,5 +1,16 @@
 import { SizeConfig } from '../core/types';
 
+export const defaultFontSizeConfig: FontSizeConfig = {
+  xs: '0.75rem', // 12px
+  sm: '0.875rem', // 14px
+  md: '1rem', // 16px
+  lg: '1.125rem', // 20px
+  xl: '1.25rem', // 24px
+  '2xl': '1.75rem', // 32px
+  '3xl': '2rem', // 36px
+  '4xl': '2.25rem', // 44px
+};
+
 /**
  * Width/Height用のサイズ設定
  * より大きな値を基本とし、レイアウト要素に適している

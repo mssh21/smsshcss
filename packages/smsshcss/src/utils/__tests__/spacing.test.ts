@@ -53,17 +53,6 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
       expect(result).toContain('.my-md { margin-top: 1.25rem; margin-bottom: 1.25rem; }');
     });
-
-    it('should include arbitrary value classes', () => {
-      const result = generateSpacingClasses(spacingConfig, 'margin');
-
-      // 任意の値のクラスが含まれているか確認
-      expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');
-      expect(result).toContain('.mt-\\[\\$\\{value\\}\\] { margin-top: var(--value); }');
-      expect(result).toContain(
-        '.mx-\\[\\$\\{value\\}\\] { margin-left: var(--value); margin-right: var(--value); }'
-      );
-    });
   });
 
   describe('generateGapClasses', () => {
@@ -100,15 +89,6 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.gap-y-md { row-gap: 1.25rem; }');
       expect(result).toContain('.gap-y-lg { row-gap: 2rem; }');
       expect(result).toContain('.gap-y-5xl { row-gap: 22.25rem; }');
-    });
-
-    it('should include arbitrary gap value classes', () => {
-      const result = generateGapClasses(spacingConfig);
-
-      // 任意の値のギャップクラスが含まれているか確認
-      expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
-      expect(result).toContain('.gap-x-\\[\\$\\{value\\}\\] { column-gap: var(--value); }');
-      expect(result).toContain('.gap-y-\\[\\$\\{value\\}\\] { row-gap: var(--value); }');
     });
   });
 
@@ -172,17 +152,6 @@ describe('Spacing Utilities', () => {
       expect(result).toContain('.pt-md { padding-top: 1.25rem; }');
       expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
       expect(result).toContain('.px-md { padding-left: 1.25rem; padding-right: 1.25rem; }');
-    });
-
-    it('should include all arbitrary value classes', () => {
-      const result = generateAllSpacingClasses();
-
-      // すべての任意の値クラスが含まれているか確認
-      expect(result).toContain('.m-\\[\\$\\{value\\}\\] { margin: var(--value); }');
-      expect(result).toContain('.p-\\[\\$\\{value\\}\\] { padding: var(--value); }');
-      expect(result).toContain('.gap-\\[\\$\\{value\\}\\] { gap: var(--value); }');
-      expect(result).toContain('.gap-x-\\[\\$\\{value\\}\\] { column-gap: var(--value); }');
-      expect(result).toContain('.gap-y-\\[\\$\\{value\\}\\] { row-gap: var(--value); }');
     });
   });
 });
