@@ -9,6 +9,7 @@ import { generateGridClasses, extractCustomGridClasses } from './grid';
 import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 import { generateAllColorClasses, extractCustomColorClasses } from './color';
+import { generateFontSizeClasses, extractCustomFontSizeClasses } from './font-size';
 import { formatCSSFunctionValue } from '../core/sizeConfig';
 import { formatColorFunctionValue } from '../core/colorConfig';
 import { generateApplyClasses } from './apply';
@@ -233,6 +234,7 @@ export {
   generateAllWidthClasses,
   generateAllHeightClasses,
   generateAllColorClasses,
+  generateFontSizeClasses,
   generateApplyClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
@@ -242,4 +244,5 @@ export {
   extractCustomWidthClasses,
   extractCustomHeightClasses,
   extractCustomColorClasses,
+  extractCustomFontSizeClasses,
 };

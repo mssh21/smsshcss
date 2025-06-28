@@ -7,6 +7,7 @@ import { extractCustomGridClasses } from '../grid';
 import { extractCustomZIndexClasses } from '../z-index';
 import { extractCustomOrderClasses } from '../order';
 import { extractCustomColorClasses } from '../color';
+import { extractCustomFontSizeClasses } from '../font-size';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
@@ -636,19 +637,33 @@ describe('Custom Value Extraction Functions', () => {
     });
   });
 
+  describe('extractCustomFontSizeClasses', () => {
+    it('should extract font-size custom values', () => {
+      const content = '<div class="font-size-[var(--font-size)]">Test</div>';
+      const result = extractCustomFontSizeClasses(content);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.font-size-\\[var\\(--font-size\\)\\] { font-size: var(--font-size); }'
+      );
+    });
+  });
+
   describe('Integration Tests', () => {
     it('should handle complex mixed custom values', () => {
       const complexContent = customValueSamples.complex;
 
       const spacingResult = extractCustomSpacingClasses(complexContent);
       const widthResult = extractCustomWidthClasses(complexContent);
+      const fontSizeResult = extractCustomFontSizeClasses(complexContent);
 
       expect(spacingResult.length).toBeGreaterThan(0);
       expect(widthResult.length).toBeGreaterThan(0);
+      expect(fontSizeResult.length).toBeGreaterThan(0);
 
       expect(spacingResult.some((r) => r.includes('clamp(1rem, 4vw, 3rem)'))).toBe(true);
       expect(spacingResult.some((r) => r.includes('max(20px, 2rem)'))).toBe(true);
       expect(widthResult.some((r) => r.includes('calc(50% - 10px)'))).toBe(true);
+      expect(fontSizeResult.some((r) => r.includes('clamp(1rem, 4vw, 3rem)'))).toBe(true);
     });
 
     it('should maintain correct CSS selector escaping', () => {

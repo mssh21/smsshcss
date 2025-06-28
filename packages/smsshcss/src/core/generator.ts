@@ -10,6 +10,7 @@ import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/ord
 import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
 import { generatePositioningClasses } from '../utils/positioning';
+import { generateFontSizeClasses, extractCustomFontSizeClasses } from '../utils/font-size';
 // import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -203,6 +204,7 @@ export class CSSGenerator {
       generateAllOrderClasses(),
       generateAllColorClasses(),
       generatePositioningClasses(),
+      generateFontSizeClasses(),
     ].join('\n\n');
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
@@ -291,6 +293,7 @@ export class CSSGenerator {
             zIndexClasses,
             orderClasses,
             colorClasses,
+            fontSizeClasses,
           ] = [
             extractCustomSpacingClasses(fileContent),
             extractCustomWidthClasses(fileContent),
@@ -300,6 +303,7 @@ export class CSSGenerator {
             extractCustomZIndexClasses(fileContent),
             extractCustomOrderClasses(fileContent),
             extractCustomColorClasses(fileContent),
+            extractCustomFontSizeClasses(fileContent),
           ];
 
           return [
@@ -311,6 +315,7 @@ export class CSSGenerator {
             ...zIndexClasses,
             ...orderClasses,
             ...colorClasses,
+            ...fontSizeClasses,
           ];
         } catch (error) {
           if (this.options.development && !this.options.suppressWarnings) {
@@ -375,6 +380,7 @@ export class CSSGenerator {
       generateAllOrderClasses(),
       generateAllColorClasses(),
       generatePositioningClasses(),
+      generateFontSizeClasses(),
     ].join('\n\n');
 
     // applyクラスを生成
@@ -431,6 +437,7 @@ export class CSSGenerator {
       generateAllOrderClasses(),
       generateAllColorClasses(),
       generatePositioningClasses(),
+      generateFontSizeClasses(),
     ].join('\n\n');
 
     // applyクラスを生成

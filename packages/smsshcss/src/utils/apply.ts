@@ -1,5 +1,6 @@
 import { ApplyConfig } from '../core/types';
 import { defaultColorConfig } from '../core/colorConfig';
+import { defaultFontSizeConfig } from '../core/fontSizeConfig';
 
 /**
  * CSS関数値をフォーマットする（カンマとマイナス記号の前後にスペースを追加）
@@ -73,46 +74,6 @@ ${cssRules.map((rule) => `  ${rule}`).join('\n')}
  * @returns CSSプロパティと値のペア（例: "margin: 1rem;"）
  */
 function extractCSSFromUtility(utilityClass: string): string | null {
-  // 色関連のクラス - text
-  const textColorMatch = utilityClass.match(/^text-(.+)$/);
-  if (textColorMatch) {
-    const [, colorName] = textColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - bg
-  const bgColorMatch = utilityClass.match(/^bg-(.+)$/);
-  if (bgColorMatch) {
-    const [, colorName] = bgColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `background-color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - border
-  const borderColorMatch = utilityClass.match(/^border-(.+)$/);
-  if (borderColorMatch) {
-    const [, colorName] = borderColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `border-color: ${colorValue};`;
-    }
-  }
-
-  // 色関連のクラス - fill
-  const fillColorMatch = utilityClass.match(/^fill-(.+)$/);
-  if (fillColorMatch) {
-    const [, colorName] = fillColorMatch;
-    const colorValue = getColorValue(colorName);
-    if (colorValue) {
-      return `fill: ${colorValue};`;
-    }
-  }
-
   // マージン・パディング
   const spacingMatch = utilityClass.match(/^(m|p)(t|r|b|l|x|y)?-(.+)$/);
   if (spacingMatch) {
@@ -639,9 +600,60 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     return `grid-row-end: ${value};`;
   }
 
+  // 色関連のクラス - text
+  const textColorMatch = utilityClass.match(/^text-(.+)$/);
+  if (textColorMatch) {
+    const [, colorName] = textColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - bg
+  const bgColorMatch = utilityClass.match(/^bg-(.+)$/);
+  if (bgColorMatch) {
+    const [, colorName] = bgColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `background-color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - border
+  const borderColorMatch = utilityClass.match(/^border-(.+)$/);
+  if (borderColorMatch) {
+    const [, colorName] = borderColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `border-color: ${colorValue};`;
+    }
+  }
+
+  // 色関連のクラス - fill
+  const fillColorMatch = utilityClass.match(/^fill-(.+)$/);
+  if (fillColorMatch) {
+    const [, colorName] = fillColorMatch;
+    const colorValue = getColorValue(colorName);
+    if (colorValue) {
+      return `fill: ${colorValue};`;
+    }
+  }
+
+  // フォントサイズ
+  // 色関連のクラス - fill
+  const fontSizeMatch = utilityClass.match(/^font-size-(.+)$/);
+  if (fontSizeMatch) {
+    const [, size] = fontSizeMatch;
+    const fontSizeValue = getFontSizeValue(size);
+    if (fontSizeValue) {
+      return `font-size: ${fontSizeValue};`;
+    }
+  }
+
   // カスタム値のクラス（[値]形式）
   const customMatch = utilityClass.match(
-    /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid|col|col-span|row|row-span|col-start|col-end|row-start|row-end|basis)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
+    /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid|col|col-span|row|row-span|col-start|col-end|row-start|row-end|basis|text|bg|border|fill|font-size)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
   );
   if (customMatch) {
     const [, property, , direction, value] = customMatch;
@@ -701,6 +713,16 @@ function extractCSSFromUtility(utilityClass: string): string | null {
       return `grid-row-end: ${value};`;
     } else if (property === 'basis') {
       return `flex-basis: ${value};`;
+    } else if (property === 'text') {
+      return `color: ${colorValue};`;
+    } else if (property === 'bg') {
+      return `background-color: ${colorValue};`;
+    } else if (property === 'border') {
+      return `border: ${colorValue};`;
+    } else if (property === 'fill') {
+      return `fill: ${colorValue};`;
+    } else if (property === 'font-size') {
+      return `font-size: ${fontSizeValue};`;
     }
   }
 
@@ -889,6 +911,34 @@ function getColorValue(colorName: string): string | null {
 
     // CSS関数（rgb, hsl等）内のカンマの後にスペースを追加
     const cssFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/gi;
+    if (cssFunctions.test(customValue)) {
+      // カンマの後にスペースがない場合は追加
+      customValue = customValue.replace(/,(?!\s)/g, ', ');
+    }
+
+    return customValue;
+  }
+
+  return null;
+}
+
+/**
+ * フォントサイズの値を取得
+ */
+function getFontSizeValue(fontSize: string): string | null {
+  if (!fontSize) return null;
+
+  // デフォルトのfont-size値をチェック
+  if (defaultFontSizeConfig[fontSize]) {
+    return defaultFontSizeConfig[fontSize];
+  }
+
+  // カスタム値（[値]形式）の場合
+  if (fontSize.startsWith('[') && fontSize.endsWith(']')) {
+    let customValue = fontSize.slice(1, -1);
+
+    // CSS関数（calc, clamp, min, max等）内のカンマの後にスペースを追加
+    const cssFunctions = /\b(calc|min|max|clamp|minmax|var)\s*\(/gi;
     if (cssFunctions.test(customValue)) {
       // カンマの後にスペースがない場合は追加
       customValue = customValue.replace(/,(?!\s)/g, ', ');

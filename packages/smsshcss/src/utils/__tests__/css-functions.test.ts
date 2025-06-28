@@ -3,6 +3,7 @@ import { extractCustomWidthClasses } from '../width';
 import { extractCustomHeightClasses } from '../height';
 import { extractCustomFlexClasses } from '../flexbox';
 import { extractCustomColorClasses } from '../color';
+import { extractCustomFontSizeClasses } from '../font-size';
 
 describe('Enhanced CSS Functions Support', () => {
   describe('calc() function', () => {
@@ -122,6 +123,16 @@ describe('Enhanced CSS Functions Support', () => {
         '.gap-\\[calc\\(\\(1rem\\+10px\\)\\*2\\)\\] { gap: calc((1rem + 10px) * 2); }'
       );
     });
+
+    it('should handle calc() with font-size', () => {
+      const content = '<div class="font-size-[calc(1rem+10px)]">Test</div>';
+      const result = extractCustomFontSizeClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.font-size-\\[calc\\(1rem\\+10px\\)\\] { font-size: calc(1rem + 10px); }'
+      );
+    });
   });
 
   describe('min() function', () => {
@@ -165,6 +176,14 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe('.gap-\\[min\\(1rem\\,3vw\\)\\] { gap: min(1rem, 3vw); }');
+    });
+
+    it('should handle font-size with min()', () => {
+      const content = '<div class="font-size-[min(1rem,3vw)]">Test</div>';
+      const result = extractCustomFontSizeClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.font-size-\\[min\\(1rem\\,3vw\\)\\] { font-size: min(1rem, 3vw); }');
     });
   });
 
@@ -230,6 +249,14 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result[1]).toBe('.gap-\\[max\\(1rem\\,2vh\\)\\] { gap: max(1rem, 2vh); }');
       expect(result[2]).toBe('.gap-x-\\[max\\(1rem\\,2vh\\)\\] { column-gap: max(1rem, 2vh); }');
     });
+
+    it('should handle font-size with max()', () => {
+      const content = '<div class="font-size-[max(1rem,3vw)]">Test</div>';
+      const result = extractCustomFontSizeClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe('.font-size-\\[max\\(1rem\\,3vw\\)\\] { font-size: max(1rem, 3vw); }');
+    });
   });
 
   describe('clamp() function', () => {
@@ -287,6 +314,16 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result).toHaveLength(1);
       expect(result[0]).toBe(
         '.gap-x-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { column-gap: clamp(0.5rem, 2vw, 2rem); }'
+      );
+    });
+
+    it('should handle font-size with clamp()', () => {
+      const content = '<div class="font-size-[clamp(1rem,3vw,2rem)]">Test</div>';
+      const result = extractCustomFontSizeClasses(content);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(
+        '.font-size-\\[clamp\\(1rem\\,3vw\\,2rem\\)\\] { font-size: clamp(1rem, 3vw, 2rem); }'
       );
     });
   });

@@ -127,6 +127,7 @@ export { extractCustomGridClasses } from './utils/grid';
 export { extractCustomOrderClasses } from './utils/order';
 export { extractCustomZIndexClasses } from './utils/z-index';
 export { extractCustomColorClasses } from './utils/color';
+export { extractCustomFontSizeClasses } from './utils/font-size';
 
 // Export new enhanced arbitrary value utilities
 export {
