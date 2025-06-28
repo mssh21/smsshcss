@@ -1,131 +1,72 @@
-/* Reset CSS - ブラウザのデフォルトスタイルをリセット */
+/* reset.css */
 
-/* すべての要素のマージン・パディング・ボーダーをリセット */
-* {
-  margin: 0;
-  padding: 0;
-  border: 0;
+/* 
+  1. box-sizingをborder-boxに設定し、直感的なサイジングを実現
+*/
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-/* HTML5要素を明示的にブロック要素として定義 */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
-/* body要素の設定 */
+/*
+  2. bodyのデフォルトmarginを削除
+*/
 body {
-  line-height: 1;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
 }
 
-/* リストスタイルをリセット */
-ol,
-ul {
-  list-style: none;
+/*
+  3. 見出し要素のデフォルトスタイルを維持しつつ、マージンをリセット
+     (プロジェクトの基本スタイルはbase.cssで設定)
+*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-size: inherit; /* フォントサイズはbaseで制御するため、一旦継承させる */
+  font-weight: inherit; /* 同上 */
 }
 
-/* 引用符をリセット */
-blockquote,
-q {
-  quotes: none;
+/*
+  4. リストのデフォルトpadding, marginを削除
+*/
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none; /* list-styleは必要に応じてコンポーネント側で設定 */
 }
 
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: '';
-  content: none;
+/*
+  5. aタグの基本的なリセット
+*/
+a {
+  text-decoration: none; /* 下線はデフォルトで消し、ホバー時など意図した時に表示 */
+  color: inherit; /* 親要素の色を継承させる */
 }
 
-/* テーブルの設定 */
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+/*
+  6. 画像をブロック要素として扱い、max-widthを設定
+*/
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
-/* フォーム要素のスタイルリセット */
+/*
+  7. フォーム要素のフォントを継承させる
+*/
 input,
 button,
 textarea,
 select {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  outline: none;
-}
-
-/* ボタンの設定 */
-button {
-  cursor: pointer;
-  background: transparent;
-}
-
-/* リンクの下線を削除 */
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* 画像の設定 */
-img {
-  max-width: 100%;
-  height: auto;
-  vertical-align: top;
-}
-
-/* フィールドセットのリセット */
-fieldset {
-  border: none;
-}
-
-/* IEのクリアボタンを非表示 */
-input::-ms-clear {
-  display: none;
-}
-
-/* WebKit系ブラウザの検索フィールドスタイルをリセット */
-input[type='search']::-webkit-search-decoration,
-input[type='search']::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-}
-
-/* Firefox の outline を削除 */
-input::-moz-focus-inner,
-button::-moz-focus-inner {
-  border: 0;
-  padding: 0;
-}
-
-/* テキストエリアのリサイズ制御 */
-textarea {
-  resize: vertical;
-}
-
-/* select要素の矢印を削除 */
-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-/* iOS Safari でのタップ時のハイライトを削除 */
-* {
-  -webkit-tap-highlight-color: transparent;
+  font: inherit;
 }
