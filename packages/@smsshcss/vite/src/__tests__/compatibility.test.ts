@@ -91,15 +91,15 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
     it('should work with Vite dev and build modes', async () => {
       // 開発モード設定
       const devPlugin = smsshcss({
-        includeReset: true,
-        includeBase: true,
+        includeResetCSS: true,
+        includeBaseCSS: true,
         minify: false,
       });
 
       // プロダクションモード設定
       const prodPlugin = smsshcss({
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         minify: true,
       });
 

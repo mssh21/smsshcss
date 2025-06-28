@@ -29,12 +29,12 @@ export interface SmsshCSSViteOptions {
    * リセットCSSを含めるかどうか
    * @default true
    */
-  includeReset?: boolean;
+  includeResetCSS?: boolean;
   /**
    * ベースCSSを含めるかどうか
    * @default true
    */
-  includeBase?: boolean;
+  includeBaseCSS?: boolean;
   /**
    * パージ設定
    */
@@ -298,8 +298,8 @@ async function extractAllCustomClassesFromFiles(
 
 export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
   const {
-    includeReset = true,
-    includeBase = true,
+    includeResetCSS = true,
+    includeBaseCSS = true,
     apply = {},
     content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
     purge = { enabled: true },
@@ -413,8 +413,8 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
       // SmsshCSSの設定を構築
       const smsshConfig: SmsshCSSConfig = {
         content,
-        includeResetCSS: includeReset,
-        includeBaseCSS: includeBase,
+        includeResetCSS,
+        includeBaseCSS,
         apply,
         purge: {
           enabled: isProduction ? purge.enabled : false, // 開発時はパージを無効化
@@ -529,8 +529,8 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
  */
 export async function generateCSSWithPurge(options: SmsshCSSViteOptions = {}): Promise<string> {
   const {
-    includeReset = true,
-    includeBase = true,
+    includeResetCSS = true,
+    includeBaseCSS = true,
     apply = {},
     content = ['index.html', 'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}'],
     purge = { enabled: true },
@@ -538,8 +538,8 @@ export async function generateCSSWithPurge(options: SmsshCSSViteOptions = {}): P
 
   const smsshConfig: SmsshCSSConfig = {
     content,
-    includeResetCSS: includeReset,
-    includeBaseCSS: includeBase,
+    includeResetCSS,
+    includeBaseCSS,
     apply,
     purge: {
       enabled: purge.enabled,

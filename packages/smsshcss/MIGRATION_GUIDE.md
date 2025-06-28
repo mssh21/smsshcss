@@ -103,7 +103,7 @@ export default defineConfig({
   plugins: [
     smsshcss({
       content: ['src/**/*.{html,js,ts,jsx,tsx}'],
-      includeReset: true,
+      includeResetCSS: true,
     }),
   ],
 });

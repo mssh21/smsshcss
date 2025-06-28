@@ -14,8 +14,8 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
 
     it('should create plugin with custom options', () => {
       const options = {
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         content: ['src/**/*.tsx'],
         apply: {
           'btn-primary': 'p-md bg-blue-500 text-white rounded',
@@ -47,8 +47,8 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
       fs.writeFileSync(testFile, testContent);
 
       const plugin = smsshcss({
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         content: ['test-apply.html'],
         purge: { enabled: false },
         apply: {
@@ -79,8 +79,8 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
 
     it('should handle apply classes with custom color values', async () => {
       const plugin = smsshcss({
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         apply: {
           'text-custom': 'text-[#ff0000]',
           'bg-custom': 'bg-[rgb(0,255,0)]',
@@ -102,8 +102,8 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
 
     it('should handle mixed utility classes in apply', async () => {
       const plugin = smsshcss({
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         apply: {
           'alert-box': 'p-md m-sm bg-red-100 text-red-800 border-red-300',
           'primary-button': 'px-lg py-md bg-blue-500 text-white hover:bg-blue-600',
@@ -156,8 +156,8 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
 
     it('should handle apply classes with font-size values', async () => {
       const plugin = smsshcss({
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         apply: {
           'body-text': 'font-size-md',
           'custom-text': 'font-size-[88px]',
@@ -222,13 +222,13 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
       });
 
       it('should include reset CSS when explicitly enabled', async () => {
-        const plugin = smsshcss({ includeReset: true });
+        const plugin = smsshcss({ includeResetCSS: true });
         const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Reset CSS */');
       });
 
       it('should exclude reset CSS when disabled', async () => {
-        const plugin = smsshcss({ includeReset: false });
+        const plugin = smsshcss({ includeResetCSS: false });
         const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Reset CSS */');
       });
@@ -242,13 +242,13 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
       });
 
       it('should include base CSS when explicitly enabled', async () => {
-        const plugin = smsshcss({ includeBase: true });
+        const plugin = smsshcss({ includeBaseCSS: true });
         const result = await plugin.transform('', 'test.css');
         expect(result?.code).toContain('/* Base CSS */');
       });
 
       it('should exclude base CSS when disabled', async () => {
-        const plugin = smsshcss({ includeBase: false });
+        const plugin = smsshcss({ includeBaseCSS: false });
         const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Base CSS */');
       });
@@ -256,7 +256,7 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
 
     describe('Combined Options', () => {
       it('should handle both reset and base CSS disabled', async () => {
-        const plugin = smsshcss({ includeReset: false, includeBase: false });
+        const plugin = smsshcss({ includeResetCSS: false, includeBaseCSS: false });
         const result = await plugin.transform('', 'test.css');
         expect(result?.code).not.toContain('/* Reset CSS */');
         expect(result?.code).not.toContain('/* Base CSS */');

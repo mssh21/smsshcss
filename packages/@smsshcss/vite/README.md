@@ -2,7 +2,7 @@
 
 SmsshCSSのViteプラグイン。CSSユーティリティクラスを自動生成し、プロジェクトに統合します。開発時は高速で、本番時はパージ機能により最適化されたCSSを提供します。
 
-## 🚀 v2.2.0 新機能
+## 🚀 v2.3.0 新機能
 
 - **Apply設定**: よく使うユーティリティクラスの組み合わせを定義可能
 - **キャッシュ機能**: ファイル変更時のみ再生成、大幅なパフォーマンス向上
@@ -48,8 +48,8 @@ export default defineConfig({
   plugins: [
     smsshcss({
       // リセットCSSとベースCSSの設定
-      includeReset: true,
-      includeBase: true,
+      includeResetCSS: true,
+      includeBaseCSS: true,
 
       // スキャンするファイルパターン
       content: [
@@ -92,10 +92,10 @@ export default defineConfig({
       // パージレポートの表示
       showPurgeReport: true,
 
-      // キャッシュ機能（v2.2.0+）
+      // キャッシュ機能（v2.3.0+）
       cache: true,
 
-      // デバッグモード（v2.2.0+）
+      // デバッグモード（v2.3.0+）
       debug: process.env.NODE_ENV === 'development',
     }),
   ],
@@ -118,13 +118,13 @@ interface SmsshCSSViteOptions {
    * リセットCSSを含めるかどうか
    * @default true
    */
-  includeReset?: boolean;
+  includeResetCSS?: boolean;
 
   /**
    * ベースCSSを含めるかどうか
    * @default true
    */
-  includeBase?: boolean;
+  includeBaseCSS?: boolean;
 
   /**
    * パージ設定
@@ -204,7 +204,7 @@ smsshcss({
 
 ## 🚀 パフォーマンス機能
 
-### ⚡ キャッシュ機能（v2.2.0+）
+### ⚡ キャッシュ機能（v2.3.0+）
 
 自動的にファイルの変更を検知し、変更されたファイルのみを再処理します：
 
@@ -225,7 +225,7 @@ smsshcss({
 - 🧹 自動的な古いキャッシュの削除（10分ごと）
 - 🎯 プロダクションビルド時の自動キャッシュリセット
 
-### 🐛 デバッグモード（v2.2.0+）
+### 🐛 デバッグモード（v2.3.0+）
 
 詳細なログ出力で開発をサポート：
 

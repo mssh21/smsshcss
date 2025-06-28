@@ -297,8 +297,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const plugin = smsshcss({
         content: [`${tempDir}/**/*.html`],
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
         apply: {
           'btn-custom': 'p-md m-sm gap-lg',
           'card-special': 'p-lg m-md gap-xl',
@@ -562,15 +562,15 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const devPlugin = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
         minify: false,
-        includeReset: true,
-        includeBase: true,
+        includeResetCSS: true,
+        includeBaseCSS: true,
       });
 
       const prodPlugin = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
         minify: true,
-        includeReset: false,
-        includeBase: false,
+        includeResetCSS: false,
+        includeBaseCSS: false,
       });
 
       const devResult = await devPlugin.transform('', 'dev.css');
