@@ -74,15 +74,15 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     if (!value) return null;
 
     if (direction === 'x') {
-      return `${prop}-left: ${value};\n  ${prop}-right: ${value};`;
+      return `${prop}-inline: ${value};`;
     } else if (direction === 'y') {
-      return `${prop}-top: ${value};\n  ${prop}-bottom: ${value};`;
+      return `${prop}-block: ${value};`;
     } else if (direction) {
       const dirMap: Record<string, string> = {
-        t: 'top',
-        r: 'right',
-        b: 'bottom',
-        l: 'left',
+        t: 'block-start',
+        r: 'inline-end',
+        b: 'block-end',
+        l: 'inline-start',
       };
       return `${prop}-${dirMap[direction]}: ${value};`;
     } else {
@@ -370,21 +370,21 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     /^(m|p|gap|w|min-w|max-w|h|min-h|max-h|grid-cols|grid-rows|col-span|row-span|col-start|col-end|row-start|row-end|basis|grow|shrink|flex|text|bg|border|fill|font-size)(-([xy]|[trbl]))?-\[([^\]]+)\]$/
   );
   if (customMatch) {
-    console.log(`[apply] Custom value match found:`, customMatch);
+    // console.log(`[apply] Custom value match found:`, customMatch);
     const [, property, , direction, value] = customMatch;
 
     if (property === 'm' || property === 'p') {
       const prop = property === 'm' ? 'margin' : 'padding';
       if (direction === 'x') {
-        return `${prop}-left: ${value};\n  ${prop}-right: ${value};`;
+        return `${prop}-inline: ${value};`;
       } else if (direction === 'y') {
-        return `${prop}-top: ${value};\n  ${prop}-bottom: ${value};`;
+        return `${prop}-block: ${value};`;
       } else if (direction) {
         const dirMap: Record<string, string> = {
-          t: 'top',
-          r: 'right',
-          b: 'bottom',
-          l: 'left',
+          t: 'block-start',
+          r: 'inline-end',
+          b: 'block-end',
+          l: 'inline-start',
         };
         return `${prop}-${dirMap[direction]}: ${value};`;
       } else {
@@ -443,14 +443,14 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     } else if (property === 'fill') {
       return `fill: ${value};`;
     } else if (property === 'font-size') {
-      console.log(`[apply] Custom font-size value: ${value}`);
+      // console.log(`[apply] Custom font-size value: ${value}`);
       return `font-size: ${value};`;
     }
   }
 
   // その他のユーティリティクラスは今後追加予定
   // 現時点では基本的なものに対応
-  console.log(`[apply] No match found for: ${utilityClass}`);
+  // console.log(`[apply] No match found for: ${utilityClass}`);
 
   return null;
 }
@@ -492,27 +492,23 @@ function getSpacingValue(size: string): string | null {
   const defaultSpacingValues: Record<string, string> = {
     none: '0',
     auto: 'auto',
-    '2xs': 'var(--space-base)', // 0.25rem (4px)
-    xs: 'calc(var(--space-base) * 2)', // 0.5rem (8px)
-    sm: 'calc(var(--space-base) * 3)', // 0.75rem (12px)
-    md: 'calc(var(--space-base) * 5)', // 1.25rem (20px)
-    lg: 'calc(var(--space-base) * 8)', // 2rem (32px)
-    xl: 'calc(var(--space-base) * 13)', // 3.25rem (52px)
-    '2xl': 'calc(var(--space-base) * 21)', // 5.25rem (84px)
-    '3xl': 'calc(var(--space-base) * 34)', // 8.5rem (136px)
-    '4xl': 'calc(var(--space-base) * 55)', // 13.75rem (220px)
-    '5xl': 'calc(var(--space-base) * 89)', // 22.25rem (356px)
-    '6xl': 'calc(var(--space-base) * 144)', // 36rem (576px)
-    '7xl': 'calc(var(--space-base) * 192)', // 48rem (768px)
-    '8xl': 'calc(var(--space-base) * 256)', // 64rem (1024px)
-    '9xl': 'calc(var(--space-base) * 320)', // 80rem (1280px)
-    '10xl': 'calc(var(--space-base) * 384)', // 96rem (1536px)
-    '11xl': 'calc(var(--space-base) * 448)', // 112rem (1792px)
-    '12xl': 'calc(var(--space-base) * 512)', // 128rem (2048px)
-    full: '100%',
-    fit: 'fit-content',
-    min: 'min-content',
-    max: 'max-content',
+    '2xs': '0.25rem', // 0.25rem (4px)  (フィボナッチ: 1)
+    xs: '0.5rem', // 0.5rem (8px)  (フィボナッチ: 2)
+    sm: '0.75rem', // 0.75rem (12px) (フィボナッチ: 3)
+    md: '1.25rem', // 1.25rem (20px) (フィボナッチ: 5)
+    lg: '2rem', // 2rem (32px) (フィボナッチ: 8)
+    xl: '3.25rem', // 3.25rem (52px) (フィボナッチ: 13)
+    '2xl': '5.25rem', // 5.25rem (84px) (フィボナッチ: 21)
+    '3xl': '8.5rem', // 8.5rem (136px) (フィボナッチ: 34)
+    '4xl': '13.75rem', // 13.75rem (220px) (フィボナッチ: 55)
+    '5xl': '22.25rem', // 22.25rem (356px) (フィボナッチ: 89)
+    '6xl': '36rem', // 36rem (576px) (フィボナッチ: 144)
+    '7xl': '48rem', // 48rem (768px)
+    '8xl': '64rem', // 64rem (1024px)
+    '9xl': '80rem', // 80rem (1280px)
+    '10xl': '96rem', // 96rem (1536px)
+    '11xl': '112rem', // 112rem (1792px)
+    '12xl': '128rem', // 128rem (2048px)
   };
 
   // デフォルト値をチェック
@@ -545,31 +541,32 @@ function getSizeValue(size: string): string | null {
 
   const defaultSizes: Record<string, string> = {
     none: '0',
-    '2xs': 'var(--size-base)', // 1rem (16px)
-    xs: 'calc(var(--size-base) * 1.5)', // 1.5rem (24px)
-    sm: 'calc(var(--size-base) * 2)', // 2rem (32px)
-    md: 'calc(var(--size-base) * 2.5)', // 2.5rem (40px)
-    lg: 'calc(var(--size-base) * 3)', // 3rem (48px)
-    xl: 'calc(var(--size-base) * 4)', // 4rem (64px)
-    '2xl': 'calc(var(--size-base) * 6)', // 6rem (96px)
-    '3xl': 'calc(var(--size-base) * 8)', // 8rem (128px)
-    '4xl': 'calc(var(--size-base) * 12)', // 12rem (192px)
-    '5xl': 'calc(var(--size-base) * 16)', // 16rem (256px)
-    '6xl': 'calc(var(--size-base) * 20)', // 20rem (320px)
-    '7xl': 'calc(var(--size-base) * 24)', // 24rem (384px)
-    '8xl': 'calc(var(--size-base) * 32)', // 32rem (512px)
-    '9xl': 'calc(var(--size-base) * 48)', // 48rem (768px)
-    '10xl': 'calc(var(--size-base) * 64)', // 64rem (1024px)
-    '11xl': 'calc(var(--size-base) * 80)', // 80rem (1280px)
-    '12xl': 'calc(var(--size-base) * 96)', // 96rem (1536px)
+    '2xs': '1rem', // 1rem (16px)
+    xs: '1.5rem', // 1.5rem (24px)
+    sm: '2rem', // 2rem (32px)
+    md: '2.5rem', // 2.5rem (40px)
+    lg: '3rem', // 3rem (48px)
+    xl: '4rem', // 4rem (64px)
+    '2xl': '6rem', // 6rem (96px)
+    '3xl': '8rem', // 8rem (128px)
+    '4xl': '12rem', // 12rem (192px)
+    '5xl': '16rem', // 16rem (256px)
+    '6xl': '20rem', // 20rem (320px)
+    '7xl': '24rem', // 24rem (384px)
+    '8xl': '32rem', // 32rem (512px)
+    '9xl': '48rem', // 48rem (768px)
+    '10xl': '64rem', // 64rem (1024px)
+    '11xl': '80rem', // 80rem (1280px)
+    '12xl': '96rem', // 96rem (1536px)
     full: '100%',
     auto: 'auto',
     fit: 'fit-content',
     min: 'min-content',
     max: 'max-content',
     screen: '100vw',
+    svh: '100svh',
+    lvh: '100lvh',
     dvh: '100dvh',
-    dvw: '100dvw',
     cqw: '100cqw',
     cqi: '100cqi',
     cqmin: '100cqmin',
@@ -671,6 +668,30 @@ function getColorValue(colorName: string): string | null {
   // デフォルトの色値をチェック
   if (defaultColorConfig[colorName]) {
     return defaultColorConfig[colorName];
+  }
+
+  // 基本色名の場合、デフォルトの500番を試す
+  const baseColors = [
+    'blue',
+    'red',
+    'green',
+    'yellow',
+    'purple',
+    'orange',
+    'pink',
+    'indigo',
+    'sky',
+    'teal',
+    'emerald',
+    'amber',
+    'gray',
+  ];
+
+  if (baseColors.includes(colorName)) {
+    const defaultColorKey = `${colorName}-500`;
+    if (defaultColorConfig[defaultColorKey]) {
+      return defaultColorConfig[defaultColorKey];
+    }
   }
 
   // カスタム値（[値]形式）の場合

@@ -138,7 +138,7 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
           skipValidation: true,
           suppressWarnings: true,
         });
-        const css = generator.generateFullCSSSync();
+        const css = await generator.generateFullCSS();
 
         console.log('Direct CSSGenerator output:', css);
         console.log('CSS contains test-class:', css.includes('.test-class'));
@@ -178,6 +178,36 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
       expect(result?.code).toContain('font-size: clamp(1rem, 2rem, 3rem)');
       expect(result?.code).toContain('.variable-text');
       expect(result?.code).toContain('font-size: var(--custom-font-size)');
+    });
+
+    it('should generate CSS with custom development options', async () => {
+      // Development-specific optionsでプラグインを直接テスト
+      const plugin = smsshcss({
+        includeResetCSS: true,
+        includeBaseCSS: true,
+        development: true,
+        purge: {
+          enabled: false,
+        },
+      });
+
+      expect(plugin).toBeDefined();
+      expect(plugin.name).toBe('smsshcss');
+
+      // Generate CSS for testing
+      const result = await plugin.transform('', 'test.css');
+
+      expect(result).toBeTruthy();
+      expect(result?.code).toBeTruthy();
+      expect(typeof result?.code).toBe('string');
+      expect(result?.code.length).toBeGreaterThan(0);
+
+      // Reset CSSとBase CSSが含まれていることをテスト
+      expect(result?.code).toContain('/* Reset CSS */');
+      expect(result?.code).toContain('/* Base CSS */');
+
+      // 開発モードでminificationがされていないことをテスト
+      expect(result?.code).toMatch(/\n\s+/); // インデントや改行が残っている
     });
   });
 

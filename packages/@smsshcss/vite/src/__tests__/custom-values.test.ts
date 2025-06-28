@@ -740,6 +740,33 @@ describe('Custom Value Classes Integration', () => {
       expect(result?.code).toBeDefined();
       expect(endTime - startTime).toBeLessThan(10000); // 10秒以内
     });
+
+    // 軽量な代替テストを追加
+    it('should handle moderate number of custom values', async () => {
+      const classes = [];
+      for (let i = 0; i < 10; i++) {
+        classes.push(`m-[${i}px]`, `p-[${i}rem]`);
+      }
+
+      const htmlContent = `<div class="${classes.join(' ')}">Moderate dataset</div>`;
+      helpers.createHtmlFile('moderate-test.html', htmlContent);
+
+      const result = await plugin.transform('', 'styles.css');
+      expect(result?.code).toBeDefined();
+    });
+
+    it('should handle multiple files efficiently', async () => {
+      // 3個のHTMLファイルを作成（軽量化）
+      for (let i = 0; i < 3; i++) {
+        helpers.createHtmlFile(
+          `file-${i}.html`,
+          `<div class="m-[${i}px] p-[${i * 2}px]">File ${i}</div>`
+        );
+      }
+
+      const result = await plugin.transform('', 'styles.css');
+      expect(result?.code).toBeDefined();
+    });
   });
 
   describe('Unit Values and Browser Compatibility', () => {

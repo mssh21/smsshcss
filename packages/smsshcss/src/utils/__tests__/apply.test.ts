@@ -12,17 +12,15 @@ describe('generateApplyClasses', () => {
     const result = generateApplyClasses(config);
 
     expect(result).toContain('.main-layout {');
-    expect(result).toContain('width: calc(var(--size-base) * 3);'); // lg
-    expect(result).toContain('margin-left: auto;');
-    expect(result).toContain('margin-right: auto;');
-    expect(result).toContain('padding-left: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('padding-right: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('column-gap: calc(var(--space-base) * 5);'); // md
-    expect(result).toContain('row-gap: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('gap: calc(var(--space-base) * 8);'); // lg
+    expect(result).toContain('width: 3rem;'); // lg
+    expect(result).toContain('margin-inline: auto;');
+    expect(result).toContain('padding-inline: 2rem;'); // lg
+    expect(result).toContain('column-gap: 1.25rem;'); // md
+    expect(result).toContain('row-gap: 2rem;'); // lg
+    expect(result).toContain('gap: 2rem;'); // lg
 
     expect(result).toContain('.card {');
-    expect(result).toContain('padding: calc(var(--space-base) * 5);'); // md
+    expect(result).toContain('padding: 1.25rem;'); // md
 
     expect(result).toContain('.section-layout {');
     expect(result).toContain('display: block;');
@@ -41,16 +39,16 @@ describe('generateApplyClasses', () => {
 
     const result = generateApplyClasses(config);
 
-    expect(result).toContain('margin: calc(var(--space-base) * 5);'); // md
-    expect(result).toContain('margin-left: calc(var(--space-base) * 5);'); // md
-    expect(result).toContain('margin-right: calc(var(--space-base) * 5);'); // md
-    expect(result).toContain('margin-top: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('margin-bottom: calc(var(--space-base) * 13);'); // xl
-    expect(result).toContain('padding: calc(var(--space-base) * 5);'); // md
-    expect(result).toContain('padding-left: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('padding-right: calc(var(--space-base) * 8);'); // lg
-    expect(result).toContain('padding-top: calc(var(--space-base) * 3);'); // sm
-    expect(result).toContain('padding-bottom: calc(var(--space-base) * 3);'); // sm
+    expect(result).toContain('margin: 1.25rem;'); // md
+    expect(result).toContain('margin-inline: 1.25rem;'); // md
+    expect(result).toContain('margin-block: 2rem;'); // lg
+    expect(result).toContain('margin-block-start: 0.75rem;'); // sm
+    expect(result).toContain('margin-block-end: 3.25rem;'); // xl
+    expect(result).toContain('padding: 1.25rem;'); // md
+    expect(result).toContain('padding-inline: 2rem;'); // lg
+    expect(result).toContain('padding-block: 0.75rem;'); // sm
+    expect(result).toContain('padding-block-start: 1.25rem;'); // md
+    expect(result).toContain('padding-block-end: 2rem;'); // sm
   });
 
   it('should handle width and height values', () => {
@@ -66,12 +64,12 @@ describe('generateApplyClasses', () => {
 
     const result = generateApplyClasses(config);
 
-    expect(result).toContain('width: calc(var(--size-base) * 2.5);');
-    expect(result).toContain('min-width: calc(var(--size-base) * 3);');
-    expect(result).toContain('max-width: calc(var(--size-base) * 96);');
-    expect(result).toContain('height: calc(var(--size-base) * 2);');
-    expect(result).toContain('min-height: calc(var(--size-base) * 4);');
-    expect(result).toContain('max-height: calc(var(--size-base) * 6);');
+    expect(result).toContain('width: 2.5rem;');
+    expect(result).toContain('min-width: 3rem;');
+    expect(result).toContain('max-width: 96rem;');
+    expect(result).toContain('height: 2rem;');
+    expect(result).toContain('min-height: 4rem;');
+    expect(result).toContain('max-height: 6rem;');
     expect(result).toContain('width: 200px;');
     expect(result).toContain('height: 100px;');
     expect(result).toContain('min-width: 300px;');
@@ -252,9 +250,9 @@ describe('generateApplyClasses', () => {
 
     const result = generateApplyClasses(config);
 
-    expect(result).toContain('flex-basis: calc(var(--size-base) * 2);'); // sm
-    expect(result).toContain('flex-basis: calc(var(--size-base) * 2.5);'); // md
-    expect(result).toContain('flex-basis: calc(var(--size-base) * 3);'); // lg
+    expect(result).toContain('flex-basis: 2rem;'); // sm
+    expect(result).toContain('flex-basis: 2.5rem;'); // md
+    expect(result).toContain('flex-basis: 3rem;'); // lg
     expect(result).toContain('flex-basis: 20px;');
     expect(result).toContain('flex-basis: clamp(2rem, 5vw, 4rem);');
     expect(result).toContain('flex-basis: var(--basis);');
@@ -374,6 +372,6 @@ describe('generateApplyClasses', () => {
     // unknown-classは無視される
     expect(result).not.toContain('unknown-class');
     // 有効なクラスは処理される
-    expect(result).toContain('width: calc(var(--size-base) * 2.5);'); // md
+    expect(result).toContain('width: 2.5rem;'); // md
   });
 });

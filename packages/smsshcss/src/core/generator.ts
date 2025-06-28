@@ -18,7 +18,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
 import { generateApplyClasses } from '../utils/apply';
-import { debugGenerator, logWarning, performanceTiming, devHelpers } from '../utils/debug';
+import { debugGenerator, logWarning } from '../utils/debug';
+import { promisify } from 'util';
+
+const readFile = promisify(fs.readFile);
 
 /**
  * CSS Generator のオプション
@@ -58,8 +61,8 @@ export class CSSGenerator {
       this.validateConfiguration();
     }
 
-    this.resetCSS = this.loadResetCSS();
-    this.baseCSS = this.loadBaseCSS();
+    this.resetCSS = '';
+    this.baseCSS = '';
 
     // パージが明示的に有効な場合、またはパージ設定があってenabledがfalseでない場合はパージャーを初期化
     if (
@@ -72,6 +75,16 @@ export class CSSGenerator {
         ...this.config.purge,
       });
     }
+  }
+
+  /**
+   * CSSファイルを非同期で初期化
+   */
+  private async initializeCSSFiles(): Promise<void> {
+    const [resetCSS, baseCSS] = await Promise.all([this.loadResetCSS(), this.loadBaseCSS()]);
+
+    this.resetCSS = resetCSS;
+    this.baseCSS = baseCSS;
   }
 
   /**
@@ -93,7 +106,7 @@ export class CSSGenerator {
     }
   }
 
-  private loadResetCSS(): string {
+  private async loadResetCSS(): Promise<string> {
     // 複数のパスパターンを試す
     const possiblePaths = this.getCSSFilePaths('reset.css');
     const errors: string[] = [];
@@ -101,7 +114,7 @@ export class CSSGenerator {
     for (const filePath of possiblePaths) {
       try {
         if (fs.existsSync(filePath)) {
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = await readFile(filePath, 'utf-8');
           debugGenerator(`Loaded reset.css from: ${filePath}`);
           return content;
         }
@@ -121,7 +134,7 @@ export class CSSGenerator {
     return '';
   }
 
-  private loadBaseCSS(): string {
+  private async loadBaseCSS(): Promise<string> {
     // 複数のパスパターンを試す
     const possiblePaths = this.getCSSFilePaths('base.css');
     const errors: string[] = [];
@@ -129,7 +142,7 @@ export class CSSGenerator {
     for (const filePath of possiblePaths) {
       try {
         if (fs.existsSync(filePath)) {
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = await readFile(filePath, 'utf-8');
           debugGenerator(`Loaded base.css from: ${filePath}`);
           return content;
         }
@@ -191,6 +204,11 @@ export class CSSGenerator {
   }
 
   public async generate(): Promise<GeneratedCSS> {
+    // CSSファイルを初期化（まだ初期化されていない場合）
+    if (!this.resetCSS && !this.baseCSS) {
+      await this.initializeCSSFiles();
+    }
+
     let utilities = [
       generateAllSpacingClasses(),
       generateDisplayClasses(),
@@ -278,7 +296,7 @@ export class CSSGenerator {
           if (fileCache.has(filePath)) {
             fileContent = fileCache.get(filePath)!;
           } else {
-            fileContent = fs.readFileSync(filePath, 'utf-8');
+            fileContent = await readFile(filePath, 'utf-8');
             fileCache.set(filePath, fileContent);
           }
 
@@ -362,6 +380,11 @@ export class CSSGenerator {
       return null;
     }
 
+    // CSSファイルを初期化（まだ初期化されていない場合）
+    if (!this.resetCSS && !this.baseCSS) {
+      await this.initializeCSSFiles();
+    }
+
     // パージャーのstartTimeを設定
     (this.purger as { startTime: number }).startTime = Date.now();
 
@@ -397,68 +420,5 @@ export class CSSGenerator {
 
     this.purger.extractAllClasses(fullCSS);
     return this.purger.generateReport(fileAnalysis);
-  }
-
-  /**
-   * 同期版CSS生成（非推奨）
-   * @deprecated この関数は非推奨です。generateFullCSS()を使用してください。
-   * 同期版では以下の問題があります：
-   * - ファイルからのカスタムクラス抽出が実行されない
-   * - 大規模なファイル群でブロッキングを引き起こす可能性
-   * - 将来のバージョンで削除される予定
-   * この関数は将来のバージョンで削除される予定です。
-   */
-  public generateFullCSSSync(): string {
-    // 強化された非推奨警告
-    logWarning.deprecation(
-      'generateFullCSSSync()',
-      'generateFullCSS()',
-      'https://github.com/mssh21/smsshcss/docs/migration-guide.md'
-    );
-
-    // パフォーマンス警告
-    logWarning.performance(
-      'generateFullCSSSync() は同期処理のため、大規模なプロジェクトではブロッキングが発生する可能性があります',
-      { method: 'generateFullCSSSync', fileCount: this.config.content?.length || 0 }
-    );
-
-    performanceTiming.start('generateFullCSSSync');
-
-    const utilities = [
-      generateAllSpacingClasses(),
-      generateDisplayClasses(),
-      generateFlexboxClasses(),
-      generateAllWidthClasses(),
-      generateAllHeightClasses(),
-      generateAllGridClasses(),
-      generateGridTemplateClasses(),
-      generateAllZIndexClasses(),
-      generateAllOrderClasses(),
-      generateAllColorClasses(),
-      generatePositioningClasses(),
-      generateFontSizeClasses(),
-    ].join('\n\n');
-
-    // applyクラスを生成
-    const apply = generateApplyClasses(this.config.apply);
-    debugGenerator('Apply config:', this.config.apply);
-    debugGenerator('Generated apply CSS length:', apply.length);
-
-    const result = [
-      this.config.includeResetCSS ? this.resetCSS : '',
-      this.config.includeBaseCSS ? this.baseCSS : '',
-      utilities,
-      apply,
-    ]
-      .filter(Boolean)
-      .join('\n\n');
-
-    const sections = result.split('\n\n').filter((s) => s);
-    debugGenerator('Total CSS sections:', sections.length);
-    devHelpers.logGeneratedSections(sections);
-
-    performanceTiming.end('generateFullCSSSync');
-
-    return result;
   }
 }

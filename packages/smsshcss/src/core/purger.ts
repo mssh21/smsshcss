@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFile, stat } from 'fs/promises';
 import path from 'path';
 import fastGlob from 'fast-glob';
 import { PurgeConfig, PurgeReport } from './types';
@@ -8,7 +8,7 @@ import { debugPurger, logReport, logWarning, devHelpers } from '../utils/debug';
  * Improved CSS Rule Parser
  * Handles complex CSS structures more robustly than simple brace counting
  */
-class CSSRuleParser {
+export class CSSRuleParser {
   private css: string;
   private position: number = 0;
   private rules: Array<{ selector: string; content: string; startPos: number; endPos: number }> =
@@ -37,30 +37,87 @@ class CSSRuleParser {
   }
 
   private skipWhitespaceAndComments(): void {
-    while (this.position < this.css.length) {
+    let loopCount = 0;
+    const maxLoops = 10000; // 無限ループ防止
+
+    while (this.position < this.css.length && loopCount < maxLoops) {
       const char = this.css[this.position];
 
       // Skip whitespace
       if (/\s/.test(char)) {
         this.position++;
+        loopCount++;
         continue;
       }
 
       // Skip comments
       if (char === '/' && this.css[this.position + 1] === '*') {
         this.position += 2;
-        while (this.position < this.css.length - 1) {
+        let commentLoopCount = 0;
+        while (this.position < this.css.length - 1 && commentLoopCount < maxLoops) {
           if (this.css[this.position] === '*' && this.css[this.position + 1] === '/') {
             this.position += 2;
             break;
           }
           this.position++;
+          commentLoopCount++;
         }
+        loopCount++;
         continue;
       }
 
       break;
     }
+  }
+
+  /**
+   * Remove comments from CSS text while preserving string literals
+   */
+  private removeCommentsFromText(text: string): string {
+    let result = '';
+    let position = 0;
+    let inString = false;
+    let stringChar = '';
+    let loopCount = 0;
+    const maxLoops = text.length + 1000; // 無限ループ防止
+
+    while (position < text.length && loopCount < maxLoops) {
+      const char = text[position];
+
+      // Handle strings
+      if (!inString && (char === '"' || char === "'")) {
+        inString = true;
+        stringChar = char;
+        result += char;
+      } else if (inString && char === stringChar && text[position - 1] !== '\\') {
+        inString = false;
+        stringChar = '';
+        result += char;
+      } else if (inString) {
+        result += char;
+      } else if (char === '/' && text[position + 1] === '*') {
+        // Skip comment
+        position += 2;
+        let commentLoopCount = 0;
+        while (position < text.length - 1 && commentLoopCount < maxLoops) {
+          if (text[position] === '*' && text[position + 1] === '/') {
+            position += 2;
+            break;
+          }
+          position++;
+          commentLoopCount++;
+        }
+        loopCount++;
+        continue;
+      } else {
+        result += char;
+      }
+
+      position++;
+      loopCount++;
+    }
+
+    return result;
   }
 
   private parseRule(): {
@@ -77,7 +134,10 @@ class CSSRuleParser {
     let inString = false;
     let stringChar = '';
 
-    while (selectorEnd < this.css.length) {
+    let selectorLoopCount = 0;
+    const maxSelectorLoops = 10000;
+
+    while (selectorEnd < this.css.length && selectorLoopCount < maxSelectorLoops) {
       const char = this.css[selectorEnd];
 
       // Handle strings
@@ -101,6 +161,7 @@ class CSSRuleParser {
       }
 
       selectorEnd++;
+      selectorLoopCount++;
     }
 
     if (selectorEnd >= this.css.length) {
@@ -116,7 +177,10 @@ class CSSRuleParser {
     inString = false;
     stringChar = '';
 
-    while (contentEnd < this.css.length && braceCount > 0) {
+    let contentLoopCount = 0;
+    const maxContentLoops = 10000;
+
+    while (contentEnd < this.css.length && braceCount > 0 && contentLoopCount < maxContentLoops) {
       const char = this.css[contentEnd];
 
       // Handle strings
@@ -137,13 +201,15 @@ class CSSRuleParser {
       }
 
       contentEnd++;
+      contentLoopCount++;
     }
 
     if (braceCount > 0) {
       return null; // Unclosed braces
     }
 
-    const content = this.css.substring(contentStart, contentEnd - 1).trim();
+    const rawContent = this.css.substring(contentStart, contentEnd - 1);
+    const content = this.removeCommentsFromText(rawContent).trim();
     this.position = contentEnd;
 
     return {
@@ -192,34 +258,41 @@ export class CSSPurger {
       });
 
       debugPurger(`Found ${files.length} files to analyze`);
-      const results: Array<{ file: string; classesFound: string[]; size: number }> = [];
 
-      for (const file of files) {
+      // 並列処理でファイルを読み込み
+      const filePromises = files.map(async (file) => {
         try {
-          const content = fs.readFileSync(file, 'utf-8');
+          const [content, stats] = await Promise.all([readFile(file, 'utf-8'), stat(file)]);
+
           const classesFound = this.extractClassNames(content, file);
-          const size = fs.statSync(file).size;
+          const size = stats.size;
 
           // 使用されているクラス名を記録
           classesFound.forEach((className) => this.usedClasses.add(className));
 
-          results.push({
+          devHelpers.logClassExtraction(file, classesFound);
+
+          return {
             file,
             classesFound,
             size,
-          });
-
-          devHelpers.logClassExtraction(file, classesFound);
+          };
         } catch (error) {
           logWarning.fileProcessing(
             file,
             error instanceof Error ? error : new Error(String(error))
           );
+          return null;
         }
-      }
+      });
+
+      const results = await Promise.all(filePromises);
+      const validResults = results.filter(
+        (result): result is NonNullable<typeof result> => result !== null
+      );
 
       debugPurger(`Analysis complete: ${this.usedClasses.size} unique classes found`);
-      return results;
+      return validResults;
     } catch (error) {
       debugPurger('Failed to analyze source files:', error);
       return [];
@@ -303,8 +376,22 @@ export class CSSPurger {
 
     for (const { name, pattern, processor } of extractionPatterns) {
       let match;
-      while ((match = pattern.exec(content)) !== null) {
+      let lastIndex = 0;
+      let loopCount = 0;
+      const maxLoops = 10000; // 無限ループ防止
+
+      // Reset regex lastIndex to avoid issues with global patterns
+      pattern.lastIndex = 0;
+
+      while ((match = pattern.exec(content)) !== null && loopCount < maxLoops) {
         try {
+          // 無限ループ防止: 同じ位置でマッチし続ける場合は中断
+          if (pattern.lastIndex === lastIndex) {
+            debugPurger(`Preventing infinite loop in ${name} extraction`);
+            break;
+          }
+          lastIndex = pattern.lastIndex;
+
           const extracted = processor(match[1] || match[0], match[1], match[2]);
           classes.push(...extracted);
 
@@ -312,7 +399,11 @@ export class CSSPurger {
         } catch (error) {
           debugPurger(`Error in ${name} extraction:`, error);
         }
+        loopCount++;
       }
+
+      // Reset regex lastIndex for next use
+      pattern.lastIndex = 0;
     }
 
     // Remove duplicates and empty strings
@@ -381,14 +472,32 @@ export class CSSPurger {
 
     for (const { name, pattern, processor } of classPatterns) {
       let match;
-      while ((match = pattern.exec(css)) !== null) {
+      let lastIndex = 0;
+      let loopCount = 0;
+      const maxLoops = 10000; // 無限ループ防止
+
+      // Reset regex lastIndex to avoid issues with global patterns
+      pattern.lastIndex = 0;
+
+      while ((match = pattern.exec(css)) !== null && loopCount < maxLoops) {
         try {
+          // 無限ループ防止: 同じ位置でマッチし続ける場合は中断
+          if (pattern.lastIndex === lastIndex) {
+            debugPurger(`Preventing infinite loop in ${name} class extraction`);
+            break;
+          }
+          lastIndex = pattern.lastIndex;
+
           const className = processor(match);
           this.allClasses.add(className);
         } catch (error) {
           debugPurger(`Error processing ${name}:`, error);
         }
+        loopCount++;
       }
+
+      // Reset regex lastIndex for next use
+      pattern.lastIndex = 0;
     }
 
     debugPurger(`Extracted ${this.allClasses.size} total classes from CSS`);

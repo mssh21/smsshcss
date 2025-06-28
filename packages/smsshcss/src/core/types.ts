@@ -231,12 +231,29 @@ export type GridConfig = GridColumnsConfig &
   RowPositionConfig &
   GridFlowConfig;
 
+/**
+ * SmsshCSS設定タイプ
+ */
 export interface SmsshCSSConfig {
+  /** 設定ファイルのバージョン（v2.3.0から対応） */
+  version?: string;
+
+  /** CSSクラスをスキャンするファイルパターンの配列 */
   content: string[];
-  safelist?: string[];
+
+  /** パージされないクラスのリスト */
+  safelist?: (string | RegExp)[];
+
+  /** リセットCSSを含めるか */
   includeResetCSS?: boolean;
+
+  /** ベースCSSを含めるか */
   includeBaseCSS?: boolean;
+
+  /** クラスを削除する設定 */
   purge?: PurgeConfig;
+
+  /** クラスを適用する設定 */
   apply?: ApplyConfig;
 }
 

@@ -54,7 +54,8 @@
     "debug": "^4.3.4",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.2.0",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",

@@ -217,7 +217,7 @@ async function extractAllCustomClassesFromFiles(
         if (fileCache.has(filePath)) {
           fileContent = fileCache.get(filePath)!;
         } else {
-          fileContent = fs.readFileSync(filePath, 'utf-8');
+          fileContent = await fs.promises.readFile(filePath, 'utf-8');
           fileCache.set(filePath, fileContent);
         }
 
