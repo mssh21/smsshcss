@@ -45,28 +45,41 @@ pnpm dev
 #### 基本的なユーティリティ
 
 ```bash
-# 色系ユーティリティの生成
-yarn generate:utility color \
-  --css-property=color \
-  --prefix=text \
-  --default-values='{"primary":"#007bff","secondary":"#6c757d","success":"#28a745"}'
+# サイズ系ユーティリティの生成
+node scripts/generate-utility.js border \
+  --css-property=border-width \
+  --prefix=border \
+  --config-type=SizeConfig \
+  --config-file=sizeConfig
 
 # pnpmの場合
-pnpm generate:utility color \
-  --css-property=color \
-  --prefix=text \
-  --default-values='{"primary":"#007bff","secondary":"#6c757d","success":"#28a745"}'
+pnpm exec node scripts/generate-utility.js border \
+  --css-property=border-width \
+  --prefix=border \
+  --config-type=SizeConfig \
+  --config-file=sizeConfig
+```
+
+#### 色系ユーティリティ（複数バリアント）
+
+```bash
+# 色系ユーティリティの生成（text, bg, border, fill）
+node scripts/generate-utility.js text-color \
+  --config-type=ColorConfig \
+  --config-file=colorConfig \
+  --variants='[{"name":"text","prefix":"text","property":"color"},{"name":"bg","prefix":"bg","property":"background-color"},{"name":"border","prefix":"border","property":"border-color"},{"name":"fill","prefix":"fill","property":"fill"}]'
 ```
 
 #### 方向指定ありのユーティリティ
 
 ```bash
-# ボーダー系ユーティリティの生成（上下左右対応）
-yarn generate:utility border \
+# スペーシング系ユーティリティの生成（上下左右対応）
+node scripts/generate-utility.js margin \
   --directions \
-  --css-property=border-width \
-  --prefix=border \
-  --default-values='{"sm":"1px","md":"2px","lg":"4px"}'
+  --css-property=margin \
+  --prefix=m \
+  --config-type=SizeConfig \
+  --config-file=spacingConfig
 ```
 
 #### 生成後の手順
@@ -78,32 +91,42 @@ yarn generate:utility border \
    packages/smsshcss/src/utils/__tests__/color.test.ts
    ```
 
-2. **generator.ts への統合**:
+2. **index.ts への追加**:
+
+   ```typescript
+   // packages/smsshcss/src/utils/index.ts
+   export * from './border';
+   ```
+
+3. **generator.ts への統合**:
 
    ```typescript
    // packages/smsshcss/src/core/generator.ts
-   import { generateAllColorClasses } from '../utils/color';
+   import { generateAllBorderClasses } from '../utils/border';
 
    // generate() メソッド内で追加
    const utilities = [
      // ... 既存のユーティリティ
-     generateAllColorClasses(),
+     generateAllBorderClasses(),
    ].join('\n\n');
    ```
 
-3. **index.ts への追加**:
+4. **apply-plugins への追加**:
 
    ```typescript
-   // packages/smsshcss/src/utils/index.ts
-   export * from './color';
+   // packages/smsshcss/src/utils/apply-plugins/border-plugin.ts
+   import { applyPlugin } from './index';
+   import { generateAllBorderClasses } from '../border';
+
+   applyPlugin('border', generateAllBorderClasses);
    ```
 
-4. **型定義の追加（必要に応じて）**:
+5. **型定義の追加（必要に応じて）**:
 
    ```typescript
    // packages/smsshcss/src/core/types.ts
-   export interface ColorConfig {
-     [key: string]: string;
+   export interface BorderConfig extends SizeConfig {
+     // 追加のプロパティがあれば定義
    }
    ```
 
