@@ -12,7 +12,7 @@ export const defaultFontSizeConfig: FontSizeConfig = {
 };
 
 // CSS値内の特殊文字をエスケープ（クラス名用）
-export const escapeValue = (val: string): string => {
+export const escapeFontSizeValue = (val: string): string => {
   // CSS数学関数を検出する正規表現（基本的な関数のみ）
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
@@ -29,13 +29,13 @@ export const escapeValue = (val: string): string => {
 };
 
 // CSS関数内の値を再帰的にフォーマットする関数
-export const formatCSSFunctionValue = (input: string): string => {
+export const formatFontSizeCSSFunctionValue = (input: string): string => {
   // CSS関数を再帰的に処理（基本的な関数のみ）
   return input.replace(
     /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
     (match, funcName, inner) => {
       // 内部の関数を再帰的に処理
-      const processedInner = formatCSSFunctionValue(inner);
+      const processedInner = formatFontSizeCSSFunctionValue(inner);
 
       // 演算子とカンマの周りにスペースを適切に配置
       const formattedInner = processedInner

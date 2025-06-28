@@ -1,6 +1,6 @@
 import { FlexboxConfig } from '../../core/types';
 import { escapeFlexValue } from './utils';
-import { defaultSizeConfig } from '../../core/sizeConfig';
+import { defaultSizeConfig } from '../../config/sizeConfig';
 
 export const flexBasisConfig: Partial<FlexboxConfig> = {
   ...Object.entries(defaultSizeConfig).reduce(

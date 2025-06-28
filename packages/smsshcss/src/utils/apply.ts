@@ -1,6 +1,6 @@
 import { ApplyConfig } from '../core/types';
-import { defaultColorConfig } from '../core/colorConfig';
-import { defaultFontSizeConfig } from '../core/fontSizeConfig';
+import { defaultColorConfig } from '../config/colorConfig';
+import { defaultFontSizeConfig } from '../config/fontSizeConfig';
 
 /**
  * applyクラスを生成する

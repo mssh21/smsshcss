@@ -10,8 +10,7 @@ import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from './font-size';
-import { formatCSSFunctionValue } from '../core/sizeConfig';
-import { formatColorFunctionValue } from '../core/colorConfig';
+
 import { generateApplyClasses } from './apply';
 
 // Export debug utilities for enhanced development experience

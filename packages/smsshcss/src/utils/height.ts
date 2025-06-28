@@ -1,5 +1,9 @@
 import { SizeConfig } from '../core/types';
-import { defaultSizeConfig, escapeValue, formatCSSFunctionValue } from '../core/sizeConfig';
+import {
+  defaultSizeConfig,
+  escapeSizeValue,
+  formatSizeCSSFunctionValue,
+} from '../config/sizeConfig';
 
 export type HeightConfig = SizeConfig;
 export const defaultHeight: HeightConfig = {
@@ -23,21 +27,21 @@ function generateCustomHeightClass(prefix: string, value: string): string | null
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
   // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+  const originalValue = cssMathFunctions.test(value) ? formatSizeCSSFunctionValue(value) : value;
 
   // height プロパティの処理
   if (prefix === 'h') {
-    return `.h-\\[${escapeValue(value)}\\] { height: ${originalValue}; }`;
+    return `.h-\\[${escapeSizeValue(value)}\\] { height: ${originalValue}; }`;
   }
 
   // min-height プロパティの処理
   if (prefix === 'min-h') {
-    return `.min-h-\\[${escapeValue(value)}\\] { min-height: ${originalValue}; }`;
+    return `.min-h-\\[${escapeSizeValue(value)}\\] { min-height: ${originalValue}; }`;
   }
 
   // max-height プロパティの処理
   if (prefix === 'max-h') {
-    return `.max-h-\\[${escapeValue(value)}\\] { max-height: ${originalValue}; }`;
+    return `.max-h-\\[${escapeSizeValue(value)}\\] { max-height: ${originalValue}; }`;
   }
 
   return null;

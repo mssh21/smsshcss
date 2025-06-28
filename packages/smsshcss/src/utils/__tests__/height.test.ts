@@ -1,5 +1,5 @@
 import { generateHeightClasses, generateAllHeightClasses } from '../height';
-import { defaultSizeConfig } from '../../core/sizeConfig';
+import { defaultSizeConfig } from '../../config/sizeConfig';
 
 describe('Height Utilities', () => {
   // 共通設定から height 設定を取得（height特有の設定も含む）

@@ -1,7 +1,7 @@
 import {
   generateColorClasses,
   generateBgClasses,
-  generateBorderClasses,
+  generateBorderColorClasses,
   generateFillClasses,
   generateAllColorClasses,
   defaultColor,
@@ -12,7 +12,7 @@ describe('Color Utilities', () => {
     it('should generate basic color classes', () => {
       const textResult = generateColorClasses();
       const bgResult = generateBgClasses();
-      const borderResult = generateBorderClasses();
+      const borderResult = generateBorderColorClasses();
       const fillResult = generateFillClasses();
 
       // 基本クラスの確認
@@ -27,7 +27,7 @@ describe('Color Utilities', () => {
     it('should generate color classes with default config', () => {
       const textResult = generateColorClasses(defaultColor);
       const bgResult = generateBgClasses(defaultColor);
-      const borderResult = generateBorderClasses(defaultColor);
+      const borderResult = generateBorderColorClasses(defaultColor);
       const fillResult = generateFillClasses(defaultColor);
 
       // 基本的なtextクラスが含まれているか確認

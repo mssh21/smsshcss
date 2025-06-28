@@ -1,5 +1,5 @@
 import { generateWidthClasses, generateAllWidthClasses } from '../width';
-import { defaultSizeConfig } from '../../core/sizeConfig';
+import { defaultSizeConfig } from '../../config/sizeConfig';
 
 describe('Width Utilities', () => {
   // 共通設定から width 設定を取得（width特有の設定も含む）

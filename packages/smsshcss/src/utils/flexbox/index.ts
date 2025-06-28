@@ -1,6 +1,6 @@
 import { FlexboxConfig } from '../../core/types';
 import { customValuePattern, normalValuePattern, escapeFlexValue } from './utils';
-import { formatCSSFunctionValue } from '../../core/sizeConfig';
+import { formatSizeCSSFunctionValue } from '../../config/sizeConfig';
 
 // 各プロパティの設定とマッピングをインポート
 import {
@@ -75,10 +75,10 @@ export function extractCustomFlexClasses(content: string): string[] {
 // カスタムFlexboxクラスを生成
 export function generateCustomFlexClass(prefix: string, value: string): string | null {
   // CSS数学関数を検出する正規表現（基本的な関数のみ）
-  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+  const cssMathFunctions = /\b(calc|min|max|clamp|minmax)\s*\(/;
 
   // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+  const originalValue = cssMathFunctions.test(value) ? formatSizeCSSFunctionValue(value) : value;
 
   switch (prefix) {
     case 'grow':

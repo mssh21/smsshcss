@@ -19,8 +19,8 @@ describe('Custom Value Extraction Functions', () => {
 
         expect(result).toHaveLength(3);
         expect(result).toContain('.m-\\[20px\\] { margin: 20px; }');
-        expect(result).toContain('.mt-\\[1rem\\] { margin-top: 1rem; }');
-        expect(result).toContain('.mx-\\[2em\\] { margin-left: 2em; margin-right: 2em; }');
+        expect(result).toContain('.mt-\\[1rem\\] { margin-block-start: 1rem; }');
+        expect(result).toContain('.mx-\\[2em\\] { margin-inline: 2em; }');
       });
 
       it('should extract padding custom values', () => {
@@ -29,8 +29,8 @@ describe('Custom Value Extraction Functions', () => {
 
         expect(result).toHaveLength(3);
         expect(result).toContain('.p-\\[15px\\] { padding: 15px; }');
-        expect(result).toContain('.pt-\\[0\\.5rem\\] { padding-top: 0.5rem; }');
-        expect(result).toContain('.py-\\[3em\\] { padding-top: 3em; padding-bottom: 3em; }');
+        expect(result).toContain('.pt-\\[0\\.5rem\\] { padding-block-start: 0.5rem; }');
+        expect(result).toContain('.py-\\[3em\\] { padding-block: 3em; }');
       });
 
       it('should extract gap custom values', () => {
@@ -84,7 +84,7 @@ describe('Custom Value Extraction Functions', () => {
           '.p-\\[clamp\\(1rem\\,4vw\\,3rem\\)\\] { padding: clamp(1rem, 4vw, 3rem); }'
         );
         expect(result).toContain(
-          '.my-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { margin-top: clamp(0.5rem, 2vw, 2rem); margin-bottom: clamp(0.5rem, 2vw, 2rem); }'
+          '.my-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { margin-block: clamp(0.5rem, 2vw, 2rem); }'
         );
       });
     });

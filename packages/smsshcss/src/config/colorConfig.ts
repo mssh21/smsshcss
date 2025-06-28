@@ -193,13 +193,13 @@ export const escapeColorValue = (val: string): string => {
 };
 
 // CSS関数内の値を再帰的にフォーマットする関数
-export const formatColorFunctionValue = (input: string): string => {
+export const formatColorCSSFunctionValue = (input: string): string => {
   // CSS関数を再帰的に処理（基本的な関数のみ）
   return input.replace(
     /(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
     (match, funcName, inner) => {
       // 内部の関数を再帰的に処理
-      const processedInner = formatColorFunctionValue(inner);
+      const processedInner = formatColorCSSFunctionValue(inner);
 
       // 特定の関数（hwb, lab, oklab, lch, oklch）の場合はカンマをスペースに変換
       if (['hwb', 'lab', 'oklab', 'lch', 'oklch'].includes(funcName)) {

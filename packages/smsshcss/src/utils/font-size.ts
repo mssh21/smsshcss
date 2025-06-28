@@ -1,5 +1,9 @@
 import { FontSizeConfig } from '../core/types';
-import { escapeValue, defaultFontSizeConfig, formatCSSFunctionValue } from '../core/fontSizeConfig';
+import {
+  escapeFontSizeValue,
+  defaultFontSizeConfig,
+  formatFontSizeCSSFunctionValue,
+} from '../config/fontSizeConfig';
 import { generateUtilityClasses } from './index';
 
 /**
@@ -17,10 +21,12 @@ const customValuePattern = /\b(font-size)-\[([^\]]+)\]/g;
  */
 function generateCustomFontSizeClass(prefix: string, value: string): string | null {
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
-  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+  const originalValue = cssMathFunctions.test(value)
+    ? formatFontSizeCSSFunctionValue(value)
+    : value;
 
   if (prefix === 'font-size') {
-    return `.${prefix}-\\[${escapeValue(value)}\\] { font-size: ${originalValue}; }`;
+    return `.${prefix}-\\[${escapeFontSizeValue(value)}\\] { font-size: ${originalValue}; }`;
   }
 
   return null;
