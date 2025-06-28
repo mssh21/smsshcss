@@ -11,7 +11,6 @@ import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
 import { generatePositioningClasses } from '../utils/positioning';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from '../utils/font-size';
-// import { generateComponentClasses } from '../utils/components';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
 import fs from 'fs';

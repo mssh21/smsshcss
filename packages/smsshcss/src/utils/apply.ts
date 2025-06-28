@@ -189,6 +189,7 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     'self-center': 'align-self: center;',
     'self-stretch': 'align-self: stretch;',
   };
+
   if (flexboxMap[utilityClass]) {
     return flexboxMap[utilityClass];
   }
@@ -601,9 +602,9 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   }
 
   // 色関連のクラス - text
-  const textColorMatch = utilityClass.match(/^text-(.+)$/);
-  if (textColorMatch) {
-    const [, colorName] = textColorMatch;
+  const colorMatch = utilityClass.match(/^text-(.+)$/);
+  if (colorMatch) {
+    const [, colorName] = colorMatch;
     const colorValue = getColorValue(colorName);
     if (colorValue) {
       return `color: ${colorValue};`;
@@ -641,11 +642,10 @@ function extractCSSFromUtility(utilityClass: string): string | null {
   }
 
   // フォントサイズ
-  // 色関連のクラス - fill
   const fontSizeMatch = utilityClass.match(/^font-size-(.+)$/);
   if (fontSizeMatch) {
-    const [, size] = fontSizeMatch;
-    const fontSizeValue = getFontSizeValue(size);
+    const [, fontSize] = fontSizeMatch;
+    const fontSizeValue = getFontSizeValue(fontSize);
     if (fontSizeValue) {
       return `font-size: ${fontSizeValue};`;
     }
@@ -714,15 +714,15 @@ function extractCSSFromUtility(utilityClass: string): string | null {
     } else if (property === 'basis') {
       return `flex-basis: ${value};`;
     } else if (property === 'text') {
-      return `color: ${colorValue};`;
+      return `color: ${value};`;
     } else if (property === 'bg') {
-      return `background-color: ${colorValue};`;
+      return `background-color: ${value};`;
     } else if (property === 'border') {
-      return `border: ${colorValue};`;
+      return `border: ${value};`;
     } else if (property === 'fill') {
-      return `fill: ${colorValue};`;
+      return `fill: ${value};`;
     } else if (property === 'font-size') {
-      return `font-size: ${fontSizeValue};`;
+      return `font-size: ${value};`;
     }
   }
 

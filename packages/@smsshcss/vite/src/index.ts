@@ -10,6 +10,7 @@ import {
   extractCustomOrderClasses,
   extractCustomZIndexClasses,
   extractCustomColorClasses,
+  extractCustomFontSizeClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -70,24 +71,6 @@ export interface SmsshCSSViteOptions {
    */
   debug?: boolean;
 }
-
-/**
- * カスタムクラス抽出関数の型定義
- */
-// type CustomClassExtractor = (content: string) => string[];
-
-/**
- * カスタムクラス抽出関数のマップ
- */
-// const CUSTOM_CLASS_EXTRACTORS: Record<string, CustomClassExtractor> = {
-//   spacing: extractCustomSpacingClasses,
-//   width: extractCustomWidthClasses,
-//   height: extractCustomHeightClasses,
-//   grid: extractCustomGridClasses,
-//   order: extractCustomOrderClasses,
-//   zIndex: extractCustomZIndexClasses,
-//   color: extractCustomColorClasses,
-// };
 
 /**
  * ファイルパターンがマッチするかどうかを判定
@@ -253,6 +236,7 @@ async function extractAllCustomClassesFromFiles(
           extractCustomOrderClasses(fileContent),
           extractCustomZIndexClasses(fileContent),
           extractCustomColorClasses(fileContent),
+          extractCustomFontSizeClasses(fileContent),
         ];
 
         const fileClasses = extractionResults.flat();

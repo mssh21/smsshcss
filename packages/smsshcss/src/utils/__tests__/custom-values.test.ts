@@ -639,12 +639,13 @@ describe('Custom Value Extraction Functions', () => {
 
   describe('extractCustomFontSizeClasses', () => {
     it('should extract font-size custom values', () => {
-      const content = '<div class="font-size-[var(--font-size)]">Test</div>';
+      const content = '<div class="font-size-[var(--font-size)] font-size-[50px]">Test</div>';
       const result = extractCustomFontSizeClasses(content);
-      expect(result).toHaveLength(1);
+      expect(result).toHaveLength(2);
       expect(result[0]).toBe(
         '.font-size-\\[var\\(--font-size\\)\\] { font-size: var(--font-size); }'
       );
+      expect(result[1]).toBe('.font-size-\\[50px\\] { font-size: 50px; }');
     });
   });
 

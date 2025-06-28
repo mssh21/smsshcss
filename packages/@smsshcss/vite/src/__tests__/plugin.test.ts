@@ -25,6 +25,7 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
           'bg-success': 'bg-green-500',
           'border-warning': 'border-yellow-500',
           'fill-primary': 'fill-blue-500',
+          'font-size-custom': 'font-size-lg',
         },
       };
       const plugin = smsshcss(options);
@@ -151,6 +152,32 @@ describe('SmsshCSS Vite Plugin - Core Functionality', () => {
         console.error('Error in test:', error);
         throw error;
       }
+    });
+
+    it('should handle apply classes with font-size values', async () => {
+      const plugin = smsshcss({
+        includeReset: false,
+        includeBase: false,
+        apply: {
+          'body-text': 'font-size-md',
+          'custom-text': 'font-size-[88px]',
+          'calc-text': 'font-size-[calc(1rem+2px)]',
+          'clamp-text': 'font-size-[clamp(1rem,2rem,3rem)]',
+          'variable-text': 'font-size-[var(--custom-font-size)]',
+        },
+      });
+
+      const result = await plugin.transform('', 'test.css');
+      expect(result?.code).toContain('.body-text');
+      expect(result?.code).toContain('font-size: 1rem');
+      expect(result?.code).toContain('.custom-text');
+      expect(result?.code).toContain('font-size: 88px');
+      expect(result?.code).toContain('.calc-text');
+      expect(result?.code).toContain('font-size: calc(1rem + 2px)');
+      expect(result?.code).toContain('.clamp-text');
+      expect(result?.code).toContain('font-size: clamp(1rem, 2rem, 3rem)');
+      expect(result?.code).toContain('.variable-text');
+      expect(result?.code).toContain('font-size: var(--custom-font-size)');
     });
   });
 

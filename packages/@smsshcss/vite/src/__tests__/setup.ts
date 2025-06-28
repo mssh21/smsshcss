@@ -140,9 +140,9 @@ const parseUtilityWithValue = (prefix: string, value: string): string | null => 
     case 'fill':
       return `fill: ${value};`;
 
-    // Border radius
-    case 'rounded':
-      return `border-radius: ${value};`;
+    // Font size
+    case 'font-size':
+      return `font-size: ${value};`;
 
     default:
       return null;
@@ -472,6 +472,16 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.fill-green-500 { fill: hsl(125 80% 50% / 1); }';
   css += '\n.fill-yellow-500 { fill: hsl(55 90% 50% / 1); }';
 
+  // FontSize classes
+  css += '\n.font-size-xs { font-size: 0.75rem; }';
+  css += '\n.font-size-sm { font-size: 0.875rem; }';
+  css += '\n.font-size-md { font-size: 1rem; }';
+  css += '\n.font-size-lg { font-size: 1.25rem; }';
+  css += '\n.font-size-xl { font-size: 1.5rem; }';
+  css += '\n.font-size-2xl { font-size: 2rem; }';
+  css += '\n.font-size-3xl { font-size: 2.25rem; }';
+  css += '\n.font-size-4xl { font-size: 2.75rem; }';
+
   // カスタムテーマクラス
   if (config.theme?.spacing) {
     Object.entries(config.theme.spacing).forEach(([key, value]) => {
@@ -572,6 +582,12 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
       css += `\n.bg-${key} { background-color: ${value}; }`;
       css += `\n.border-${key} { border-color: ${value}; }`;
       css += `\n.fill-${key} { fill: ${value}; }`;
+    });
+  }
+
+  if (config.theme?.fontSize) {
+    Object.entries(config.theme.fontSize).forEach(([key, value]) => {
+      css += `\n.font-size-${key} { font-size: ${value}; }`;
     });
   }
 
@@ -812,7 +828,6 @@ const mockExtractCustomHeightClasses = (content: string): string[] => {
 };
 
 // カスタムグリッドクラス抽出モック
-
 const mockExtractCustomGridClasses = (content: string): string[] => {
   const customValuePattern =
     /\b(grid-cols|grid-rows|col-span|row-span|col-start|col-end|row-start|row-end)-\[([^\]]+)\]/g;
@@ -947,6 +962,41 @@ const mockExtractCustomColorClasses = (content: string): string[] => {
   return customColorClasses;
 };
 
+// フォントサイズ用エスケープ関数（実際の実装に合わせる）
+const escapeFontSizeValue = (val: string): string => {
+  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  // CSS数学関数の場合は特別処理（カンマもエスケープする）
+  if (cssMathFunctions.test(val)) {
+    return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
+  }
+  // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+  if (val.includes('var(--')) {
+    return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
+  }
+  // 通常の値の場合は-も含めてエスケープ
+  return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
+};
+
+// カスタムフォントサイズクラス抽出モック
+const mockExtractCustomFontSizeClasses = (content: string): string[] => {
+  const customValuePattern = /\b(font-size)-\[([^\]]+)\]/g;
+  const matches = content.matchAll(customValuePattern);
+  const customFontSizeClasses: string[] = [];
+  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+
+  for (const match of matches) {
+    const prefix = match[1];
+    const value = match[2]; // match[2]がカスタム値
+    const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+    customFontSizeClasses.push(
+      `.${prefix}-\\[${escapeFontSizeValue(value)}\\] { font-size: ${originalValue}; }`
+    );
+  }
+  return customFontSizeClasses;
+};
+
 // smsshcssパッケージをモック
 vi.mock('smsshcss', () => ({
   generateCSS: vi.fn().mockImplementation((config) => Promise.resolve(generateMockCSS(config))),
@@ -964,6 +1014,7 @@ vi.mock('smsshcss', () => ({
   extractCustomOrderClasses: vi.fn().mockImplementation(mockExtractCustomOrderClasses),
   extractCustomZIndexClasses: vi.fn().mockImplementation(mockExtractCustomZIndexClasses),
   extractCustomColorClasses: vi.fn().mockImplementation(mockExtractCustomColorClasses),
+  extractCustomFontSizeClasses: vi.fn().mockImplementation(mockExtractCustomFontSizeClasses),
 }));
 
 // モッククリア関数

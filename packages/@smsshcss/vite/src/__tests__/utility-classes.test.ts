@@ -161,6 +161,19 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
     });
   });
 
+  describe('Font Size Classes', () => {
+    it('should generate font size utility classes', () => {
+      expect(result?.code).toContain('.font-size-xs { font-size: 0.75rem; }');
+      expect(result?.code).toContain('.font-size-sm { font-size: 0.875rem; }');
+      expect(result?.code).toContain('.font-size-md { font-size: 1rem; }');
+      expect(result?.code).toContain('.font-size-lg { font-size: 1.25rem; }');
+      expect(result?.code).toContain('.font-size-xl { font-size: 1.5rem; }');
+      expect(result?.code).toContain('.font-size-2xl { font-size: 2rem; }');
+      expect(result?.code).toContain('.font-size-3xl { font-size: 2.25rem; }');
+      expect(result?.code).toContain('.font-size-4xl { font-size: 2.75rem; }');
+    });
+  });
+
   describe('Apply Configuration', () => {
     it('should generate apply-based classes', async () => {
       const applyPlugin = smsshcss({
