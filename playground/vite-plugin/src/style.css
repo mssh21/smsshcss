@@ -35,11 +35,7 @@ body {
 }
 
 .demo-title {
-  background: #343a40;
-  color: white;
-  margin: 0;
   border-radius: 10px 10px 0 0;
-  font-size: 18px;
   font-weight: 600;
 }
 
@@ -362,10 +358,7 @@ body {
 }
 
 .test-card-title {
-  font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 12px 0;
 }
 
 .test-card-desc {
