@@ -7,7 +7,7 @@ export default defineConfig({
       includeReset: true,
       includeBase: true,
       minify: false,
-      debug: true,
+      debug: false,
 
       content: [
         './index.html',
@@ -29,7 +29,7 @@ export default defineConfig({
         'text-primary': 'text-[#259270]',
       },
 
-      showPurgeReport: true,
+      showPurgeReport: false,
     }),
   ],
 

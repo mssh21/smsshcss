@@ -164,7 +164,7 @@ export class CSSGenerator {
         // フォールバック: プロセスの作業ディレクトリを基準
         currentDir = path.join(process.cwd(), 'dist');
       }
-    } catch (error) {
+    } catch {
       // 最終フォールバック
       currentDir = path.join(process.cwd(), 'dist');
     }

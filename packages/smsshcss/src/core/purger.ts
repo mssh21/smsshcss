@@ -248,12 +248,12 @@ export class CSSPurger {
       {
         name: 'HTML class attributes',
         pattern: /class\s*=\s*["']([^"']*?)["']/g,
-        processor: (match: string) => match.split(/\s+/).filter(Boolean),
+        processor: (match: string): string[] => match.split(/\s+/).filter(Boolean),
       },
       {
         name: 'React className attributes',
         pattern: /className\s*=\s*["']([^"']*?)["']/g,
-        processor: (match: string) => match.split(/\s+/).filter(Boolean),
+        processor: (match: string): string[] => match.split(/\s+/).filter(Boolean),
       },
       {
         name: 'Template literals with classes',
@@ -266,12 +266,14 @@ export class CSSPurger {
       {
         name: 'Template literal dynamic classes',
         pattern: /\$\{[^}]*?\?\s*["']([^"']+)["'][^}]*?\}/g,
-        processor: (match: string, className: string) => [className],
+        processor: (match: string, className: string): string[] => [className],
       },
       {
         name: 'Arbitrary value classes',
         pattern: /\b([mp][trlbxy]?|gap(?:-[xy])?|w|h|text|bg|border|rounded)-\[([^\]]+)\]/g,
-        processor: (match: string, prefix: string, value: string) => [`${prefix}-[${value}]`],
+        processor: (match: string, prefix: string, value: string): string[] => [
+          `${prefix}-[${value}]`,
+        ],
       },
       {
         name: 'CSS-in-JS patterns',
@@ -363,17 +365,17 @@ export class CSSPurger {
       {
         name: 'Standard classes',
         pattern: /\.([a-zA-Z][\w-]*)/g,
-        processor: (match: RegExpExecArray) => match[1],
+        processor: (match: RegExpExecArray): string => match[1],
       },
       {
         name: 'Arbitrary value classes',
         pattern: /\.([a-zA-Z][\w-]*)-\\?\[([^\]\\]+)\\?\]/g,
-        processor: (match: RegExpExecArray) => `${match[1]}-[${match[2]}]`,
+        processor: (match: RegExpExecArray): string => `${match[1]}-[${match[2]}]`,
       },
       {
         name: 'Escaped arbitrary values',
         pattern: /\.([a-zA-Z][\w-]*-\\[0-9a-fA-F]+\\])/g,
-        processor: (match: RegExpExecArray) => match[1].replace(/\\/g, ''),
+        processor: (match: RegExpExecArray): string => match[1].replace(/\\/g, ''),
       },
     ];
 

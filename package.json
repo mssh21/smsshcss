@@ -10,7 +10,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
-    "clean": "turbo clean && rm -rf node_modules",
+    "clean": "turbo clean && rm -rf node_modules && find . -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
     "type-check": "turbo type-check",
     "prepare": "husky",
     "preinstall": "npx only-allow yarn",
