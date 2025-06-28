@@ -472,83 +472,31 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
               );
             }
             generatedCSS = await smsshGenerateCSS(smsshConfig);
-            console.log(`[smsshcss] Generated CSS length: ${generatedCSS.length} characters`);
-            console.log(
-              '[smsshcss] Generated CSS includes Apply:',
-              generatedCSS.includes('text-error')
-            );
-            console.log(
-              '[smsshcss] Generated CSS includes Custom:',
-              generatedCSS.includes('/* Custom Value Classes */')
-            );
-            if (debug) {
-              console.log('[smsshcss] Generated CSS sample:', generatedCSS.substring(0, 1000));
-            }
           }
 
           // キャッシュに保存
           cssCache.set(cacheKey, JSON.stringify(smsshConfig), generatedCSS);
         }
 
-        console.log(`[smsshcss] Checking for custom classes...`);
-
         // カスタムクラスを動的に抽出して追加
         // smsshGenerateCSSSync がカスタムクラスを含まない場合の補完処理
-        const customValueSectionMatch = generatedCSS.match(
-          /\/\* Custom Value Classes \*\/\s*([\s\S]*?)(?=\/\*|$)/
-        );
-        const hasActualCustomClasses =
-          customValueSectionMatch &&
-          customValueSectionMatch[1]
-            .trim()
-            .split('\n')
-            .some(
-              (line) =>
-                line.trim() && !line.includes('mx-auto') && line.includes('[') && line.includes(']')
-            );
-
-        console.log(`[smsshcss] Has actual custom classes: ${hasActualCustomClasses}`);
-        console.log(`[smsshcss] Custom value section match: ${!!customValueSectionMatch}`);
-        if (customValueSectionMatch) {
-          console.log(
-            `[smsshcss] Custom section content: ${customValueSectionMatch[1].substring(0, 200)}...`
-          );
-        }
 
         // TEMPORARY FIX: Always extract custom classes from files
-        console.log(`[smsshcss] Extracting custom classes from files (forced)...`);
         const customClasses = await extractAllCustomClassesFromFiles(content, cssCache, debug);
-        console.log(`[smsshcss] Custom classes found: ${customClasses.length}`);
         if (customClasses.length > 0) {
-          console.log(`[smsshcss] First few custom classes:`, customClasses.slice(0, 3));
-        }
-        if (customClasses.length > 0) {
-          console.log(`[smsshcss] Found ${customClasses.length} additional custom classes`);
           if (generatedCSS.includes('/* Custom Value Classes */')) {
             // コメントは存在するが実際のクラスがない場合は追加
-            console.log(`[smsshcss] Replacing existing Custom Value Classes section`);
             generatedCSS = generatedCSS.replace(
               '/* Custom Value Classes */',
               `/* Custom Value Classes */\n${customClasses.join('\n')}`
             );
           } else {
-            console.log(`[smsshcss] Adding new Custom Value Classes section`);
             generatedCSS = `${generatedCSS}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
           }
-          console.log(
-            `[smsshcss] Updated CSS now includes Custom:`,
-            generatedCSS.includes('/* Custom Value Classes */')
-          );
         }
 
         // 生成されたCSSを追加
         css = `${css}\n\n/* SmsshCSS Generated Styles */\n${generatedCSS}`;
-
-        console.log(`[smsshcss] Final CSS length: ${css.length} characters`);
-        console.log(
-          `[smsshcss] Final CSS includes Custom:`,
-          css.includes('/* Custom Value Classes */')
-        );
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         console.error(`[smsshcss] Error generating CSS: ${errorMessage}`);

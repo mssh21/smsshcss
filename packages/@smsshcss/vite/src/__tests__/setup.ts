@@ -44,8 +44,13 @@ const parseUtilityClass = (className: string, config: SmsshCSSConfig): string | 
     return parseUtilityWithValue(prefix, cleanValue);
   }
 
-  // テーマ値の処理 - 最初のハイフンで分割
-  const themeMatch = className.match(/^([^-]+)-(.+)$/);
+  // テーマ値の処理 - font-sizeのような複数ハイフンプレフィックスを考慮
+  let themeMatch = className.match(/^(font-size)-(.+)$/);
+  if (!themeMatch) {
+    // 他のクラスは最初のハイフンで分割
+    themeMatch = className.match(/^([^-]+)-(.+)$/);
+  }
+
   if (themeMatch) {
     const [, prefix, suffix] = themeMatch;
 
@@ -236,6 +241,22 @@ const parseUtilityWithDefaultValue = (prefix: string, suffix: string): string | 
   }
   if (prefix === 'border' && colorMap[suffix]) {
     return `border-color: ${colorMap[suffix]};`;
+  }
+
+  // Font-sizeマッピング
+  const fontSizeMap: Record<string, string> = {
+    xs: '0.75rem',
+    sm: '0.875rem',
+    md: '1rem',
+    lg: '1.25rem',
+    xl: '1.5rem',
+    '2xl': '2rem',
+    '3xl': '2.25rem',
+    '4xl': '2.75rem',
+  };
+
+  if (prefix === 'font-size' && fontSizeMap[suffix]) {
+    return `font-size: ${fontSizeMap[suffix]};`;
   }
 
   // デフォルトサイズマッピング
@@ -997,6 +1018,23 @@ const mockExtractCustomFontSizeClasses = (content: string): string[] => {
   return customFontSizeClasses;
 };
 
+// Apply機能のモック実装
+const mockGenerateApplyClasses = (config?: Record<string, string>): string => {
+  if (!config) {
+    return '';
+  }
+
+  let applyCSS = '';
+  Object.entries(config).forEach(([className, utilityClasses]) => {
+    const applyCSS_inner = parseUtilityClasses(utilityClasses, { apply: config });
+    if (applyCSS_inner) {
+      applyCSS += `\n\n.${className} {${applyCSS_inner}\n}`;
+    }
+  });
+
+  return applyCSS;
+};
+
 // smsshcssパッケージをモック
 vi.mock('smsshcss', () => ({
   generateCSS: vi.fn().mockImplementation((config) => Promise.resolve(generateMockCSS(config))),
@@ -1007,6 +1045,7 @@ vi.mock('smsshcss', () => ({
     purgedClasses: 50,
     buildTime: 100,
   }),
+  generateApplyClasses: vi.fn().mockImplementation(mockGenerateApplyClasses),
   extractCustomSpacingClasses: vi.fn().mockImplementation(mockExtractCustomSpacingClasses),
   extractCustomWidthClasses: vi.fn().mockImplementation(mockExtractCustomWidthClasses),
   extractCustomHeightClasses: vi.fn().mockImplementation(mockExtractCustomHeightClasses),

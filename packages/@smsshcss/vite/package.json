@@ -26,7 +26,7 @@
   "dependencies": {
     "glob": "^10.3.10",
     "micromatch": "^4.0.5",
-    "smsshcss": "workspace:*"
+    "smsshcss": "workspace:packages/smsshcss"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
