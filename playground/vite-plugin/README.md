@@ -132,8 +132,8 @@ yarn workspace @smsshcss/vite-plugin-playground dev
 
 ```javascript
 smsshcss({
-  includeReset: true,
-  includeBase: true,
+  includeResetCSS: true,
+  includeBaseCSS: true,
   minify: false,
   debug: true,
 
