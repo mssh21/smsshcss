@@ -109,6 +109,7 @@ module.exports = {
   },
 
   // 🎨 Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+  // theme機能は廃止されました。カスタム値は任意値記法をご利用ください。
   apply: {
     // レイアウト系コンポーネント
     'main-layout': 'w-lg mx-auto px-lg block',

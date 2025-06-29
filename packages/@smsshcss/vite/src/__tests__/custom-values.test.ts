@@ -101,10 +101,10 @@ const testCases = {
   spacing: [
     { html: 'm-[20px]', css: '.m-\\[20px\\] { margin: 20px; }' },
     { html: 'p-[10px]', css: '.p-\\[10px\\] { padding: 10px; }' },
-    { html: 'mx-[30px]', css: '.mx-\\[30px\\] { margin-left: 30px; margin-right: 30px; }' },
-    { html: 'py-[15px]', css: '.py-\\[15px\\] { padding-top: 15px; padding-bottom: 15px; }' },
-    { html: 'mt-[5px]', css: '.mt-\\[5px\\] { margin-top: 5px; }' },
-    { html: 'pl-[25px]', css: '.pl-\\[25px\\] { padding-left: 25px; }' },
+    { html: 'mx-[30px]', css: '.mx-\\[30px\\] { margin-inline: 30px; }' },
+    { html: 'py-[15px]', css: '.py-\\[15px\\] { padding-block: 15px; }' },
+    { html: 'mt-[5px]', css: '.mt-\\[5px\\] { margin-block-start: 5px; }' },
+    { html: 'pl-[25px]', css: '.pl-\\[25px\\] { padding-inline-start: 25px; }' },
   ],
   size: [
     { html: 'w-[20px]', css: '.w-\\[20px\\] { width: 20px; }' },
@@ -303,12 +303,10 @@ describe('Custom Value Classes Integration', () => {
         // カスタム値クラスが実際に生成されている場合
         expect(result?.code).toContain('.m-\\[20px\\] { margin: 20px; }');
         expect(result?.code).toContain('.p-\\[10px\\] { padding: 10px; }');
-        expect(result?.code).toContain('.mx-\\[30px\\] { margin-left: 30px; margin-right: 30px; }');
-        expect(result?.code).toContain(
-          '.py-\\[15px\\] { padding-top: 15px; padding-bottom: 15px; }'
-        );
-        expect(result?.code).toContain('.mt-\\[5px\\] { margin-top: 5px; }');
-        expect(result?.code).toContain('.pl-\\[25px\\] { padding-left: 25px; }');
+        expect(result?.code).toContain('.mx-\\[30px\\] { margin-inline: 30px; }');
+        expect(result?.code).toContain('.py-\\[15px\\] { padding-block: 15px; }');
+        expect(result?.code).toContain('.mt-\\[5px\\] { margin-block-start: 5px; }');
+        expect(result?.code).toContain('.pl-\\[25px\\] { padding-inline-start: 25px; }');
       } else {
         // カスタム値クラスが生成されていない場合でも、基本機能は動作している
         expect(result?.code).toContain('.m-md { margin: 1.25rem; }');

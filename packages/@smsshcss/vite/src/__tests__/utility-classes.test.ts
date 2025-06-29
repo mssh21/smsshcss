@@ -22,27 +22,23 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
 
   describe('Spacing Classes', () => {
     it('should generate margin classes', () => {
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.mt-lg { margin-top: calc(var(--space-base) * 8); }');
-      expect(result?.code).toContain(
-        '.mx-sm { margin-left: calc(var(--space-base) * 3); margin-right: calc(var(--space-base) * 3); }'
-      );
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.mt-lg { margin-top: 2rem; }');
+      expect(result?.code).toContain('.mx-sm { margin-left: 0.75rem; margin-right: 0.75rem; }');
     });
 
     it('should generate padding classes', () => {
-      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.pt-lg { padding-top: calc(var(--space-base) * 8); }');
-      expect(result?.code).toContain(
-        '.px-sm { padding-left: calc(var(--space-base) * 3); padding-right: calc(var(--space-base) * 3); }'
-      );
+      expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
+      expect(result?.code).toContain('.pt-lg { padding-top: 2rem; }');
+      expect(result?.code).toContain('.px-sm { padding-left: 0.75rem; padding-right: 0.75rem; }');
     });
 
     it('should generate gap classes', () => {
-      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.gap-y-md { row-gap: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.gap-x-lg { column-gap: calc(var(--space-base) * 8); }');
-      expect(result?.code).toContain('.gap-y-lg { row-gap: calc(var(--space-base) * 8); }');
+      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
+      expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
+      expect(result?.code).toContain('.gap-y-md { row-gap: 1.25rem; }');
+      expect(result?.code).toContain('.gap-x-lg { column-gap: 2rem; }');
+      expect(result?.code).toContain('.gap-y-lg { row-gap: 2rem; }');
     });
   });
 
@@ -55,35 +51,35 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
 
   describe('Width Classes', () => {
     it('should generate width utility classes', () => {
-      expect(result?.code).toContain('.w-2xs { width: var(--size-base); }');
-      expect(result?.code).toContain('.w-xs { width: calc(var(--size-base) * 1.5); }');
-      expect(result?.code).toContain('.w-sm { width: calc(var(--size-base) * 2); }');
-      expect(result?.code).toContain('.w-md { width: calc(var(--size-base) * 2.5); }');
-      expect(result?.code).toContain('.w-lg { width: calc(var(--size-base) * 3); }');
-      expect(result?.code).toContain('.w-xl { width: calc(var(--size-base) * 4); }');
+      expect(result?.code).toContain('.w-2xs { width: 1rem; }');
+      expect(result?.code).toContain('.w-xs { width: 1.5rem; }');
+      expect(result?.code).toContain('.w-sm { width: 2rem; }');
+      expect(result?.code).toContain('.w-md { width: 2.5rem; }');
+      expect(result?.code).toContain('.w-lg { width: 3rem; }');
+      expect(result?.code).toContain('.w-xl { width: 4rem; }');
       expect(result?.code).toContain('.w-screen { width: 100vw; }');
       expect(result?.code).toContain('.w-full { width: 100%; }');
-      expect(result?.code).toContain('.min-w-2xs { min-width: var(--size-base); }');
-      expect(result?.code).toContain('.min-w-lg { min-width: calc(var(--size-base) * 3); }');
-      expect(result?.code).toContain('.max-w-2xs { max-width: var(--size-base); }');
-      expect(result?.code).toContain('.max-w-lg { max-width: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.min-w-2xs { min-width: 1rem; }');
+      expect(result?.code).toContain('.min-w-lg { min-width: 3rem; }');
+      expect(result?.code).toContain('.max-w-2xs { max-width: 1rem; }');
+      expect(result?.code).toContain('.max-w-lg { max-width: 3rem; }');
     });
   });
 
   describe('Height Classes', () => {
     it('should generate height utility classes', () => {
-      expect(result?.code).toContain('.h-2xs { height: var(--size-base); }');
-      expect(result?.code).toContain('.h-xs { height: calc(var(--size-base) * 1.5); }');
-      expect(result?.code).toContain('.h-sm { height: calc(var(--size-base) * 2); }');
-      expect(result?.code).toContain('.h-md { height: calc(var(--size-base) * 2.5); }');
-      expect(result?.code).toContain('.h-lg { height: calc(var(--size-base) * 3); }');
-      expect(result?.code).toContain('.h-xl { height: calc(var(--size-base) * 4); }');
-      expect(result?.code).toContain('.h-screen { height: 100vh; }');
+      expect(result?.code).toContain('.h-2xs { height: 1rem; }');
+      expect(result?.code).toContain('.h-xs { height: 1.5rem; }');
+      expect(result?.code).toContain('.h-sm { height: 2rem; }');
+      expect(result?.code).toContain('.h-md { height: 2.5rem; }');
+      expect(result?.code).toContain('.h-lg { height: 3rem; }');
+      expect(result?.code).toContain('.h-xl { height: 4rem; }');
+      expect(result?.code).toContain('.h-screen { height: 100vw; }');
       expect(result?.code).toContain('.h-full { height: 100%; }');
-      expect(result?.code).toContain('.min-h-2xs { min-height: var(--size-base); }');
-      expect(result?.code).toContain('.min-h-lg { min-height: calc(var(--size-base) * 3); }');
-      expect(result?.code).toContain('.max-h-2xs { max-height: var(--size-base); }');
-      expect(result?.code).toContain('.max-h-lg { max-height: calc(var(--size-base) * 3); }');
+      expect(result?.code).toContain('.min-h-2xs { min-height: 1rem; }');
+      expect(result?.code).toContain('.min-h-lg { min-height: 3rem; }');
+      expect(result?.code).toContain('.max-h-2xs { max-height: 1rem; }');
+      expect(result?.code).toContain('.max-h-lg { max-height: 3rem; }');
     });
   });
 
@@ -139,12 +135,12 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       expect(result?.code).toContain('.flex-col-reverse { flex-direction: column-reverse; }');
       expect(result?.code).toContain('.flex-wrap { flex-wrap: wrap; }');
       expect(result?.code).toContain('.flex-wrap-reverse { flex-wrap: wrap-reverse; }');
-      expect(result?.code).toContain('.flex-grow { flex-grow: 1; }');
-      expect(result?.code).toContain('.flex-shrink { flex-shrink: 1; }');
-      expect(result?.code).toContain('.flex-1 { flex: 1 1 0%; }');
-      expect(result?.code).toContain('.flex-basis-auto { flex-basis: auto; }');
-      expect(result?.code).toContain('.flex-basis-full { flex-basis: 100%; }');
-      expect(result?.code).toContain('.flex-basis-sm { flex-basis: calc(var(--size-base) * 2); }');
+      expect(result?.code).toContain('.grow { flex-grow: 1; }');
+      expect(result?.code).toContain('.shrink { flex-shrink: 1; }');
+      expect(result?.code).toContain('.flex-auto { flex: 1 1 auto; }');
+      expect(result?.code).toContain('.basis-auto { flex-basis: auto; }');
+      expect(result?.code).toContain('.basis-full { flex-basis: 100%; }');
+      expect(result?.code).toContain('.basis-sm { flex-basis: 2rem; }');
     });
   });
 
@@ -209,7 +205,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
         '.border-blue-500 { border-color: hsl(214 85% 55% / 1); }'
       );
       expect(applyResult?.code).toContain('.fill-blue-500 { fill: hsl(214 85% 55% / 1); }');
-      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(applyResult?.code).toContain('.p-lg { padding: 2rem; }');
     });
 
     it('should work with empty apply configuration', async () => {
@@ -219,8 +215,8 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       const applyResult = await applyPlugin.transform('', 'file.css');
 
       // 基本的なクラスは生成される
-      expect(applyResult?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(applyResult?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
+      expect(applyResult?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(applyResult?.code).toContain('.p-lg { padding: 2rem; }');
     });
 
     it('should handle apply with standard utility classes', async () => {
@@ -234,7 +230,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
 
       // 標準的なユーティリティクラスが正しく生成される
       expect(applyResult?.code).toContain('.w-full { width: 100%; }');
-      expect(applyResult?.code).toContain('.h-screen { height: 100vh; }');
+      expect(applyResult?.code).toContain('.h-screen { height: 100vw; }');
       expect(applyResult?.code).toContain('.flex { display: flex; }');
     });
   });

@@ -193,7 +193,9 @@ module.exports = {
   },
 
   // テーマのカスタマイズ
-  theme: {
+  // theme機能は廃止されました。
+  // カスタム値は任意値記法をご利用ください。
+  apply: {
     spacing: {
       custom: '2.5rem',
       72: '18rem',

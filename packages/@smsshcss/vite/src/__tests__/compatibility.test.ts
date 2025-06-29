@@ -26,7 +26,7 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
       const result = await plugin.transform('', 'compatibility.css');
 
       expect(result?.code).toBeDefined();
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
     });
 
     it('should handle ES modules correctly', async () => {
@@ -261,9 +261,9 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
       const result = await plugin.transform('', 'apply-test.css');
 
       // 基本的なユーティリティクラスが含まれていることを確認（実際に生成されるクラスをテスト）
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
+      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
     });
 
     it('should handle malformed configurations gracefully', async () => {
@@ -309,7 +309,7 @@ describe('SmsshCSS Vite Plugin - Compatibility Tests', () => {
 
       // OS固有の問題がないことを確認
       expect(result?.code).toBeDefined();
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
 
       // ファイルパスの区切り文字などの問題がないことを確認
       expect(result?.code).not.toContain('\\\\');

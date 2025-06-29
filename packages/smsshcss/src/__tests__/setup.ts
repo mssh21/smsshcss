@@ -264,7 +264,7 @@ export const testConfigs = {
       safelist: ['safe-class'],
     },
   },
-  withTheme: {
+  withApply: {
     content: ['src/**/*.html'],
     apply: {
       'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',

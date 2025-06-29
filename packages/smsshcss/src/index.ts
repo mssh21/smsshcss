@@ -28,6 +28,16 @@ export async function generateCSS(config: SmsshCSSConfig): Promise<string> {
 }
 
 /**
+ * Generate CSS based on configuration (sync version)
+ * @param config Configuration options
+ * @returns Generated CSS string
+ */
+export function generateCSSSync(config: SmsshCSSConfig): string {
+  const generator = new CSSGenerator(config, { suppressWarnings: true });
+  return generator.generateFullCSS();
+}
+
+/**
  * Generate purge report without CSS generation
  * @param config Configuration options
  * @returns Purge report or null if purging is disabled
@@ -72,6 +82,7 @@ export { extractCustomOrderClasses } from './utils/order';
 export { extractCustomZIndexClasses } from './utils/z-index';
 export { extractCustomColorClasses } from './utils/color';
 export { extractCustomFontSizeClasses } from './utils/font-size';
+export { generateApplyClasses } from './utils/apply-system';
 
 // Export new enhanced arbitrary value utilities
 export {
@@ -101,3 +112,20 @@ export {
   validateConfig,
   formatValidationResult,
 } from './core/config-validator';
+
+// Export unified configuration (Single Source of Truth)
+export {
+  defaultConfig,
+  defaultColorConfig,
+  defaultFontSizeConfig,
+  defaultSpacingConfig,
+  defaultSizeConfig,
+  defaultGridConfig,
+  getColorValue,
+  getFontSizeValue,
+  getSpacingValue,
+  getSizeValue,
+  getGridValue,
+} from './config';
+
+export type { DefaultConfig } from './config';

@@ -1,5 +1,30 @@
 import { vi } from 'vitest';
 
+// コア設定を直接インポート（Single Source of Truth）
+import {
+  defaultConfig,
+  getColorValue,
+  getFontSizeValue,
+  getSpacingValue,
+  getSizeValue,
+  type DefaultConfig,
+} from '../../../../smsshcss/src/config';
+
+// コア設定取得関数（統一的なインターフェース）
+const getCoreConfig = (): {
+  defaultConfig: DefaultConfig;
+  getColorValue: (key: string) => string | undefined;
+  getFontSizeValue: (key: string) => string | undefined;
+  getSpacingValue: (key: string) => string | undefined;
+  getSizeValue: (key: string) => string | undefined;
+} => ({
+  defaultConfig,
+  getColorValue,
+  getFontSizeValue,
+  getSpacingValue,
+  getSizeValue,
+});
+
 // SmsshCSSの設定の型定義
 interface SmsshCSSConfig {
   content?: string[];
@@ -75,33 +100,33 @@ const parseUtilityWithValue = (prefix: string, value: string): string | null => 
     case 'm':
       return `margin: ${value};`;
     case 'mx':
-      return `margin-left: ${value}; margin-right: ${value};`;
+      return `margin-inline: ${value};`;
     case 'my':
-      return `margin-top: ${value}; margin-bottom: ${value};`;
+      return `margin-block: ${value};`;
     case 'mt':
-      return `margin-top: ${value};`;
+      return `margin-block-start: ${value};`;
     case 'mr':
-      return `margin-right: ${value};`;
+      return `margin-inline-end: ${value};`;
     case 'mb':
-      return `margin-bottom: ${value};`;
+      return `margin-block-end: ${value};`;
     case 'ml':
-      return `margin-left: ${value};`;
+      return `margin-inline-start: ${value};`;
 
     // Padding
     case 'p':
       return `padding: ${value};`;
     case 'px':
-      return `padding-left: ${value}; padding-right: ${value};`;
+      return `padding-inline: ${value};`;
     case 'py':
-      return `padding-top: ${value}; padding-bottom: ${value};`;
+      return `padding-block: ${value};`;
     case 'pt':
-      return `padding-top: ${value};`;
+      return `padding-block-start: ${value};`;
     case 'pr':
-      return `padding-right: ${value};`;
+      return `padding-inline-end: ${value};`;
     case 'pb':
-      return `padding-bottom: ${value};`;
+      return `padding-block-end: ${value};`;
     case 'pl':
-      return `padding-left: ${value};`;
+      return `padding-inline-start: ${value};`;
 
     // Width
     case 'w':
@@ -214,72 +239,87 @@ const getThemeValue = (prefix: string, suffix: string, config: SmsshCSSConfig): 
 
 // デフォルト値で処理
 const parseUtilityWithDefaultValue = (prefix: string, suffix: string): string | null => {
-  // カラーマッピング
-  const colorMap: Record<string, string> = {
-    'red-500': 'hsl(358 85% 55% / 1)',
-    'red-600': 'hsl(358 90% 45% / 1)',
-    'red-800': 'hsl(358 100% 25% / 1)',
-    'red-100': 'hsl(358 100% 95% / 1)',
-    'red-300': 'hsl(358 85% 75% / 1)',
-    'blue-500': 'hsl(214 85% 55% / 1)',
-    'blue-600': 'hsl(214 90% 45% / 1)',
-    'purple-500': 'hsl(280 85% 55% / 1)',
-    'yellow-100': 'hsl(55 100% 95% / 1)',
-    'yellow-500': 'hsl(55 90% 50% / 1)',
-    'yellow-600': 'hsl(55 85% 40% / 1)',
-    'gray-900': 'hsl(210 6% 10% / 1)',
-    white: 'hsl(0 0% 100% / 1)',
-    black: 'hsl(0 0% 0% / 1)',
-  };
+  const coreConfig = getCoreConfig();
 
   // カラークラス処理
-  if (prefix === 'text' && colorMap[suffix]) {
-    return `color: ${colorMap[suffix]};`;
-  }
-  if (prefix === 'bg' && colorMap[suffix]) {
-    return `background-color: ${colorMap[suffix]};`;
-  }
-  if (prefix === 'border' && colorMap[suffix]) {
-    return `border-color: ${colorMap[suffix]};`;
+  if (['text', 'bg', 'border', 'fill'].includes(prefix)) {
+    const colorValue = coreConfig.getColorValue(suffix);
+    if (colorValue) {
+      return parseUtilityWithValue(prefix, colorValue);
+    }
   }
 
-  // Font-sizeマッピング
-  const fontSizeMap: Record<string, string> = {
-    xs: '0.75rem',
-    sm: '0.875rem',
-    md: '1rem',
-    lg: '1.25rem',
-    xl: '1.5rem',
-    '2xl': '2rem',
-    '3xl': '2.25rem',
-    '4xl': '2.75rem',
-  };
-
-  if (prefix === 'font-size' && fontSizeMap[suffix]) {
-    return `font-size: ${fontSizeMap[suffix]};`;
+  // Font-size処理
+  if (prefix === 'font-size') {
+    const fontSizeValue = coreConfig.getFontSizeValue(suffix);
+    if (fontSizeValue) {
+      return `font-size: ${fontSizeValue};`;
+    }
   }
 
-  // デフォルトサイズマッピング
-  const sizeMap: Record<string, string> = {
-    auto: 'auto',
-    xs: 'calc(var(--space-base) * 2)',
-    sm: 'calc(var(--space-base) * 3)',
-    md: 'calc(var(--space-base) * 5)',
-    lg: 'calc(var(--space-base) * 8)',
-    xl: 'calc(var(--space-base) * 13)',
-    full: '100%',
-    screen: '100vw',
-  };
-
-  const value = sizeMap[suffix];
-  if (value) {
-    return parseUtilityWithValue(prefix, value);
+  // Spacing処理（margin, padding, gap）
+  if (
+    [
+      'm',
+      'mx',
+      'my',
+      'mt',
+      'mr',
+      'mb',
+      'ml',
+      'p',
+      'px',
+      'py',
+      'pt',
+      'pr',
+      'pb',
+      'pl',
+      'gap',
+      'gap-x',
+      'gap-y',
+    ].includes(prefix)
+  ) {
+    const spacingValue = coreConfig.getSpacingValue(suffix);
+    if (spacingValue) {
+      return parseUtilityWithValue(prefix, spacingValue);
+    }
   }
 
-  // 数値サフィックスの処理
-  if (/^\d+$/.test(suffix)) {
+  // Size処理（width, height）
+  if (['w', 'min-w', 'max-w', 'h', 'min-h', 'max-h'].includes(prefix)) {
+    const sizeValue = coreConfig.getSizeValue(suffix);
+    if (sizeValue) {
+      return parseUtilityWithValue(prefix, sizeValue);
+    }
+  }
+
+  // 数値サフィックスの処理（スペーシング用の後方互換性）
+  if (
+    /^\d+$/.test(suffix) &&
+    [
+      'm',
+      'mx',
+      'my',
+      'mt',
+      'mr',
+      'mb',
+      'ml',
+      'p',
+      'px',
+      'py',
+      'pt',
+      'pr',
+      'pb',
+      'pl',
+      'gap',
+      'gap-x',
+      'gap-y',
+    ].includes(prefix)
+  ) {
     const numValue = parseInt(suffix);
-    const calcValue = `calc(var(--space-base) * ${numValue})`;
+    // コアパッケージのスペーシング基準値を使用
+    const baseSpacing = parseFloat(coreConfig.defaultConfig.spacing['2xs']) || 0.25;
+    const calcValue = `${baseSpacing * numValue}rem`;
     return parseUtilityWithValue(prefix, calcValue);
   }
 
@@ -344,6 +384,7 @@ const parseSimpleUtilityClass = (className: string): string | null => {
 
 // 共通のCSS生成関数
 const generateMockCSS = (config: SmsshCSSConfig): string => {
+  const coreConfig = getCoreConfig();
   let css = '';
 
   // Reset CSS
@@ -358,91 +399,126 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
 
   // SmsshCSS Generated Styles
   css += '\n/* SmsshCSS Generated Styles */';
-  css += '\n.m-md { margin: calc(var(--space-base) * 5); }';
-  css += '\n.mt-lg { margin-top: calc(var(--space-base) * 8); }';
-  css +=
-    '\n.mx-sm { margin-left: calc(var(--space-base) * 3); margin-right: calc(var(--space-base) * 3); }';
-  css += '\n.p-md { padding: calc(var(--space-base) * 5); }';
-  css += '\n.p-lg { padding: calc(var(--space-base) * 8); }';
-  css += '\n.pt-lg { padding-top: calc(var(--space-base) * 8); }';
-  css +=
-    '\n.px-sm { padding-left: calc(var(--space-base) * 3); padding-right: calc(var(--space-base) * 3); }';
-  css += '\n.gap-md { gap: calc(var(--space-base) * 5); }';
-  css += '\n.gap-x-md { column-gap: calc(var(--space-base) * 5); }';
-  css += '\n.gap-y-md { row-gap: calc(var(--space-base) * 5); }';
-  css += '\n.gap-x-lg { column-gap: calc(var(--space-base) * 8); }';
-  css += '\n.gap-y-lg { row-gap: calc(var(--space-base) * 8); }';
-  css += '\n.gap-xl { gap: calc(var(--space-base) * 13); }';
+
+  // Spacing classes from core config
+  Object.entries(coreConfig.defaultConfig.spacing).forEach(([key, value]) => {
+    css += `\n.m-${key} { margin: ${value}; }`;
+    css += `\n.p-${key} { padding: ${value}; }`;
+    css += `\n.mx-${key} { margin-left: ${value}; margin-right: ${value}; }`;
+    css += `\n.my-${key} { margin-top: ${value}; margin-bottom: ${value}; }`;
+    css += `\n.mt-${key} { margin-top: ${value}; }`;
+    css += `\n.mr-${key} { margin-right: ${value}; }`;
+    css += `\n.mb-${key} { margin-bottom: ${value}; }`;
+    css += `\n.ml-${key} { margin-left: ${value}; }`;
+    css += `\n.px-${key} { padding-left: ${value}; padding-right: ${value}; }`;
+    css += `\n.py-${key} { padding-top: ${value}; padding-bottom: ${value}; }`;
+    css += `\n.pt-${key} { padding-top: ${value}; }`;
+    css += `\n.pr-${key} { padding-right: ${value}; }`;
+    css += `\n.pb-${key} { padding-bottom: ${value}; }`;
+    css += `\n.pl-${key} { padding-left: ${value}; }`;
+    css += `\n.gap-${key} { gap: ${value}; }`;
+    css += `\n.gap-x-${key} { column-gap: ${value}; }`;
+    css += `\n.gap-y-${key} { row-gap: ${value}; }`;
+  });
+
+  // Size classes from core config
+  Object.entries(coreConfig.defaultConfig.size).forEach(([key, value]) => {
+    css += `\n.w-${key} { width: ${value}; }`;
+    css += `\n.h-${key} { height: ${value}; }`;
+    css += `\n.min-w-${key} { min-width: ${value}; }`;
+    css += `\n.min-h-${key} { min-height: ${value}; }`;
+    css += `\n.max-w-${key} { max-width: ${value}; }`;
+    css += `\n.max-h-${key} { max-height: ${value}; }`;
+  });
+
+  // Color classes from core config
+  Object.entries(coreConfig.defaultConfig.color).forEach(([key, value]) => {
+    css += `\n.text-${key} { color: ${value}; }`;
+    css += `\n.bg-${key} { background-color: ${value}; }`;
+    css += `\n.border-${key} { border-color: ${value}; }`;
+    css += `\n.fill-${key} { fill: ${value}; }`;
+  });
+
+  // Font size classes from core config
+  Object.entries(coreConfig.defaultConfig.fontSize).forEach(([key, value]) => {
+    css += `\n.font-size-${key} { font-size: ${value}; }`;
+  });
+
+  // Grid classes from core config
+  Object.entries(coreConfig.defaultConfig.grid).forEach(([key, value]) => {
+    css += `\n.grid-cols-${key} { grid-template-columns: ${value}; }`;
+    css += `\n.grid-rows-${key} { grid-template-rows: ${value}; }`;
+
+    // 数値の場合のみspan処理
+    if (/^\d+$/.test(key)) {
+      css += `\n.col-span-${key} { grid-column: span ${key} / span ${key}; }`;
+      css += `\n.row-span-${key} { grid-row: span ${key} / span ${key}; }`;
+      css += `\n.col-start-${key} { grid-column-start: ${key}; }`;
+      css += `\n.row-start-${key} { grid-row-start: ${key}; }`;
+      css += `\n.col-end-${key} { grid-column-end: ${key}; }`;
+      css += `\n.row-end-${key} { grid-row-end: ${key}; }`;
+    }
+  });
+
+  // Display classes
   css += '\n.flex { display: flex; }';
   css += '\n.grid { display: grid; }';
-
-  // Width classes - 全サイズをCSS変数形式で生成
-  css += '\n.w-2xs { width: var(--size-base); }';
-  css += '\n.w-xs { width: calc(var(--size-base) * 1.5); }';
-  css += '\n.w-sm { width: calc(var(--size-base) * 2); }';
-  css += '\n.w-md { width: calc(var(--size-base) * 2.5); }';
-  css += '\n.w-lg { width: calc(var(--size-base) * 3); }';
-  css += '\n.w-xl { width: calc(var(--size-base) * 4); }';
-  css += '\n.w-screen { width: 100vw; }';
-  css += '\n.w-full { width: 100%; }';
-  css += '\n.min-w-2xs { min-width: var(--size-base); }';
-  css += '\n.min-w-lg { min-width: calc(var(--size-base) * 3); }';
-  css += '\n.max-w-2xs { max-width: var(--size-base); }';
-  css += '\n.max-w-lg { max-width: calc(var(--size-base) * 3); }';
-
-  // Height classes - 全サイズをCSS変数形式で生成
-  css += '\n.h-2xs { height: var(--size-base); }';
-  css += '\n.h-xs { height: calc(var(--size-base) * 1.5); }';
-  css += '\n.h-sm { height: calc(var(--size-base) * 2); }';
-  css += '\n.h-md { height: calc(var(--size-base) * 2.5); }';
-  css += '\n.h-lg { height: calc(var(--size-base) * 3); }';
-  css += '\n.h-xl { height: calc(var(--size-base) * 4); }';
-  css += '\n.h-screen { height: 100vh; }';
-  css += '\n.h-full { height: 100%; }';
-  css += '\n.min-h-2xs { min-height: var(--size-base); }';
-  css += '\n.min-h-lg { min-height: calc(var(--size-base) * 3); }';
-  css += '\n.max-h-2xs { max-height: var(--size-base); }';
-  css += '\n.max-h-lg { max-height: calc(var(--size-base) * 3); }';
-
-  // Modern CSS units for compatibility tests
-  css += '\n.h-dvh { height: 100dvh; }';
-  css += '\n.w-dvw { width: 100dvw; }';
-
-  // SmsshCSS Generated Styles
-  css += '\n.w-full { width: 100%; }';
-  css += '\n.h-md { height: calc(var(--size-base) * 5); }';
-  css += '\n.h-lg { height: calc(var(--size-base) * 8); }';
-  css += '\n.min-h-md { min-height: calc(var(--size-base) * 5); }';
-  css += '\n.min-h-lg { min-height: calc(var(--size-base) * 8); }';
-  css += '\n.max-h-md { max-height: calc(var(--size-base) * 5); }';
-  css += '\n.max-h-lg { max-height: calc(var(--size-base) * 8); }';
-
-  // Grid classes
-  css += '\n.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }';
-  css += '\n.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }';
-  css += '\n.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }';
-  css += '\n.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }';
-  css += '\n.col-span-3 { grid-column: span 3 / span 3; }';
-  css += '\n.row-span-1 { grid-row: span 1 / span 1; }';
-  css += '\n.col-start-4 { grid-column-start: 4; }';
-  css += '\n.row-start-4 { grid-row-start: 4; }';
-  css += '\n.col-end-4 { grid-column-end: 4; }';
-  css += '\n.grid-flow-row { grid-auto-flow: row; }';
+  css += '\n.block { display: block; }';
+  css += '\n.inline { display: inline; }';
+  css += '\n.inline-block { display: inline-block; }';
+  css += '\n.hidden { display: none; }';
 
   // Flexbox classes
+  css += '\n.items-center { align-items: center; }';
+  css += '\n.items-start { align-items: flex-start; }';
+  css += '\n.items-end { align-items: flex-end; }';
+  css += '\n.items-baseline { align-items: baseline; }';
+  css += '\n.items-stretch { align-items: stretch; }';
+  css += '\n.content-center { align-content: center; }';
+  css += '\n.content-start { align-content: flex-start; }';
+  css += '\n.content-end { align-content: flex-end; }';
+  css += '\n.content-between { align-content: space-between; }';
+  css += '\n.content-around { align-content: space-around; }';
+  css += '\n.content-evenly { align-content: space-evenly; }';
+  css += '\n.self-auto { align-self: auto; }';
+  css += '\n.self-start { align-self: flex-start; }';
+  css += '\n.self-end { align-self: flex-end; }';
+  css += '\n.self-center { align-self: center; }';
+  css += '\n.self-stretch { align-self: stretch; }';
+  css += '\n.self-baseline { align-self: baseline; }';
+
+  css += '\n.basis-auto { flex-basis: auto; }';
+  css += '\n.basis-full { flex-basis: 100%; }';
+  Object.entries(coreConfig.defaultConfig.size).forEach(([key, value]) => {
+    if (key !== 'auto' && key !== 'full') {
+      // autoとfullは既に追加済み
+      css += `\n.basis-${key} { flex-basis: ${value}; }`;
+    }
+  });
+
   css += '\n.flex-row { flex-direction: row; }';
   css += '\n.flex-col { flex-direction: column; }';
   css += '\n.flex-row-reverse { flex-direction: row-reverse; }';
   css += '\n.flex-col-reverse { flex-direction: column-reverse; }';
+
+  css += '\n.flex-auto { flex: 1 1 auto; }';
+  css += '\n.flex-initial { flex: 0 1 auto; }';
+  css += '\n.flex-none { flex: none; }';
+
+  css += '\n.grow { flex-grow: 1; }';
+
+  css += '\n.justify-center { justify-content: center; }';
+  css += '\n.justify-start { justify-content: flex-start; }';
+  css += '\n.justify-end { justify-content: flex-end; }';
+  css += '\n.justify-between { justify-content: space-between; }';
+  css += '\n.justify-around { justify-content: space-around; }';
+  css += '\n.justify-evenly { justify-content: space-evenly; }';
+
+  css += '\n.shrink { flex-shrink: 1; }';
+
   css += '\n.flex-wrap { flex-wrap: wrap; }';
   css += '\n.flex-wrap-reverse { flex-wrap: wrap-reverse; }';
-  css += '\n.flex-grow { flex-grow: 1; }';
-  css += '\n.flex-shrink { flex-shrink: 1; }';
-  css += '\n.flex-1 { flex: 1 1 0%; }';
-  css += '\n.flex-auto { flex: 1 1 auto; }';
-  css += '\n.flex-basis-auto { flex-basis: auto; }';
-  css += '\n.flex-basis-full { flex-basis: 100%; }';
-  css += '\n.flex-basis-sm { flex-basis: calc(var(--size-base) * 2); }';
+  css += '\n.flex-nowrap { flex-wrap: nowrap; }';
 
   // Order classes
   css += '\n.order-1 { order: 1; }';
@@ -450,6 +526,13 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.order-3 { order: 3; }';
   css += '\n.order-4 { order: 4; }';
   css += '\n.order-5 { order: 5; }';
+  css += '\n.order-6 { order: 6; }';
+  css += '\n.order-7 { order: 7; }';
+  css += '\n.order-8 { order: 8; }';
+  css += '\n.order-9 { order: 9; }';
+  css += '\n.order-10 { order: 10; }';
+  css += '\n.order-11 { order: 11; }';
+  css += '\n.order-12 { order: 12; }';
   css += '\n.order-first { order: -9999; }';
   css += '\n.order-last { order: 9999; }';
   css += '\n.order-none { order: 0; }';
@@ -463,45 +546,36 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   css += '\n.z-50 { z-index: 50; }';
   css += '\n.z-auto { z-index: auto; }';
 
-  // Color classes
-  css += '\n.text-black { color: hsl(0 0% 0% / 1); }';
-  css += '\n.text-white { color: hsl(0 0% 100% / 1); }';
-  css += '\n.text-gray-500 { color: hsl(210 2% 50% / 1); }';
-  css += '\n.text-blue-500 { color: hsl(214 85% 55% / 1); }';
-  css += '\n.text-red-500 { color: hsl(358 85% 55% / 1); }';
-  css += '\n.text-green-500 { color: hsl(125 80% 50% / 1); }';
-  css += '\n.text-yellow-500 { color: hsl(55 90% 50% / 1); }';
-  css += '\n.bg-black { background-color: hsl(0 0% 0% / 1); }';
-  css += '\n.bg-white { background-color: hsl(0 0% 100% / 1); }';
-  css += '\n.bg-gray-500 { background-color: hsl(210 2% 50% / 1); }';
-  css += '\n.bg-blue-500 { background-color: hsl(214 85% 55% / 1); }';
-  css += '\n.bg-red-500 { background-color: hsl(358 85% 55% / 1); }';
-  css += '\n.bg-green-500 { background-color: hsl(125 80% 50% / 1); }';
-  css += '\n.bg-yellow-500 { background-color: hsl(55 90% 50% / 1); }';
-  css += '\n.border-black { border-color: hsl(0 0% 0% / 1); }';
-  css += '\n.border-white { border-color: hsl(0 0% 100% / 1); }';
-  css += '\n.border-gray-500 { border-color: hsl(210 2% 50% / 1); }';
-  css += '\n.border-blue-500 { border-color: hsl(214 85% 55% / 1); }';
-  css += '\n.border-red-500 { border-color: hsl(358 85% 55% / 1); }';
-  css += '\n.border-green-500 { border-color: hsl(125 80% 50% / 1); }';
-  css += '\n.border-yellow-500 { border-color: hsl(55 90% 50% / 1); }';
-  css += '\n.fill-black { fill: hsl(0 0% 0% / 1); }';
-  css += '\n.fill-white { fill: hsl(0 0% 100% / 1); }';
-  css += '\n.fill-gray-500 { fill: hsl(210 2% 50% / 1); }';
-  css += '\n.fill-blue-500 { fill: hsl(214 85% 55% / 1); }';
-  css += '\n.fill-red-500 { fill: hsl(358 85% 55% / 1); }';
-  css += '\n.fill-green-500 { fill: hsl(125 80% 50% / 1); }';
-  css += '\n.fill-yellow-500 { fill: hsl(55 90% 50% / 1); }';
+  // Overflow classes
+  css += '\n.overflow-auto { overflow: auto; }';
+  css += '\n.overflow-hidden { overflow: hidden; }';
+  css += '\n.overflow-visible { overflow: visible; }';
+  css += '\n.overflow-scroll { overflow: scroll; }';
+  css += '\n.overflow-clip { overflow: clip; }';
+  css += '\n.overflow-x-auto { overflow-x: auto; }';
+  css += '\n.overflow-x-hidden { overflow-x: hidden; }';
+  css += '\n.overflow-x-visible { overflow-x: visible; }';
+  css += '\n.overflow-x-scroll { overflow-x: scroll; }';
+  css += '\n.overflow-x-clip { overflow-x: clip; }';
+  css += '\n.overflow-y-auto { overflow-y: auto; }';
+  css += '\n.overflow-y-hidden { overflow-y: hidden; }';
+  css += '\n.overflow-y-visible { overflow-y: visible; }';
+  css += '\n.overflow-y-scroll { overflow-y: scroll; }';
+  css += '\n.overflow-y-clip { overflow-y: clip; }';
 
-  // FontSize classes
-  css += '\n.font-size-xs { font-size: 0.75rem; }';
-  css += '\n.font-size-sm { font-size: 0.875rem; }';
-  css += '\n.font-size-md { font-size: 1rem; }';
-  css += '\n.font-size-lg { font-size: 1.25rem; }';
-  css += '\n.font-size-xl { font-size: 1.5rem; }';
-  css += '\n.font-size-2xl { font-size: 2rem; }';
-  css += '\n.font-size-3xl { font-size: 2.25rem; }';
-  css += '\n.font-size-4xl { font-size: 2.75rem; }';
+  // Position classes
+  css += '\n.absolute { position: absolute; }';
+  css += '\n.relative { position: relative; }';
+  css += '\n.fixed { position: fixed; }';
+  css += '\n.static { position: static; }';
+  css += '\n.sticky { position: sticky; }';
+
+  // Grid auto-flow classes
+  css += '\n.grid-flow-row { grid-auto-flow: row; }';
+  css += '\n.grid-flow-col { grid-auto-flow: column; }';
+  css += '\n.grid-flow-dense { grid-auto-flow: dense; }';
+  css += '\n.grid-flow-row-dense { grid-auto-flow: row dense; }';
+  css += '\n.grid-flow-col-dense { grid-auto-flow: column dense; }';
 
   // カスタムテーマクラス
   if (config.theme?.spacing) {
@@ -570,30 +644,6 @@ const generateMockCSS = (config: SmsshCSSConfig): string => {
   if (config.theme?.order) {
     Object.entries(config.theme.order).forEach(([key, value]) => {
       css += `\n.order-${key} { order: ${value}; }`;
-    });
-  }
-
-  if (config.theme?.gridCols) {
-    Object.entries(config.theme.gridCols).forEach(([key, value]) => {
-      css += `\n.grid-cols-${key} { grid-template-columns: repeat(${value}, minmax(0, 1fr)); }`;
-    });
-  }
-
-  if (config.theme?.gridRows) {
-    Object.entries(config.theme.gridRows).forEach(([key, value]) => {
-      css += `\n.grid-rows-${key} { grid-template-rows: repeat(${value}, minmax(0, 1fr)); }`;
-    });
-  }
-
-  if (config.theme?.gridColumnSpan) {
-    Object.entries(config.theme.gridColumnSpan).forEach(([key, value]) => {
-      css += `\n.col-span-${key} { grid-column: span ${value} / span ${value}; }`;
-    });
-  }
-
-  if (config.theme?.gridRowSpan) {
-    Object.entries(config.theme.gridRowSpan).forEach(([key, value]) => {
-      css += `\n.row-span-${key} { grid-row: span ${value} / span ${value}; }`;
     });
   }
 
@@ -712,27 +762,27 @@ const mockExtractCustomSpacingClasses = (content: string): string[] => {
 
       if (direction === 'x') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline: ${originalValue}; }`
         );
       } else if (direction === 'y') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block: ${originalValue}; }`
         );
       } else if (direction === 't') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block-start: ${originalValue}; }`
         );
       } else if (direction === 'r') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline-end: ${originalValue}; }`
         );
       } else if (direction === 'b') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block-end: ${originalValue}; }`
         );
       } else if (direction === 'l') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline-start: ${originalValue}; }`
         );
       } else {
         customSpacingClasses.push(
@@ -745,27 +795,27 @@ const mockExtractCustomSpacingClasses = (content: string): string[] => {
 
       if (direction === 'x') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; ${property}-right: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline: ${originalValue}; }`
         );
       } else if (direction === 'y') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; ${property}-bottom: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block: ${originalValue}; }`
         );
       } else if (direction === 't') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block-start: ${originalValue}; }`
         );
       } else if (direction === 'r') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-right: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline-end: ${originalValue}; }`
         );
       } else if (direction === 'b') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-bottom: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-block-end: ${originalValue}; }`
         );
       } else if (direction === 'l') {
         customSpacingClasses.push(
-          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${originalValue}; }`
+          `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-inline-start: ${originalValue}; }`
         );
       } else {
         customSpacingClasses.push(

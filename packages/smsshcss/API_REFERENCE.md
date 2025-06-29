@@ -75,7 +75,10 @@ const css = await init();
 // カスタム設定で初期化
 const customCSS = await init({
   content: ['custom/**/*.vue'],
-  theme: {
+  // theme機能は廃止されました。
+  // カスタム値は任意値記法をご利用ください。
+  // 例：m-[20px], bg-[#ff0000]
+  apply: {
     spacing: { custom: '2.5rem' },
   },
 });

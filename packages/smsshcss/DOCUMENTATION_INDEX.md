@@ -339,7 +339,8 @@ pnpm validate:config
 SmsshCSSの独自機能として、よく使うユーティリティクラスの組み合わせを設定ファイルで定義できます：
 
 ```javascript
-theme: {
+// theme機能は廃止されました。
+apply: {
   components: {
     'main-layout': 'w-lg mx-auto px-lg block',
     'card': 'p-md bg-white rounded-lg shadow-md',

@@ -22,6 +22,7 @@ export const alignConfig: Partial<FlexboxConfig> = {
   'self-end': 'flex-end',
   'self-center': 'center',
   'self-stretch': 'stretch',
+  'self-baseline': 'baseline',
 };
 
 export const alignPropertyMap: Record<string, string> = {
@@ -46,4 +47,5 @@ export const alignPropertyMap: Record<string, string> = {
   'self-end': 'align-self',
   'self-center': 'align-self',
   'self-stretch': 'align-self',
+  'self-baseline': 'align-self',
 };

@@ -503,7 +503,9 @@ Height用の特殊な値:
 ```javascript
 // smsshcss.config.js
 module.exports = {
-  theme: {
+  // theme機能は廃止されました。
+  // カスタム値は任意値記法をご利用ください。
+  apply: {
     spacing: {
       custom: '2.5rem',
       huge: '8rem',

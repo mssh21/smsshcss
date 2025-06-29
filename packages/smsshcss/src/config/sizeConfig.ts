@@ -32,6 +32,7 @@ export const defaultSizeConfig: SizeConfig = {
   svh: '100svh',
   lvh: '100lvh',
   dvh: '100dvh',
+  dvw: '100dvw',
   cqw: '100cqw',
   cqi: '100cqi',
   cqmin: '100cqmin',

@@ -112,9 +112,9 @@ export function ${name}() {
     },
 
     expectStandardClasses: (code: string): void => {
-      expect(code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
-      expect(code).toContain('.gap-xl { gap: calc(var(--space-base) * 13); }');
+      expect(code).toContain('.m-md { margin: 1.25rem; }');
+      expect(code).toContain('.p-lg { padding: 2rem; }');
+      expect(code).toContain('.gap-xl { gap: 3.25rem; }');
       expect(code).toContain('.flex { display: flex; }');
       expect(code).toContain('.text-black { color: hsl(0 0% 0% / 1); }');
     },
@@ -210,7 +210,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'main.css');
 
       // 基本クラスが生成されている
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
 
       // カスタム値クラスが生成されている
       expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
@@ -278,9 +278,9 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       // 標準クラス
       expect(result?.code).toContain('.flex { display: flex; }');
       expect(result?.code).toContain('.grid { display: grid; }');
-      expect(result?.code).toContain('.gap-md { gap: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.p-lg { padding: calc(var(--space-base) * 8); }');
-      expect(result?.code).toContain('.gap-x-md { column-gap: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.gap-md { gap: 1.25rem; }');
+      expect(result?.code).toContain('.p-lg { padding: 2rem; }');
+      expect(result?.code).toContain('.gap-x-md { column-gap: 1.25rem; }');
 
       // カスタム値クラス
       expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
@@ -290,8 +290,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
   });
 
   describe('Configuration Scenarios', () => {
-    it('should work with custom theme and minimal options', async () => {
-      const customContent = '<div class="gap-[50px] m-custom p-special">Custom Theme</div>';
+    it('should work with arbitrary values and minimal options', async () => {
+      const customContent = '<div class="gap-[50px] m-[20px] p-[10px]">Arbitrary Values</div>';
 
       fs.writeFileSync(path.join(tempDir, 'custom.html'), customContent);
 
@@ -311,8 +311,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       expect(result?.code).toContain('.gap-\\[50px\\] { gap: 50px; }');
 
       // 基本的なユーティリティクラスが含まれていることを確認
-      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
 
       // Reset/Base CSSは含まれない
       expect(result?.code).not.toContain('/* Reset CSS */');
@@ -345,7 +345,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'error.css');
 
       // 標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
     });
 
     it('should handle glob errors gracefully', async () => {
@@ -356,7 +356,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'glob-error.css');
 
       // globエラーが発生しても標準クラスは生成される
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
       expect(result?.code).toContain('.flex { display: flex; }');
     });
   });
@@ -680,8 +680,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       // カスタム値クラスとapply設定が正しく動作することを確認
       expect(result?.code).toContain('.p-\\[10px\\] { padding: 10px; }');
-      expect(result?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(result?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result?.code).toContain('.p-md { padding: 1.25rem; }');
     });
 
     it('should handle configuration updates correctly', async () => {
@@ -694,7 +694,9 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       });
 
       const result1 = await plugin1.transform('', 'config-update1.css');
-      expect(result1?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result1?.code).toContain('.p-md { padding: 1.25rem; }');
+      expect(result1?.code).toContain('.m-sm { margin: 0.75rem; }');
+      expect(result1?.code).toContain('.gap-xs { gap: 0.5rem; }');
 
       // 設定を変更
       const plugin2 = smsshcss({
@@ -706,8 +708,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       });
 
       const result2 = await plugin2.transform('', 'config-update2.css');
-      expect(result2?.code).toContain('.m-md { margin: calc(var(--space-base) * 5); }');
-      expect(result2?.code).toContain('.p-md { padding: calc(var(--space-base) * 5); }');
+      expect(result2?.code).toContain('.m-md { margin: 1.25rem; }');
+      expect(result2?.code).toContain('.p-md { padding: 1.25rem; }');
     });
   });
 });

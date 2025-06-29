@@ -89,28 +89,14 @@ describe('CSSGenerator', () => {
       });
     });
 
-    describe('Theme Support', () => {
-      it('should apply custom theme configuration', async () => {
-        const generator = new CSSGenerator(testConfigs.withTheme);
+    describe('Apply Support', () => {
+      it('should apply custom apply configuration', async () => {
+        const generator = new CSSGenerator(testConfigs.withApply);
         const result = await generator.generateFullCSS();
 
         expect(result).toBeTruthy();
-        // カスタムテーマが適用されているかは実装に依存
-      });
-
-      it('should merge custom theme with defaults', async () => {
-        const config: SmsshCSSConfig = {
-          content: ['src/**/*.html'],
-          theme: {
-            spacing: {
-              'custom-xl': '10rem',
-            },
-          },
-        };
-        const generator = new CSSGenerator(config);
-        const result = await generator.generateFullCSS();
-
-        expect(result).toBeTruthy();
+        // Apply設定が適用されているかをチェック
+        expect(result).toContain('main-layout');
       });
     });
   });
