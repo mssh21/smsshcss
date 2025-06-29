@@ -26,6 +26,8 @@ export default defineConfig({
         'main-layout': 'w-screen max-w-12xl mx-auto px-md',
         container: 'w-full max-w-4xl mx-auto px-md',
 
+        'section-spacing': 'py-xl px-lg',
+
         'text-notification': 'text-[rgb(255,0,0)]',
         'text-primary': 'text-[#259270]',
 

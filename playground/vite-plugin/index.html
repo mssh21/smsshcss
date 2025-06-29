@@ -37,7 +37,7 @@
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat-item">
-              <div class="hero-stat-number">9</div>
+              <div class="hero-stat-number">7</div>
               <div class="hero-stat-label">テストページ</div>
             </div>
           </div>
@@ -98,7 +98,7 @@
             </div>
 
             <!-- Display -->
-            <div class="test-card">
+            <div class="test-card test-card--disabled">
               <h3 class="test-card-title">🖥️ Display Classes</h3>
               <p class="test-card-desc">表示クラス<br />Block, Flex, Grid, Hidden等</p>
               <div class="test-card-features">
@@ -106,11 +106,11 @@
                 <span class="feature-tag">Flex/Grid</span>
                 <span class="feature-tag">Hidden</span>
               </div>
-              <a href="./display.html" class="test-card-link">テストページを開く →</a>
+              <span class="test-card-link test-card-link--disabled">準備中...</span>
             </div>
 
             <!-- Flexbox -->
-            <div class="test-card">
+            <div class="test-card test-card--disabled">
               <h3 class="test-card-title">🔄 Flexbox Classes</h3>
               <p class="test-card-desc">Flexboxレイアウトクラス<br />Direction, Justify, Align等</p>
               <div class="test-card-features">
@@ -118,11 +118,11 @@
                 <span class="feature-tag">Justify</span>
                 <span class="feature-tag">Align</span>
               </div>
-              <a href="./flexbox.html" class="test-card-link">テストページを開く →</a>
+              <span class="test-card-link test-card-link--disabled">準備中...</span>
             </div>
 
             <!-- Grid -->
-            <div class="test-card">
+            <div class="test-card test-card--disabled">
               <h3 class="test-card-title">🎯 Grid Classes</h3>
               <p class="test-card-desc">CSS Gridレイアウトクラス<br />Columns, Span, Start/End等</p>
               <div class="test-card-features">
@@ -130,7 +130,21 @@
                 <span class="feature-tag">Span</span>
                 <span class="feature-tag">カスタム値</span>
               </div>
-              <a href="./grid.html" class="test-card-link">テストページを開く →</a>
+              <span class="test-card-link test-card-link--disabled">準備中...</span>
+            </div>
+
+            <!-- Positioning -->
+            <div class="test-card">
+              <h3 class="test-card-title">📍 Positioning Classes</h3>
+              <p class="test-card-desc">
+                ポジション制御クラス<br />Static, Relative, Absolute, Fixed等
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">基本Position</span>
+                <span class="feature-tag">Inset</span>
+                <span class="feature-tag">カスタム値</span>
+              </div>
+              <a href="./positioning.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Color -->
@@ -157,7 +171,7 @@
             </div>
 
             <!-- Custom Values -->
-            <div class="test-card">
+            <div class="test-card test-card--disabled">
               <h3 class="test-card-title">🎨 Custom Values</h3>
               <p class="test-card-desc">カスタム値テスト<br />CSS関数, 変数, calc()等</p>
               <div class="test-card-features">
@@ -165,11 +179,25 @@
                 <span class="feature-tag">変数</span>
                 <span class="feature-tag">Calc</span>
               </div>
-              <a href="./custom-values.html" class="test-card-link">テストページを開く →</a>
+              <span class="test-card-link test-card-link--disabled">準備中...</span>
+            </div>
+
+            <!-- Order -->
+            <div class="test-card">
+              <h3 class="test-card-title">🔢 Order Classes</h3>
+              <p class="test-card-desc">
+                FlexboxとGridでの表示順序制御<br />order-1〜order-12 + カスタム値対応
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">Order 1-12</span>
+                <span class="feature-tag">First/Last</span>
+                <span class="feature-tag">カスタム値</span>
+              </div>
+              <a href="./order.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Edge Cases -->
-            <div class="test-card">
+            <div class="test-card test-card--disabled">
               <h3 class="test-card-title">🔍 Edge Cases</h3>
               <p class="test-card-desc">
                 エッジケース・特殊値<br />Purge設定, Safelist, Blocklist等
@@ -179,7 +207,7 @@
                 <span class="feature-tag">Safelist</span>
                 <span class="feature-tag">Debug</span>
               </div>
-              <a href="./edge-cases.html" class="test-card-link">テストページを開く →</a>
+              <span class="test-card-link test-card-link--disabled">準備中...</span>
             </div>
           </div>
         </div>
@@ -219,14 +247,25 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">⚡ Apply Settings</h4>
+              <h4 class="info-card-title">🔗 テストページ状況</h4>
               <div class="info-card-content">
-                <p><strong>組み合わせクラス:</strong></p>
+                <p><strong>利用可能なページ:</strong></p>
                 <ul class="info-list">
-                  <li>50+ Apply設定</li>
-                  <li>Layout系</li>
-                  <li>Component系</li>
-                  <li>Typography系</li>
+                  <li>Spacing Classes ✅</li>
+                  <li>Gap Classes ✅</li>
+                  <li>Width/Height Classes ✅</li>
+                  <li>Positioning Classes ✅</li>
+                  <li>Color Classes ✅</li>
+                  <li>Apply Settings ✅</li>
+                  <li>Order Classes ✅</li>
+                </ul>
+                <p><strong>準備中:</strong></p>
+                <ul class="info-list">
+                  <li>Display Classes 🚧</li>
+                  <li>Flexbox Classes 🚧</li>
+                  <li>Grid Classes 🚧</li>
+                  <li>Custom Values 🚧</li>
+                  <li>Edge Cases 🚧</li>
                 </ul>
               </div>
             </div>
@@ -262,12 +301,10 @@
           './spacing.html',
           './gap.html',
           './width-height.html',
-          './display.html',
-          './flexbox.html',
-          './grid.html',
+          './positioning.html',
+          './color.html',
           './apply.html',
-          './custom-values.html',
-          './edge-cases.html',
+          './order.html',
         ];
 
         pages.forEach((page) => {

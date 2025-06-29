@@ -395,6 +395,37 @@ body {
   color: #1d4ed8;
 }
 
+/* 準備中のページ用スタイル */
+.test-card--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+}
+
+.test-card--disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.test-card-link--disabled {
+  background: #6c757d;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.test-card-link--disabled:hover {
+  background: #6c757d;
+  color: white;
+}
+
 /* 情報カード */
 .info-card {
   background: #f8fafc;

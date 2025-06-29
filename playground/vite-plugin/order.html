@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Order Classes Test</title>
+  </head>
+  <body>
+    <!-- ヒーローヘッダー -->
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">🔢</div>
+            <h1 class="hero-title">Order Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            Flexboxとグリッドでの表示順序制御<br />
+            <span class="hero-subtitle-highlight">order-1〜order-12 + カスタム値対応</span>
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">🔢 Order 1-12</span>
+            <span class="hero-feature-badge">⚡ First/Last</span>
+            <span class="hero-feature-badge">🎯 カスタム値</span>
+            <span class="hero-feature-badge">📐 Flexbox/Grid</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Navigation -->
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <!-- デフォルトOrderクラス -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🔢 デフォルトOrderクラス (Flexbox)</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">基本的なorder値 (1-12)</h3>
+          <div class="flex gap-[10px] mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="order-3 p-[15px] bg-blue-500 text-white rounded-[4px]">order-3 (3番目)</div>
+            <div class="order-1 p-[15px] bg-red-500 text-white rounded-[4px]">order-1 (1番目)</div>
+            <div class="order-5 p-[15px] bg-green-500 text-white rounded-[4px]">
+              order-5 (5番目)
+            </div>
+            <div class="order-2 p-[15px] bg-yellow-500 text-black rounded-[4px]">
+              order-2 (2番目)
+            </div>
+            <div class="order-4 p-[15px] bg-purple-500 text-white rounded-[4px]">
+              order-4 (4番目)
+            </div>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px]">
+            <div class="code-example">
+              <h4 class="code-title">HTML</h4>
+              <pre class="code-block">
+&lt;div class="flex gap-[10px]"&gt;
+  &lt;div class="order-3"&gt;order-3 (3番目)&lt;/div&gt;
+  &lt;div class="order-1"&gt;order-1 (1番目)&lt;/div&gt;
+  &lt;div class="order-5"&gt;order-5 (5番目)&lt;/div&gt;
+  &lt;div class="order-2"&gt;order-2 (2番目)&lt;/div&gt;
+  &lt;div class="order-4"&gt;order-4 (4番目)&lt;/div&gt;
+&lt;/div&gt;</pre
+              >
+            </div>
+            <div class="code-example">
+              <h4 class="code-title">生成されるCSS</h4>
+              <pre class="code-block">
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+.order-3 { order: 3; }
+.order-4 { order: 4; }
+.order-5 { order: 5; }</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 特別なOrder値 -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">⚡ 特別なOrder値</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">order-first, order-last, order-none</h3>
+          <div class="flex gap-[10px] mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="order-last p-[15px] bg-red-500 text-white rounded-[4px]">
+              order-last (最後)
+            </div>
+            <div class="order-none p-[15px] bg-gray-500 text-white rounded-[4px]">
+              order-none (元順序)
+            </div>
+            <div class="order-first p-[15px] bg-blue-500 text-white rounded-[4px]">
+              order-first (最初)
+            </div>
+            <div class="p-[15px] bg-green-500 text-white rounded-[4px]">order無し (元順序)</div>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px]">
+            <div class="code-example">
+              <h4 class="code-title">HTML</h4>
+              <pre class="code-block">
+&lt;div class="flex gap-[10px]"&gt;
+  &lt;div class="order-last"&gt;order-last (最後)&lt;/div&gt;
+  &lt;div class="order-none"&gt;order-none (元順序)&lt;/div&gt;
+  &lt;div class="order-first"&gt;order-first (最初)&lt;/div&gt;
+  &lt;div&gt;order無し (元順序)&lt;/div&gt;
+&lt;/div&gt;</pre
+              >
+            </div>
+            <div class="code-example">
+              <h4 class="code-title">生成されるCSS</h4>
+              <pre class="code-block">
+.order-first { order: -9999; }
+.order-last { order: 9999; }
+.order-none { order: 0; }</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- カスタム値テスト -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🎯 カスタム値テスト</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">任意のorder値</h3>
+          <div class="flex gap-[10px] mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="order-[100] p-[15px] bg-red-500 text-white rounded-[4px]">order-[100]</div>
+            <div class="order-[-1] p-[15px] bg-blue-500 text-white rounded-[4px]">order-[-1]</div>
+            <div class="order-[50] p-[15px] bg-green-500 text-white rounded-[4px]">order-[50]</div>
+            <div class="order-[13] p-[15px] bg-yellow-500 text-black rounded-[4px]">order-[13]</div>
+            <div class="order-[0] p-[15px] bg-purple-500 text-white rounded-[4px]">order-[0]</div>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="code-example">
+              <h4 class="code-title">HTML</h4>
+              <pre class="code-block">
+&lt;div class="flex gap-[10px]"&gt;
+  &lt;div class="order-[100]"&gt;order-[100]&lt;/div&gt;
+  &lt;div class="order-[-1]"&gt;order-[-1]&lt;/div&gt;
+  &lt;div class="order-[50]"&gt;order-[50]&lt;/div&gt;
+  &lt;div class="order-[13]"&gt;order-[13]&lt;/div&gt;
+  &lt;div class="order-[0]"&gt;order-[0]&lt;/div&gt;
+&lt;/div&gt;</pre
+              >
+            </div>
+            <div class="code-example">
+              <h4 class="code-title">生成されるCSS</h4>
+              <pre class="code-block">
+.order-\[100\] { order: 100; }
+.order-\[-1\] { order: -1; }
+.order-\[50\] { order: 50; }
+.order-\[13\] { order: 13; }
+.order-\[0\] { order: 0; }</pre
+              >
+            </div>
+          </div>
+
+          <h3 class="text-[18px] font-bold mb-[20px]">CSS変数とcalc()関数</h3>
+          <div
+            class="flex gap-[10px] mb-[30px] p-[20px] bg-gray-100 rounded-[8px]"
+            style="--custom-order: 25"
+          >
+            <div class="order-[var(--custom-order)] p-[15px] bg-blue-500 text-white rounded-[4px]">
+              order-[var(--custom-order)]
+            </div>
+            <div class="order-2 p-[15px] bg-red-500 text-white rounded-[4px]">order-2</div>
+            <div class="order-[calc(10+10)] p-[15px] bg-green-500 text-white rounded-[4px]">
+              order-[calc(10+10)]
+            </div>
+            <div class="order-1 p-[15px] bg-yellow-500 text-black rounded-[4px]">order-1</div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">CSS変数とcalc()の例</h4>
+            <pre class="code-block">
+&lt;div style="--custom-order: 25;"&gt;
+  &lt;div class="order-[var(--custom-order)]"&gt;CSS変数&lt;/div&gt;
+  &lt;div class="order-[calc(10+10)]"&gt;calc関数&lt;/div&gt;
+&lt;/div&gt;</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Grid Layout でのOrder -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📐 Grid Layout でのOrder</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">Grid項目の表示順序制御</h3>
+          <div class="grid grid-cols-[3] gap-[10px] mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="order-6 p-[15px] bg-red-500 text-white rounded-[4px]">Item A (order-6)</div>
+            <div class="order-2 p-[15px] bg-blue-500 text-white rounded-[4px]">
+              Item B (order-2)
+            </div>
+            <div class="order-4 p-[15px] bg-green-500 text-white rounded-[4px]">
+              Item C (order-4)
+            </div>
+            <div class="order-1 p-[15px] bg-yellow-500 text-black rounded-[4px]">
+              Item D (order-1)
+            </div>
+            <div class="order-5 p-[15px] bg-purple-500 text-white rounded-[4px]">
+              Item E (order-5)
+            </div>
+            <div class="order-3 p-[15px] bg-pink-500 text-white rounded-[4px]">
+              Item F (order-3)
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">HTML</h4>
+            <pre class="code-block">
+&lt;div class="grid grid-cols-[3] gap-[10px]"&gt;
+  &lt;div class="order-6"&gt;Item A (order-6)&lt;/div&gt;
+  &lt;div class="order-2"&gt;Item B (order-2)&lt;/div&gt;
+  &lt;div class="order-4"&gt;Item C (order-4)&lt;/div&gt;
+  &lt;div class="order-1"&gt;Item D (order-1)&lt;/div&gt;
+  &lt;div class="order-5"&gt;Item E (order-5)&lt;/div&gt;
+  &lt;div class="order-3"&gt;Item F (order-3)&lt;/div&gt;
+&lt;/div&gt;</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 全Orderクラス表 -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なOrderクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">基本Order値</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>order-1 → order: 1;</li>
+                  <li>order-2 → order: 2;</li>
+                  <li>order-3 → order: 3;</li>
+                  <li>order-4 → order: 4;</li>
+                  <li>order-5 → order: 5;</li>
+                  <li>order-6 → order: 6;</li>
+                  <li>order-7 → order: 7;</li>
+                  <li>order-8 → order: 8;</li>
+                  <li>order-9 → order: 9;</li>
+                  <li>order-10 → order: 10;</li>
+                  <li>order-11 → order: 11;</li>
+                  <li>order-12 → order: 12;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">特別なOrder値</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>order-first → order: -9999;</li>
+                  <li>order-last → order: 9999;</li>
+                  <li>order-none → order: 0;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">カスタム値</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>order-[13] → order: 13;</li>
+                  <li>order-[-1] → order: -1;</li>
+                  <li>order-[100] → order: 100;</li>
+                  <li>order-[var(--order)] → order: var(--order);</li>
+                  <li>order-[calc(10+5)] → order: calc(10+5);</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">🔢 Order Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">FlexboxとGridでの表示順序を制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
