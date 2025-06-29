@@ -11,6 +11,7 @@ import {
   extractCustomZIndexClasses,
   extractCustomColorClasses,
   extractCustomFontSizeClasses,
+  extractCustomPositioningClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -237,6 +238,7 @@ async function extractAllCustomClassesFromFiles(
           extractCustomZIndexClasses(fileContent),
           extractCustomColorClasses(fileContent),
           extractCustomFontSizeClasses(fileContent),
+          extractCustomPositioningClasses(fileContent),
         ];
 
         const fileClasses = extractionResults.flat();

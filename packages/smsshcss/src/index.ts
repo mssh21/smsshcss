@@ -82,6 +82,7 @@ export { extractCustomOrderClasses } from './utils/order';
 export { extractCustomZIndexClasses } from './utils/z-index';
 export { extractCustomColorClasses } from './utils/color';
 export { extractCustomFontSizeClasses } from './utils/font-size';
+export { extractCustomPositioningClasses } from './utils/positioning';
 export { generateApplyClasses } from './utils/apply-system';
 
 // Export new enhanced arbitrary value utilities

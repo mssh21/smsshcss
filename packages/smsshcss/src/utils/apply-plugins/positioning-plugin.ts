@@ -18,13 +18,48 @@ export const positioningPlugin = createApplyPlugin({
   patterns: [
     // Position: static, relative, absolute, fixed, sticky
     /^(static|relative|absolute|fixed|sticky)$/,
+    // Top, right, bottom, left with arbitrary values
+    /^(top|right|bottom|left)-\[([^\]]+)\]$/,
+    // Inset utilities
+    /^inset-\[([^\]]+)\]$/,
+    /^inset-x-\[([^\]]+)\]$/,
+    /^inset-y-\[([^\]]+)\]$/,
   ],
   extractCSS: (utilityClass: string, match: RegExpMatchArray) => {
-    const [, position] = match;
+    // Basic position classes
+    if (match[0].match(/^(static|relative|absolute|fixed|sticky)$/)) {
+      const position = match[0];
+      if (defaultPositioning[position as keyof typeof defaultPositioning]) {
+        return `position: ${defaultPositioning[position as keyof typeof defaultPositioning]};`;
+      }
+    }
 
-    // 事前定義された値を確認
-    if (defaultPositioning[position as keyof typeof defaultPositioning]) {
-      return `position: ${defaultPositioning[position as keyof typeof defaultPositioning]};`;
+    // Top, right, bottom, left with arbitrary values
+    const positionMatch = utilityClass.match(/^(top|right|bottom|left)-\[([^\]]+)\]$/);
+    if (positionMatch) {
+      const [, property, value] = positionMatch;
+      return `${property}: ${value};`;
+    }
+
+    // Inset (all directions)
+    const insetMatch = utilityClass.match(/^inset-\[([^\]]+)\]$/);
+    if (insetMatch) {
+      const [, value] = insetMatch;
+      return `top: ${value}; right: ${value}; bottom: ${value}; left: ${value};`;
+    }
+
+    // Inset-x (horizontal)
+    const insetXMatch = utilityClass.match(/^inset-x-\[([^\]]+)\]$/);
+    if (insetXMatch) {
+      const [, value] = insetXMatch;
+      return `left: ${value}; right: ${value};`;
+    }
+
+    // Inset-y (vertical)
+    const insetYMatch = utilityClass.match(/^inset-y-\[([^\]]+)\]$/);
+    if (insetYMatch) {
+      const [, value] = insetYMatch;
+      return `top: ${value}; bottom: ${value};`;
     }
 
     return null;

@@ -7,7 +7,7 @@ export default defineConfig({
       includeResetCSS: true,
       includeBaseCSS: true,
       minify: false,
-      debug: false,
+      debug: true,
 
       content: [
         './index.html',
@@ -16,6 +16,7 @@ export default defineConfig({
         './width-height.html',
         './gap.html',
         './apply.html',
+        './positioning.html',
         './src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
         './components/**/*.{js,ts,jsx,tsx,vue}',
         './**/*.html',
@@ -45,6 +46,7 @@ export default defineConfig({
         'width-height': 'width-height.html',
         gap: 'gap.html',
         apply: 'apply.html',
+        positioning: 'positioning.html',
       },
     },
   },

@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { smsshcss } from '../index';
+import fs from 'fs';
+import path from 'path';
 
 describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
   let plugin: ReturnType<typeof smsshcss>;
@@ -192,6 +194,51 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       expect(result?.code).toContain('.absolute { position: absolute; }');
       expect(result?.code).toContain('.relative { position: relative; }');
       expect(result?.code).toContain('.sticky { position: sticky; }');
+    });
+
+    it('should generate custom positioning classes from content', async () => {
+      // テスト用のHTMLコンテンツを作成
+      const testContent = `
+        <div class="top-[10px] right-[20px] bottom-[30px] left-[40px]">
+          Custom positioning
+        </div>
+        <div class="inset-[5px] inset-x-[15px] inset-y-[25px]">
+          Inset positioning
+        </div>
+      `;
+
+      // コンテンツを含むテスト用プラグインを作成
+      const customPlugin = smsshcss({
+        content: ['test-content.html'],
+        includeResetCSS: false,
+        includeBaseCSS: false,
+        purge: {
+          enabled: false,
+        },
+        debug: true,
+      });
+
+      // テスト用のHTMLファイルを一時的に作成
+      const testFilePath = path.join(process.cwd(), 'test-content.html');
+      fs.writeFileSync(testFilePath, testContent);
+
+      try {
+        const result = await customPlugin.transform('', 'test.css');
+
+        // カスタムpositioning値が生成されることを確認
+        expect(result?.code).toContain('.top-[10px] { top: 10px; }');
+        expect(result?.code).toContain('.right-[20px] { right: 20px; }');
+        expect(result?.code).toContain('.bottom-[30px] { bottom: 30px; }');
+        expect(result?.code).toContain('.left-[40px] { left: 40px; }');
+        expect(result?.code).toContain('top: 5px; right: 5px; bottom: 5px; left: 5px;');
+        expect(result?.code).toContain('left: 15px; right: 15px;');
+        expect(result?.code).toContain('top: 25px; bottom: 25px;');
+      } finally {
+        // テストファイルを削除
+        if (fs.existsSync(testFilePath)) {
+          fs.unlinkSync(testFilePath);
+        }
+      }
     });
   });
 
