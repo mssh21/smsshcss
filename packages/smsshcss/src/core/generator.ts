@@ -10,6 +10,7 @@ import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/ord
 import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
 import { generatePositioningClasses } from '../utils/positioning';
+import { generateOverflowClasses } from '../utils/overflow';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from '../utils/font-size';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -20,6 +21,7 @@ import { glob } from 'glob';
 import { generateApplyClasses } from '../utils';
 import { debugGenerator, logWarning } from '../utils/debug';
 import { promisify } from 'util';
+import '../utils/apply-plugins';
 
 const readFile = promisify(fs.readFile);
 
@@ -209,6 +211,8 @@ export class CSSGenerator {
       await this.initializeCSSFiles();
     }
 
+    console.log('[smsshcss] DEBUG: Starting CSS generation...');
+
     let utilities = [
       generateAllSpacingClasses(),
       generateDisplayClasses(),
@@ -221,8 +225,13 @@ export class CSSGenerator {
       generateAllOrderClasses(),
       generateAllColorClasses(),
       generatePositioningClasses(),
+      generateOverflowClasses(),
       generateFontSizeClasses(),
     ].join('\n\n');
+
+    console.log('[smsshcss] DEBUG: Utilities CSS length:', utilities.length);
+    console.log('[smsshcss] DEBUG: Utilities contains .flex:', utilities.includes('.flex'));
+    console.log('[smsshcss] DEBUG: Utilities contains .h-screen:', utilities.includes('.h-screen'));
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
     let reset = this.config.includeResetCSS ? this.resetCSS : '';
@@ -234,28 +243,62 @@ export class CSSGenerator {
     }
 
     // applyクラスを生成
-    let apply = generateApplyClasses(this.config.apply);
+    const apply = generateApplyClasses(this.config.apply);
+    console.log('[Generator] apply variable value:', JSON.stringify(apply));
+    console.log('[Generator] apply variable length:', apply.length);
 
     // パージ処理を実行
     if (this.purger) {
+      console.log('[Generator] Before purge - apply length:', apply.length);
+      console.log('[Generator] Before purge - apply value:', JSON.stringify(apply));
+
       const fileAnalysis = await this.purger.analyzeSourceFiles();
 
       // 各CSSセクションをパージ
       utilities = this.purger.purgeCSS(utilities);
       base = this.purger.purgeCSS(base);
       reset = this.purger.purgeCSS(reset);
-      apply = this.purger.purgeCSS(apply);
+      // Applyクラスは設定で明示的に定義されたクラスなので、パージ処理から除外
+      // apply = this.purger.purgeCSS(apply);
+
+      console.log('[Generator] After purge - apply length:', apply.length);
+      console.log('[Generator] After purge - apply value:', JSON.stringify(apply));
 
       // レポートを生成・表示
       const report = this.purger.generateReport(fileAnalysis);
       this.purger.printReport(report);
     }
 
-    return {
-      utilities,
-      components: apply, // 後方互換性のため、componentsフィールドにapplyの内容を設定
-      base,
+    const css = [
+      '/* SmsshCSS Generated Styles */',
       reset,
+      base,
+      utilities,
+      customClasses.length > 0 ? customClasses.join('\n') : undefined,
+      apply ? `\n${apply}\n` : undefined,
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
+    console.log('[Generator] Final CSS array before join:', [
+      '/* SmsshCSS Generated Styles */',
+      reset ? 'reset' : 'no reset',
+      base ? 'base' : 'no base',
+      utilities ? 'utilities' : 'no utilities',
+      customClasses.length > 0 ? 'customClasses' : 'no customClasses',
+      apply ? 'apply' : 'no apply',
+    ]);
+    console.log('[Generator] apply variable truthy check:', !!apply);
+    console.log('[Generator] apply variable type:', typeof apply);
+    console.log('[Generator] apply variable === "":', apply === '');
+    console.log('[smsshcss] DEBUG: Returning CSS (first 2000 chars):', css.substring(0, 2000));
+    return {
+      css,
+      reset,
+      base,
+      utilities,
+      custom: customClasses.join('\n'),
+      apply,
     };
   }
 
@@ -368,8 +411,8 @@ export class CSSGenerator {
   }
 
   public async generateFullCSS(): Promise<string> {
-    const { utilities, components, base, reset } = await this.generate();
-    return [reset, base, utilities, components].filter(Boolean).join('\n\n');
+    const { css } = await this.generate();
+    return css;
   }
 
   /**

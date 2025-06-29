@@ -343,8 +343,8 @@ SmsshCSSの独自機能として、よく使うユーティリティクラスの
 apply: {
   components: {
     'main-layout': 'w-lg mx-auto px-lg block',
-    'card': 'p-md bg-white rounded-lg shadow-md',
-    'btn-primary': 'inline-block px-md py-sm bg-blue-500 text-white rounded',
+    'card': 'p-md bg-white -lg shadow-md',
+    'btn-primary': 'inline-block px-md py-sm bg-blue-500 text-white ',
   }
 }
 ```

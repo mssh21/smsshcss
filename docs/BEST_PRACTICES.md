@@ -39,8 +39,8 @@ export default defineConfig({
   plugins: [
     smsshcss({
       apply: {
-        card: 'p-lg bg-white border border-gray-200 rounded-md',
-        'btn-primary': 'px-lg py-md bg-blue-500 text-white rounded-sm',
+        card: 'p-lg bg-white border border-gray-200 -md',
+        'btn-primary': 'px-lg py-md bg-blue-500 text-white -sm',
         container: 'w-full max-w-6xl mx-auto px-md',
         'section-spacing': 'py-xl px-md',
       },
@@ -57,7 +57,7 @@ export default defineConfig({
 </div>
 
 <!-- ❌ 非推奨：毎回同じクラスを書く -->
-<div class="p-lg bg-white border border-gray-200 rounded-md"></div>
+<div class="p-lg bg-white border border-gray-200 -md"></div>
 ```
 
 ### 3. セマンティックなクラス名の使用
@@ -237,9 +237,9 @@ module.exports = {
     section: 'py-xl px-md',
 
     // コンポーネント系
-    card: 'bg-white p-lg rounded-md border border-gray-200',
-    'btn-primary': 'px-lg py-md bg-blue-500 text-white rounded-sm hover:bg-blue-600',
-    'btn-secondary': 'px-lg py-md bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300',
+    card: 'bg-white p-lg -md border border-gray-200',
+    'btn-primary': 'px-lg py-md bg-blue-500 text-white -sm hover:bg-blue-600',
+    'btn-secondary': 'px-lg py-md bg-gray-200 text-gray-800 -sm hover:bg-gray-300',
 
     // ユーティリティ組み合わせ
     'flex-center': 'flex items-center justify-center',

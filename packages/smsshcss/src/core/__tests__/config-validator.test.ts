@@ -157,13 +157,13 @@ describe('Config Validator', () => {
         version: '2.1.0',
         content: ['src/**/*.html'],
         components: {
-          btn: 'px-4 py-2',
+          btn: 'px-sm py-xs',
         },
       };
 
       const result = migrateConfig(oldConfig);
 
-      expect(result.apply?.btn).toBe('px-4 py-2');
+      expect(result.apply?.btn).toBe('px-sm py-xs');
       expect((result as Record<string, unknown>).components).toBeUndefined();
       expect(result.version).toBe('2.3.0');
     });

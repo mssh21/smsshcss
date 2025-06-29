@@ -343,7 +343,7 @@ export class CSSPurger {
       },
       {
         name: 'Arbitrary value classes',
-        pattern: /\b([mp][trlbxy]?|gap(?:-[xy])?|w|h|text|bg|border|rounded)-\[([^\]]+)\]/g,
+        pattern: /\b([mp][trlbxy]?|gap(?:-[xy])?|w|h|text|bg|border|)-\[([^\]]+)\]/g,
         processor: (match: string, prefix: string, value: string): string[] => [
           `${prefix}-[${value}]`,
         ],

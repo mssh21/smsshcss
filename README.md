@@ -71,12 +71,12 @@ export default defineConfig({
         'flex-between': 'flex justify-between items-center',
 
         // カード系コンポーネント
-        card: 'p-md rounded-lg border border-gray-200',
+        card: 'p-md -lg border border-gray-200',
         'card-header': 'pb-sm mb-sm border-b',
         'card-body': 'py-sm',
 
         // ボタン
-        btn: 'inline-block px-md py-sm rounded cursor-pointer',
+        btn: 'inline-block px-md py-sm  cursor-pointer',
         'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
         'btn-secondary': 'btn bg-gray-200 text-gray-800 hover:bg-gray-300',
       },
@@ -155,12 +155,12 @@ export default defineConfig({
           <h3 class="text-2xl font-bold mb-lg">高度なCSS関数サポート</h3>
 
           <!-- レスポンシブスペーシング -->
-          <div class="p-[clamp(1rem,4vw,3rem)] bg-gray-100 rounded-lg mb-md">
+          <div class="p-[clamp(1rem,4vw,3rem)] bg-gray-100 -lg mb-md">
             <p>レスポンシブパディング: clamp(1rem, 4vw, 3rem)</p>
           </div>
 
           <!-- 計算値 -->
-          <div class="h-[calc(100vh-200px)] bg-blue-50 rounded-lg p-md">
+          <div class="h-[calc(100vh-200px)] bg-blue-50 -lg p-md">
             <p>計算された高さ: calc(100vh - 200px)</p>
           </div>
         </section>

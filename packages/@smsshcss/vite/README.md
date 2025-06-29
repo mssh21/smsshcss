@@ -113,8 +113,8 @@ export default defineConfig({
       // Apply設定（よく使うユーティリティクラスの組み合わせを定義）
       // コア設定の値が自動的に適用されます
       apply: {
-        'btn-primary': 'p-md bg-blue-500 text-white rounded hover:bg-blue-600',
-        card: 'p-lg bg-white rounded-lg shadow-md',
+        'btn-primary': 'p-md bg-blue-500 text-white  hover:bg-blue-600',
+        card: 'p-lg bg-white -lg shadow-md',
         container: 'max-w-7xl mx-auto px-lg',
       },
 
@@ -209,12 +209,12 @@ Apply設定を使用すると、よく使うユーティリティクラスの組
 smsshcss({
   apply: {
     // ボタンのスタイル
-    btn: 'p-md rounded cursor-pointer transition-all',
+    btn: 'p-md  cursor-pointer transition-all',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
     'btn-secondary': 'btn bg-gray-300 text-gray-700 hover:bg-gray-400',
 
     // カードコンポーネント
-    card: 'p-lg bg-white rounded-lg shadow-md',
+    card: 'p-lg bg-white -lg shadow-md',
     'card-header': 'mb-md pb-md border-b',
 
     // レイアウト
@@ -335,7 +335,7 @@ export default defineConfig({
     smsshcss({
       // apply設定でカスタムクラスを定義
       apply: {
-        'btn-custom': 'px-md py-sm bg-blue-500 text-white rounded',
+        'btn-custom': 'px-md py-sm bg-blue-500 text-white ',
         container: 'max-w-6xl mx-auto px-md',
       },
     }),

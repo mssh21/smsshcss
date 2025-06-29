@@ -79,20 +79,30 @@ export const applyPluginRegistry = new ApplyPluginRegistry();
  * プラグインベースのアーキテクチャを使用
  */
 export function generateApplyClasses(config?: ApplyConfig): string {
+  console.log('[Apply] generateApplyClasses called with config:', JSON.stringify(config, null, 2));
+
   if (!config) {
+    console.log('[Apply] No config provided, returning empty string');
     return '';
   }
 
   const classes: string[] = [];
+  const registeredPlugins = applyPluginRegistry.getRegisteredPlugins();
+  console.log('[Apply] Registered plugins:', registeredPlugins);
 
   for (const [className, utilities] of Object.entries(config)) {
+    console.log(`[Apply] Processing class "${className}" with utilities: "${utilities}"`);
+
     // ユーティリティクラスを分解
     const utilityClasses = utilities
       .trim()
       .split(/\s+/)
       .filter((cls) => cls.length > 0);
 
+    console.log(`[Apply] Split utility classes:`, utilityClasses);
+
     if (utilityClasses.length === 0) {
+      console.log(`[Apply] No utility classes found for "${className}", skipping`);
       continue;
     }
 
@@ -100,15 +110,24 @@ export function generateApplyClasses(config?: ApplyConfig): string {
     const cssRules: string[] = [];
 
     for (const utilityClass of utilityClasses) {
+      console.log(`[Apply] Processing utility class: "${utilityClass}"`);
+
       // プラグインレジストリを使用してCSSルールを抽出
       const cssRule = applyPluginRegistry.processUtility(utilityClass);
+      console.log(`[Apply] CSS rule for "${utilityClass}":`, cssRule);
+
       if (cssRule) {
         cssRules.push(cssRule);
       } else {
         // デバッグ用: 処理できなかったクラスをログに出力
-        console.warn(`[Apply] Unhandled utility class: ${utilityClass}`);
+        // テスト環境では警告を抑制
+        if (process.env.NODE_ENV !== 'test' && !process.env.SMSSHCSS_SUPPRESS_WARNINGS) {
+          console.warn(`[Apply] Unhandled utility class: ${utilityClass}`);
+        }
       }
     }
+
+    console.log(`[Apply] Collected CSS rules for "${className}":`, cssRules);
 
     if (cssRules.length > 0) {
       // applyクラスを生成
@@ -116,10 +135,15 @@ export function generateApplyClasses(config?: ApplyConfig): string {
 ${cssRules.map((rule) => `  ${rule}`).join('\n')}
 }`;
       classes.push(generatedClass);
+      console.log(`[Apply] Generated class for "${className}":`, generatedClass);
+    } else {
+      console.log(`[Apply] No CSS rules generated for "${className}"`);
     }
   }
 
-  return classes.join('\n\n');
+  const result = classes.join('\n\n');
+  console.log('[Apply] Final result:', result);
+  return result;
 }
 
 /**

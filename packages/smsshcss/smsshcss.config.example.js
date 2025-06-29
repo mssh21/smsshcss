@@ -113,17 +113,17 @@ module.exports = {
   apply: {
     // レイアウト系コンポーネント
     'main-layout': 'w-lg mx-auto px-lg block',
-    container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
+    container: 'max-w-7xl mx-auto ',
     section: 'py-xl md:py-2xl',
 
     // カード系コンポーネント
-    card: 'bg-white shadow rounded-lg p-6',
+    card: 'bg-white shadow -lg p-6',
     'card-header': 'pb-sm mb-sm',
     'card-body': 'py-sm',
     'card-footer': 'pt-sm mt-sm',
 
     // ボタン系コンポーネント
-    btn: 'px-4 py-2 rounded font-medium transition-colors',
+    btn: ' font-medium transition-colors',
     'btn-primary': 'bg-blue-500 text-white hover:bg-blue-600',
     'btn-secondary': 'bg-gray-200 text-gray-800 hover:bg-gray-300',
 

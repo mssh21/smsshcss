@@ -13,8 +13,8 @@ Apply設定により、複数のユーティリティクラスを1つのクラ�
 apply: {
   'main-layout': 'w-full max-w-6xl mx-auto px-md',
   'flex-center': 'flex justify-center items-center',
-  'card': 'p-md rounded-lg border border-gray-200',
-  'btn-primary': 'inline-block px-md py-sm rounded bg-blue-500 text-white hover:bg-blue-600'
+  'card': 'p-md -lg border border-gray-200',
+  'btn-primary': 'inline-block px-md py-sm  bg-blue-500 text-white hover:bg-blue-600'
 }
 ```
 
@@ -62,13 +62,13 @@ module.exports = {
     'flex-col-center': 'flex flex-col justify-center items-center',
 
     // 🃏 カード系コンポーネント
-    card: 'p-md rounded-lg border border-gray-200 bg-white shadow-sm',
+    card: 'p-md -lg border border-gray-200 bg-white shadow-sm',
     'card-header': 'pb-sm mb-sm border-b border-gray-100',
     'card-body': 'py-sm',
     'card-footer': 'pt-sm mt-sm border-t border-gray-100',
 
     // 🔘 ボタン系
-    btn: 'inline-block px-md py-sm rounded cursor-pointer transition-colors',
+    btn: 'inline-block px-md py-sm  cursor-pointer transition-colors',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-200',
     'btn-secondary':
       'btn bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-2 focus:ring-gray-200',
@@ -76,12 +76,12 @@ module.exports = {
 
     // 📝 フォーム系
     input:
-      'w-full px-sm py-xs border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-200',
+      'w-full px-sm py-xs border border-gray-300  focus:border-blue-500 focus:ring-1 focus:ring-blue-200',
     label: 'block text-sm font-medium text-gray-700 mb-xs',
     'form-group': 'mb-md',
 
     // 🎨 装飾的要素
-    badge: 'inline-block px-xs py-2xs text-xs font-medium rounded-full',
+    badge: 'inline-block px-xs py-2xs text-xs font-medium -full',
     'badge-primary': 'badge bg-blue-100 text-blue-800',
     'badge-success': 'badge bg-green-100 text-green-800',
     'badge-warning': 'badge bg-yellow-100 text-yellow-800',
@@ -230,7 +230,7 @@ apply: {
   'sidebar': 'w-[var(--sidebar-width)] h-full bg-white border-r',
   'header': 'h-[var(--header-height)] flex-between px-md bg-white shadow-sm',
   'brand-button': 'btn bg-[var(--brand-color)] text-white hover:bg-[var(--brand-color)]/90',
-  'custom-card': 'p-[var(--custom-spacing)] rounded-[var(--border-radius)] border',
+  'custom-card': 'p-[var(--custom-spacing)] -[var(--border-radius)] border',
 }
 ```
 
@@ -263,9 +263,9 @@ apply: {
     <!-- サイドバー -->
     <aside class="sidebar-content bg-gray-50 p-md">
       <nav class="space-y-sm">
-        <a href="#" class="block p-xs rounded hover:bg-gray-200">ダッシュボード</a>
-        <a href="#" class="block p-xs rounded hover:bg-gray-200">プロフィール</a>
-        <a href="#" class="block p-xs rounded hover:bg-gray-200">設定</a>
+        <a href="#" class="block p-xs  hover:bg-gray-200">ダッシュボード</a>
+        <a href="#" class="block p-xs  hover:bg-gray-200">プロフィール</a>
+        <a href="#" class="block p-xs  hover:bg-gray-200">設定</a>
       </nav>
     </aside>
 
@@ -374,7 +374,7 @@ apply: {
 
   // 📊 データ表示
   'stat-card': 'card bg-gradient-to-r from-blue-500 to-blue-600 text-white',
-  'data-table': 'w-full bg-white rounded-lg shadow overflow-hidden',
+  'data-table': 'w-full bg-white -lg shadow overflow-hidden',
   'table-row': 'border-b border-gray-200 hover:bg-gray-50',
   'table-cell': 'px-md py-sm',
 
@@ -424,11 +424,11 @@ apply: {
   // 👆 タッチインターフェース
   'touch-target': 'min-h-[44px] min-w-[44px] flex-center',
   'list-item': 'py-md px-md touch-target',
-  'mobile-btn': 'w-full py-md rounded-lg text-center font-medium',
+  'mobile-btn': 'w-full py-md -lg text-center font-medium',
 
   // 💳 カード・リスト
-  'mobile-card': 'mx-md my-sm rounded-xl shadow-sm bg-white p-md',
-  'list-group': 'bg-white rounded-xl overflow-hidden mx-md',
+  'mobile-card': 'mx-md my-sm -xl shadow-sm bg-white p-md',
+  'list-group': 'bg-white -xl overflow-hidden mx-md',
   'list-separator': 'border-b border-gray-200 last:border-0',
 }
 ```
@@ -440,12 +440,12 @@ apply: {
 ```javascript
 // ✅ 推奨：BEM風の命名規則
 apply: {
-  'card': 'p-md rounded-lg border',
+  'card': 'p-md -lg border',
   'card__header': 'pb-sm mb-sm border-b',
   'card__body': 'py-sm',
   'card__footer': 'pt-sm mt-sm border-t',
 
-  'btn': 'inline-block px-md py-sm rounded',
+  'btn': 'inline-block px-md py-sm ',
   'btn--primary': 'btn bg-blue-500 text-white',
   'btn--secondary': 'btn bg-gray-200 text-gray-800',
   'btn--large': 'btn px-lg py-md text-lg',
@@ -473,7 +473,7 @@ apply: {
 
 // ❌ 非推奨：1つのクラスに多くの責任
 apply: {
-  'mega-component': 'flex justify-center items-center w-full h-full p-lg m-lg text-center shadow-lg bg-white border rounded',
+  'mega-component': 'flex justify-center items-center w-full h-full p-lg m-lg text-center shadow-lg bg-white border ',
 }
 ```
 
@@ -483,7 +483,7 @@ apply: {
 // ✅ 推奨：小さな部品から組み立て可能
 apply: {
   // 基本コンポーネント
-  'surface': 'bg-white rounded-lg shadow-sm',
+  'surface': 'bg-white -lg shadow-sm',
   'interactive': 'cursor-pointer transition-colors',
   'spacing-md': 'p-md',
 
@@ -494,8 +494,8 @@ apply: {
 
 // ❌ 非推奨：全てを一から定義
 apply: {
-  'card': 'bg-white rounded-lg shadow-sm p-md',
-  'clickable-card': 'bg-white rounded-lg shadow-md p-md cursor-pointer transition-colors',
+  'card': 'bg-white -lg shadow-sm p-md',
+  'clickable-card': 'bg-white -lg shadow-md p-md cursor-pointer transition-colors',
 }
 ```
 
@@ -506,8 +506,8 @@ apply: {
 // base.config.js (再利用可能な基本設定)
 const baseApply = {
   'flex-center': 'flex justify-center items-center',
-  card: 'p-md rounded-lg border',
-  btn: 'inline-block px-md py-sm rounded',
+  card: 'p-md -lg border',
+  btn: 'inline-block px-md py-sm ',
 };
 
 // project.config.js (プロジェクト固有設定)
@@ -534,7 +534,7 @@ module.exports = {
 apply: {
   // 頻繁に使用される組み合わせ
   'flex-center': 'flex justify-center items-center',  // 使用頻度: 高
-  'card': 'p-md rounded-lg border',                    // 使用頻度: 高
+  'card': 'p-md -lg border',                    // 使用頻度: 高
 
   // プロジェクト固有で再利用される組み合わせ
   'hero-section': 'py-2xl text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white',
@@ -564,9 +564,9 @@ module.exports = {
   },
 
   apply: {
-    btn: 'inline-block px-md py-sm rounded cursor-pointer transition-colors',
+    btn: 'inline-block px-md py-sm  cursor-pointer transition-colors',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
-    card: 'p-md rounded-lg border border-gray-200 bg-white',
+    card: 'p-md -lg border border-gray-200 bg-white',
     'flex-center': 'flex justify-center items-center',
   },
 };

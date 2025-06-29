@@ -235,8 +235,8 @@ export default defineConfig({
       // 例：m-[20px], bg-[hsl(220,100%,50%)]
       // Apply設定（カスタムクラス定義）
       apply: {
-        'btn-primary': 'p-md bg-brand-primary text-white rounded',
-        card: 'p-lg bg-white border border-gray-200 rounded-lg',
+        'btn-primary': 'p-md bg-brand-primary text-white ',
+        card: 'p-lg bg-white border border-gray-200 -lg',
         container: 'max-w-lg mx-auto px-md',
       },
     }),
