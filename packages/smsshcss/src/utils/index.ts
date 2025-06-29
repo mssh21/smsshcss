@@ -1,9 +1,9 @@
-import { generateDisplayClasses } from './display';
+import { generateDisplayClasses, extractCustomDisplayClasses } from './display';
 import { generateAllSpacingClasses, extractCustomSpacingClasses } from './spacing';
 import { generateFlexboxClasses, extractCustomFlexClasses } from './flexbox';
-import { generatePositioningClasses } from './positioning';
+import { generatePositioningClasses, extractCustomPositioningClasses } from './positioning';
 import { generateZIndexClasses, extractCustomZIndexClasses } from './z-index';
-import { generateOverflowClasses } from './overflow';
+import { generateOverflowClasses, extractCustomOverflowClasses } from './overflow';
 import { generateOrderClasses, extractCustomOrderClasses } from './order';
 import { generateGridClasses, extractCustomGridClasses } from './grid';
 import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
@@ -251,4 +251,7 @@ export {
   extractCustomHeightClasses,
   extractCustomColorClasses,
   extractCustomFontSizeClasses,
+  extractCustomPositioningClasses,
+  extractCustomDisplayClasses,
+  extractCustomOverflowClasses,
 };

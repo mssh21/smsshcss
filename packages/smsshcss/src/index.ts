@@ -83,6 +83,9 @@ export { extractCustomZIndexClasses } from './utils/z-index';
 export { extractCustomColorClasses } from './utils/color';
 export { extractCustomFontSizeClasses } from './utils/font-size';
 export { extractCustomPositioningClasses } from './utils/positioning';
+export { extractCustomFlexClasses } from './utils/flexbox';
+export { extractCustomDisplayClasses } from './utils/display';
+export { extractCustomOverflowClasses } from './utils/overflow';
 export { generateApplyClasses } from './utils/apply-system';
 
 // Export new enhanced arbitrary value utilities

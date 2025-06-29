@@ -12,6 +12,9 @@ import {
   extractCustomColorClasses,
   extractCustomFontSizeClasses,
   extractCustomPositioningClasses,
+  extractCustomFlexClasses,
+  extractCustomDisplayClasses,
+  extractCustomOverflowClasses,
 } from 'smsshcss';
 import fs from 'fs';
 import path from 'path';
@@ -239,6 +242,9 @@ async function extractAllCustomClassesFromFiles(
           extractCustomColorClasses(fileContent),
           extractCustomFontSizeClasses(fileContent),
           extractCustomPositioningClasses(fileContent),
+          extractCustomFlexClasses(fileContent),
+          extractCustomDisplayClasses(fileContent),
+          extractCustomOverflowClasses(fileContent),
         ];
 
         const fileClasses = extractionResults.flat();

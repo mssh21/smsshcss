@@ -34,3 +34,13 @@ export function generateDisplayClasses(): string {
 
   return classes.join('\n');
 }
+
+/**
+ * Extract custom display classes from HTML content
+ * Display は主に定義済みクラスを使用するため、現在はカスタム値をサポートしていません
+ */
+export function extractCustomDisplayClasses(_content: string): string[] {
+  // Displayは現在カスタム値をサポートしていないため、空の配列を返す
+  // 将来的にdisplay-[custom-value]のようなサポートが必要な場合はここで実装
+  return [];
+}

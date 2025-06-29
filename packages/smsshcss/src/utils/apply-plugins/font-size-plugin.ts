@@ -2,6 +2,12 @@ import { createApplyPlugin } from '../apply-system';
 import { normalizeCustomValue } from '../value-helpers';
 import { defaultFontSizeConfig } from '../../config/fontSizeConfig';
 
+// デフォルトのフォントサイズ設定を font-size- プレフィックス付きで再構築
+const defaultFontSizeMapping: Record<string, string> = {};
+Object.entries(defaultFontSizeConfig).forEach(([key, value]) => {
+  defaultFontSizeMapping[`font-size-${key}`] = value;
+});
+
 /**
  * FontSize用Applyプラグイン
  * font-size関連のユーティリティクラスをサポート
@@ -17,8 +23,8 @@ export const fontSizePlugin = createApplyPlugin({
     const key = `font-size-${size}`;
 
     // 事前定義された値を確認
-    if (defaultFontSizeConfig[key as keyof typeof defaultFontSizeConfig]) {
-      return `font-size: ${defaultFontSizeConfig[key as keyof typeof defaultFontSizeConfig]};`;
+    if (defaultFontSizeMapping[key]) {
+      return `font-size: ${defaultFontSizeMapping[key]};`;
     }
 
     // カスタム値の場合 (例: font-size-[16px])
