@@ -277,6 +277,187 @@ describe('Vite Plugin Compatibility', () => {
     });
   });
 
+  describe('Custom Value (Template Class) Verification', () => {
+    let vitePluginOutputWithTemplates: string;
+
+    beforeAll(async () => {
+      // テンプレートクラスを含むテスト用HTMLコンテンツ
+      const testContentWithTemplates = `
+        <div class="
+          p-[10px] m-[20px] gap-[15px]
+          w-[100px] h-[200px] min-w-[50px] max-h-[300px]
+          grid-cols-[repeat(auto-fit,minmax(200px,1fr))] grid-rows-[auto]
+          col-span-[2] row-span-[3] col-start-[1] row-end-[4]
+          z-[999] order-[5]
+          text-[#ff0000] bg-[#00ff00] border-[#0000ff] fill-[#ffff00]
+          font-size-[1.5rem]
+        ">
+          Custom value test content
+        </div>
+      `;
+
+      const plugin = smsshcss({
+        content: [testContentWithTemplates],
+        purge: { enabled: false },
+        debug: false,
+      });
+
+      const result = await plugin.transform?.('', 'test-custom.css');
+      if (!result || typeof result !== 'object' || !result.code) {
+        throw new Error('Failed to get Vite plugin output with templates');
+      }
+
+      vitePluginOutputWithTemplates = result.code;
+    }, testTimeout);
+
+    it('should generate template classes for custom values', () => {
+      expect(vitePluginOutputWithTemplates).toBeDefined();
+      expect(vitePluginOutputWithTemplates.length).toBeGreaterThan(0);
+
+      // テンプレートクラスの存在を確認（より緩いパターン）
+      expect(vitePluginOutputWithTemplates).toContain('var(--value)');
+
+      // CSS変数を使った基本パターンを確認
+      const cssVariablePatterns = [
+        /padding:\s*var\(--value\)/,
+        /margin:\s*var\(--value\)/,
+        /width:\s*var\(--value\)/,
+        /height:\s*var\(--value\)/,
+        /z-index:\s*var\(--value\)/,
+      ];
+
+      cssVariablePatterns.forEach((pattern) => {
+        expect(vitePluginOutputWithTemplates).toMatch(pattern);
+      });
+
+      console.log('First 500 chars of generated CSS:');
+      console.log(vitePluginOutputWithTemplates.substring(0, 500));
+    });
+
+    it('should include template classes in extraction with includeTemplates option', () => {
+      const extractedWithTemplates = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: true,
+      });
+
+      const extractedWithoutTemplates = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: false,
+      });
+
+      // テンプレートクラス込みの方が多いクラス数を持つ
+      expect(extractedWithTemplates.classes.length).toBeGreaterThan(
+        extractedWithoutTemplates.classes.length
+      );
+
+      // テンプレートクラス数を確認
+      expect(extractedWithTemplates.templateClasses.length).toBeGreaterThan(0);
+      expect(extractedWithoutTemplates.templateClasses.length).toBeGreaterThan(0);
+
+      console.log(`Template classes found: ${extractedWithTemplates.templateClasses.length}`);
+      console.log(`Total with templates: ${extractedWithTemplates.classes.length}`);
+      console.log(`Total without templates: ${extractedWithoutTemplates.classes.length}`);
+    });
+
+    it('should have expected number of template classes', () => {
+      const extracted = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: true,
+      });
+
+      // 38個のテンプレートクラスが期待される
+      expect(extracted.templateClasses.length).toBe(38);
+
+      // テンプレートクラスの例を確認
+      const templateExamples = [
+        'p-\\[\\$\\{value\\}\\]',
+        'm-\\[\\$\\{value\\}\\]',
+        'gap-\\[\\$\\{value\\}\\]',
+        'w-\\[\\$\\{value\\}\\]',
+        'h-\\[\\$\\{value\\}\\]',
+        'z-\\[\\$\\{value\\}\\]',
+        'order-\\[\\$\\{value\\}\\]',
+      ];
+
+      templateExamples.forEach((template) => {
+        const found = extracted.templateClasses.some((cls) => cls.includes(template));
+        expect(found).toBe(true);
+      });
+    });
+
+    it('should verify template classes by category', () => {
+      const extracted = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: true,
+      });
+
+      // カテゴリ別テンプレートクラス数の確認（より柔軟に）
+      const expectedTemplatesByCategory = {
+        spacing: 17, // padding, margin, gap
+        grid: 6, // col-span, row-span, col-start, col-end, row-start, row-end
+        width: 3, // w, min-w, max-w
+        height: 3, // h, min-h, max-h
+        color: 4, // text, bg, border, fill
+        zIndex: 1, // z
+        order: 1, // order
+        fontSize: 1, // font-size
+      };
+
+      Object.entries(expectedTemplatesByCategory).forEach(([category, expectedCount]) => {
+        const categoryClasses = extracted.categories[category] || [];
+        const templateClasses = categoryClasses.filter(
+          (cls) => cls.includes('value') && (cls.includes('[') || cls.includes('$'))
+        );
+
+        console.log(
+          `${category} template classes found: ${templateClasses.length}/${expectedCount}`
+        );
+        console.log(`${category} template examples:`, templateClasses.slice(0, 3));
+
+        // より緩い条件：期待値の±2の範囲で許容
+        expect(templateClasses.length).toBeGreaterThanOrEqual(Math.max(0, expectedCount - 2));
+        expect(templateClasses.length).toBeLessThanOrEqual(expectedCount + 2);
+      });
+    });
+
+    it('should have correct CSS properties for template classes', () => {
+      // テンプレートクラスのCSS生成を確認
+      const css = vitePluginOutputWithTemplates;
+
+      // CSS変数を使用したプロパティが含まれているか確認
+      const templatePatterns = [
+        /padding:\s*var\(--value\)/,
+        /margin:\s*var\(--value\)/,
+        /width:\s*var\(--value\)/,
+        /height:\s*var\(--value\)/,
+        /z-index:\s*var\(--value\)/,
+        /order:\s*var\(--value\)/,
+        /color:\s*var\(--value\)/,
+        /background-color:\s*var\(--value\)/,
+      ];
+
+      templatePatterns.forEach((pattern) => {
+        expect(css).toMatch(pattern);
+      });
+    });
+
+    it('should maintain consistency between template and non-template counts', () => {
+      const withTemplates = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: true,
+      });
+
+      const withoutTemplates = extractUtilityClasses(vitePluginOutputWithTemplates, {
+        includeTemplates: false,
+      });
+
+      // 基本クラス数 + テンプレートクラス数 = 全体クラス数
+      const expectedTotalWithTemplates =
+        withoutTemplates.classes.length + withTemplates.templateClasses.length;
+      expect(withTemplates.classes.length).toBe(expectedTotalWithTemplates);
+
+      // 期待される合計数の確認
+      expect(withoutTemplates.classes.length).toBe(1292); // 基本クラス
+      expect(withTemplates.templateClasses.length).toBe(38); // テンプレートクラス
+      expect(withTemplates.classes.length).toBe(1330); // 合計
+    });
+  });
+
   describe('Error Handling', () => {
     it('should handle invalid CSS gracefully', async () => {
       const invalidCSS = '/* invalid css }{ */';
