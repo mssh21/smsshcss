@@ -8,9 +8,34 @@ import { extractCustomZIndexClasses } from '../z-index';
 import { extractCustomOrderClasses } from '../order';
 import { extractCustomColorClasses } from '../color';
 import { extractCustomFontSizeClasses } from '../font-size';
+import { extractCustomPositioningClasses } from '../positioning';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
+  describe('extractCustomPositioningClasses', () => {
+    describe('Basic Custom Values', () => {
+      it('should extract position custom values', () => {
+        const content =
+          '<div class="top-[10px] right-[20px] bottom-[30px] left-[40px] inset-[10px] inset-x-[10px] inset-y-[20px] inset-[30px]">Test</div>';
+        const result = extractCustomPositioningClasses(content);
+
+        expect(result).toHaveLength(8);
+        expect(result).toContain('.top-\\[10px\\] { top: 10px; }');
+        expect(result).toContain('.right-\\[20px\\] { right: 20px; }');
+        expect(result).toContain('.bottom-\\[30px\\] { bottom: 30px; }');
+        expect(result).toContain('.left-\\[40px\\] { left: 40px; }');
+        expect(result).toContain(
+          '.inset-\\[10px\\] { top: 10px; right: 10px; bottom: 10px; left: 10px; }'
+        );
+        expect(result).toContain('.inset-x-\\[10px\\] { left: 10px; right: 10px; }');
+        expect(result).toContain('.inset-y-\\[20px\\] { top: 20px; bottom: 20px; }');
+        expect(result).toContain(
+          '.inset-\\[30px\\] { top: 30px; right: 30px; bottom: 30px; left: 30px; }'
+        );
+      });
+    });
+  });
+
   describe('extractCustomSpacingClasses', () => {
     describe('Basic Custom Values', () => {
       it('should extract margin custom values', () => {

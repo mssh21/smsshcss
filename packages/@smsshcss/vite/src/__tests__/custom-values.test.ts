@@ -87,6 +87,34 @@ function createTestHelpers(tempDir: string): TestHelpers {
       expect(code).toContain('.fill-red-500 { fill: hsl(358, 85%, 55% / 1); }');
       expect(code).toContain('.fill-green-500 { fill: hsl(125, 80%, 50% / 1); }');
       expect(code).toContain('.fill-yellow-500 { fill: hsl(55, 90%, 50% / 1); }');
+      expect(code).toContain('.font-size-xs { font-size: 0.75rem; }');
+      expect(code).toContain('.font-size-sm { font-size: 0.875rem; }');
+      expect(code).toContain('.font-size-md { font-size: 1rem; }');
+      expect(code).toContain('.font-size-lg { font-size: 1.25rem; }');
+      expect(code).toContain('.font-size-xl { font-size: 1.5rem; }');
+      expect(code).toContain('.font-size-2xl { font-size: 2rem; }');
+      expect(code).toContain('.font-size-3xl { font-size: 2.25rem; }');
+      expect(code).toContain('.font-size-4xl { font-size: 2.75rem; }');
+      expect(code).toContain('.relative { position: relative; }');
+      expect(code).toContain('.fixed { position: fixed; }');
+      expect(code).toContain('.absolute { position: absolute; }');
+      expect(code).toContain('.sticky { position: sticky; }');
+      expect(code).toContain('.static { position: static; }');
+      expect(code).toContain('.overflow-auto { overflow: auto; }');
+      expect(code).toContain('.overflow-hidden { overflow: hidden; }');
+      expect(code).toContain('.overflow-visible { overflow: visible; }');
+      expect(code).toContain('.overflow-scroll { overflow: scroll; }');
+      expect(code).toContain('.overflow-clip { overflow: clip; }');
+      expect(code).toContain('.overflow-x-auto { overflow-x: auto; }');
+      expect(code).toContain('.overflow-x-hidden { overflow-x: hidden; }');
+      expect(code).toContain('.overflow-x-visible { overflow-x: visible; }');
+      expect(code).toContain('.overflow-x-scroll { overflow-x: scroll; }');
+      expect(code).toContain('.overflow-x-clip { overflow-x: clip; }');
+      expect(code).toContain('.overflow-y-auto { overflow-y: auto; }');
+      expect(code).toContain('.overflow-y-hidden { overflow-y: hidden; }');
+      expect(code).toContain('.overflow-y-visible { overflow-y: visible; }');
+      expect(code).toContain('.overflow-y-scroll { overflow-y: scroll; }');
+      expect(code).toContain('.overflow-y-clip { overflow-y: clip; }');
     },
   };
 }
@@ -208,6 +236,41 @@ const testCases = {
     {
       html: 'font-size-[var(--font-size)]',
       css: '.font-size-\\[var\\(--font-size\\)\\] { font-size: var(--font-size); }',
+    },
+  ],
+  position: [
+    { html: 'top-[10px]', css: '.top-\\[10px\\] { top: 10px; }' },
+    { html: 'top-[var(--top)]', css: '.top-\\[var\\(--top\\)\\] { top: var(--top); }' },
+    {
+      html: 'top-[calc(10px+10px)]',
+      css: '.top-\\[calc\\(10px\\+10px\\)\\] { top: calc(10px + 10px); }',
+    },
+    { html: 'right-[var(--right)]', css: '.right-\\[var\\(--right\\)\\] { right: var(--right); }' },
+    {
+      html: 'right-[calc(10px+10px)]',
+      css: '.right-\\[calc\\(10px\\+10px\\)\\] { right: calc(10px + 10px); }',
+    },
+    {
+      html: 'bottom-[var(--bottom)]',
+      css: '.bottom-\\[var\\(--bottom\\)\\] { bottom: var(--bottom); }',
+    },
+    { html: 'left-[var(--left)]', css: '.left-\\[var\\(--left\\)\\] { left: var(--left); }' },
+    { html: 'right-[20px]', css: '.right-\\[20px\\] { right: 20px; }' },
+    { html: 'bottom-[30px]', css: '.bottom-\\[30px\\] { bottom: 30px; }' },
+    { html: 'left-[40px]', css: '.left-\\[40px\\] { left: 40px; }' },
+    {
+      html: 'inset-[10px]',
+      css: '.inset-\\[10px\\] { top: 10px; right: 10px; bottom: 10px; left: 10px; }',
+    },
+    { html: 'inset-x-[10px]', css: '.inset-x-\\[10px\\] { left: 10px; right: 10px; }' },
+    { html: 'inset-y-[10px]', css: '.inset-y-\\[10px\\] { top: 10px; bottom: 10px; }' },
+    {
+      html: 'inset-x-[10px] inset-y-[20px]',
+      css: '.inset-x-\\[10px\\] inset-y-\\[20px\\] { top: 20px; right: 10px; bottom: 20px; left: 10px; }',
+    },
+    {
+      html: 'inset-x-[10px] inset-y-[20px] inset-[30px]',
+      css: '.inset-x-\\[10px\\] inset-y-\\[20px\\] inset-\\[30px\\] { top: 30px; right: 10px; bottom: 30px; left: 10px; }',
     },
   ],
   complex: [
