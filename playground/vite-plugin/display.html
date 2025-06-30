@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Display Classes Test</title>
+  </head>
+  <body>
+    <!-- ヒーローヘッダー -->
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">🖥️</div>
+            <h1 class="hero-title">Display Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            要素の表示タイプを制御<br />
+            <span class="hero-subtitle-highlight">Block, Inline, Flex, Grid, None等</span>
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">🟦 Block/Inline</span>
+            <span class="hero-feature-badge">📐 Flex/Grid</span>
+            <span class="hero-feature-badge">🚫 Hidden/None</span>
+            <span class="hero-feature-badge">📝 Table系</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Navigation -->
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <!-- 基本的なDisplay値 -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🟦 基本的なDisplay値</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">Block vs Inline vs Inline-Block</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="block p-[10px] bg-blue-500 text-white rounded-[4px] mb-[10px]">
+              block - 幅いっぱいに広がる
+            </div>
+            <span class="inline p-[10px] bg-red-500 text-white rounded-[4px] mr-[10px]">
+              inline - コンテンツ幅
+            </span>
+            <span class="inline p-[10px] bg-green-500 text-white rounded-[4px]">
+              inline - 横並び
+            </span>
+            <div class="mt-[10px]">
+              <span class="inline-block p-[10px] bg-purple-500 text-white rounded-[4px] mr-[10px]">
+                inline-block
+              </span>
+              <span class="inline-block p-[10px] bg-yellow-500 text-black rounded-[4px]">
+                inline-block
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px]">
+            <div class="code-example">
+              <h4 class="code-title">HTML</h4>
+              <pre class="code-block">
+&lt;div class="block"&gt;block - 幅いっぱいに広がる&lt;/div&gt;
+&lt;span class="inline"&gt;inline - コンテンツ幅&lt;/span&gt;
+&lt;span class="inline"&gt;inline - 横並び&lt;/span&gt;
+&lt;span class="inline-block"&gt;inline-block&lt;/span&gt;
+&lt;span class="inline-block"&gt;inline-block&lt;/span&gt;</pre
+              >
+            </div>
+            <div class="code-example">
+              <h4 class="code-title">生成されるCSS</h4>
+              <pre class="code-block">
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline flow-root; }</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Flex Display -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📐 Flex Display</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">flex vs inline-flex</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="flex gap-[10px] mb-[10px] p-[10px] bg-blue-100 rounded-[4px]">
+              <div class="p-[10px] bg-blue-500 text-white rounded-[4px]">Flex Item 1</div>
+              <div class="p-[10px] bg-blue-600 text-white rounded-[4px]">Flex Item 2</div>
+              <div class="p-[10px] bg-blue-700 text-white rounded-[4px]">Flex Item 3</div>
+            </div>
+            <span class="inline-flex gap-[10px] p-[10px] bg-green-100 rounded-[4px] mr-[10px]">
+              <span class="p-[8px] bg-green-500 text-white rounded-[4px]">Inline</span>
+              <span class="p-[8px] bg-green-600 text-white rounded-[4px]">Flex</span>
+            </span>
+            <span class="inline-flex gap-[10px] p-[10px] bg-purple-100 rounded-[4px]">
+              <span class="p-[8px] bg-purple-500 text-white rounded-[4px]">Container</span>
+              <span class="p-[8px] bg-purple-600 text-white rounded-[4px]">2</span>
+            </span>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.flex { display: block flex; }
+.inline-flex { display: inline flex; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Hidden/None -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🚫 要素を隠す</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">none vs hidden</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="p-[10px] bg-gray-500 text-white rounded-[4px] mb-[10px]">
+              表示される要素
+            </div>
+            <div class="none p-[10px] bg-red-500 text-white rounded-[4px] mb-[10px]">
+              none - この要素は表示されません
+            </div>
+            <div class="hidden p-[10px] bg-red-500 text-white rounded-[4px] mb-[10px]">
+              hidden - この要素も表示されません
+            </div>
+            <div class="p-[10px] bg-gray-500 text-white rounded-[4px]">再び表示される要素</div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.none { display: none; }
+.hidden { display: none; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 全Displayクラス一覧 -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なDisplayクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">基本Display</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>block → display: block;</li>
+                  <li>inline → display: inline;</li>
+                  <li>inline-block → display: inline flow-root;</li>
+                  <li>none → display: none;</li>
+                  <li>hidden → display: none;</li>
+                  <li>contents → display: contents;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">レイアウト</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>flex → display: block flex;</li>
+                  <li>inline-flex → display: inline flex;</li>
+                  <li>grid → display: block grid;</li>
+                  <li>inline-grid → display: inline grid;</li>
+                  <li>flow-root → display: block flow-root;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">Table系</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>table → display: block table;</li>
+                  <li>inline-table → display: inline table;</li>
+                  <li>table-cell → display: table-cell;</li>
+                  <li>table-row → display: table-row;</li>
+                  <li>table-caption → display: table-caption;</li>
+                  <li>list-item → display: block flow list-item;</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">🖥️ Display Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">要素の表示タイプを制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

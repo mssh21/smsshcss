@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Grid Classes Test</title>
+  </head>
+  <body>
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">🔲</div>
+            <h1 class="hero-title">Grid Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            CSS Gridレイアウト制御<br />
+            <span class="hero-subtitle-highlight"
+              >Columns, Rows, Span, Position + カスタム値対応</span
+            >
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">📊 Grid Template</span>
+            <span class="hero-feature-badge">📏 Span制御</span>
+            <span class="hero-feature-badge">📍 Position</span>
+            <span class="hero-feature-badge">🎯 カスタム値</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📊 Grid Template</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">Columns と Rows の定義</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">grid-cols-3</h4>
+              <div class="grid grid-cols-3 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div class="bg-blue-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-blue-400 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-blue-500 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  3
+                </div>
+                <div class="bg-blue-600 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  4
+                </div>
+                <div class="bg-blue-700 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  5
+                </div>
+                <div class="bg-blue-800 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  6
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">grid-cols-4</h4>
+              <div class="grid grid-cols-4 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-green-400 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-green-500 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  3
+                </div>
+                <div class="bg-green-600 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  4
+                </div>
+                <div class="bg-green-700 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  5
+                </div>
+                <div class="bg-green-800 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  6
+                </div>
+                <div class="bg-green-900 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  7
+                </div>
+                <div class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center">8</div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">grid-rows-3</h4>
+              <div
+                class="grid grid-rows-3 grid-flow-col gap-[8px] bg-white p-[10px] rounded-[4px] h-[120px]"
+              >
+                <div
+                  class="bg-red-300 p-[8px] rounded-[4px] text-[12px] flex items-center justify-center"
+                >
+                  1
+                </div>
+                <div
+                  class="bg-red-400 p-[8px] rounded-[4px] text-[12px] flex items-center justify-center"
+                >
+                  2
+                </div>
+                <div
+                  class="bg-red-500 p-[8px] rounded-[4px] text-[12px] text-white flex items-center justify-center"
+                >
+                  3
+                </div>
+                <div
+                  class="bg-red-600 p-[8px] rounded-[4px] text-[12px] text-white flex items-center justify-center"
+                >
+                  4
+                </div>
+                <div
+                  class="bg-red-700 p-[8px] rounded-[4px] text-[12px] text-white flex items-center justify-center"
+                >
+                  5
+                </div>
+                <div
+                  class="bg-red-800 p-[8px] rounded-[4px] text-[12px] text-white flex items-center justify-center"
+                >
+                  6
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カスタム値: grid-cols-[5]</h4>
+              <div class="grid grid-cols-[5] gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-purple-400 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-purple-500 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  3
+                </div>
+                <div class="bg-purple-600 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  4
+                </div>
+                <div class="bg-purple-700 p-[8px] rounded-[4px] text-[12px] text-center text-white">
+                  5
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-cols-\[5\] { grid-template-columns: repeat(5, minmax(0, 1fr)); }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📏 Column & Row Span</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">要素の幅・高さ制御</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">Column Span</h4>
+              <div class="grid grid-cols-4 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div
+                  class="col-span-2 bg-blue-500 p-[8px] rounded-[4px] text-[12px] text-center text-white"
+                >
+                  col-span-2
+                </div>
+                <div class="bg-blue-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-blue-300 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-blue-300 p-[8px] rounded-[4px] text-[12px] text-center">3</div>
+                <div
+                  class="col-span-3 bg-blue-600 p-[8px] rounded-[4px] text-[12px] text-center text-white"
+                >
+                  col-span-3
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">Row Span</h4>
+              <div
+                class="grid grid-cols-3 grid-rows-3 gap-[8px] bg-white p-[10px] rounded-[4px] h-[120px]"
+              >
+                <div
+                  class="row-span-2 bg-green-500 p-[8px] rounded-[4px] text-[12px] text-center text-white flex items-center justify-center"
+                >
+                  row-span-2
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  1
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  2
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  3
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  4
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  5
+                </div>
+                <div
+                  class="bg-green-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  6
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">複合: col-span + row-span</h4>
+              <div
+                class="grid grid-cols-4 grid-rows-3 gap-[8px] bg-white p-[10px] rounded-[4px] h-[120px]"
+              >
+                <div
+                  class="col-span-2 row-span-2 bg-purple-600 p-[8px] rounded-[4px] text-[12px] text-center text-white flex items-center justify-center"
+                >
+                  col-span-2<br />row-span-2
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  1
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  2
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  3
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  4
+                </div>
+                <div
+                  class="col-span-2 bg-purple-400 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  col-span-2
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  5
+                </div>
+                <div
+                  class="bg-purple-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  6
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カスタム値: col-span-[5]</h4>
+              <div class="grid grid-cols-6 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div
+                  class="col-span-[5] bg-orange-500 p-[8px] rounded-[4px] text-[12px] text-center text-white"
+                >
+                  col-span-[5]
+                </div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">3</div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">4</div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">5</div>
+                <div class="bg-orange-300 p-[8px] rounded-[4px] text-[12px] text-center">6</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.row-span-2 { grid-row: span 2 / span 2; }
+.col-span-\[5\] { grid-column: span 5 / span 5; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📍 Grid Position</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">要素の配置制御</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">Start/End Position</h4>
+              <div
+                class="grid grid-cols-4 grid-rows-3 gap-[8px] bg-white p-[10px] rounded-[4px] h-[120px]"
+              >
+                <div
+                  class="col-start-2 col-end-4 bg-cyan-500 p-[8px] rounded-[4px] text-[12px] text-center text-white flex items-center justify-center"
+                >
+                  col-start-2<br />col-end-4
+                </div>
+                <div
+                  class="col-start-1 row-start-2 bg-cyan-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  row-start-2
+                </div>
+                <div
+                  class="col-start-3 row-start-3 bg-cyan-400 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  特定位置
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カスタム位置: col-start-[2]</h4>
+              <div class="grid grid-cols-5 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div
+                  class="col-start-[2] col-span-3 bg-teal-500 p-[8px] rounded-[4px] text-[12px] text-center text-white"
+                >
+                  col-start-[2] col-span-3
+                </div>
+                <div class="bg-teal-300 p-[8px] rounded-[4px] text-[12px] text-center">1</div>
+                <div class="bg-teal-300 p-[8px] rounded-[4px] text-[12px] text-center">2</div>
+                <div class="bg-teal-300 p-[8px] rounded-[4px] text-[12px] text-center">3</div>
+                <div class="bg-teal-300 p-[8px] rounded-[4px] text-[12px] text-center">4</div>
+                <div class="bg-teal-300 p-[8px] rounded-[4px] text-[12px] text-center">5</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.col-start-2 { grid-column-start: 2; }
+.col-end-4 { grid-column-end: 4; }
+.row-start-2 { grid-row-start: 2; }
+.col-start-\[2\] { grid-column-start: 2; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🎪 実用的な例</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">典型的なレイアウトパターン</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カードグリッド</h4>
+              <div class="grid grid-cols-3 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[4px] p-[8px]">
+                  <div class="w-full h-[20px] bg-indigo-400 rounded-[2px] mb-[4px]"></div>
+                  <div class="text-[10px] text-gray-600">カード 1</div>
+                </div>
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[4px] p-[8px]">
+                  <div class="w-full h-[20px] bg-indigo-400 rounded-[2px] mb-[4px]"></div>
+                  <div class="text-[10px] text-gray-600">カード 2</div>
+                </div>
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[4px] p-[8px]">
+                  <div class="w-full h-[20px] bg-indigo-400 rounded-[2px] mb-[4px]"></div>
+                  <div class="text-[10px] text-gray-600">カード 3</div>
+                </div>
+                <div
+                  class="col-span-2 bg-indigo-100 border border-indigo-300 rounded-[4px] p-[8px]"
+                >
+                  <div class="w-full h-[20px] bg-indigo-500 rounded-[2px] mb-[4px]"></div>
+                  <div class="text-[10px] text-gray-600">大きなカード（2列分）</div>
+                </div>
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[4px] p-[8px]">
+                  <div class="w-full h-[20px] bg-indigo-400 rounded-[2px] mb-[4px]"></div>
+                  <div class="text-[10px] text-gray-600">カード 4</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">ダッシュボードレイアウト</h4>
+              <div
+                class="grid grid-cols-4 grid-rows-3 gap-[6px] bg-white p-[10px] rounded-[4px] h-[120px]"
+              >
+                <div
+                  class="col-span-4 bg-gray-200 rounded-[3px] flex items-center justify-center text-[10px] font-bold"
+                >
+                  ヘッダー
+                </div>
+                <div class="bg-blue-200 rounded-[3px] flex items-center justify-center text-[10px]">
+                  サイド
+                </div>
+                <div
+                  class="col-span-2 bg-green-200 rounded-[3px] flex items-center justify-center text-[10px]"
+                >
+                  メインコンテンツ
+                </div>
+                <div
+                  class="bg-yellow-200 rounded-[3px] flex items-center justify-center text-[10px]"
+                >
+                  パネル
+                </div>
+                <div
+                  class="col-span-4 bg-gray-300 rounded-[3px] flex items-center justify-center text-[10px] font-bold"
+                >
+                  フッター
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">実用例のCSS</h4>
+            <pre class="code-block">
+/* カードグリッド例 */
+.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.card-large { grid-column: span 2; }
+
+/* ダッシュボード例 */
+.dashboard { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
+.header { grid-column: span 4; }
+.footer { grid-column: span 4; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🎯 Subgrid Classes</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">親グリッドの構造を継承するSubgrid</h3>
+          <div class="mb-[30px] p-[20px] bg-blue-50 border border-blue-200 rounded-[8px]">
+            <p class="font-size-[14px] text-blue-800 mb-[10px]">
+              <strong>📘 Subgridとは？</strong>
+            </p>
+            <p class="font-size-[13px] text-blue-700 leading-relaxed">
+              Subgridは、子グリッドコンテナが親のグリッドライン構造を継承する機能です。
+              これにより、ネストしたレイアウトでも親グリッドとの整合性を保てます。
+            </p>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">subgrid-cols（列方向継承）</h4>
+              <div class="grid grid-cols-4 gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div
+                  class="col-span-2 bg-emerald-200 p-[8px] rounded-[4px] text-[12px] text-center"
+                >
+                  <div class="text-[10px] font-bold mb-[4px]">親グリッド</div>
+                  <div class="grid subgrid-cols gap-[4px]">
+                    <div
+                      class="bg-emerald-400 p-[4px] rounded-[2px] text-[10px] text-center text-white"
+                    >
+                      子1
+                    </div>
+                    <div
+                      class="bg-emerald-500 p-[4px] rounded-[2px] text-[10px] text-center text-white"
+                    >
+                      子2
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-emerald-300 p-[8px] rounded-[4px] text-[12px] text-center">A</div>
+                <div class="bg-emerald-300 p-[8px] rounded-[4px] text-[12px] text-center">B</div>
+              </div>
+              <div class="mt-[8px] text-[11px] text-gray-600">
+                子要素が親の列構造に合わせて配置されます
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">subgrid-rows（行方向継承）</h4>
+              <div
+                class="grid grid-cols-2 grid-rows-3 gap-[8px] bg-white p-[10px] rounded-[4px] h-[100px]"
+              >
+                <div class="row-span-2 bg-violet-200 p-[8px] rounded-[4px] text-[12px]">
+                  <div class="text-[10px] font-bold mb-[4px]">親グリッド</div>
+                  <div class="grid subgrid-rows gap-[4px] h-full">
+                    <div
+                      class="bg-violet-400 p-[4px] rounded-[2px] text-[10px] text-center text-white"
+                    >
+                      子1
+                    </div>
+                    <div
+                      class="bg-violet-500 p-[4px] rounded-[2px] text-[10px] text-center text-white"
+                    >
+                      子2
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bg-violet-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  C
+                </div>
+                <div
+                  class="bg-violet-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  D
+                </div>
+                <div
+                  class="bg-violet-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+                >
+                  E
+                </div>
+              </div>
+              <div class="mt-[8px] text-[11px] text-gray-600">
+                子要素が親の行構造に合わせて配置されます
+              </div>
+            </div>
+          </div>
+
+          <div class="p-[15px] bg-gray-100 rounded-[8px] mb-[30px]">
+            <h4 class="text-[14px] font-bold mb-[10px]">subgrid-both（両方向継承）</h4>
+            <div
+              class="grid grid-cols-4 grid-rows-3 gap-[8px] bg-white p-[10px] rounded-[4px] h-[120px]"
+            >
+              <div class="col-span-2 row-span-2 bg-pink-200 p-[8px] rounded-[4px] text-[12px]">
+                <div class="text-[10px] font-bold mb-[4px]">親グリッド（2×2）</div>
+                <div class="grid subgrid-both gap-[4px] h-full">
+                  <div class="bg-pink-400 p-[4px] rounded-[2px] text-[10px] text-center text-white">
+                    子1
+                  </div>
+                  <div class="bg-pink-500 p-[4px] rounded-[2px] text-[10px] text-center text-white">
+                    子2
+                  </div>
+                  <div class="bg-pink-600 p-[4px] rounded-[2px] text-[10px] text-center text-white">
+                    子3
+                  </div>
+                  <div class="bg-pink-700 p-[4px] rounded-[2px] text-[10px] text-center text-white">
+                    子4
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                A
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                B
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                C
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                D
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                E
+              </div>
+              <div
+                class="bg-pink-300 p-[8px] rounded-[4px] text-[12px] text-center flex items-center justify-center"
+              >
+                F
+              </div>
+            </div>
+            <div class="mt-[8px] text-[11px] text-gray-600">
+              子要素が親の列・行両方の構造に合わせて配置されます
+            </div>
+          </div>
+
+          <div class="mb-[30px]">
+            <h4 class="text-[16px] font-bold mb-[15px]">実用的な例：カードレイアウト</h4>
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h5 class="text-[14px] font-bold mb-[10px]">
+                タイトルとコンテンツの高さが統一されたカード
+              </h5>
+              <div class="grid grid-cols-3 gap-[12px] bg-white p-[15px] rounded-[4px]">
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[6px] overflow-hidden">
+                  <div class="grid subgrid-rows grid-rows-[auto,1fr,auto] h-[140px]">
+                    <div class="bg-indigo-500 p-[8px] text-white text-[12px] font-bold text-center">
+                      カード 1
+                    </div>
+                    <div class="p-[8px] text-[11px] text-gray-700 leading-relaxed">
+                      短いコンテンツですが、 Subgridにより高さが統一されています。
+                    </div>
+                    <div class="bg-indigo-200 p-[6px] text-[10px] text-center text-indigo-800">
+                      フッター
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[6px] overflow-hidden">
+                  <div class="grid subgrid-rows grid-rows-[auto,1fr,auto] h-[140px]">
+                    <div class="bg-indigo-500 p-[8px] text-white text-[12px] font-bold text-center">
+                      カード 2
+                    </div>
+                    <div class="p-[8px] text-[11px] text-gray-700 leading-relaxed">
+                      こちらは長めのコンテンツです。Subgridを使用することで、
+                      他のカードと高さが統一され、整然としたレイアウトを実現できます。
+                      フッターも底辺に揃います。
+                    </div>
+                    <div class="bg-indigo-200 p-[6px] text-[10px] text-center text-indigo-800">
+                      フッター
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-indigo-100 border border-indigo-300 rounded-[6px] overflow-hidden">
+                  <div class="grid subgrid-rows grid-rows-[auto,1fr,auto] h-[140px]">
+                    <div class="bg-indigo-500 p-[8px] text-white text-[12px] font-bold text-center">
+                      カード 3
+                    </div>
+                    <div class="p-[8px] text-[11px] text-gray-700 leading-relaxed">
+                      中程度の長さのコンテンツ。 Subgridなしでは高さがバラバラになりがちです。
+                    </div>
+                    <div class="bg-indigo-200 p-[6px] text-[10px] text-center text-indigo-800">
+                      フッター
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-[10px] text-[11px] text-gray-600">
+                各カードのヘッダー・コンテンツ・フッターが親グリッドの行構造に従って整列
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">利用可能なSubgridクラス</h4>
+            <pre class="code-block">
+/* 列方向のサブグリッド */
+.subgrid-cols {
+  display: subgrid;
+  grid-template-columns: subgrid;
+}
+
+/* 行方向のサブグリッド */
+.subgrid-rows {
+  display: subgrid;
+  grid-template-rows: subgrid;
+}
+
+/* 両方向のサブグリッド */
+.subgrid-both {
+  display: subgrid;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+}</pre
+            >
+          </div>
+
+          <div class="mt-[20px] p-[15px] bg-yellow-50 border border-yellow-200 rounded-[8px]">
+            <p class="text-[13px] text-yellow-800">
+              <strong>⚠️ ブラウザ対応状況：</strong>
+              Subgridは比較的新しい機能です。Firefox 71+、Safari 16+、Chrome 117+ で対応。
+              古いブラウザでは通常のグリッドとして動作します。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なGridクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">Template</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>grid-cols-1 〜 grid-cols-12</li>
+                  <li>grid-rows-1 〜 grid-rows-6</li>
+                  <li>grid-cols-none → none;</li>
+                  <li>grid-rows-none → none;</li>
+                </ul>
+                <p><strong>カスタム値:</strong></p>
+                <ul class="info-list">
+                  <li>grid-cols-[5] → repeat(5, minmax(0, 1fr));</li>
+                  <li>grid-rows-[4] → repeat(4, minmax(0, 1fr));</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">Span</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>col-span-1 〜 col-span-12</li>
+                  <li>row-span-1 〜 row-span-6</li>
+                  <li>col-span-full → span all;</li>
+                  <li>row-span-full → span all;</li>
+                </ul>
+                <p><strong>カスタム値:</strong></p>
+                <ul class="info-list">
+                  <li>col-span-[5] → span 5 / span 5;</li>
+                  <li>row-span-[3] → span 3 / span 3;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">Position</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>col-start-1 〜 col-start-13</li>
+                  <li>col-end-1 〜 col-end-13</li>
+                  <li>row-start-1 〜 row-start-7</li>
+                  <li>row-end-1 〜 row-end-7</li>
+                  <li>col-start-auto → auto;</li>
+                  <li>row-start-auto → auto;</li>
+                </ul>
+                <p><strong>カスタム値:</strong></p>
+                <ul class="info-list">
+                  <li>col-start-[2] → grid-column-start: 2;</li>
+                  <li>row-end-[5] → grid-row-end: 5;</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">🔲 Grid Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">CSS Gridレイアウトを制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

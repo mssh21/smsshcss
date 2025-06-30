@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Flexbox Classes Test</title>
+  </head>
+  <body>
+    <!-- ヒーローヘッダー -->
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">🔄</div>
+            <h1 class="hero-title">Flexbox Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            Flexboxレイアウト制御<br />
+            <span class="hero-subtitle-highlight">Direction, Justify, Align, Grow, Shrink等</span>
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">↔️ Direction</span>
+            <span class="hero-feature-badge">⚖️ Justify</span>
+            <span class="hero-feature-badge">📏 Align</span>
+            <span class="hero-feature-badge">📈 Grow/Shrink</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Navigation -->
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <!-- Flex Direction -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">↔️ Flex Direction</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">方向の制御</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">flex-row (デフォルト)</h4>
+              <div class="flex flex-row gap-[8px]">
+                <div class="p-[10px] bg-blue-500 text-white rounded-[4px]">1</div>
+                <div class="p-[10px] bg-blue-600 text-white rounded-[4px]">2</div>
+                <div class="p-[10px] bg-blue-700 text-white rounded-[4px]">3</div>
+              </div>
+            </div>
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">flex-col</h4>
+              <div class="flex flex-col gap-[8px]">
+                <div class="p-[10px] bg-green-500 text-white rounded-[4px]">1</div>
+                <div class="p-[10px] bg-green-600 text-white rounded-[4px]">2</div>
+                <div class="p-[10px] bg-green-700 text-white rounded-[4px]">3</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.flex-row { flex-direction: row; }
+.flex-col { flex-direction: column; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Justify Content -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">⚖️ Justify Content</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">メイン軸での配置</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">justify-center</h4>
+              <div class="flex justify-center gap-[8px] bg-white p-[10px] rounded-[4px]">
+                <div class="p-[8px] bg-red-500 text-white rounded-[4px]">A</div>
+                <div class="p-[8px] bg-red-600 text-white rounded-[4px]">B</div>
+                <div class="p-[8px] bg-red-700 text-white rounded-[4px]">C</div>
+              </div>
+            </div>
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">justify-between</h4>
+              <div class="flex justify-between bg-white p-[10px] rounded-[4px]">
+                <div class="p-[8px] bg-purple-500 text-white rounded-[4px]">A</div>
+                <div class="p-[8px] bg-purple-600 text-white rounded-[4px]">B</div>
+                <div class="p-[8px] bg-purple-700 text-white rounded-[4px]">C</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Flex Grow/Shrink -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📈 Flex Grow/Shrink</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">アイテムの伸縮制御</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <h4 class="text-[14px] font-bold mb-[10px]">Flex Grow</h4>
+            <div class="flex gap-[8px] bg-white p-[10px] rounded-[4px] mb-[15px]">
+              <div class="p-[10px] bg-blue-500 text-white rounded-[4px]">固定</div>
+              <div class="grow p-[10px] bg-red-500 text-white rounded-[4px]">
+                grow - 残り空間を取る
+              </div>
+              <div class="p-[10px] bg-green-500 text-white rounded-[4px]">固定</div>
+            </div>
+
+            <h4 class="text-[14px] font-bold mb-[10px]">カスタム値</h4>
+            <div class="flex gap-[8px] bg-white p-[10px] rounded-[4px]">
+              <div class="grow-[2] p-[10px] bg-orange-500 text-white rounded-[4px]">grow-[2]</div>
+              <div class="grow-[1] p-[10px] bg-orange-600 text-white rounded-[4px]">grow-[1]</div>
+              <div class="p-[10px] bg-orange-700 text-white rounded-[4px]">固定</div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.grow { flex-grow: 1; }
+.grow-[2] { flex-grow: 2; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Flex Wrap -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🔄 Flex Wrap</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">要素の折り返し制御</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">flex-nowrap (デフォルト)</h4>
+              <div
+                class="flex flex-nowrap gap-[8px] bg-white p-[10px] rounded-[4px] w-[200px] overflow-hidden"
+              >
+                <div class="p-[10px] bg-blue-500 text-white rounded-[4px] min-w-[60px]">1</div>
+                <div class="p-[10px] bg-blue-600 text-white rounded-[4px] min-w-[60px]">2</div>
+                <div class="p-[10px] bg-blue-700 text-white rounded-[4px] min-w-[60px]">3</div>
+                <div class="p-[10px] bg-blue-800 text-white rounded-[4px] min-w-[60px]">4</div>
+              </div>
+            </div>
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">flex-wrap</h4>
+              <div class="flex flex-wrap gap-[8px] bg-white p-[10px] rounded-[4px] w-[200px]">
+                <div class="p-[10px] bg-red-500 text-white rounded-[4px] min-w-[60px]">1</div>
+                <div class="p-[10px] bg-red-600 text-white rounded-[4px] min-w-[60px]">2</div>
+                <div class="p-[10px] bg-red-700 text-white rounded-[4px] min-w-[60px]">3</div>
+                <div class="p-[10px] bg-red-800 text-white rounded-[4px] min-w-[60px]">4</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.flex-nowrap { flex-wrap: nowrap; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-wrap-reverse { flex-wrap: wrap-reverse; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 全Flexboxクラス一覧 -->
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なFlexboxクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">Direction & Wrap</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>flex-row → flex-direction: row;</li>
+                  <li>flex-col → flex-direction: column;</li>
+                  <li>flex-wrap → flex-wrap: wrap;</li>
+                  <li>flex-nowrap → flex-wrap: nowrap;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">Justify & Align</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>justify-start → justify-content: flex-start;</li>
+                  <li>justify-center → justify-content: center;</li>
+                  <li>justify-end → justify-content: flex-end;</li>
+                  <li>justify-between → justify-content: space-between;</li>
+                  <li>items-center → align-items: center;</li>
+                  <li>items-stretch → align-items: stretch;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">Grow/Shrink/Basis</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>grow → flex-grow: 1;</li>
+                  <li>grow-0 → flex-grow: 0;</li>
+                  <li>shrink → flex-shrink: 1;</li>
+                  <li>shrink-0 → flex-shrink: 0;</li>
+                  <li>flex-1 → flex: 1 1 0%;</li>
+                  <li>flex-auto → flex: 1 1 auto;</li>
+                </ul>
+                <p><strong>カスタム値:</strong></p>
+                <ul class="info-list">
+                  <li>grow-[2] → flex-grow: 2;</li>
+                  <li>basis-[200px] → flex-basis: 200px;</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">🔄 Flexbox Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">Flexboxレイアウトを制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

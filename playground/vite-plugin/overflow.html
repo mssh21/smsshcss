@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Overflow Classes Test</title>
+  </head>
+  <body>
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">📦</div>
+            <h1 class="hero-title">Overflow Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            要素のオーバーフロー制御<br />
+            <span class="hero-subtitle-highlight"
+              >Auto, Hidden, Visible, Scroll, Clip + X/Y方向</span
+            >
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">📦 基本制御</span>
+            <span class="hero-feature-badge">↔️ X/Y分離</span>
+            <span class="hero-feature-badge">📜 スクロール</span>
+            <span class="hero-feature-badge">✂️ クリップ</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📦 基本的なOverflow制御</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">4つの基本動作</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-auto</h4>
+              <div
+                class="overflow-auto w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <p class="text-[12px]">
+                  この内容は親要素より長いテキストです。必要に応じて自動的にスクロールバーが表示されます。
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-hidden</h4>
+              <div
+                class="overflow-hidden w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <p class="text-[12px]">
+                  この内容は親要素より長いテキストです。はみ出た部分は隠されます。 Lorem ipsum dolor
+                  sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-scroll</h4>
+              <div
+                class="overflow-scroll w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <p class="text-[12px]">
+                  この内容は親要素より長いテキストです。常にスクロールバーが表示されます。 Lorem
+                  ipsum dolor sit amet consectetur.
+                </p>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-visible</h4>
+              <div
+                class="overflow-visible w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <p class="text-[12px]">
+                  この内容は親要素より長いテキストです。はみ出た部分も表示されます。 Lorem ipsum
+                  dolor sit amet consectetur adipisicing elit.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-scroll { overflow: scroll; }
+.overflow-visible { overflow: visible; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">↔️ X/Y方向別制御</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">横方向と縦方向を個別制御</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-x-auto (横のみ)</h4>
+              <div
+                class="overflow-x-auto overflow-y-hidden w-[200px] h-[60px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <div
+                  class="w-[400px] h-[40px] bg-gradient-to-r from-blue-300 to-blue-600 rounded-[4px] flex items-center justify-center text-white text-[12px]"
+                >
+                  横方向にスクロール可能な長いコンテンツ
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-y-auto (縦のみ)</h4>
+              <div
+                class="overflow-y-auto overflow-x-hidden w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <div class="space-y-2">
+                  <div
+                    class="w-full h-[30px] bg-green-300 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 1
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-green-400 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 2
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-green-500 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 3
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-green-600 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 4
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-x-hidden</h4>
+              <div
+                class="overflow-x-hidden w-[200px] h-[60px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <div
+                  class="w-[400px] h-[40px] bg-gradient-to-r from-red-300 to-red-600 rounded-[4px] flex items-center justify-center text-white text-[12px]"
+                >
+                  横方向のはみ出しは隠される
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-y-hidden</h4>
+              <div
+                class="overflow-y-hidden w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <div class="space-y-2">
+                  <div
+                    class="w-full h-[30px] bg-purple-300 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 1
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-purple-400 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 2
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-purple-500 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    縦方向ははみ出し隠し
+                  </div>
+                  <div
+                    class="w-full h-[30px] bg-purple-600 rounded-[4px] flex items-center justify-center text-[12px]"
+                  >
+                    アイテム 4
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-y-hidden { overflow-y: hidden; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">✂️ Clip制御</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">overflow-clip の使用例</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-clip</h4>
+              <div
+                class="overflow-clip w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <p class="text-[12px]">
+                  overflow-clipは、はみ出た部分をクリップ（切り取り）します。
+                  hiddenとよく似ていますが、スクロール機構を完全に無効化します。
+                </p>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">overflow-x-clip</h4>
+              <div
+                class="overflow-x-clip w-[200px] h-[80px] bg-white border border-gray-300 rounded-[4px] p-[10px]"
+              >
+                <div
+                  class="w-[400px] bg-gradient-to-r from-yellow-300 to-yellow-600 rounded-[4px] p-[10px] text-[12px]"
+                >
+                  横方向のクリップ制御
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.overflow-clip { overflow: clip; }
+.overflow-x-clip { overflow-x: clip; }
+.overflow-y-clip { overflow-y: clip; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🎪 実用的な例</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">よくある使用場面</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カードコンテンツ</h4>
+              <div class="bg-white rounded-[8px] shadow-md overflow-hidden">
+                <div class="h-[60px] bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
+                <div class="p-[12px]">
+                  <h5 class="text-[14px] font-bold mb-[8px]">カードタイトル</h5>
+                  <p class="text-[12px] text-gray-600 overflow-hidden h-[40px]">
+                    長いテキストコンテンツがここに入ります。カードの高さを固定して、はみ出た部分は隠しています。
+                    これにより統一感のあるレイアウトが作れます。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">タブレット形式</h4>
+              <div class="bg-white rounded-[8px] border border-gray-300">
+                <div class="flex border-b border-gray-300 overflow-x-auto">
+                  <div
+                    class="px-[16px] py-[8px] bg-blue-500 text-white text-[12px] whitespace-nowrap min-w-[80px]"
+                  >
+                    タブ 1
+                  </div>
+                  <div
+                    class="px-[16px] py-[8px] text-gray-600 text-[12px] whitespace-nowrap min-w-[80px]"
+                  >
+                    タブ 2
+                  </div>
+                  <div
+                    class="px-[16px] py-[8px] text-gray-600 text-[12px] whitespace-nowrap min-w-[80px]"
+                  >
+                    長いタブ名
+                  </div>
+                  <div
+                    class="px-[16px] py-[8px] text-gray-600 text-[12px] whitespace-nowrap min-w-[80px]"
+                  >
+                    タブ 4
+                  </div>
+                  <div
+                    class="px-[16px] py-[8px] text-gray-600 text-[12px] whitespace-nowrap min-w-[80px]"
+                  >
+                    タブ 5
+                  </div>
+                </div>
+                <div class="p-[12px] h-[80px] overflow-y-auto">
+                  <p class="text-[12px]">タブのコンテンツエリア。縦にスクロール可能です。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">実用例のCSS</h4>
+            <pre class="code-block">
+/* カード例 */
+.card-content { overflow: hidden; }
+
+/* タブ例 */
+.tab-list { overflow-x: auto; }
+.tab-content { overflow-y: auto; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なOverflowクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">基本Overflow</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>overflow-auto → overflow: auto;</li>
+                  <li>overflow-hidden → overflow: hidden;</li>
+                  <li>overflow-visible → overflow: visible;</li>
+                  <li>overflow-scroll → overflow: scroll;</li>
+                  <li>overflow-clip → overflow: clip;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">横方向制御</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>overflow-x-auto → overflow-x: auto;</li>
+                  <li>overflow-x-hidden → overflow-x: hidden;</li>
+                  <li>overflow-x-visible → overflow-x: visible;</li>
+                  <li>overflow-x-scroll → overflow-x: scroll;</li>
+                  <li>overflow-x-clip → overflow-x: clip;</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">縦方向制御</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>overflow-y-auto → overflow-y: auto;</li>
+                  <li>overflow-y-hidden → overflow-y: hidden;</li>
+                  <li>overflow-y-visible → overflow-y: visible;</li>
+                  <li>overflow-y-scroll → overflow-y: scroll;</li>
+                  <li>overflow-y-clip → overflow-y: clip;</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">📦 Overflow Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">要素のオーバーフロー制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

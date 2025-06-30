@@ -37,7 +37,7 @@
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat-item">
-              <div class="hero-stat-number">7</div>
+              <div class="hero-stat-number">13</div>
               <div class="hero-stat-label">テストページ</div>
             </div>
           </div>
@@ -98,7 +98,7 @@
             </div>
 
             <!-- Display -->
-            <div class="test-card test-card--disabled">
+            <div class="test-card">
               <h3 class="test-card-title">🖥️ Display Classes</h3>
               <p class="test-card-desc">表示クラス<br />Block, Flex, Grid, Hidden等</p>
               <div class="test-card-features">
@@ -106,11 +106,11 @@
                 <span class="feature-tag">Flex/Grid</span>
                 <span class="feature-tag">Hidden</span>
               </div>
-              <span class="test-card-link test-card-link--disabled">準備中...</span>
+              <a href="./display.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Flexbox -->
-            <div class="test-card test-card--disabled">
+            <div class="test-card">
               <h3 class="test-card-title">🔄 Flexbox Classes</h3>
               <p class="test-card-desc">Flexboxレイアウトクラス<br />Direction, Justify, Align等</p>
               <div class="test-card-features">
@@ -118,11 +118,11 @@
                 <span class="feature-tag">Justify</span>
                 <span class="feature-tag">Align</span>
               </div>
-              <span class="test-card-link test-card-link--disabled">準備中...</span>
+              <a href="./flexbox.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Grid -->
-            <div class="test-card test-card--disabled">
+            <div class="test-card">
               <h3 class="test-card-title">🎯 Grid Classes</h3>
               <p class="test-card-desc">CSS Gridレイアウトクラス<br />Columns, Span, Start/End等</p>
               <div class="test-card-features">
@@ -130,7 +130,7 @@
                 <span class="feature-tag">Span</span>
                 <span class="feature-tag">カスタム値</span>
               </div>
-              <span class="test-card-link test-card-link--disabled">準備中...</span>
+              <a href="./grid.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Positioning -->
@@ -170,16 +170,16 @@
               <a href="./apply.html" class="test-card-link">テストページを開く →</a>
             </div>
 
-            <!-- Custom Values -->
-            <div class="test-card test-card--disabled">
-              <h3 class="test-card-title">🎨 Custom Values</h3>
-              <p class="test-card-desc">カスタム値テスト<br />CSS関数, 変数, calc()等</p>
+            <!-- Z-Index -->
+            <div class="test-card">
+              <h3 class="test-card-title">📚 Z-Index Classes</h3>
+              <p class="test-card-desc">要素の重ね順制御<br />Z-Index 0-50 + Auto + カスタム値</p>
               <div class="test-card-features">
-                <span class="feature-tag">CSS関数</span>
-                <span class="feature-tag">変数</span>
-                <span class="feature-tag">Calc</span>
+                <span class="feature-tag">レイヤリング</span>
+                <span class="feature-tag">0-50段階</span>
+                <span class="feature-tag">カスタム値</span>
               </div>
-              <span class="test-card-link test-card-link--disabled">準備中...</span>
+              <a href="./z-index.html" class="test-card-link">テストページを開く →</a>
             </div>
 
             <!-- Order -->
@@ -196,18 +196,32 @@
               <a href="./order.html" class="test-card-link">テストページを開く →</a>
             </div>
 
-            <!-- Edge Cases -->
-            <div class="test-card test-card--disabled">
-              <h3 class="test-card-title">🔍 Edge Cases</h3>
+            <!-- Overflow -->
+            <div class="test-card">
+              <h3 class="test-card-title">📦 Overflow Classes</h3>
               <p class="test-card-desc">
-                エッジケース・特殊値<br />Purge設定, Safelist, Blocklist等
+                要素のオーバーフロー制御<br />Auto, Hidden, Scroll, Clip + X/Y方向
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">Purge</span>
-                <span class="feature-tag">Safelist</span>
-                <span class="feature-tag">Debug</span>
+                <span class="feature-tag">基本制御</span>
+                <span class="feature-tag">X/Y分離</span>
+                <span class="feature-tag">Clip</span>
               </div>
-              <span class="test-card-link test-card-link--disabled">準備中...</span>
+              <a href="./overflow.html" class="test-card-link">テストページを開く →</a>
+            </div>
+
+            <!-- Font Size -->
+            <div class="test-card">
+              <h3 class="test-card-title">📝 Font Size Classes</h3>
+              <p class="test-card-desc">
+                フォントサイズ制御<br />フィボナッチ数列ベース + カスタム値対応
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">Size階層</span>
+                <span class="feature-tag">フィボナッチ</span>
+                <span class="feature-tag">レスポンシブ</span>
+              </div>
+              <a href="./font-size.html" class="test-card-link">テストページを開く →</a>
             </div>
           </div>
         </div>
@@ -258,14 +272,12 @@
                   <li>Color Classes ✅</li>
                   <li>Apply Settings ✅</li>
                   <li>Order Classes ✅</li>
-                </ul>
-                <p><strong>準備中:</strong></p>
-                <ul class="info-list">
-                  <li>Display Classes 🚧</li>
-                  <li>Flexbox Classes 🚧</li>
-                  <li>Grid Classes 🚧</li>
-                  <li>Custom Values 🚧</li>
-                  <li>Edge Cases 🚧</li>
+                  <li>Display Classes ✅</li>
+                  <li>Flexbox Classes ✅</li>
+                  <li>Grid Classes ✅</li>
+                  <li>Z-Index Classes ✅</li>
+                  <li>Overflow Classes ✅</li>
+                  <li>Font Size Classes ✅</li>
                 </ul>
               </div>
             </div>
@@ -305,6 +317,12 @@
           './color.html',
           './apply.html',
           './order.html',
+          './display.html',
+          './flexbox.html',
+          './grid.html',
+          './z-index.html',
+          './overflow.html',
+          './font-size.html',
         ];
 
         pages.forEach((page) => {
