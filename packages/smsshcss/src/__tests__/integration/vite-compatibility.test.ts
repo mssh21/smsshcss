@@ -21,8 +21,8 @@ import {
 import { verifyUtilityClasses } from '../../../scripts/utils/comparison';
 import { extractUtilityClasses } from '../../../scripts/utils/class-extractor';
 
-// Viteプラグインのインポート
-import { smsshcss } from '@smsshcss/vite';
+// Viteプラグインのインポート（ローカルパス）
+import { smsshcss } from '../../../../@smsshcss/vite/dist/index.js';
 
 describe('Vite Plugin Compatibility', () => {
   const testTimeout = 30000; // 30秒のタイムアウト
