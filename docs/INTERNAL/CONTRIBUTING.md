@@ -132,7 +132,7 @@ The `playground/vite-plugin` directory serves as a live development environment 
 
 4.  **Observe in browser:**
 
-    Open your browser to the address provided by Vite (usually `http://localhost:5173/`) and verify that the new utility class is correctly applied and styled as expected.
+    Open your browser to the address provided by Vite and verify that the new utility class is correctly applied and styled as expected.
 
 ## Commit Conventions
 
@@ -150,7 +150,7 @@ Each commit message consists of a **header**, a **body**, and a **footer**.
 <footer>
 ```
 
-- **Type:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- **Type:** `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revaert`, `style`, `test`,
 - **Scope:** The part of the codebase that is affected (e.g., `generator`, `utils`, `docs`)
 - **Subject:** A short, imperative-tense description of the change.
 
@@ -165,6 +165,6 @@ Each commit message consists of a **header**, a **body**, and a **footer**.
 1.  Create a new branch for your feature or bug fix.
 2.  Make your changes and commit them, following the commit conventions.
 3.  Push your branch to your fork.
-4.  Open a pull request to the `main` branch of the original repository.
+4.  Open a pull request to the `master` branch of the original repository.
 
 Thank you for contributing to SmsshCSS!

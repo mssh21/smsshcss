@@ -53,10 +53,10 @@ Create an `index.html` file and add some utility classes:
     <!-- The Vite plugin will automatically inject the generated CSS here -->
   </head>
   <body>
-    <div class="p-lg bg-gray-100 -lg">
+    <div class="p-lg bg-gray-100">
       <h1 class="text-2xl font-bold text-blue-600">Hello, SmsshCSS!</h1>
       <p class="mt-md">This is a simple example of using utility classes.</p>
-      <button class="mt-lg px-md py-sm bg-blue-500 text-white -md hover:bg-blue-700">
+      <button class="mt-lg px-md py-sm bg-blue-500 text-white hover:bg-blue-700">
         Get Started
       </button>
     </div>

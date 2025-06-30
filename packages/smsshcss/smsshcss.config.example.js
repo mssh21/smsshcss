@@ -123,7 +123,7 @@ module.exports = {
     'card-footer': 'pt-sm mt-sm',
 
     // Button components
-    btn: ' font-medium transition-colors',
+    btn: ' font-medium',
     'btn-primary': 'bg-blue-500 text-white hover:bg-blue-600',
     'btn-secondary': 'bg-gray-200 text-gray-800 hover:bg-gray-300',
 

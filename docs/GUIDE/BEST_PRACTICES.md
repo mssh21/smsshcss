@@ -32,7 +32,7 @@ For frequently used combinations of utility classes, use the `apply` feature to 
 ```javascript
 // smsshcss.config.js
 apply: {
-  'card': 'p-lg bg-white border border-gray-200 -md',
+  'card': 'p-lg bg-white border border-gray-200',
   'btn-primary': 'px-lg py-md bg-blue-500 text-white -sm',
 }
 ```
@@ -40,8 +40,8 @@ apply: {
 **Don't:**
 
 ```html
-<div class="p-lg bg-white border border-gray-200 -md">...</div>
-<div class="p-lg bg-white border border-gray-200 -md">...</div>
+<div class="p-lg bg-white border border-gray-200">...</div>
+<div class="p-lg bg-white border border-gray-200">...</div>
 ```
 
 ### 3. Use a Consistent Naming Convention
@@ -79,7 +79,7 @@ Design your component classes to be composable. Start with small, single-purpose
 ```javascript
 apply: {
   'surface': 'bg-white -lg shadow-sm',
-  'interactive': 'cursor-pointer transition-colors',
+  'interactive': 'cursor-pointer',
   'spacing-md': 'p-md',
 
   'card': 'surface spacing-md',
@@ -92,7 +92,7 @@ apply: {
 ```javascript
 apply: {
   'card': 'bg-white -lg shadow-sm p-md',
-  'clickable-card': 'bg-white -lg shadow-md p-md cursor-pointer transition-colors',
+  'clickable-card': 'bg-white -lg shadow-md p-md',
 }
 ```
 

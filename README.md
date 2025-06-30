@@ -49,7 +49,7 @@ pnpm add smsshcss @smsshcss/vite
 2.  **Start using utility classes in your HTML:**
 
     ```html
-    <button class="px-md py-sm bg-blue-500 text-white -md hover:bg-blue-700">Click me</button>
+    <button class="px-md py-sm bg-blue-500 text-white hover:bg-blue-700">Click me</button>
     ```
 
 ## Documentation

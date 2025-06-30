@@ -22,7 +22,7 @@ Instead of writing the same long string of utility classes every time you create
 // smsshcss.config.js
 module.exports = {
   apply: {
-    btn: 'inline-block px-md py-sm -md cursor-pointer',
+    btn: 'inline-block px-md py-sm',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
   },
 };
