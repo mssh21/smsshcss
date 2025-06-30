@@ -555,9 +555,257 @@ yarn check:utilities:ts -t
 - **デバッグ**: `--include-templates`でテンプレートクラス生成を確認
 - **ドキュメント作成**: 目的に応じてどちらかを選択
 
-## 8. 今後の開発への教訓
+## 8. メンテナンス手順
 
-### 8.1 技術選択における考慮事項
+### 8.1 ユーティリティクラス変更時の対応
+
+#### 8.1.1 新しいカテゴリを追加する場合
+
+**1. パターン定義の追加**
+
+```javascript
+// scripts/utils/class-extractor.js
+const CATEGORY_PATTERNS = {
+  // ... 既存のパターン
+  newCategory: /^new-category-pattern-/, // 新しいパターンを追加
+};
+```
+
+**2. 検証手順**
+
+```bash
+# 新しいカテゴリのクラスのみをテスト
+yarn check:utilities:ts -c newCategory --verbose
+
+# 全体の検証
+yarn check:utilities:ts --verbose
+```
+
+**3. ドキュメント更新**
+
+- 本ドキュメントの表1.2「検証対象カテゴリ」を更新
+- クラス数の合計を再計算
+
+#### 8.1.2 既存カテゴリのクラスを追加/削除する場合
+
+**1. 影響確認**
+
+```bash
+# 変更前のクラス数を記録
+yarn check:utilities:ts --verbose
+
+# 変更後の検証
+yarn check:utilities:ts --verbose
+
+# 差分を確認
+yarn check:utilities:full --format json > before.json
+# ... 変更実施 ...
+yarn check:utilities:full --format json > after.json
+```
+
+**2. パターンマッチング確認**
+
+```bash
+# 特定カテゴリの詳細確認
+yarn check:utilities:ts -c [category] --verbose
+
+# 新しいクラスが正しく分類されているか確認
+```
+
+**3. テンプレートクラス確認**
+
+```bash
+# テンプレートクラスの数と種類を確認
+yarn check:utilities:ts --include-templates --verbose
+```
+
+#### 8.1.3 パターンマッチングを変更する場合
+
+**1. 既存パターンの影響範囲確認**
+
+```javascript
+// デバッグ用コードを一時的に追加
+console.log('Old pattern matches:', oldPattern.test(className));
+console.log('New pattern matches:', newPattern.test(className));
+```
+
+**2. 段階的な変更**
+
+```bash
+# 変更前の状態を記録
+yarn check:utilities:ts --format json > before-pattern-change.json
+
+# パターン変更後の検証
+yarn check:utilities:ts --verbose
+
+# 意図しない分類変更がないか確認
+```
+
+**3. 回帰テスト**
+
+```bash
+# 全カテゴリの検証
+yarn check:utilities:ts --include-templates --verbose
+
+# 特定カテゴリの詳細確認
+yarn check:utilities:ts -c [affected-category] --verbose
+```
+
+### 8.2 検証システム自体の更新手順
+
+#### 8.2.1 新機能追加時
+
+**1. 機能実装**
+
+- `scripts/utils/class-extractor.js`に新機能を追加
+- 既存の`includeTemplates`オプションを参考に実装
+
+**2. CLI オプション追加**
+
+```javascript
+// scripts/check-utilities-simple.js
+program
+  .option('--new-option', 'New option description')
+  .option('--existing-option', 'Existing option');
+```
+
+**3. 機能テスト**
+
+```bash
+# 新機能のテスト
+yarn check:utilities:ts --new-option --verbose
+
+# 既存機能への影響確認
+yarn check:utilities:ts --verbose
+yarn check:utilities:ts --include-templates --verbose
+```
+
+#### 8.2.2 パフォーマンス改善時
+
+**1. ベンチマーク取得**
+
+```bash
+# 改善前の実行時間を記録
+time yarn check:utilities:ts --verbose
+time yarn check:utilities:full --verbose
+```
+
+**2. 改善実装後の検証**
+
+```bash
+# 改善後の実行時間測定
+time yarn check:utilities:ts --verbose
+time yarn check:utilities:full --verbose
+
+# 結果の正確性確認
+yarn check:utilities:ts --include-templates --verbose
+```
+
+### 8.3 継続的な品質保証
+
+#### 8.3.1 定期的なメンテナンス
+
+**週次チェック**
+
+```bash
+# 基本的な検証
+yarn check:utilities:ts --verbose
+
+# 完全な検証
+yarn check:utilities:full --verbose
+```
+
+**月次チェック**
+
+```bash
+# 統計情報の出力と記録
+yarn check:utilities:ts --format json > monthly-stats.json
+
+# テンプレートクラスの変化確認
+yarn check:utilities:ts --include-templates --format json > monthly-with-templates.json
+```
+
+#### 8.3.2 CI/CD 設定の更新
+
+**GitHub Actions の更新**
+
+```yaml
+# .github/workflows/utility-verification.yml
+- name: Verify utility classes (basic)
+  run: yarn check:utilities:ts --verbose
+
+- name: Verify utility classes (with templates)
+  run: yarn check:utilities:ts --include-templates --verbose
+
+- name: Generate verification report
+  if: failure()
+  run: yarn check:utilities:full --format json > verification-failure-report.json
+```
+
+### 8.4 ドキュメント更新手順
+
+#### 8.4.1 クラス数変更時
+
+**1. 表の更新**
+
+本ドキュメントの「1.2 検証対象カテゴリ」テーブルを更新：
+
+```bash
+# 現在のクラス数を確認
+yarn check:utilities:ts --verbose
+yarn check:utilities:ts --include-templates --verbose
+```
+
+**2. 例や説明の更新**
+
+- 出力例の更新
+- 合計クラス数の修正
+- 実行時間の再測定
+
+#### 8.4.2 新機能追加時
+
+**1. 使用方法セクションの更新**
+
+- 新しいCLIオプションの説明
+- 使用例の追加
+- 出力例の更新
+
+**2. トラブルシューティングセクションの更新**
+
+- 新機能に関連するエラーと解決策
+- デバッグ用コマンドの追加
+
+### 8.5 チェックリスト
+
+#### ユーティリティクラス変更時
+
+- [ ] パターンマッチング確認
+- [ ] テンプレートクラス数確認
+- [ ] 全カテゴリ検証実行
+- [ ] 実行時間確認
+- [ ] ドキュメント更新
+- [ ] CI/CDでの検証
+
+#### 検証システム変更時
+
+- [ ] 既存機能への影響確認
+- [ ] 新機能の動作確認
+- [ ] パフォーマンス測定
+- [ ] エラーハンドリング確認
+- [ ] ドキュメント更新
+- [ ] テストケース追加
+
+#### 定期メンテナンス時
+
+- [ ] 月次統計の記録
+- [ ] パフォーマンス推移の確認
+- [ ] 新しいユーティリティクラスの検出
+- [ ] CI/CD 設定の見直し
+- [ ] ドキュメントの精度確認
+
+## 9. 今後の開発への教訓
+
+### 9.1 技術選択における考慮事項
 
 **実行環境との互換性優先**
 
@@ -571,7 +819,7 @@ yarn check:utilities:ts -t
 - 完全版で高度な機能を追加
 - 用途に応じた使い分けが可能
 
-### 8.2 開発プロセスの改善
+### 9.2 開発プロセスの改善
 
 **問題解決のアプローチ**
 
@@ -588,7 +836,7 @@ yarn check:utilities:ts -t
 - 詳細レポートによる問題の早期発見
 - **柔軟な検証オプション**: 用途に応じた検証モードの提供
 
-### 8.3 メンテナンス性の確保
+### 9.3 メンテナンス性の確保
 
 **コードの可読性**
 
@@ -621,11 +869,11 @@ function addCategory(name, pattern) {
 }
 ```
 
-## 9. まとめ
+## 10. まとめ
 
 このユーティリティクラス検証システムの実装を通じて、以下の重要な知見を得ました：
 
-### 9.1 技術的成果
+### 10.1 技術的成果
 
 - **1,292クラス + 38テンプレートクラスの自動検証**: 手動確認の完全自動化
 - **正確なクラス分類**: 実際のユーティリティクラスとテンプレートクラスの適切な分離
@@ -633,14 +881,14 @@ function addCategory(name, pattern) {
 - **包括的カバレッジ**: 12カテゴリの完全検証
 - **柔軟な検証オプション**: 用途に応じたテンプレートクラス含有/除外の選択
 
-### 9.2 開発プロセスの改善
+### 10.2 開発プロセスの改善
 
 - **問題解決能力**: Yarn PnP環境での複雑な問題を解決
 - **実用的判断**: TypeScript vs JavaScript の適切な選択
 - **段階的実装**: 簡易版→完全版の効率的な開発
 - **継続的改善**: ユーザーフィードバックによるテンプレートクラス除外機能の追加
 
-### 9.3 将来への適用
+### 10.3 将来への適用
 
 - **環境固有問題への対処法**: 根本原因分析→複数解決策試行→代替手段検討
 - **品質保証の自動化**: CI/CD統合による継続的品質管理
