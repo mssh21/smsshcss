@@ -11,25 +11,25 @@ yarn-error.log*
 !.yarn/sdks
 !.yarn/versions
 
-# ビルド成果物
+# Build artifacts
 dist/
 build/
 *.tgz
 
-# 開発環境
+# Development environment
 .vscode/*
 !.vscode/extensions.json
 .idea/
 *.sublime-*
 .turbo
 
-# OS関連
+# OS related
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 
-# テスト
+# Test
 coverage/
 .nyc_output/
 test-results.json
