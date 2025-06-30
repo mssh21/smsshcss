@@ -7,28 +7,34 @@
 ### 1.1 システムの目的
 
 - **品質保証**: 全てのユーティリティクラスが正しく生成されることの自動検証
+- **正確性の向上**: テンプレートクラスを除外した実際のユーティリティクラス数の把握
 - **リグレッション防止**: コード変更時の意図しない影響の早期発見
 - **開発効率向上**: 手動確認の自動化
 - **継続的インテグレーション**: CI/CDパイプラインでの自動品質チェック
+- **柔軟な検証**: 用途に応じたテンプレートクラス含有/除外の選択
 
 ### 1.2 検証対象カテゴリ（12種類）
 
-| カテゴリ    | クラス数 | 例                                               |
-| ----------- | -------- | ------------------------------------------------ |
-| display     | 17       | `block`, `flex`, `grid`, `none`                  |
-| spacing     | 340      | `p-xs`, `m-sm`, `gap-md`                         |
-| flexbox     | 67       | `flex-row`, `justify-center`, `items-start`      |
-| positioning | 5        | `absolute`, `relative`, `fixed`                  |
-| zIndex      | 8        | `z-0`, `z-10`, `z-50`                            |
-| overflow    | 15       | `overflow-hidden`, `overflow-auto`               |
-| order       | 16       | `order-1`, `order-first`, `order-last`           |
-| grid        | 119      | `grid-cols-12`, `col-span-6`, `row-start-2`      |
-| width       | 99       | `w-lg`, `w-full`, `min-w-0`, `max-w-screen-xl`   |
-| height      | 99       | `h-xl`, `h-screen`, `min-h-full`, `max-h-96`     |
-| color       | 536      | `text-red-500`, `bg-blue-100`, `border-gray-300` |
-| fontSize    | 9        | `font-size-xs`, `font-size-sm`, `font-size-lg`   |
+| カテゴリ    | 基本クラス数 | テンプレートクラス数 | 合計 | 例                                               |
+| ----------- | ------------ | -------------------- | ---- | ------------------------------------------------ |
+| display     | 17           | 0                    | 17   | `block`, `flex`, `grid`, `none`                  |
+| spacing     | 323          | 17                   | 340  | `p-xs`, `m-sm`, `gap-md`                         |
+| flexbox     | 67           | 0                    | 67   | `flex-row`, `justify-center`, `items-start`      |
+| positioning | 5            | 0                    | 5    | `absolute`, `relative`, `fixed`                  |
+| zIndex      | 7            | 1                    | 8    | `z-0`, `z-10`, `z-50`                            |
+| overflow    | 15           | 0                    | 15   | `overflow-hidden`, `overflow-auto`               |
+| order       | 15           | 1                    | 16   | `order-1`, `order-first`, `order-last`           |
+| grid        | 111          | 8                    | 119  | `grid-cols-12`, `col-span-6`, `row-start-2`      |
+| width       | 96           | 3                    | 99   | `w-lg`, `w-full`, `min-w-0`, `max-w-screen-xl`   |
+| height      | 96           | 3                    | 99   | `h-xl`, `h-screen`, `min-h-full`, `max-h-96`     |
+| color       | 532          | 4                    | 536  | `text-red-500`, `bg-blue-100`, `border-gray-300` |
+| fontSize    | 8            | 1                    | 9    | `font-size-xs`, `font-size-sm`, `font-size-lg`   |
 
-**合計**: 1,330クラス
+**基本クラス合計**: 1,292クラス  
+**テンプレートクラス合計**: 38クラス  
+**総合計**: 1,330クラス
+
+> **注意**: デフォルトでは基本クラス（1,292クラス）のみがカウントされます。テンプレートクラスを含める場合は `--include-templates` オプションを使用してください。
 
 ## 2. 技術的課題と解決策
 
@@ -194,6 +200,68 @@ fontSize: /^font-size-/;
 
 - `font-size-xs`, `font-size-sm`, `font-size-base`, `font-size-lg`, etc.
 
+### 3.4 テンプレートクラスの除外機能
+
+#### 問題の特定
+
+検証システムの初期実装では、以下のような任意値テンプレートクラスもユーティリティクラスとして誤ってカウントされていました：
+
+```css
+/* テンプレートクラス（実際のユーティリティクラスではない） */
+.p-\[\$\{value\}\] {
+  padding: var(--value);
+}
+.m-\[\$\{value\}\] {
+  margin: var(--value);
+}
+.w-\[\$\{value\}\] {
+  width: var(--value);
+}
+```
+
+これにより、実際よりも多いクラス数（1,330クラス）が報告されていました。
+
+#### 解決策の実装
+
+**1. テンプレートクラスパターンの特定**
+
+```javascript
+// テンプレートクラスを検出する正規表現
+const ARBITRARY_VALUE_TEMPLATE_PATTERN = /\\\[\\\$\\\{value\\\}\\\]/;
+```
+
+**2. 除外ロジックの追加**
+
+```javascript
+function extractUtilityClasses(css, options = {}) {
+  const { includeTemplates = false } = options;
+
+  classNames.forEach((className) => {
+    // テンプレートクラスの検出と処理
+    if (ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)) {
+      templateClasses.push(className);
+
+      // オプションによってテンプレートクラスを含めるかどうか決定
+      if (!includeTemplates) {
+        return; // デフォルトでは除外
+      }
+    }
+    // ... 以下、通常のカテゴリ分類処理
+  });
+}
+```
+
+**3. 柔軟なオプション提供**
+
+- **デフォルト動作**: テンプレートクラスを除外（1,292クラス）
+- **`--include-templates`**: テンプレートクラスを含む（1,330クラス）
+
+#### 効果
+
+- **正確性の向上**: 実際のユーティリティクラス数の正確な把握
+- **柔軟性の提供**: 用途に応じたカウント方法の選択
+- **デバッグ支援**: テンプレートクラスの存在確認が可能
+
 ## 4. 使用方法
 
 ### 4.1 Package.json設定
@@ -209,29 +277,43 @@ fontSize: /^font-size-/;
 
 ### 4.2 基本的な使用例
 
-**簡易版での全体チェック**:
+**簡易版での全体チェック（デフォルト）**:
 
 ```bash
 yarn check:utilities:ts
 # 出力例:
-# ✅ All 1,330 utility classes are properly generated
-# Categories verified: 12
-# Execution time: 0.0 seconds
+# ✅ Core Utility Classes Analysis Report
+# 📊 Statistics:
+#    - Total utility classes generated: 1,292
+#    - Template classes excluded: 38
+#    - Mode: Excluding template classes (default)
+```
+
+**テンプレートクラスを含む全体チェック**:
+
+```bash
+yarn check:utilities:ts --include-templates
+# 出力例:
+# ✅ Core Utility Classes Analysis Report
+# 📊 Statistics:
+#    - Total utility classes generated: 1,330
+#    - Template classes included: 38
+#    - Mode: Including template classes
 ```
 
 **特定カテゴリのチェック**:
 
 ```bash
-yarn check:utilities:ts -c fontSize
+yarn check:utilities:ts -c spacing --verbose
 # 出力例:
-# ✅ fontSize: 9 classes verified
+# ✅ spacing: 323 classes (17 templates)
 ```
 
 **詳細出力モード**:
 
 ```bash
 yarn check:utilities:ts --verbose
-# 各カテゴリの詳細統計を表示
+# 各カテゴリの詳細統計とテンプレート情報を表示
 ```
 
 **完全版での詳細分析**:
@@ -239,40 +321,84 @@ yarn check:utilities:ts --verbose
 ```bash
 yarn check:utilities:full
 # 詳細レポート、統計、比較結果を表示
+yarn check:utilities:full --include-templates
+# テンプレートクラスを含む詳細分析
 ```
 
 **JSON出力**:
 
 ```bash
 yarn check:utilities:full --format json > verification-result.json
+yarn check:utilities:ts --format json --include-templates > analysis-with-templates.json
+```
+
+**サマリー出力**:
+
+```bash
+yarn check:utilities:ts --format summary
+# 出力例: Core analysis: 1292 classes (without templates) in 0.0s
+
+yarn check:utilities:ts --format summary --include-templates
+# 出力例: Core analysis: 1330 classes (with templates) in 0.0s
 ```
 
 ### 4.3 出力形式
 
 #### 成功時の例
 
+**デフォルトモード（テンプレートクラス除外）**:
+
 ```
-✅ Utility Class Verification Complete
+✅ Core Utility Classes Analysis Report
 
-📊 Verification Summary:
-- Total Classes: 1,330
-- Categories: 12
-- All Matches: ✓
-- Execution Time: 0.06 seconds
+📊 Statistics:
+   - Total utility classes generated: 1,292
+   - Template classes excluded: 38
+   - Mode: Excluding template classes (default)
+   - Analysis time: 0.0s
 
-📈 Category Breakdown:
-- display: 17 classes
-- spacing: 340 classes
-- flexbox: 67 classes
-- positioning: 5 classes
-- zIndex: 8 classes
-- overflow: 15 classes
-- order: 16 classes
-- grid: 119 classes
-- width: 99 classes
-- height: 99 classes
-- color: 536 classes
-- fontSize: 9 classes
+📋 Classes by category:
+   - display: 17 classes
+   - spacing: 323 classes (17 templates)
+   - flexbox: 67 classes
+   - positioning: 5 classes
+   - zIndex: 7 classes (1 templates)
+   - overflow: 15 classes
+   - order: 15 classes (1 templates)
+   - grid: 111 classes (8 templates)
+   - width: 96 classes (3 templates)
+   - height: 96 classes (3 templates)
+   - color: 532 classes (4 templates)
+   - fontSize: 8 classes (1 templates)
+
+💡 Next steps:
+   - Use --include-templates to include template classes in count
+```
+
+**テンプレートクラス込みモード**:
+
+```
+✅ Core Utility Classes Analysis Report
+
+📊 Statistics:
+   - Total utility classes generated: 1,330
+   - Template classes included: 38
+   - Mode: Including template classes
+   - Analysis time: 0.0s
+
+📋 Classes by category:
+   - display: 17 classes
+   - spacing: 340 classes (17 templates)
+   - flexbox: 67 classes
+   - positioning: 5 classes
+   - zIndex: 8 classes (1 templates)
+   - overflow: 15 classes
+   - order: 16 classes (1 templates)
+   - grid: 119 classes (8 templates)
+   - width: 99 classes (3 templates)
+   - height: 99 classes (3 templates)
+   - color: 536 classes (4 templates)
+   - fontSize: 9 classes (1 templates)
 ```
 
 #### エラー時の例
@@ -404,6 +530,31 @@ yarn check:utilities:full --format summary
 yarn check:utilities:full --format json | jq '.categories.spacing'
 ```
 
+### 7.3 新しいCLIオプション
+
+**`--include-templates` / `-t`**
+
+テンプレートクラス（任意値用のテンプレート）を検証対象に含めるかどうかを制御します。
+
+```bash
+# デフォルト（テンプレートクラスを除外）
+yarn check:utilities:ts
+# 結果: 1,292クラス
+
+# テンプレートクラスを含む
+yarn check:utilities:ts --include-templates
+# 結果: 1,330クラス
+
+# 短縮形
+yarn check:utilities:ts -t
+```
+
+**用途別推奨オプション**:
+
+- **日常開発**: デフォルト（テンプレート除外）で実際のクラス数を確認
+- **デバッグ**: `--include-templates`でテンプレートクラス生成を確認
+- **ドキュメント作成**: 目的に応じてどちらかを選択
+
 ## 8. 今後の開発への教訓
 
 ### 8.1 技術選択における考慮事項
@@ -424,16 +575,18 @@ yarn check:utilities:full --format json | jq '.categories.spacing'
 
 **問題解決のアプローチ**
 
-1. 根本原因の特定（Yarn PnP問題）
+1. 根本原因の特定（Yarn PnP問題、テンプレートクラス混入問題）
 2. 複数解決策の試行（TypeScript設定、SDK、実行方法）
 3. 代替手段の検討（JavaScript変換）
 4. 実用性重視の判断
+5. **継続的改善**: ユーザーフィードバックによる検証システムの精度向上
 
 **品質保証の自動化**
 
 - 手動確認の自動化による効率向上
 - CI/CD統合による継続的品質保証
 - 詳細レポートによる問題の早期発見
+- **柔軟な検証オプション**: 用途に応じた検証モードの提供
 
 ### 8.3 メンテナンス性の確保
 
@@ -474,15 +627,18 @@ function addCategory(name, pattern) {
 
 ### 9.1 技術的成果
 
-- **1,330クラスの自動検証**: 手動確認の完全自動化
+- **1,292クラス + 38テンプレートクラスの自動検証**: 手動確認の完全自動化
+- **正確なクラス分類**: 実際のユーティリティクラスとテンプレートクラスの適切な分離
 - **高速実行**: 0.0秒〜0.06秒での検証完了
 - **包括的カバレッジ**: 12カテゴリの完全検証
+- **柔軟な検証オプション**: 用途に応じたテンプレートクラス含有/除外の選択
 
 ### 9.2 開発プロセスの改善
 
 - **問題解決能力**: Yarn PnP環境での複雑な問題を解決
 - **実用的判断**: TypeScript vs JavaScript の適切な選択
 - **段階的実装**: 簡易版→完全版の効率的な開発
+- **継続的改善**: ユーザーフィードバックによるテンプレートクラス除外機能の追加
 
 ### 9.3 将来への適用
 
@@ -491,3 +647,5 @@ function addCategory(name, pattern) {
 - **実用性重視の設計**: 用途別のツール提供
 
 このシステムは、プロジェクトの品質保証基盤として機能し、今後の開発効率向上に大きく貢献することが期待されます。
+
+特に今回のテンプレートクラス除外機能の追加により、検証の正確性が大幅に向上し、実際のユーティリティクラス数（1,292クラス）と任意値テンプレートクラス（38クラス）を適切に分離できるようになりました。これにより、開発者はより正確な品質指標に基づいて開発を進めることができます。

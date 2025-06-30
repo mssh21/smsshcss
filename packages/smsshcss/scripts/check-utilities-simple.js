@@ -62,10 +62,13 @@ const CORE_GENERATORS = {
 /**
  * 期待されるCSSの生成とクラス数の計算
  */
-function generateAndAnalyzeCSS(categories) {
+function generateAndAnalyzeCSS(categories, options = {}) {
+  const { includeTemplates = false } = options;
+
   const cssBlocks = [];
   const categoryStats = {};
   let totalClasses = 0;
+  let totalTemplateClasses = 0;
 
   categories.forEach((category) => {
     const generator = CORE_GENERATORS[category];
@@ -75,10 +78,18 @@ function generateAndAnalyzeCSS(categories) {
         cssBlocks.push(`/* ${category.toUpperCase()} */\n${css}`);
 
         // クラス数をカウント
-        const extracted = extractUtilityClasses(css);
+        const extracted = extractUtilityClasses(css, { includeTemplates });
         const classCount = extracted.classes.length;
-        categoryStats[category] = classCount;
+        const templateCount = extracted.templateClasses.length;
+
+        categoryStats[category] = {
+          classes: classCount,
+          templates: templateCount,
+          total: includeTemplates ? classCount : classCount,
+        };
+
         totalClasses += classCount;
+        totalTemplateClasses += templateCount;
       }
     }
   });
@@ -86,7 +97,9 @@ function generateAndAnalyzeCSS(categories) {
   return {
     css: cssBlocks.join('\n\n'),
     totalClasses,
+    totalTemplateClasses,
     categoryStats,
+    includeTemplates,
   };
 }
 
@@ -100,12 +113,29 @@ function generateSimpleReport(result, executionTime) {
   lines.push('');
   lines.push('📊 Statistics:');
   lines.push(`   - Total utility classes generated: ${result.totalClasses.toLocaleString()}`);
+
+  if (result.includeTemplates) {
+    lines.push(`   - Template classes included: ${result.totalTemplateClasses.toLocaleString()}`);
+    lines.push(`   - Mode: Including template classes`);
+  } else {
+    lines.push(`   - Template classes excluded: ${result.totalTemplateClasses.toLocaleString()}`);
+    lines.push(`   - Mode: Excluding template classes (default)`);
+  }
+
   lines.push(`   - Analysis time: ${(executionTime / 1000).toFixed(1)}s`);
   lines.push('');
 
   lines.push('📋 Classes by category:');
-  Object.entries(result.categoryStats).forEach(([category, count]) => {
-    lines.push(`   - ${category}: ${count} classes`);
+  Object.entries(result.categoryStats).forEach(([category, stats]) => {
+    if (typeof stats === 'object') {
+      const displayCount = result.includeTemplates ? stats.total : stats.classes;
+      lines.push(
+        `   - ${category}: ${displayCount} classes${stats.templates > 0 ? ` (${stats.templates} templates)` : ''}`
+      );
+    } else {
+      // 下位互換性のため
+      lines.push(`   - ${category}: ${stats} classes`);
+    }
   });
 
   lines.push('');
@@ -113,6 +143,10 @@ function generateSimpleReport(result, executionTime) {
   lines.push('   - Run integration tests: yarn test:integration');
   lines.push('   - Check Vite plugin compatibility manually');
   lines.push('   - Review generated CSS output for correctness');
+
+  if (!result.includeTemplates) {
+    lines.push('   - Use --include-templates to include template classes in count');
+  }
 
   return lines.join('\n');
 }
@@ -129,6 +163,7 @@ async function runAnalysis(options) {
     silent = false,
     outputFile,
     format = 'text',
+    includeTemplates = false,
   } = options;
 
   // カテゴリの解析
@@ -140,6 +175,9 @@ async function runAnalysis(options) {
   if (!silent) {
     console.log('[Analysis] Starting core utility classes analysis...');
     console.log('[Analysis] Categories to analyze:', categoriesToAnalyze.join(', '));
+    if (includeTemplates) {
+      console.log('[Analysis] Template classes will be included in counts');
+    }
   }
 
   try {
@@ -147,7 +185,7 @@ async function runAnalysis(options) {
       console.log('[Analysis] Generating CSS from core functions...');
     }
 
-    const result = generateAndAnalyzeCSS(categoriesToAnalyze);
+    const result = generateAndAnalyzeCSS(categoriesToAnalyze, { includeTemplates });
 
     const endTime = performance.now();
     const executionTime = endTime - startTime;
@@ -167,7 +205,8 @@ async function runAnalysis(options) {
         );
         break;
       case 'summary':
-        report = `Core analysis: ${result.totalClasses} classes in ${(executionTime / 1000).toFixed(1)}s`;
+        const modeText = includeTemplates ? 'with templates' : 'without templates';
+        report = `Core analysis: ${result.totalClasses} classes (${modeText}) in ${(executionTime / 1000).toFixed(1)}s`;
         break;
       default:
         report = generateSimpleReport(result, executionTime);
@@ -213,7 +252,8 @@ function setupCLI() {
     .option('-v, --verbose', 'Enable verbose output', false)
     .option('-s, --silent', 'Suppress output (except errors)', false)
     .option('-o, --output-file <file>', 'Save report to file')
-    .option('-f, --format <format>', 'Output format (text|json|summary)', 'text');
+    .option('-f, --format <format>', 'Output format (text|json|summary)', 'text')
+    .option('-t, --include-templates', 'Include template classes in counts', false);
 
   program
     .command('list-categories')

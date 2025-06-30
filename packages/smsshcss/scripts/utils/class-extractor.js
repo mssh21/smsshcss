@@ -31,7 +31,9 @@ const ARBITRARY_VALUE_TEMPLATE_PATTERN = /\\\[\\\$\\\{value\\\}\\\]/;
 /**
  * CSSからユーティリティクラスを抽出してカテゴリ分け
  */
-function extractUtilityClasses(css) {
+function extractUtilityClasses(css, options = {}) {
+  const { includeTemplates = false } = options;
+
   const classNames = Array.from(extractClassNames(css));
   const categories = {};
   const customValues = [];
@@ -44,9 +46,27 @@ function extractUtilityClasses(css) {
   categories.unknown = [];
 
   classNames.forEach((className) => {
-    // 任意値テンプレートクラスをチェック（先にチェックして除外）
+    // 任意値テンプレートクラスをチェック
     if (ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)) {
       templateClasses.push(className);
+
+      // includeTemplatesがtrueの場合は、テンプレートクラスもカテゴリ分類に含める
+      if (includeTemplates) {
+        // テンプレートクラスのカテゴリ分類
+        let categorized = false;
+        for (const [category, pattern] of Object.entries(CATEGORY_PATTERNS)) {
+          // テンプレートクラスからプレフィックス部分を抽出してパターンマッチ
+          const baseClass = className.replace(/\\\[\\\$\\\{value\\\}\\\]$/, '');
+          if (pattern.test(baseClass)) {
+            categories[category].push(className);
+            categorized = true;
+            break;
+          }
+        }
+        if (!categorized) {
+          categories.unknown.push(className);
+        }
+      }
       return;
     }
 
@@ -72,10 +92,13 @@ function extractUtilityClasses(css) {
   });
 
   return {
-    classes: classNames.filter((className) => !ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)), // テンプレートクラスを除外
+    classes: includeTemplates
+      ? classNames
+      : classNames.filter((className) => !ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)), // テンプレートクラスを除外（オプション）
     categories,
     customValues,
     templateClasses, // テンプレートクラスを別途記録
+    includeTemplates, // オプション情報も含める
   };
 }
 

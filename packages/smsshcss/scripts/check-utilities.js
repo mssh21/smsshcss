@@ -161,11 +161,11 @@ function generateExpectedCSS(categories) {
 /**
  * コアのみの簡易検証結果を作成
  */
-function createCoreOnlyVerification(expectedCSS, categories) {
+function createCoreOnlyVerification(expectedCSS, categories, includeTemplates = false) {
   const { extractUtilityClasses } = require('./utils/class-extractor.js');
   const { getCSSStats } = require('./utils/css-parser.js');
 
-  const expectedExtracted = extractUtilityClasses(expectedCSS);
+  const expectedExtracted = extractUtilityClasses(expectedCSS, { includeTemplates });
   const expectedStats = getCSSStats(expectedCSS);
 
   // カテゴリ別結果を作成
@@ -195,6 +195,8 @@ function createCoreOnlyVerification(expectedCSS, categories) {
       expected: expectedStats,
       actual: expectedStats,
     },
+    templateClasses: expectedExtracted.templateClasses,
+    includeTemplates,
   };
 }
 
@@ -213,6 +215,7 @@ async function runVerification(options) {
     allowExtraClasses = false,
     skipPropertyValidation = false,
     debug = false,
+    includeTemplates = false,
   } = options;
 
   // カテゴリの解析
@@ -261,7 +264,11 @@ async function runVerification(options) {
       }
 
       // 簡易検証結果を作成
-      verificationResult = createCoreOnlyVerification(expectedCSS, categoriesToVerify);
+      verificationResult = createCoreOnlyVerification(
+        expectedCSS,
+        categoriesToVerify,
+        includeTemplates
+      );
     }
 
     const endTime = performance.now();
@@ -338,7 +345,8 @@ function setupCLI() {
     .option('-f, --format <format>', 'Output format (text|json|summary)', 'text')
     .option('--allow-extra-classes', 'Allow extra classes in plugin output', false)
     .option('--skip-property-validation', 'Skip CSS property value validation', false)
-    .option('--debug', 'Enable debug mode', false);
+    .option('--debug', 'Enable debug mode', false)
+    .option('-t, --include-templates', 'Include template classes in counts', false);
 
   program
     .command('list-categories')
