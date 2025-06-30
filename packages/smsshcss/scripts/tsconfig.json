@@ -17,7 +17,6 @@
       "~/*": ["src/*"],
       "*": ["node_modules/*"]
     },
-    "types": ["node"],
     "typeRoots": ["../node_modules/@types"]
   },
   "include": ["./**/*.ts", "../src/**/*.ts"],
