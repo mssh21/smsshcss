@@ -9,7 +9,7 @@ const CATEGORY_PATTERNS = {
   flexbox: /^(flex|justify|items|content|self|grow|shrink|basis|wrap)/,
   positioning: /^(absolute|relative|fixed|sticky|static|inset|top|right|bottom|left)/,
   zIndex: /^z-/,
-  overflow: /^overflow-/,
+  overflow: /^overflow/,
   order: /^order-/,
   grid: /^(grid|col|row)-/,
   width: /^(w|min-w|max-w)-/,
