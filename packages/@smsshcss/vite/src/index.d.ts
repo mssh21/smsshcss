@@ -2,22 +2,22 @@ import type { Plugin } from 'vite';
 
 export interface SmsshCSSViteOptions {
   /**
-   * スキャンするファイルパターン
+   * File patterns to scan
    * @default ['index.html', 'src/(all-subdirs)/(all-files).{html,js,ts,jsx,tsx,vue,svelte,astro}']
    */
   content?: string[];
   /**
-   * リセットCSSを含めるかどうか
+   * Whether to include reset CSS
    * @default true
    */
   includeResetCSS?: boolean;
   /**
-   * ベースCSSを含めるかどうか
+   * Whether to include base CSS
    * @default true
    */
   includeBaseCSS?: boolean;
   /**
-   * パージ設定
+   * Purge settings
    */
   purge?: {
     enabled?: boolean;
@@ -28,26 +28,26 @@ export interface SmsshCSSViteOptions {
     variables?: boolean;
   };
   /**
-   * Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+   * Apply settings (define frequently used utility class combinations)
    */
   apply?: Record<string, string>;
   /**
-   * 開発時にパージレポートを表示するかどうか
+   * Whether to show purge report during development
    * @default false
    */
   showPurgeReport?: boolean;
   /**
-   * CSS minifyを有効にするかどうか
+   * Whether to enable CSS minify
    * @default true
    */
   minify?: boolean;
   /**
-   * キャッシュを有効にするかどうか
+   * Whether to enable cache
    * @default true
    */
   cache?: boolean;
   /**
-   * デバッグログを有効にするかどうか
+   * Whether to enable debug log
    * @default false
    */
   debug?: boolean;

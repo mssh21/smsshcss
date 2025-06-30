@@ -4,7 +4,7 @@ const { Command } = require('commander');
 const { performance } = require('perf_hooks');
 const fs = require('fs');
 
-// コア機能のインポート（ビルドされたモジュールを使用）
+// Import core features (use built module)
 const {
   generateDisplayClasses,
   generateAllSpacingClasses,
@@ -20,11 +20,11 @@ const {
   generateFontSizeClasses,
 } = require('../dist/utils');
 
-// 検証ユーティリティのインポート
+// Import verification utilities
 const { extractUtilityClasses } = require('./utils/class-extractor.js');
 
 /**
- * 利用可能な検証カテゴリ
+ * Available verification categories
  */
 const AVAILABLE_CATEGORIES = [
   'display',
@@ -42,7 +42,7 @@ const AVAILABLE_CATEGORIES = [
 ];
 
 /**
- * コア生成関数のマッピング
+ * Mapping of core generator functions
  */
 const CORE_GENERATORS = {
   display: generateDisplayClasses,
@@ -60,7 +60,7 @@ const CORE_GENERATORS = {
 };
 
 /**
- * 期待されるCSSの生成とクラス数の計算
+ * Generate expected CSS and count classes
  */
 function generateAndAnalyzeCSS(categories, options = {}) {
   const { includeTemplates = false } = options;
@@ -77,7 +77,7 @@ function generateAndAnalyzeCSS(categories, options = {}) {
       if (css) {
         cssBlocks.push(`/* ${category.toUpperCase()} */\n${css}`);
 
-        // クラス数をカウント
+        // Count classes
         const extracted = extractUtilityClasses(css, { includeTemplates });
         const classCount = extracted.classes.length;
         const templateCount = extracted.templateClasses.length;
@@ -104,7 +104,7 @@ function generateAndAnalyzeCSS(categories, options = {}) {
 }
 
 /**
- * 簡易統計レポート生成
+ * Generate simple statistics report
  */
 function generateSimpleReport(result, executionTime) {
   const lines = [];
@@ -133,7 +133,7 @@ function generateSimpleReport(result, executionTime) {
         `   - ${category}: ${displayCount} classes${stats.templates > 0 ? ` (${stats.templates} templates)` : ''}`
       );
     } else {
-      // 下位互換性のため
+      // Backward compatibility
       lines.push(`   - ${category}: ${stats} classes`);
     }
   });
@@ -152,7 +152,7 @@ function generateSimpleReport(result, executionTime) {
 }
 
 /**
- * メイン処理
+ * Main process
  */
 async function runAnalysis(options) {
   const startTime = performance.now();
@@ -166,7 +166,7 @@ async function runAnalysis(options) {
     includeTemplates = false,
   } = options;
 
-  // カテゴリの解析
+  // Analyze categories
   const categoriesToAnalyze =
     categoryNames.length > 0
       ? categoryNames.filter((cat) => AVAILABLE_CATEGORIES.includes(cat))
@@ -190,7 +190,7 @@ async function runAnalysis(options) {
     const endTime = performance.now();
     const executionTime = endTime - startTime;
 
-    // レポート生成
+    // Generate report
     let report;
     switch (format) {
       case 'json':
@@ -213,7 +213,7 @@ async function runAnalysis(options) {
         break;
     }
 
-    // 出力
+    // Output
     if (outputFile) {
       fs.writeFileSync(outputFile, report, 'utf-8');
       if (!silent) {
@@ -233,7 +233,7 @@ async function runAnalysis(options) {
 }
 
 /**
- * CLI設定
+ * CLI setup
  */
 function setupCLI() {
   const program = new Command();
@@ -273,7 +273,7 @@ function setupCLI() {
       await runAnalysis(options);
     });
 
-  // デフォルトコマンド
+  // Default command
   program.action(async () => {
     const options = program.opts();
     await runAnalysis(options);
@@ -282,7 +282,7 @@ function setupCLI() {
   program.parse();
 }
 
-// CLI実行
+// CLI execution
 if (require.main === module) {
   setupCLI();
 }

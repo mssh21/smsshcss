@@ -2,7 +2,7 @@
 
 const { performance } = require('perf_hooks');
 
-// ビルド済みのコア機能をインポート
+// Import built core features
 try {
   const {
     generateDisplayClasses,
@@ -19,7 +19,7 @@ try {
     generateFontSizeClasses,
   } = require('../dist/utils/index.js');
 
-  // 利用可能なカテゴリ
+  // Available categories
   const CATEGORIES = {
     display: generateDisplayClasses,
     spacing: generateAllSpacingClasses,
@@ -36,7 +36,7 @@ try {
   };
 
   /**
-   * CSSからクラス数を簡易カウント
+   * Simple count of classes from CSS
    */
   function countClasses(css) {
     const matches = css.match(/\.[a-zA-Z][a-zA-Z0-9_-]*\s*{/g) || [];
@@ -44,7 +44,7 @@ try {
   }
 
   /**
-   * メイン検証処理
+   * Main verification process
    */
   function runVerification() {
     const startTime = performance.now();
@@ -57,7 +57,7 @@ try {
     let successCount = 0;
     let failCount = 0;
 
-    // 各カテゴリを検証
+    // Verify each category
     Object.entries(CATEGORIES).forEach(([name, generator]) => {
       try {
         const css = generator();
@@ -104,7 +104,7 @@ try {
   }
 
   /**
-   * 利用可能カテゴリの表示
+   * Display available categories
    */
   function listCategories() {
     console.log('Available utility categories:');
@@ -113,7 +113,7 @@ try {
     });
   }
 
-  // CLI処理
+  // CLI processing
   const args = process.argv.slice(2);
 
   if (args.includes('list-categories') || args.includes('--list')) {

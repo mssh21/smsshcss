@@ -2,20 +2,20 @@
  * SmsshCSS Configuration Example
  * Updated for v2.3.0 with enhanced validation and versioning support
  *
- * このファイルをコピーして `smsshcss.config.js` として使用してください
+ * Copy this file and use it as `smsshcss.config.js`
  *
- * 使用方法:
+ * Usage:
  * 1. cp smsshcss.config.example.js smsshcss.config.js
- * 2. 必要に応じて設定をカスタマイズ
- * 3. npm run validate:config で設定をチェック
+ * 2. Customize the settings as needed
+ * 3. Check the configuration with npm run validate:config
  */
 
 module.exports = {
-  // バージョン情報（v2.3.0から追加）
-  // 設定の互換性チェックとマイグレーション支援に使用されます
+  // Version info (added in v2.3.0)
+  // Used for configuration compatibility checks and migration support
   version: '2.3.0',
 
-  // 📁 スキャン対象のファイルパターン
+  // 📁 File patterns to scan
   content: [
     './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
     './pages/**/*.{js,jsx,ts,tsx}',
@@ -24,7 +24,7 @@ module.exports = {
     // '**/*.html', // すべてのHTMLファイル（パフォーマンスに注意）
   ],
 
-  // 🔒 常に含める CSS クラス（パージされない）
+  // 🔒 CSS classes to always include (not purged)
   safelist: [
     'btn',
     'btn-primary',
@@ -49,40 +49,40 @@ module.exports = {
     /^lg:/,
   ],
 
-  // 📝 基本CSS・リセットCSSの包含設定
-  includeResetCSS: true, // Normalize/Reset CSSを含める
-  includeBaseCSS: true, // 基本スタイルを含める
+  // 📝 Include base CSS and reset CSS
+  includeResetCSS: true, // Include Normalize/Reset CSS
+  includeBaseCSS: true, // Include basic styles
 
-  // 🗜️ CSS パージ設定（本番環境で推奨）
+  // 🗜️ CSS purge settings (recommended for production)
   purge: {
-    enabled: process.env.NODE_ENV === 'production', // 本番環境でのみ有効化
+    enabled: process.env.NODE_ENV === 'production', // Enable only in production
 
-    // パージ対象のファイル（通常はcontentと同じ）
+    // Files to purge (usually same as content)
     content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}', './public/**/*.html'],
 
-    // 保護対象のクラス（削除されない）
+    // Classes to protect (not removed)
     safelist: [
       'dynamic-class-*',
-      /^toast-/, // 動的に追加されるクラス
+      /^toast-/, // Classes dynamically added
     ],
 
-    // 除外対象のクラス（強制的に削除）
+    // Classes to exclude (forcefully removed)
     blocklist: [
       'unused-class',
       'debug-*',
-      'm-2xs', // 使用しない小さすぎるマージン
-      'p-2xs', // 使用しない小さすぎるパディング
-      'gap-2xs', // 使用しない小さすぎるギャップ
+      'm-2xs', // Margin too small to use
+      'p-2xs', // Padding too small to use
+      'gap-2xs', // Gap too small to use
       /^gap-x-2xs/,
       /^gap-y-2xs/,
     ],
 
-    // CSS内の@keyframes、@font-face、CSS変数の処理
-    keyframes: true, // @keyframesを保持
-    fontFace: true, // @font-faceを保持
-    variables: true, // CSS変数を保持
+    // Handling of @keyframes, @font-face, and CSS variables in CSS
+    keyframes: true, // Keep @keyframes
+    fontFace: true, // Keep @font-face
+    variables: true, // Keep CSS variables
 
-    // カスタム抽出器（特定の拡張子に対する処理）
+    // Custom extractor (for specific extensions)
     extractors: [
       {
         extensions: ['vue'],
@@ -91,7 +91,7 @@ module.exports = {
          * @returns {string[]}
          */
         extractor: (content) => {
-          // Vue.jsのテンプレート内のクラス抽出
+          // Extract classes from Vue.js templates
           const classes = [];
           const classMatches = content.match(/class\s*=\s*["']([^"']*?)["']/g);
           if (classMatches) {
@@ -108,95 +108,93 @@ module.exports = {
     ],
   },
 
-  // 🎨 Apply設定（よく使うユーティリティクラスの組み合わせを定義）
-  // theme機能は廃止されました。カスタム値は任意値記法をご利用ください。
+  // 🎨 Apply settings (define frequently used utility class combinations)
+  // The theme feature has been deprecated. Use arbitrary value notation for custom values.
   apply: {
-    // レイアウト系コンポーネント
+    // Layout components
     'main-layout': 'w-lg mx-auto px-lg block',
     container: 'max-w-7xl mx-auto ',
     section: 'py-xl md:py-2xl',
 
-    // カード系コンポーネント
+    // Card components
     card: 'bg-white shadow -lg p-6',
     'card-header': 'pb-sm mb-sm',
     'card-body': 'py-sm',
     'card-footer': 'pt-sm mt-sm',
 
-    // ボタン系コンポーネント
+    // Button components
     btn: ' font-medium transition-colors',
     'btn-primary': 'bg-blue-500 text-white hover:bg-blue-600',
     'btn-secondary': 'bg-gray-200 text-gray-800 hover:bg-gray-300',
 
-    // フォーム系コンポーネント
+    // Form components
     'form-group': 'mb-md',
     'form-label': 'block mb-xs',
     'form-input': 'w-full px-sm py-xs',
 
-    // グリッド系コンポーネント
+    // Grid components
     'grid-container': 'grid grid-cols-12 gap-md',
     'grid-item': 'col-span-12',
 
-    // ヘッダー・フッター
+    // Header and footer
     header: 'py-md',
     footer: 'py-lg mt-auto',
 
-    // カスタムコンポーネントの例
+    // Example of custom components
     'hero-section': 'py-2xl md:py-3xl',
     'feature-box': 'p-lg',
 
-    // よく使うユーティリティの組み合わせ
+    // Frequently used utility combinations
     'flex-center': 'flex justify-center items-center',
     'flex-between': 'flex justify-between items-center',
     'absolute-center': 'absolute',
 
-    // レスポンシブなコンポーネント
+    // Responsive components
     'responsive-grid': 'grid grid-cols-1 gap-md',
     'sidebar-layout': 'flex flex-col gap-lg',
   },
 
-  // 🛠️ 開発者向けオプション
+  // 🛠️ Developer options
   development: {
-    // 開発時はパージを無効化してビルド速度を向上
+    // Disable purge during development to speed up build
     purge: { enabled: false },
-    // 詳細なログ出力
+    // Detailed log output
     verbose: true,
 
-    // バリデーションの有効化
+    // Enable validation
     enableValidation: true,
 
-    // 警告の表示
+    // Show warnings
     showWarnings: true,
 
-    // パージレポートの表示
+    // Show purge report
     showPurgeReport: process.env.NODE_ENV === 'production',
   },
 };
 
-// 🎯 使用可能なスクリプト：
+// 🎯 Available scripts:
 //
-// yarn generate:utility <name>         - 新しいユーティリティクラスを生成
-// pnpm generate:utility <name>         - 新しいユーティリティクラスを生成
-// yarn validate:config                 - 設定ファイルの妥当性をチェック
-// pnpm validate:config                 - 設定ファイルの妥当性をチェック
-// yarn debug:classes                   - 生成されるCSSの詳細情報を表示
-// pnpm debug:classes                   - 生成されるCSSの詳細情報を表示
-
-// 💡 Apply設定の使い方例：
+// yarn generate:utility <name>         - Generate a new utility class
+// pnpm generate:utility <name>         - Generate a new utility class
+// yarn validate:config                 - Check the validity of the config file
+// pnpm validate:config                 - Check the validity of the config file
+// yarn debug:classes                   - Show detailed info of generated CSS
+// pnpm debug:classes                   - Show detailed info of generated CSS
 //
-// Apply設定により、よく使うユーティリティクラスの組み合わせを1つのクラス名で適用できます：
+// 💡 Example usage of Apply settings:
 //
-// 🏗️ レイアウト:
-// <div class="main-layout">            // w-lg mx-auto px-lg block が適用される
-// <div class="container">              // コンテナの設定が適用される
-// <div class="flex-center">            // flex justify-center items-center が適用される
+// With Apply settings, you can apply a frequently used utility class combination with a single class name:
 //
-// 📦 コンポーネント:
-// <div class="card">                   // p-md が適用される
-// <button class="btn">                 // inline-block px-md py-sm が適用される
-// <header class="header">              // py-md が適用される
+// 🏗️ Layout:
+// <div class="main-layout">            // w-lg mx-auto px-lg block will be applied
+// <div class="container">              // Container settings will be applied
+// <div class="flex-center">            // flex justify-center items-center will be applied
 //
-// 💡 カスタム値の使用:
-// カスタム値はカスタムプロパティを使って実装可能です：
-// <div class="m-[var(--custom-margin)]">    // CSS変数を使用したマージン
-// <div class="w-[200px]">                   // 固定幅の指定
-// <div class="p-[1.5rem]">                  // カスタムパディング
+// 📦 Components:
+// <div class="card">                   // p-md will be applied
+// <button class="btn">                 // inline-block px-md py-sm will be applied
+// <header class="header">              // py-md will be applied
+//
+// 💡 Using custom values:
+// Custom values can be implemented using custom properties:
+// <div class="m-[var(--custom-margin)]">    // Margin using CSS variable

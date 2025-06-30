@@ -1,7 +1,7 @@
 /* base.css */
 
 /*
-  1. スムーズなスクロール挙動と基本的なカスタムプロパティ
+  1. Smooth scroll behavior and basic custom properties
 */
 :root {
   scroll-behavior: smooth;
@@ -13,7 +13,7 @@
 }
 
 /*
-  2. プロジェクトの基本的なタイポグラフィと背景色
+  2. Basic project typography and background color
 */
 body {
   font-family:
@@ -22,12 +22,12 @@ body {
   line-height: 1.65;
   color: var(--text-primary);
   background-color: #fff;
-  -webkit-font-smoothing: antialiased; /* フォントのアンチエイリアスを改善 */
+  -webkit-font-smoothing: antialiased; /* Improve font anti-aliasing */
 }
 
 /*
-  3. 見出し要素のスタイル定義
-     reset.cssでリセットされたスタイルに、プロジェクトのデザインを適用
+  3. Heading element style definitions
+     Apply project design to styles reset by reset.css
 */
 h1,
 h2,
@@ -35,9 +35,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 600; /* 例: 少し太めのフォントウェイト */
+  font-weight: 600; /* Example: Slightly bolder font weight */
   line-height: 1.2;
-  margin-bottom: 0.75em; /* 見出しの下に適切なスペースを確保 */
+  margin-bottom: 0.75em; /* Ensure appropriate space below headings */
 }
 
 h1 {
@@ -60,12 +60,12 @@ h6 {
 }
 
 /*
-  4. aタグのスタイル
+  4. Styles for <a> tags
 */
 a {
   color: var(--text-link);
   text-decoration: underline;
-  text-decoration-skip-ink: auto; /* 下線が文字と重ならないように調整 */
+  text-decoration-skip-ink: auto; /* Adjust underline to not overlap text */
 }
 
 a:hover {
@@ -73,7 +73,7 @@ a:hover {
 }
 
 /*
-  5. その他、段落(p)やcodeなど、基本的な要素のスタイル
+  5. Other basic element styles such as paragraph (p) and code
 */
 p {
   margin-top: 0;
@@ -90,14 +90,14 @@ code {
 }
 
 /*
-  6. 画像のデフォルトスタイル
+  6. Default image styles
 */
 img {
   vertical-align: middle;
 }
 
 /*
-  7. フォーム要素の基本的なスタイル
+  7. Basic form element styles
 */
 button,
 input,
