@@ -10,6 +10,7 @@ import { generateAllOrderClasses, extractCustomOrderClasses } from '../utils/ord
 import { generateGridTemplateClasses } from '../utils/grid-template';
 import { generateAllColorClasses, extractCustomColorClasses } from '../utils';
 import { generatePositioningClasses } from '../utils/positioning';
+import { generateOverflowClasses } from '../utils/overflow';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from '../utils/font-size';
 import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
@@ -17,8 +18,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
-import { generateApplyClasses } from '../utils/apply';
-import { debugGenerator, logWarning, performanceTiming, devHelpers } from '../utils/debug';
+import { generateApplyClasses } from '../utils';
+import { debugGenerator, logWarning } from '../utils/debug';
+import { promisify } from 'util';
+import '../utils/apply-plugins';
+
+const readFile = promisify(fs.readFile);
 
 /**
  * CSS Generator のオプション
@@ -58,8 +63,8 @@ export class CSSGenerator {
       this.validateConfiguration();
     }
 
-    this.resetCSS = this.loadResetCSS();
-    this.baseCSS = this.loadBaseCSS();
+    this.resetCSS = '';
+    this.baseCSS = '';
 
     // パージが明示的に有効な場合、またはパージ設定があってenabledがfalseでない場合はパージャーを初期化
     if (
@@ -72,6 +77,16 @@ export class CSSGenerator {
         ...this.config.purge,
       });
     }
+  }
+
+  /**
+   * CSSファイルを非同期で初期化
+   */
+  private async initializeCSSFiles(): Promise<void> {
+    const [resetCSS, baseCSS] = await Promise.all([this.loadResetCSS(), this.loadBaseCSS()]);
+
+    this.resetCSS = resetCSS;
+    this.baseCSS = baseCSS;
   }
 
   /**
@@ -93,7 +108,7 @@ export class CSSGenerator {
     }
   }
 
-  private loadResetCSS(): string {
+  private async loadResetCSS(): Promise<string> {
     // 複数のパスパターンを試す
     const possiblePaths = this.getCSSFilePaths('reset.css');
     const errors: string[] = [];
@@ -101,7 +116,7 @@ export class CSSGenerator {
     for (const filePath of possiblePaths) {
       try {
         if (fs.existsSync(filePath)) {
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = await readFile(filePath, 'utf-8');
           debugGenerator(`Loaded reset.css from: ${filePath}`);
           return content;
         }
@@ -121,7 +136,7 @@ export class CSSGenerator {
     return '';
   }
 
-  private loadBaseCSS(): string {
+  private async loadBaseCSS(): Promise<string> {
     // 複数のパスパターンを試す
     const possiblePaths = this.getCSSFilePaths('base.css');
     const errors: string[] = [];
@@ -129,7 +144,7 @@ export class CSSGenerator {
     for (const filePath of possiblePaths) {
       try {
         if (fs.existsSync(filePath)) {
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = await readFile(filePath, 'utf-8');
           debugGenerator(`Loaded base.css from: ${filePath}`);
           return content;
         }
@@ -191,6 +206,13 @@ export class CSSGenerator {
   }
 
   public async generate(): Promise<GeneratedCSS> {
+    // CSSファイルを初期化（まだ初期化されていない場合）
+    if (!this.resetCSS && !this.baseCSS) {
+      await this.initializeCSSFiles();
+    }
+
+    console.log('[smsshcss] DEBUG: Starting CSS generation...');
+
     let utilities = [
       generateAllSpacingClasses(),
       generateDisplayClasses(),
@@ -203,8 +225,13 @@ export class CSSGenerator {
       generateAllOrderClasses(),
       generateAllColorClasses(),
       generatePositioningClasses(),
+      generateOverflowClasses(),
       generateFontSizeClasses(),
     ].join('\n\n');
+
+    console.log('[smsshcss] DEBUG: Utilities CSS length:', utilities.length);
+    console.log('[smsshcss] DEBUG: Utilities contains .flex:', utilities.includes('.flex'));
+    console.log('[smsshcss] DEBUG: Utilities contains .h-screen:', utilities.includes('.h-screen'));
 
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
     let reset = this.config.includeResetCSS ? this.resetCSS : '';
@@ -216,28 +243,62 @@ export class CSSGenerator {
     }
 
     // applyクラスを生成
-    let apply = generateApplyClasses(this.config.apply);
+    const apply = generateApplyClasses(this.config.apply);
+    console.log('[Generator] apply variable value:', JSON.stringify(apply));
+    console.log('[Generator] apply variable length:', apply.length);
 
     // パージ処理を実行
     if (this.purger) {
+      console.log('[Generator] Before purge - apply length:', apply.length);
+      console.log('[Generator] Before purge - apply value:', JSON.stringify(apply));
+
       const fileAnalysis = await this.purger.analyzeSourceFiles();
 
       // 各CSSセクションをパージ
       utilities = this.purger.purgeCSS(utilities);
       base = this.purger.purgeCSS(base);
       reset = this.purger.purgeCSS(reset);
-      apply = this.purger.purgeCSS(apply);
+      // Applyクラスは設定で明示的に定義されたクラスなので、パージ処理から除外
+      // apply = this.purger.purgeCSS(apply);
+
+      console.log('[Generator] After purge - apply length:', apply.length);
+      console.log('[Generator] After purge - apply value:', JSON.stringify(apply));
 
       // レポートを生成・表示
       const report = this.purger.generateReport(fileAnalysis);
       this.purger.printReport(report);
     }
 
-    return {
-      utilities,
-      components: apply, // 後方互換性のため、componentsフィールドにapplyの内容を設定
-      base,
+    const css = [
+      '/* SmsshCSS Generated Styles */',
       reset,
+      base,
+      utilities,
+      customClasses.length > 0 ? customClasses.join('\n') : undefined,
+      apply ? `\n${apply}\n` : undefined,
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
+    console.log('[Generator] Final CSS array before join:', [
+      '/* SmsshCSS Generated Styles */',
+      reset ? 'reset' : 'no reset',
+      base ? 'base' : 'no base',
+      utilities ? 'utilities' : 'no utilities',
+      customClasses.length > 0 ? 'customClasses' : 'no customClasses',
+      apply ? 'apply' : 'no apply',
+    ]);
+    console.log('[Generator] apply variable truthy check:', !!apply);
+    console.log('[Generator] apply variable type:', typeof apply);
+    console.log('[Generator] apply variable === "":', apply === '');
+    console.log('[smsshcss] DEBUG: Returning CSS (first 2000 chars):', css.substring(0, 2000));
+    return {
+      css,
+      reset,
+      base,
+      utilities,
+      custom: customClasses.join('\n'),
+      apply,
     };
   }
 
@@ -278,7 +339,7 @@ export class CSSGenerator {
           if (fileCache.has(filePath)) {
             fileContent = fileCache.get(filePath)!;
           } else {
-            fileContent = fs.readFileSync(filePath, 'utf-8');
+            fileContent = await readFile(filePath, 'utf-8');
             fileCache.set(filePath, fileContent);
           }
 
@@ -350,8 +411,8 @@ export class CSSGenerator {
   }
 
   public async generateFullCSS(): Promise<string> {
-    const { utilities, components, base, reset } = await this.generate();
-    return [reset, base, utilities, components].filter(Boolean).join('\n\n');
+    const { css } = await this.generate();
+    return css;
   }
 
   /**
@@ -360,6 +421,11 @@ export class CSSGenerator {
   public async generatePurgeReport(): Promise<PurgeReport | null> {
     if (!this.purger) {
       return null;
+    }
+
+    // CSSファイルを初期化（まだ初期化されていない場合）
+    if (!this.resetCSS && !this.baseCSS) {
+      await this.initializeCSSFiles();
     }
 
     // パージャーのstartTimeを設定
@@ -397,68 +463,5 @@ export class CSSGenerator {
 
     this.purger.extractAllClasses(fullCSS);
     return this.purger.generateReport(fileAnalysis);
-  }
-
-  /**
-   * 同期版CSS生成（非推奨）
-   * @deprecated この関数は非推奨です。generateFullCSS()を使用してください。
-   * 同期版では以下の問題があります：
-   * - ファイルからのカスタムクラス抽出が実行されない
-   * - 大規模なファイル群でブロッキングを引き起こす可能性
-   * - 将来のバージョンで削除される予定
-   * この関数は将来のバージョンで削除される予定です。
-   */
-  public generateFullCSSSync(): string {
-    // 強化された非推奨警告
-    logWarning.deprecation(
-      'generateFullCSSSync()',
-      'generateFullCSS()',
-      'https://github.com/mssh21/smsshcss/docs/migration-guide.md'
-    );
-
-    // パフォーマンス警告
-    logWarning.performance(
-      'generateFullCSSSync() は同期処理のため、大規模なプロジェクトではブロッキングが発生する可能性があります',
-      { method: 'generateFullCSSSync', fileCount: this.config.content?.length || 0 }
-    );
-
-    performanceTiming.start('generateFullCSSSync');
-
-    const utilities = [
-      generateAllSpacingClasses(),
-      generateDisplayClasses(),
-      generateFlexboxClasses(),
-      generateAllWidthClasses(),
-      generateAllHeightClasses(),
-      generateAllGridClasses(),
-      generateGridTemplateClasses(),
-      generateAllZIndexClasses(),
-      generateAllOrderClasses(),
-      generateAllColorClasses(),
-      generatePositioningClasses(),
-      generateFontSizeClasses(),
-    ].join('\n\n');
-
-    // applyクラスを生成
-    const apply = generateApplyClasses(this.config.apply);
-    debugGenerator('Apply config:', this.config.apply);
-    debugGenerator('Generated apply CSS length:', apply.length);
-
-    const result = [
-      this.config.includeResetCSS ? this.resetCSS : '',
-      this.config.includeBaseCSS ? this.baseCSS : '',
-      utilities,
-      apply,
-    ]
-      .filter(Boolean)
-      .join('\n\n');
-
-    const sections = result.split('\n\n').filter((s) => s);
-    debugGenerator('Total CSS sections:', sections.length);
-    devHelpers.logGeneratedSections(sections);
-
-    performanceTiming.end('generateFullCSSSync');
-
-    return result;
   }
 }

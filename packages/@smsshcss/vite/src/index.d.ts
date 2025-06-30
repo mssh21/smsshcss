@@ -10,12 +10,12 @@ export interface SmsshCSSViteOptions {
    * リセットCSSを含めるかどうか
    * @default true
    */
-  includeReset?: boolean;
+  includeResetCSS?: boolean;
   /**
    * ベースCSSを含めるかどうか
    * @default true
    */
-  includeBase?: boolean;
+  includeBaseCSS?: boolean;
   /**
    * パージ設定
    */

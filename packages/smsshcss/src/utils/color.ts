@@ -2,8 +2,8 @@ import { ColorConfig } from '../core/types';
 import {
   defaultColorConfig,
   escapeColorValue,
-  formatColorFunctionValue,
-} from '../core/colorConfig';
+  formatColorCSSFunctionValue,
+} from '../config/colorConfig';
 import { generateUtilityClasses } from './index';
 
 /**
@@ -21,7 +21,7 @@ const customValuePattern = /\b(text|bg|border|fill)-\[([^\]]+)\]/g;
  */
 function generateCustomColorClass(prefix: string, value: string): string | null {
   const cssMathFunctions = /\b(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(/;
-  const originalValue = cssMathFunctions.test(value) ? formatColorFunctionValue(value) : value;
+  const originalValue = cssMathFunctions.test(value) ? formatColorCSSFunctionValue(value) : value;
 
   if (prefix === 'text') {
     return `.text-\\[${escapeColorValue(value)}\\] { color: ${originalValue}; }`;
@@ -89,7 +89,7 @@ export function generateBgClasses(config: Record<string, string> = defaultColor)
   );
 }
 
-export function generateBorderClasses(config: Record<string, string> = defaultColor): string {
+export function generateBorderColorClasses(config: Record<string, string> = defaultColor): string {
   return generateUtilityClasses(
     {
       prefix: 'border',
@@ -121,7 +121,7 @@ export function generateAllColorClasses(customConfig?: Record<string, string>): 
   return [
     generateColorClasses(config),
     generateBgClasses(config),
-    generateBorderClasses(config),
+    generateBorderColorClasses(config),
     generateFillClasses(config),
   ].join('\n\n');
 }

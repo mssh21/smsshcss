@@ -8,7 +8,7 @@
   </head>
   <body>
     <!-- ヒーローヘッダー -->
-    <header class="hero-header mb-[80px] flex-[1]">
+    <header class="hero-header mb-[80px] flex-[1] overflow-scroll">
       <div class="hero-background">
         <div class="hero-content">
           <!-- メインタイトル部分 -->
@@ -37,7 +37,7 @@
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat-item">
-              <div class="hero-stat-number">9</div>
+              <div class="hero-stat-number">13</div>
               <div class="hero-stat-label">テストページ</div>
             </div>
           </div>
@@ -133,6 +133,20 @@
               <a href="./grid.html" class="test-card-link">テストページを開く →</a>
             </div>
 
+            <!-- Positioning -->
+            <div class="test-card">
+              <h3 class="test-card-title">📍 Positioning Classes</h3>
+              <p class="test-card-desc">
+                ポジション制御クラス<br />Static, Relative, Absolute, Fixed等
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">基本Position</span>
+                <span class="feature-tag">Inset</span>
+                <span class="feature-tag">カスタム値</span>
+              </div>
+              <a href="./positioning.html" class="test-card-link">テストページを開く →</a>
+            </div>
+
             <!-- Color -->
             <div class="test-card">
               <h3 class="test-card-title">🎨 Color Classes</h3>
@@ -156,30 +170,58 @@
               <a href="./apply.html" class="test-card-link">テストページを開く →</a>
             </div>
 
-            <!-- Custom Values -->
+            <!-- Z-Index -->
             <div class="test-card">
-              <h3 class="test-card-title">🎨 Custom Values</h3>
-              <p class="test-card-desc">カスタム値テスト<br />CSS関数, 変数, calc()等</p>
+              <h3 class="test-card-title">📚 Z-Index Classes</h3>
+              <p class="test-card-desc">要素の重ね順制御<br />Z-Index 0-50 + Auto + カスタム値</p>
               <div class="test-card-features">
-                <span class="feature-tag">CSS関数</span>
-                <span class="feature-tag">変数</span>
-                <span class="feature-tag">Calc</span>
+                <span class="feature-tag">レイヤリング</span>
+                <span class="feature-tag">0-50段階</span>
+                <span class="feature-tag">カスタム値</span>
               </div>
-              <a href="./custom-values.html" class="test-card-link">テストページを開く →</a>
+              <a href="./z-index.html" class="test-card-link">テストページを開く →</a>
             </div>
 
-            <!-- Edge Cases -->
+            <!-- Order -->
             <div class="test-card">
-              <h3 class="test-card-title">🔍 Edge Cases</h3>
+              <h3 class="test-card-title">🔢 Order Classes</h3>
               <p class="test-card-desc">
-                エッジケース・特殊値<br />Purge設定, Safelist, Blocklist等
+                FlexboxとGridでの表示順序制御<br />order-1〜order-12 + カスタム値対応
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">Purge</span>
-                <span class="feature-tag">Safelist</span>
-                <span class="feature-tag">Debug</span>
+                <span class="feature-tag">Order 1-12</span>
+                <span class="feature-tag">First/Last</span>
+                <span class="feature-tag">カスタム値</span>
               </div>
-              <a href="./edge-cases.html" class="test-card-link">テストページを開く →</a>
+              <a href="./order.html" class="test-card-link">テストページを開く →</a>
+            </div>
+
+            <!-- Overflow -->
+            <div class="test-card">
+              <h3 class="test-card-title">📦 Overflow Classes</h3>
+              <p class="test-card-desc">
+                要素のオーバーフロー制御<br />Auto, Hidden, Scroll, Clip + X/Y方向
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">基本制御</span>
+                <span class="feature-tag">X/Y分離</span>
+                <span class="feature-tag">Clip</span>
+              </div>
+              <a href="./overflow.html" class="test-card-link">テストページを開く →</a>
+            </div>
+
+            <!-- Font Size -->
+            <div class="test-card">
+              <h3 class="test-card-title">📝 Font Size Classes</h3>
+              <p class="test-card-desc">
+                フォントサイズ制御<br />フィボナッチ数列ベース + カスタム値対応
+              </p>
+              <div class="test-card-features">
+                <span class="feature-tag">Size階層</span>
+                <span class="feature-tag">フィボナッチ</span>
+                <span class="feature-tag">レスポンシブ</span>
+              </div>
+              <a href="./font-size.html" class="test-card-link">テストページを開く →</a>
             </div>
           </div>
         </div>
@@ -219,14 +261,23 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">⚡ Apply Settings</h4>
+              <h4 class="info-card-title">🔗 テストページ状況</h4>
               <div class="info-card-content">
-                <p><strong>組み合わせクラス:</strong></p>
+                <p><strong>利用可能なページ:</strong></p>
                 <ul class="info-list">
-                  <li>50+ Apply設定</li>
-                  <li>Layout系</li>
-                  <li>Component系</li>
-                  <li>Typography系</li>
+                  <li>Spacing Classes ✅</li>
+                  <li>Gap Classes ✅</li>
+                  <li>Width/Height Classes ✅</li>
+                  <li>Positioning Classes ✅</li>
+                  <li>Color Classes ✅</li>
+                  <li>Apply Settings ✅</li>
+                  <li>Order Classes ✅</li>
+                  <li>Display Classes ✅</li>
+                  <li>Flexbox Classes ✅</li>
+                  <li>Grid Classes ✅</li>
+                  <li>Z-Index Classes ✅</li>
+                  <li>Overflow Classes ✅</li>
+                  <li>Font Size Classes ✅</li>
                 </ul>
               </div>
             </div>
@@ -262,12 +313,16 @@
           './spacing.html',
           './gap.html',
           './width-height.html',
+          './positioning.html',
+          './color.html',
+          './apply.html',
+          './order.html',
           './display.html',
           './flexbox.html',
           './grid.html',
-          './apply.html',
-          './custom-values.html',
-          './edge-cases.html',
+          './z-index.html',
+          './overflow.html',
+          './font-size.html',
         ];
 
         pages.forEach((page) => {

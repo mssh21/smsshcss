@@ -1,21 +1,28 @@
-import { generateDisplayClasses } from './display';
+import { generateDisplayClasses, extractCustomDisplayClasses } from './display';
 import { generateAllSpacingClasses, extractCustomSpacingClasses } from './spacing';
 import { generateFlexboxClasses, extractCustomFlexClasses } from './flexbox';
-import { generatePositioningClasses } from './positioning';
+import { generatePositioningClasses, extractCustomPositioningClasses } from './positioning';
 import { generateZIndexClasses, extractCustomZIndexClasses } from './z-index';
-import { generateOverflowClasses } from './overflow';
+import { generateOverflowClasses, extractCustomOverflowClasses } from './overflow';
 import { generateOrderClasses, extractCustomOrderClasses } from './order';
 import { generateGridClasses, extractCustomGridClasses } from './grid';
 import { generateAllWidthClasses, extractCustomWidthClasses } from './width';
 import { generateAllHeightClasses, extractCustomHeightClasses } from './height';
 import { generateAllColorClasses, extractCustomColorClasses } from './color';
 import { generateFontSizeClasses, extractCustomFontSizeClasses } from './font-size';
-import { formatCSSFunctionValue } from '../core/sizeConfig';
-import { formatColorFunctionValue } from '../core/colorConfig';
-import { generateApplyClasses } from './apply';
+
+// 新しいプラグインベースのApplyシステム
+import './apply-plugins'; // プラグインの自動登録を実行
+export * from './apply-plugins';
+
+// 従来のApply機能（後方互換性のため）
+export { generateApplyClasses as legacyGenerateApplyClasses } from './apply-plugins';
 
 // Export debug utilities for enhanced development experience
 export * from './debug';
+
+// Export value helpers for centralized value management
+export * from './value-helpers';
 
 // ユーティリティクラスの生成
 export function createUtilityClass(name: string, value: string): string {
@@ -235,7 +242,6 @@ export {
   generateAllHeightClasses,
   generateAllColorClasses,
   generateFontSizeClasses,
-  generateApplyClasses,
   extractCustomSpacingClasses,
   extractCustomFlexClasses,
   extractCustomZIndexClasses,
@@ -245,4 +251,7 @@ export {
   extractCustomHeightClasses,
   extractCustomColorClasses,
   extractCustomFontSizeClasses,
+  extractCustomPositioningClasses,
+  extractCustomDisplayClasses,
+  extractCustomOverflowClasses,
 };

@@ -1,4 +1,5 @@
 import { SmsshCSSConfig } from './types';
+import { z } from 'zod';
 
 /**
  * 設定バリデーションの結果
@@ -33,23 +34,155 @@ export interface ValidationWarning {
 }
 
 /**
- * SmsshCSSConfig の妥当性をチェックする
+ * 設定ファイルのバージョン管理
+ */
+export interface ConfigVersionInfo {
+  version: string;
+  compatibleVersions: string[];
+  migrationRequired: boolean;
+  migrationGuide?: string;
+}
+
+/**
+ * SmsshCSS設定のZodスキーマ
+ */
+const SmsshCSSConfigSchema = z
+  .object({
+    // バージョン情報（新規追加）
+    version: z.string().optional().default('2.3.0'),
+
+    // 必須項目
+    content: z.array(z.string()).min(1, 'Content array must contain at least one pattern'),
+
+    // オプション項目
+    includeResetCSS: z.boolean().optional().default(true),
+    includeBaseCSS: z.boolean().optional().default(true),
+
+    // セーフリスト
+    safelist: z
+      .array(z.union([z.string(), z.instanceof(RegExp)]))
+      .optional()
+      .default([]),
+
+    // Apply設定
+    apply: z.record(z.string(), z.string()).optional(),
+
+    // パージ設定
+    purge: z
+      .object({
+        enabled: z.boolean().optional().default(false),
+        content: z.array(z.string()).optional(),
+        safelist: z
+          .array(z.union([z.string(), z.instanceof(RegExp)]))
+          .optional()
+          .default([]),
+        blocklist: z
+          .array(z.union([z.string(), z.instanceof(RegExp)]))
+          .optional()
+          .default([]),
+        keyframes: z.boolean().optional().default(true),
+        fontFace: z.boolean().optional().default(true),
+        variables: z.boolean().optional().default(true),
+        extractors: z
+          .array(
+            z.object({
+              extensions: z.array(z.string()),
+              extractor: z.function().args(z.string()).returns(z.array(z.string())),
+            })
+          )
+          .optional(),
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      // パージが有効な場合、コンテンツが必要
+      if (data.purge?.enabled === true) {
+        return data.purge.content && data.purge.content.length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'purge.content is required when purge is enabled',
+      path: ['purge', 'content'],
+    }
+  );
+
+/**
+ * サポートされているバージョンとの互換性チェック
+ */
+export function checkVersionCompatibility(configVersion?: string): ConfigVersionInfo {
+  const currentVersion = '2.3.0';
+  const supportedVersions = ['2.0.0', '2.1.0', '2.2.0', '2.3.0'];
+  const version = configVersion || currentVersion;
+
+  const isCompatible = supportedVersions.includes(version);
+  const isOlder = version < currentVersion;
+
+  return {
+    version,
+    compatibleVersions: supportedVersions,
+    migrationRequired: !isCompatible || isOlder,
+    migrationGuide: !isCompatible ? 'https://smsshcss.com/docs/migration' : undefined,
+  };
+}
+
+/**
+ * SmsshCSSConfig の妥当性をZodでチェックする
  */
 export function validateConfig(config: SmsshCSSConfig): ValidationResult {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const suggestions: string[] = [];
 
-  // 基本的な設定チェック
-  validateBasicConfig(config, errors, warnings);
-
-  // パージ設定のチェック
-  if (config.purge) {
-    validatePurgeConfig(config.purge, errors, warnings);
+  // バージョン互換性チェック
+  const versionInfo = checkVersionCompatibility(
+    (config as Record<string, unknown>).version as string | undefined
+  );
+  if (versionInfo.migrationRequired) {
+    if (versionInfo.version !== '2.3.0') {
+      warnings.push({
+        type: 'warning',
+        code: 'VERSION_MISMATCH',
+        message: `Configuration version ${versionInfo.version} is outdated. Current version: 2.3.0`,
+        path: 'version',
+        suggestion: versionInfo.migrationGuide
+          ? `See migration guide: ${versionInfo.migrationGuide}`
+          : 'Consider updating your configuration',
+      });
+    }
   }
 
-  // サジェスションの生成
-  generateSuggestions(config, suggestions);
+  try {
+    // Zodスキーマでバリデーション
+    const result = SmsshCSSConfigSchema.parse(config);
+
+    // 追加のカスタムバリデーション
+    validateAdvancedRules(result, warnings, suggestions);
+  } catch (zodError) {
+    if (zodError instanceof z.ZodError) {
+      // Zodエラーを変換
+      zodError.errors.forEach((error) => {
+        errors.push({
+          type: 'error',
+          code: error.code.toUpperCase(),
+          message: error.message,
+          path: error.path.join('.'),
+          fix: generateFixSuggestion(error),
+        });
+      });
+    } else {
+      errors.push({
+        type: 'error',
+        code: 'UNKNOWN_ERROR',
+        message: 'An unknown validation error occurred',
+        fix: 'Check your configuration syntax',
+      });
+    }
+  }
+
+  // 基本的なベストプラクティスチェック
+  validateBestPractices(config, warnings, suggestions);
 
   return {
     isValid: errors.length === 0,
@@ -60,191 +193,110 @@ export function validateConfig(config: SmsshCSSConfig): ValidationResult {
 }
 
 /**
- * 基本設定のバリデーション
+ * 高度なバリデーションルール
  */
-function validateBasicConfig(
-  config: SmsshCSSConfig,
-  errors: ValidationError[],
-  warnings: ValidationWarning[]
+function validateAdvancedRules(
+  config: z.infer<typeof SmsshCSSConfigSchema>,
+  warnings: ValidationWarning[],
+  _suggestions: string[]
 ): void {
-  // content フィールドのチェック
-  if (!config.content || !Array.isArray(config.content)) {
-    errors.push({
-      type: 'error',
-      code: 'MISSING_CONTENT',
-      message: 'content field is required and must be an array',
-      path: 'content',
-      fix: 'Add content: ["./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}"]',
-    });
-  } else if (config.content.length === 0) {
-    warnings.push({
-      type: 'warning',
-      code: 'EMPTY_CONTENT',
-      message: 'content array is empty - no CSS will be generated',
-      path: 'content',
-      suggestion: 'Add file patterns to scan for CSS classes',
-    });
-  } else {
-    // ファイルパターンの妥当性チェック
-    config.content.forEach((pattern, index) => {
-      if (typeof pattern !== 'string') {
-        errors.push({
-          type: 'error',
-          code: 'INVALID_CONTENT_PATTERN',
-          message: `content[${index}] must be a string`,
-          path: `content[${index}]`,
-        });
-      } else if (!pattern.includes('*') && !pattern.includes('.')) {
+  // コンテンツパターンの妥当性チェック
+  config.content.forEach((pattern, index) => {
+    if (!pattern.includes('*') && !pattern.includes('.')) {
+      warnings.push({
+        type: 'warning',
+        code: 'SUSPICIOUS_PATTERN',
+        message: `content[${index}] doesn't look like a file pattern`,
+        path: `content[${index}]`,
+        suggestion: 'Consider using glob patterns like "src/**/*.{html,js,ts}"',
+      });
+    }
+
+    // パフォーマンス警告
+    if (pattern === '**/*' || pattern === '**/*.*') {
+      warnings.push({
+        type: 'warning',
+        code: 'PERFORMANCE_WARNING',
+        message: `content[${index}] is too broad and may impact performance`,
+        path: `content[${index}]`,
+        suggestion: 'Use more specific patterns to improve performance',
+      });
+    }
+  });
+
+  // Apply設定の詳細チェック
+  if (config.apply) {
+    Object.entries(config.apply).forEach(([key, value]) => {
+      if (value.trim() === '') {
         warnings.push({
           type: 'warning',
-          code: 'SUSPICIOUS_PATTERN',
-          message: `content[${index}] doesn't look like a file pattern`,
-          path: `content[${index}]`,
-          suggestion: 'Consider using glob patterns like "src/**/*.{html,js,ts}"',
+          code: 'EMPTY_APPLY_VALUE',
+          message: `apply.${key} is empty`,
+          path: `apply.${key}`,
+        });
+      }
+
+      // 循環参照チェック
+      if (value.includes(`@apply ${key}`)) {
+        warnings.push({
+          type: 'warning',
+          code: 'CIRCULAR_APPLY',
+          message: `apply.${key} contains circular reference`,
+          path: `apply.${key}`,
+          suggestion: 'Remove circular @apply references',
         });
       }
     });
   }
+}
 
-  // safelist のチェック
-  if (config.safelist && !Array.isArray(config.safelist)) {
-    errors.push({
-      type: 'error',
-      code: 'INVALID_SAFELIST',
-      message: 'safelist must be an array of strings',
+/**
+ * ベストプラクティスのバリデーション
+ */
+function validateBestPractices(
+  config: SmsshCSSConfig,
+  warnings: ValidationWarning[],
+  suggestions: string[]
+): void {
+  // 開発環境での推奨設定
+  if (process.env.NODE_ENV === 'development') {
+    if (config.purge?.enabled === true) {
+      suggestions.push('Consider disabling purge in development for faster builds');
+    }
+  }
+
+  // 本番環境での推奨設定
+  if (process.env.NODE_ENV === 'production') {
+    if (!config.purge?.enabled) {
+      suggestions.push('Enable purging in production to reduce CSS bundle size');
+    }
+  }
+
+  // セーフリストの妥当性
+  if (config.safelist && config.safelist.length > 100) {
+    warnings.push({
+      type: 'warning',
+      code: 'LARGE_SAFELIST',
+      message: 'Large safelist may impact purging effectiveness',
       path: 'safelist',
+      suggestion: 'Consider using more specific patterns or regular expressions',
     });
   }
-
-  // Boolean フィールドのチェック
-  ['includeResetCSS', 'includeBaseCSS'].forEach((field) => {
-    const value = (config as Record<string, unknown>)[field];
-    if (value !== undefined && typeof value !== 'boolean') {
-      errors.push({
-        type: 'error',
-        code: 'INVALID_BOOLEAN',
-        message: `${field} must be a boolean`,
-        path: field,
-      });
-    }
-  });
-
-  // apply設定のチェック
-  if (config.apply) {
-    validateApplyConfig(config.apply, errors, warnings);
-  }
 }
 
 /**
- * Apply設定のバリデーション
+ * Zodエラーから修正提案を生成
  */
-function validateApplyConfig(
-  apply: NonNullable<SmsshCSSConfig['apply']>,
-  errors: ValidationError[],
-  warnings: ValidationWarning[]
-): void {
-  Object.entries(apply).forEach(([key, value]) => {
-    if (typeof value !== 'string') {
-      errors.push({
-        type: 'error',
-        code: 'INVALID_APPLY_VALUE',
-        message: `apply.${key} must be a string`,
-        path: `apply.${key}`,
-      });
-    } else if (value.trim() === '') {
-      warnings.push({
-        type: 'warning',
-        code: 'EMPTY_APPLY_VALUE',
-        message: `apply.${key} is empty`,
-        path: `apply.${key}`,
-      });
-    }
-  });
-}
-
-/**
- * パージ設定のバリデーション
- */
-function validatePurgeConfig(
-  purge: NonNullable<SmsshCSSConfig['purge']>,
-  errors: ValidationError[],
-  warnings: ValidationWarning[]
-): void {
-  // パージが明示的に有効な場合のみcontentをチェック
-  if (purge.enabled === true) {
-    if (!purge.content || !Array.isArray(purge.content)) {
-      errors.push({
-        type: 'error',
-        code: 'MISSING_PURGE_CONTENT',
-        message: 'purge.content is required when purge is enabled',
-        path: 'purge.content',
-        fix: 'Set purge.content to file patterns array',
-      });
-    } else if (purge.content.length === 0) {
-      warnings.push({
-        type: 'warning',
-        code: 'EMPTY_PURGE_CONTENT',
-        message: 'purge.content is empty',
-        path: 'purge.content',
-      });
-    }
-  }
-
-  // safelist と blocklist の型チェック
-  ['safelist', 'blocklist'].forEach((field) => {
-    const list = (purge as Record<string, unknown>)[field];
-    if (list && !Array.isArray(list)) {
-      errors.push({
-        type: 'error',
-        code: 'INVALID_LIST_TYPE',
-        message: `purge.${field} must be an array`,
-        path: `purge.${field}`,
-      });
-    } else if (list) {
-      (list as unknown[]).forEach((item: unknown, index: number) => {
-        if (typeof item !== 'string' && !(item instanceof RegExp)) {
-          errors.push({
-            type: 'error',
-            code: 'INVALID_LIST_ITEM',
-            message: `purge.${field}[${index}] must be a string or RegExp`,
-            path: `purge.${field}[${index}]`,
-          });
-        }
-      });
-    }
-  });
-}
-
-/**
- * 設定改善の提案を生成
- */
-function generateSuggestions(config: SmsshCSSConfig, suggestions: string[]): void {
-  // パフォーマンス改善の提案
-  if (!config.purge?.enabled) {
-    suggestions.push('Enable purge for smaller CSS bundle size: set purge.enabled to true');
-  }
-
-  // 設定の最適化提案
-  if (config.includeResetCSS === undefined) {
-    suggestions.push('Consider explicitly setting includeResetCSS to true or false');
-  }
-
-  if (config.includeBaseCSS === undefined) {
-    suggestions.push('Consider explicitly setting includeBaseCSS to true or false');
-  }
-
-  // applyクラスの提案
-  if (!config.apply || Object.keys(config.apply).length === 0) {
-    suggestions.push('Consider using apply to define reusable utility combinations');
-  }
-
-  // 開発体験の改善提案
-  if (
-    config.content &&
-    Array.isArray(config.content) &&
-    config.content.some((pattern) => pattern.includes('node_modules'))
-  ) {
-    suggestions.push('Avoid scanning node_modules for better performance');
+function generateFixSuggestion(error: z.ZodIssue): string {
+  switch (error.code) {
+    case 'invalid_type':
+      return `Expected ${error.expected}, received ${error.received}`;
+    case 'too_small':
+      return `Must contain at least ${error.minimum} items`;
+    case 'invalid_string':
+      return 'Must be a valid string';
+    default:
+      return 'Check the configuration format';
   }
 }
 
@@ -252,43 +304,39 @@ function generateSuggestions(config: SmsshCSSConfig, suggestions: string[]): voi
  * バリデーション結果を分かりやすく表示
  */
 export function formatValidationResult(result: ValidationResult): string {
-  const lines: string[] = [];
+  let output = '';
 
-  if (result.isValid) {
-    lines.push('✅ Configuration is valid!');
-  } else {
-    lines.push('❌ Configuration has errors:');
-  }
-
-  // エラーの表示
   if (result.errors.length > 0) {
-    lines.push('\n🚨 Errors:');
-    result.errors.forEach((error) => {
-      lines.push(`  • ${error.message}`);
-      if (error.path) lines.push(`    Path: ${error.path}`);
-      if (error.fix) lines.push(`    Fix: ${error.fix}`);
+    output += '❌ Configuration Errors:\n';
+    result.errors.forEach((error, index) => {
+      output += `  ${index + 1}. [${error.code}] ${error.message}`;
+      if (error.path) output += ` (at: ${error.path})`;
+      if (error.fix) output += `\n     💡 Fix: ${error.fix}`;
+      output += '\n';
     });
+    output += '\n';
   }
 
-  // 警告の表示
   if (result.warnings.length > 0) {
-    lines.push('\n⚠️  Warnings:');
-    result.warnings.forEach((warning) => {
-      lines.push(`  • ${warning.message}`);
-      if (warning.path) lines.push(`    Path: ${warning.path}`);
-      if (warning.suggestion) lines.push(`    Suggestion: ${warning.suggestion}`);
+    output += '⚠️  Configuration Warnings:\n';
+    result.warnings.forEach((warning, index) => {
+      output += `  ${index + 1}. [${warning.code}] ${warning.message}`;
+      if (warning.path) output += ` (at: ${warning.path})`;
+      if (warning.suggestion) output += `\n     💡 Suggestion: ${warning.suggestion}`;
+      output += '\n';
     });
+    output += '\n';
   }
 
-  // 提案の表示
   if (result.suggestions.length > 0) {
-    lines.push('\n💡 Suggestions:');
-    result.suggestions.forEach((suggestion) => {
-      lines.push(`  • ${suggestion}`);
+    output += '💡 Suggestions:\n';
+    result.suggestions.forEach((suggestion, index) => {
+      output += `  ${index + 1}. ${suggestion}\n`;
     });
+    output += '\n';
   }
 
-  return lines.join('\n');
+  return output.trim();
 }
 
 /**
@@ -296,13 +344,47 @@ export function formatValidationResult(result: ValidationResult): string {
  */
 export function validateConfigDetailed(config: SmsshCSSConfig): void {
   const result = validateConfig(config);
-  const formatted = formatValidationResult(result);
-
-  console.log('\n📋 SmsshCSS Configuration Validation:');
-  console.log(formatted);
 
   if (!result.isValid) {
-    console.log('\n❌ Fix the errors above before proceeding.');
-    process.exit(1);
+    const message = formatValidationResult(result);
+    throw new Error(`SmsshCSS Configuration Validation Failed:\n\n${message}`);
   }
+}
+
+/**
+ * 設定ファイルの移行支援
+ */
+export function migrateConfig(
+  config: Record<string, unknown>,
+  targetVersion: string = '2.3.0'
+): SmsshCSSConfig {
+  const migrated = { ...config };
+
+  // バージョン情報の追加（存在しない場合）
+  if (!migrated.version) {
+    migrated.version = targetVersion;
+  }
+
+  // 2.0.x から 2.1.x への移行
+  if (migrated.version.startsWith('2.0')) {
+    // 古いプロパティ名の変換
+    if (migrated.purgeEnabled !== undefined) {
+      migrated.purge = { enabled: migrated.purgeEnabled };
+      delete migrated.purgeEnabled;
+    }
+  }
+
+  // 2.1.x から 2.2.x への移行
+  if (migrated.version.startsWith('2.1')) {
+    // apply設定の正規化
+    if (migrated.components) {
+      migrated.apply = migrated.components;
+      delete migrated.components;
+    }
+  }
+
+  // 最新バージョンに更新
+  migrated.version = targetVersion;
+
+  return migrated as SmsshCSSConfig;
 }

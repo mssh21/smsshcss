@@ -4,10 +4,10 @@ import smsshcss from '@smsshcss/vite';
 export default defineConfig({
   plugins: [
     smsshcss({
-      includeReset: true,
-      includeBase: true,
+      includeResetCSS: true,
+      includeBaseCSS: true,
       minify: false,
-      debug: false,
+      debug: true,
 
       content: [
         './index.html',
@@ -16,14 +16,17 @@ export default defineConfig({
         './width-height.html',
         './gap.html',
         './apply.html',
+        './positioning.html',
         './src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
         './components/**/*.{js,ts,jsx,tsx,vue}',
         './**/*.html',
       ],
 
       apply: {
-        'main-layout': 'w-full max-w-12xl mx-auto px-md',
+        'main-layout': 'w-screen max-w-12xl mx-auto px-md',
         container: 'w-full max-w-4xl mx-auto px-md',
+
+        'section-spacing': 'py-xl px-lg',
 
         'text-notification': 'text-[rgb(255,0,0)]',
         'text-primary': 'text-[#259270]',
@@ -45,6 +48,7 @@ export default defineConfig({
         'width-height': 'width-height.html',
         gap: 'gap.html',
         apply: 'apply.html',
+        positioning: 'positioning.html',
       },
     },
   },

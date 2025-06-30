@@ -15,18 +15,22 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result).toHaveLength(8);
       expect(result[0]).toBe('.m-\\[calc\\(1rem\\+10px\\)\\] { margin: calc(1rem + 10px); }');
       expect(result[1]).toBe(
-        '.mx-\\[calc\\(1rem\\+10px\\)\\] { margin-left: calc(1rem + 10px); margin-right: calc(1rem + 10px); }'
+        '.mx-\\[calc\\(1rem\\+10px\\)\\] { margin-inline: calc(1rem + 10px); }'
       );
       expect(result[2]).toBe(
-        '.my-\\[calc\\(1rem\\+10px\\)\\] { margin-top: calc(1rem + 10px); margin-bottom: calc(1rem + 10px); }'
+        '.my-\\[calc\\(1rem\\+10px\\)\\] { margin-block: calc(1rem + 10px); }'
       );
       expect(result[3]).toBe(
-        '.mr-\\[calc\\(1rem\\+10px\\)\\] { margin-right: calc(1rem + 10px); }'
+        '.mr-\\[calc\\(1rem\\+10px\\)\\] { margin-inline-end: calc(1rem + 10px); }'
       );
-      expect(result[4]).toBe('.ml-\\[calc\\(1rem\\+10px\\)\\] { margin-left: calc(1rem + 10px); }');
-      expect(result[5]).toBe('.mt-\\[calc\\(1rem\\+10px\\)\\] { margin-top: calc(1rem + 10px); }');
+      expect(result[4]).toBe(
+        '.ml-\\[calc\\(1rem\\+10px\\)\\] { margin-inline-start: calc(1rem + 10px); }'
+      );
+      expect(result[5]).toBe(
+        '.mt-\\[calc\\(1rem\\+10px\\)\\] { margin-block-start: calc(1rem + 10px); }'
+      );
       expect(result[6]).toBe(
-        '.mb-\\[calc\\(1rem\\+10px\\)\\] { margin-bottom: calc(1rem + 10px); }'
+        '.mb-\\[calc\\(1rem\\+10px\\)\\] { margin-block-end: calc(1rem + 10px); }'
       );
       expect(result[7]).toBe(
         '.m-\\[calc\\(\\(1rem\\+10px\\)\\/2\\)\\] { margin: calc((1rem + 10px) / 2); }'
@@ -41,22 +45,22 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result).toHaveLength(8);
       expect(result[0]).toBe('.p-\\[calc\\(100\\%\\-20px\\)\\] { padding: calc(100% - 20px); }');
       expect(result[1]).toBe(
-        '.px-\\[calc\\(100\\%\\-20px\\)\\] { padding-left: calc(100% - 20px); padding-right: calc(100% - 20px); }'
+        '.px-\\[calc\\(100\\%\\-20px\\)\\] { padding-inline: calc(100% - 20px); }'
       );
       expect(result[2]).toBe(
-        '.py-\\[calc\\(100\\%\\-20px\\)\\] { padding-top: calc(100% - 20px); padding-bottom: calc(100% - 20px); }'
+        '.py-\\[calc\\(100\\%\\-20px\\)\\] { padding-block: calc(100% - 20px); }'
       );
       expect(result[3]).toBe(
-        '.pr-\\[calc\\(100\\%\\-20px\\)\\] { padding-right: calc(100% - 20px); }'
+        '.pr-\\[calc\\(100\\%\\-20px\\)\\] { padding-inline-end: calc(100% - 20px); }'
       );
       expect(result[4]).toBe(
-        '.pl-\\[calc\\(100\\%\\-20px\\)\\] { padding-left: calc(100% - 20px); }'
+        '.pl-\\[calc\\(100\\%\\-20px\\)\\] { padding-inline-start: calc(100% - 20px); }'
       );
       expect(result[5]).toBe(
-        '.pt-\\[calc\\(100\\%\\-20px\\)\\] { padding-top: calc(100% - 20px); }'
+        '.pt-\\[calc\\(100\\%\\-20px\\)\\] { padding-block-start: calc(100% - 20px); }'
       );
       expect(result[6]).toBe(
-        '.pb-\\[calc\\(100\\%\\-20px\\)\\] { padding-bottom: calc(100% - 20px); }'
+        '.pb-\\[calc\\(100\\%\\-20px\\)\\] { padding-block-end: calc(100% - 20px); }'
       );
       expect(result[7]).toBe(
         '.p-\\[calc\\(\\(100\\%\\-20px\\)\\*2\\)\\] { padding: calc((100% - 20px) * 2); }'
@@ -149,7 +153,9 @@ describe('Enhanced CSS Functions Support', () => {
       const result = extractCustomSpacingClasses(content);
 
       expect(result).toHaveLength(1);
-      expect(result[0]).toBe('.ml-\\[min\\(50px\\,10vw\\)\\] { margin-left: min(50px, 10vw); }');
+      expect(result[0]).toBe(
+        '.ml-\\[min\\(50px\\,10vw\\)\\] { margin-inline-start: min(50px, 10vw); }'
+      );
     });
 
     it('should handle min() with two values', () => {
@@ -195,12 +201,8 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(3);
       expect(result[0]).toBe('.m-\\[max\\(1rem\\,20px\\)\\] { margin: max(1rem, 20px); }');
-      expect(result[1]).toBe(
-        '.mx-\\[max\\(1rem\\,20px\\)\\] { margin-left: max(1rem, 20px); margin-right: max(1rem, 20px); }'
-      );
-      expect(result[2]).toBe(
-        '.my-\\[max\\(1rem\\,20px\\)\\] { margin-top: max(1rem, 20px); margin-bottom: max(1rem, 20px); }'
-      );
+      expect(result[1]).toBe('.mx-\\[max\\(1rem\\,20px\\)\\] { margin-inline: max(1rem, 20px); }');
+      expect(result[2]).toBe('.my-\\[max\\(1rem\\,20px\\)\\] { margin-block: max(1rem, 20px); }');
     });
 
     it('should handle max() with percentage and viewport units', () => {
@@ -211,10 +213,10 @@ describe('Enhanced CSS Functions Support', () => {
       expect(result).toHaveLength(3);
       expect(result[0]).toBe('.p-\\[max\\(0\\.5rem\\,1vw\\)\\] { padding: max(0.5rem, 1vw); }');
       expect(result[1]).toBe(
-        '.px-\\[max\\(0\\.5rem\\,1vw\\)\\] { padding-left: max(0.5rem, 1vw); padding-right: max(0.5rem, 1vw); }'
+        '.px-\\[max\\(0\\.5rem\\,1vw\\)\\] { padding-inline: max(0.5rem, 1vw); }'
       );
       expect(result[2]).toBe(
-        '.py-\\[max\\(0\\.5rem\\,1vw\\)\\] { padding-top: max(0.5rem, 1vw); padding-bottom: max(0.5rem, 1vw); }'
+        '.py-\\[max\\(0\\.5rem\\,1vw\\)\\] { padding-block: max(0.5rem, 1vw); }'
       );
     });
 
@@ -280,10 +282,10 @@ describe('Enhanced CSS Functions Support', () => {
         '.p-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { padding: clamp(0.5rem, 2vw, 2rem); }'
       );
       expect(result[1]).toBe(
-        '.px-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { padding-left: clamp(0.5rem, 2vw, 2rem); padding-right: clamp(0.5rem, 2vw, 2rem); }'
+        '.px-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { padding-inline: clamp(0.5rem, 2vw, 2rem); }'
       );
       expect(result[2]).toBe(
-        '.py-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { padding-top: clamp(0.5rem, 2vw, 2rem); padding-bottom: clamp(0.5rem, 2vw, 2rem); }'
+        '.py-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { padding-block: clamp(0.5rem, 2vw, 2rem); }'
       );
     });
 
@@ -511,7 +513,7 @@ describe('Enhanced CSS Functions Support', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toBe(
-        '.mt-\\[clamp\\(calc\\(1rem\\+5px\\)\\,4vw\\,calc\\(3rem\\-10px\\)\\)\\] { margin-top: clamp(calc(1rem + 5px), 4vw, calc(3rem - 10px)); }'
+        '.mt-\\[clamp\\(calc\\(1rem\\+5px\\)\\,4vw\\,calc\\(3rem\\-10px\\)\\)\\] { margin-block-start: clamp(calc(1rem + 5px), 4vw, calc(3rem - 10px)); }'
       );
     });
 

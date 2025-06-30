@@ -64,3 +64,13 @@ export function generateOverflowClasses(customConfig?: OverflowConfig): string {
 
   return classes.join('\n');
 }
+
+/**
+ * Extract custom overflow classes from HTML content
+ * Overflow は主に定義済みクラスを使用するため、現在はカスタム値をサポートしていません
+ */
+export function extractCustomOverflowClasses(_content: string): string[] {
+  // Overflowは現在カスタム値をサポートしていないため、空の配列を返す
+  // 将来的にoverflow-[custom-value]のようなサポートが必要な場合はここで実装
+  return [];
+}

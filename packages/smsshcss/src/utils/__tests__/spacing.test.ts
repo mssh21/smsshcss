@@ -1,9 +1,9 @@
 import { generateSpacingClasses, generateGapClasses, generateAllSpacingClasses } from '../spacing';
-import { defaultSpacingValues } from '../../core/sizeConfig';
+import { defaultSpacingConfig } from '../../config/spacingConfig';
 
 describe('Spacing Utilities', () => {
   // 共通設定から spacing 設定を取得
-  const spacingConfig = defaultSpacingValues;
+  const spacingConfig = defaultSpacingConfig;
 
   describe('generateSpacingClasses', () => {
     it('should generate margin classes with default config', () => {
@@ -32,26 +32,26 @@ describe('Spacing Utilities', () => {
       const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // 方向指定のクラスが含まれているか確認
-      expect(result).toContain('.mt-none { margin-top: 0; }');
-      expect(result).toContain('.mt-auto { margin-top: auto; }');
-      expect(result).toContain('.mr-none { margin-right: 0; }');
-      expect(result).toContain('.mb-none { margin-bottom: 0; }');
-      expect(result).toContain('.ml-none { margin-left: 0; }');
-      expect(result).toContain('.mt-md { margin-top: 1.25rem; }');
-      expect(result).toContain('.mr-md { margin-right: 1.25rem; }');
-      expect(result).toContain('.mb-md { margin-bottom: 1.25rem; }');
-      expect(result).toContain('.ml-md { margin-left: 1.25rem; }');
+      expect(result).toContain('.mt-none { margin-block-start: 0; }');
+      expect(result).toContain('.mt-auto { margin-block-start: auto; }');
+      expect(result).toContain('.mr-none { margin-inline-end: 0; }');
+      expect(result).toContain('.mb-none { margin-block-end: 0; }');
+      expect(result).toContain('.ml-none { margin-inline-start: 0; }');
+      expect(result).toContain('.mt-md { margin-block-start: 1.25rem; }');
+      expect(result).toContain('.mr-md { margin-inline-end: 1.25rem; }');
+      expect(result).toContain('.mb-md { margin-block-end: 1.25rem; }');
+      expect(result).toContain('.ml-md { margin-inline-start: 1.25rem; }');
     });
 
     it('should generate x and y directional classes', () => {
       const result = generateSpacingClasses(spacingConfig, 'margin');
 
       // x, y方向のクラスが含まれているか確認
-      expect(result).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
-      expect(result).toContain('.my-none { margin-top: 0; margin-bottom: 0; }');
-      expect(result).toContain('.my-auto { margin-top: auto; margin-bottom: auto; }');
-      expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
-      expect(result).toContain('.my-md { margin-top: 1.25rem; margin-bottom: 1.25rem; }');
+      expect(result).toContain('.mx-none { margin-inline: 0; }');
+      expect(result).toContain('.my-none { margin-block: 0; }');
+      expect(result).toContain('.my-auto { margin-block: auto; }');
+      expect(result).toContain('.mx-md { margin-inline: 1.25rem; }');
+      expect(result).toContain('.my-md { margin-block: 1.25rem; }');
     });
   });
 
@@ -100,21 +100,21 @@ describe('Spacing Utilities', () => {
 
       // マージンのnoneクラス
       expect(marginResult).toContain('.m-none { margin: 0; }');
-      expect(marginResult).toContain('.mt-none { margin-top: 0; }');
-      expect(marginResult).toContain('.mr-none { margin-right: 0; }');
-      expect(marginResult).toContain('.mb-none { margin-bottom: 0; }');
-      expect(marginResult).toContain('.ml-none { margin-left: 0; }');
-      expect(marginResult).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
-      expect(marginResult).toContain('.my-none { margin-top: 0; margin-bottom: 0; }');
+      expect(marginResult).toContain('.mt-none { margin-block-start: 0; }');
+      expect(marginResult).toContain('.mr-none { margin-inline-end: 0; }');
+      expect(marginResult).toContain('.mb-none { margin-block-end: 0; }');
+      expect(marginResult).toContain('.ml-none { margin-inline-start: 0; }');
+      expect(marginResult).toContain('.mx-none { margin-inline: 0; }');
+      expect(marginResult).toContain('.my-none { margin-block: 0; }');
 
       // パディングのnoneクラス
       expect(paddingResult).toContain('.p-none { padding: 0; }');
-      expect(paddingResult).toContain('.pt-none { padding-top: 0; }');
-      expect(paddingResult).toContain('.pr-none { padding-right: 0; }');
-      expect(paddingResult).toContain('.pb-none { padding-bottom: 0; }');
-      expect(paddingResult).toContain('.pl-none { padding-left: 0; }');
-      expect(paddingResult).toContain('.px-none { padding-left: 0; padding-right: 0; }');
-      expect(paddingResult).toContain('.py-none { padding-top: 0; padding-bottom: 0; }');
+      expect(paddingResult).toContain('.pt-none { padding-block-start: 0; }');
+      expect(paddingResult).toContain('.pr-none { padding-inline-end: 0; }');
+      expect(paddingResult).toContain('.pb-none { padding-block-end: 0; }');
+      expect(paddingResult).toContain('.pl-none { padding-inline-start: 0; }');
+      expect(paddingResult).toContain('.px-none { padding-inline: 0; }');
+      expect(paddingResult).toContain('.py-none { padding-block: 0; }');
 
       // ギャップのnoneクラス
       expect(gapResult).toContain('.gap-none { gap: 0; }');
@@ -144,14 +144,14 @@ describe('Spacing Utilities', () => {
       const result = generateAllSpacingClasses();
 
       // すべての方向指定クラスが含まれているか確認
-      expect(result).toContain('.mt-none { margin-top: 0; }');
-      expect(result).toContain('.pt-none { padding-top: 0; }');
-      expect(result).toContain('.mx-none { margin-left: 0; margin-right: 0; }');
-      expect(result).toContain('.px-none { padding-left: 0; padding-right: 0; }');
-      expect(result).toContain('.mt-md { margin-top: 1.25rem; }');
-      expect(result).toContain('.pt-md { padding-top: 1.25rem; }');
-      expect(result).toContain('.mx-md { margin-left: 1.25rem; margin-right: 1.25rem; }');
-      expect(result).toContain('.px-md { padding-left: 1.25rem; padding-right: 1.25rem; }');
+      expect(result).toContain('.mt-none { margin-block-start: 0; }');
+      expect(result).toContain('.pt-none { padding-block-start: 0; }');
+      expect(result).toContain('.mx-none { margin-inline: 0; }');
+      expect(result).toContain('.px-none { padding-inline: 0; }');
+      expect(result).toContain('.mt-md { margin-block-start: 1.25rem; }');
+      expect(result).toContain('.pt-md { padding-block-start: 1.25rem; }');
+      expect(result).toContain('.mx-md { margin-inline: 1.25rem; }');
+      expect(result).toContain('.px-md { padding-inline: 1.25rem; }');
     });
   });
 });

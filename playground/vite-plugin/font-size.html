@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS - Font Size Classes Test</title>
+  </head>
+  <body>
+    <header class="hero-header mb-[40px]">
+      <div class="hero-background">
+        <div class="hero-content">
+          <div class="hero-title-section">
+            <div class="hero-icon">📝</div>
+            <h1 class="hero-title">Font Size Classes</h1>
+            <div class="hero-version-badge">v2.0.0</div>
+          </div>
+          <p class="hero-subtitle">
+            フォントサイズ制御<br />
+            <span class="hero-subtitle-highlight">フィボナッチ数列ベース + カスタム値対応</span>
+          </p>
+          <div class="hero-features">
+            <span class="hero-feature-badge">📏 Size階層</span>
+            <span class="hero-feature-badge">🔢 フィボナッチ</span>
+            <span class="hero-feature-badge">🎯 カスタム値</span>
+            <span class="hero-feature-badge">📱 レスポンシブ</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <nav class="demo-nav mb-[30px]">
+        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+      </nav>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📏 基本的なフォントサイズ</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">フィボナッチ数列ベースのサイズ階層</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="space-y-4">
+              <div class="font-size-xs p-[8px] bg-white rounded-[4px] border-l-4 border-blue-300">
+                font-size-xs (8px) - 最小サイズ
+              </div>
+              <div class="font-size-sm p-[8px] bg-white rounded-[4px] border-l-4 border-blue-400">
+                font-size-sm (12px) - 小サイズ
+              </div>
+              <div class="font-size-md p-[8px] bg-white rounded-[4px] border-l-4 border-blue-500">
+                font-size-md (20px) - 中サイズ (デフォルト)
+              </div>
+              <div class="font-size-lg p-[8px] bg-white rounded-[4px] border-l-4 border-blue-600">
+                font-size-lg (32px) - 大サイズ
+              </div>
+              <div class="font-size-xl p-[8px] bg-white rounded-[4px] border-l-4 border-blue-700">
+                font-size-xl (52px) - 特大サイズ
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">生成されるCSS</h4>
+            <pre class="code-block">
+.font-size-xs { font-size: 8px; }
+.font-size-sm { font-size: 12px; }
+.font-size-md { font-size: 20px; }
+.font-size-lg { font-size: 32px; }
+.font-size-xl { font-size: 52px; }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">🎯 カスタム値</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">任意の値でのサイズ指定</h3>
+          <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
+            <div class="space-y-4">
+              <div
+                class="font-size-[14px] p-[8px] bg-white rounded-[4px] border-l-4 border-green-400"
+              >
+                font-size-[14px] - ピクセル指定
+              </div>
+              <div
+                class="font-size-[1.2em] p-[8px] bg-white rounded-[4px] border-l-4 border-green-500"
+              >
+                font-size-[1.2em] - em単位
+              </div>
+              <div
+                class="font-size-[1.5rem] p-[8px] bg-white rounded-[4px] border-l-4 border-green-600"
+              >
+                font-size-[1.5rem] - rem単位
+              </div>
+              <div
+                class="font-size-[calc(1rem+5px)] p-[8px] bg-white rounded-[4px] border-l-4 border-green-700"
+              >
+                font-size-[calc(1rem+5px)] - calc関数
+              </div>
+              <div
+                class="font-size-[clamp(12px,2vw,24px)] p-[8px] bg-white rounded-[4px] border-l-4 border-green-800"
+              >
+                font-size-[clamp(12px,2vw,24px)] - レスポンシブサイズ
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-[2] gap-[20px]">
+            <div class="code-example">
+              <h4 class="code-title">HTML</h4>
+              <pre class="code-block">
+&lt;div class="font-size-[14px]"&gt;14px&lt;/div&gt;
+&lt;div class="font-size-[1.2em]"&gt;1.2em&lt;/div&gt;
+&lt;div class="font-size-[1.5rem]"&gt;1.5rem&lt;/div&gt;
+&lt;div class="font-size-[calc(1rem+5px)]"&gt;calc&lt;/div&gt;
+&lt;div class="font-size-[clamp(12px,2vw,24px)]"&gt;clamp&lt;/div&gt;</pre
+              >
+            </div>
+            <div class="code-example">
+              <h4 class="code-title">生成されるCSS</h4>
+              <pre class="code-block">
+.font-size-\[14px\] { font-size: 14px; }
+.font-size-\[1\.2em\] { font-size: 1.2em; }
+.font-size-\[1\.5rem\] { font-size: 1.5rem; }
+.font-size-\[calc\(1rem\+5px\)\] { font-size: calc(1rem + 5px); }
+.font-size-\[clamp\(12px\,2vw\,24px\)\] { font-size: clamp(12px, 2vw, 24px); }</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📝 実用的な例</h2>
+        <div class="demo-content p-[30px]">
+          <h3 class="text-[18px] font-bold mb-[20px]">典型的な使用場面</h3>
+          <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">見出し階層</h4>
+              <div class="bg-white p-[15px] rounded-[4px]">
+                <h1 class="font-size-xl font-bold mb-[8px]">大見出し (font-size-xl)</h1>
+                <h2 class="font-size-lg font-bold mb-[6px]">中見出し (font-size-lg)</h2>
+                <h3 class="font-size-md font-bold mb-[4px]">小見出し (font-size-md)</h3>
+                <p class="font-size-sm text-gray-600 mb-[8px]">本文テキスト (font-size-sm)</p>
+                <small class="font-size-xs text-gray-500">注釈・キャプション (font-size-xs)</small>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">UI要素</h4>
+              <div class="bg-white p-[15px] rounded-[4px] space-y-3">
+                <button
+                  class="font-size-md bg-blue-500 text-white px-[16px] py-[8px] rounded-[4px]"
+                >
+                  メインボタン
+                </button>
+                <button
+                  class="font-size-sm bg-gray-500 text-white px-[12px] py-[6px] rounded-[4px]"
+                >
+                  サブボタン
+                </button>
+                <div class="font-size-xs text-gray-500 border-t pt-[8px]">最終更新: 2024年12月</div>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">レスポンシブサイズ</h4>
+              <div class="bg-white p-[15px] rounded-[4px]">
+                <h2 class="font-size-[clamp(20px,4vw,40px)] font-bold mb-[8px]">
+                  レスポンシブ見出し
+                </h2>
+                <p class="font-size-[clamp(14px,2vw,18px)] text-gray-600">
+                  ビューポートに応じてサイズが変化するテキスト。
+                  ウィンドウサイズを変更して確認してください。
+                </p>
+              </div>
+            </div>
+
+            <div class="p-[15px] bg-gray-100 rounded-[8px]">
+              <h4 class="text-[14px] font-bold mb-[10px]">カード内のテキスト</h4>
+              <div class="bg-white rounded-[8px] shadow-md overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-400 to-purple-600 p-[12px]">
+                  <h3 class="font-size-lg text-white font-bold">プロダクト名</h3>
+                </div>
+                <div class="p-[12px]">
+                  <p class="font-size-md mb-[6px]">メイン説明文</p>
+                  <p class="font-size-sm text-gray-600 mb-[8px]">詳細情報やサブテキスト</p>
+                  <div class="font-size-xs text-gray-500">補足・注意事項</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example">
+            <h4 class="code-title">実用例のCSS</h4>
+            <pre class="code-block">
+/* 見出し階層 */
+.heading-1 { font-size: 52px; }  /* font-size-xl */
+.heading-2 { font-size: 32px; }  /* font-size-lg */
+.heading-3 { font-size: 20px; }  /* font-size-md */
+
+/* レスポンシブサイズ */
+.responsive-title { font-size: clamp(20px, 4vw, 40px); }</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section mb-[40px]">
+        <h2 class="demo-title p-[20px]">📋 利用可能なFont Sizeクラス一覧</h2>
+        <div class="demo-content p-[30px]">
+          <div class="grid grid-cols-[3] gap-[20px]">
+            <div class="info-card">
+              <h4 class="info-card-title">デフォルトサイズ</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>font-size-xs → 8px</li>
+                  <li>font-size-sm → 12px</li>
+                  <li>font-size-md → 20px</li>
+                  <li>font-size-lg → 32px</li>
+                  <li>font-size-xl → 52px</li>
+                </ul>
+                <p>
+                  <strong>フィボナッチ数列:</strong><br />
+                  8, 12(8+4), 20(12+8), 32(20+12), 52(32+20)
+                </p>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">カスタム値</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>font-size-[14px] → 14px</li>
+                  <li>font-size-[1.2em] → 1.2em</li>
+                  <li>font-size-[1.5rem] → 1.5rem</li>
+                  <li>font-size-[16pt] → 16pt</li>
+                  <li>font-size-[2vw] → 2vw</li>
+                  <li>font-size-[2vh] → 2vh</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h4 class="info-card-title">CSS関数</h4>
+              <div class="info-card-content">
+                <ul class="info-list">
+                  <li>font-size-[calc(1rem+5px)]</li>
+                  <li>font-size-[min(20px,4vw)]</li>
+                  <li>font-size-[max(14px,1rem)]</li>
+                  <li>font-size-[clamp(12px,2vw,24px)]</li>
+                  <li>font-size-[var(--font-size)]</li>
+                </ul>
+                <p>
+                  <strong>推奨レスポンシブ:</strong><br />
+                  clamp(最小, 可変, 最大) を使用
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer mt-[60px] p-[40px]">
+      <p class="m-[0px]">📝 Font Size Classes - SmsshCSS Vite Plugin</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">フォントサイズを制御</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

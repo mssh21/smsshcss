@@ -33,6 +33,8 @@ Thumbs.db
 coverage/
 .nyc_output/
 test-results.json
+debug-*.txt
+verification-result.json
 
 # env
 .env

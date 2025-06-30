@@ -24,7 +24,12 @@
     "analyze:css": "node -e \"const { devHelpers } = require('./dist/utils/index.js'); console.log('CSS Analysis Tools Available:', Object.keys(devHelpers));\"",
     "debug:classes": "node -e \"const { generateCSS } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generateCSS({...config, development: true}).then(css => console.log('Generated CSS length:', css.length));\"",
     "check:duplicates": "node -e \"const { devHelpers } = require('./dist/utils/index.js'); const { generateCSS } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generateCSS(config).then(css => { const dups = devHelpers.findDuplicateSelectors(css); console.log('Duplicate selectors:', dups.length ? dups : 'None found'); });\"",
-    "size:report": "node -e \"const { generatePurgeReport } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generatePurgeReport(config).then(report => report && console.log('CSS Size Report:', JSON.stringify(report, null, 2)));\""
+    "size:report": "node -e \"const { generatePurgeReport } = require('./dist/index.js'); const config = require('./smsshcss.config.js'); generatePurgeReport(config).then(report => report && console.log('CSS Size Report:', JSON.stringify(report, null, 2)));\"",
+    "check:utilities": "node scripts/verify-utilities.js",
+    "check:utilities:ts": "node scripts/check-utilities-simple.js",
+    "check:utilities:ci": "yarn check:utilities --silent",
+    "check:utilities:full": "node scripts/check-utilities.js",
+    "test:integration": "vitest run src/__tests__/integration/"
   },
   "exports": {
     ".": {
@@ -54,13 +59,17 @@
     "debug": "^4.3.4",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.2.0",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.5",
     "@vitest/coverage-v8": "^0.34.6",
+    "commander": "^11.1.0",
+    "css-tree": "^2.3.1",
+    "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^0.34.6"

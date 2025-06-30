@@ -1,15 +1,18 @@
 # SmsshCSS - 軽量ユーティリティファーストCSSフレームワーク
 
+> 🏗️ **Single Source of Truth アーキテクチャ** - 設定の重複を排除し、一貫性のあるデザインシステムを実現
+
 SmsshCSSは、高性能なユーティリティファーストCSSフレームワークです。型安全性とDeveloper Experienceを重視し、HTMLファイル内で使用されるクラスのみを生成する最適化されたCSSを提供します。
 
 ## ✨ 主な特徴
 
+- **🏗️ 統合設定システム**: Single Source of Truthアーキテクチャで設定の重複を完全排除
 - **🚀 高性能**: Just-In-Time生成と高速キャッシュシステムでミリ秒レベルの処理速度
 - **🛡️ 型安全**: TypeScriptによる完全な型サポートと厳密なバリデーション
 - **⚡ 直感的**: ユーティリティファーストの再利用可能なクラス設計
 - **🎯 最適化**: 使用されたクラスのみを含む最小限のCSS生成
 - **🔧 柔軟性**: 設定ファイルによる完全なカスタマイズ機能
-- **📦 統合性**: PostCSSプラグインとViteプラグインの両方をサポート
+- **📦 統合性**: Viteプラグインをサポート
 - **🎨 独自機能**: Apply設定による再利用可能なコンポーネントクラス定義 🆕
 - **🧪 開発体験**: 豊富なデバッグツールとパフォーマンス分析機能
 
@@ -39,8 +42,8 @@ import smsshcss from '@smsshcss/vite';
 export default defineConfig({
   plugins: [
     smsshcss({
-      includeReset: true,
-      includeBase: true,
+      includeResetCSS: true,
+      includeBaseCSS: true,
       minify: false,
       debug: true,
 
@@ -68,12 +71,12 @@ export default defineConfig({
         'flex-between': 'flex justify-between items-center',
 
         // カード系コンポーネント
-        card: 'p-md rounded-lg border border-gray-200',
+        card: 'p-md -lg border border-gray-200',
         'card-header': 'pb-sm mb-sm border-b',
         'card-body': 'py-sm',
 
         // ボタン
-        btn: 'inline-block px-md py-sm rounded cursor-pointer',
+        btn: 'inline-block px-md py-sm  cursor-pointer',
         'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
         'btn-secondary': 'btn bg-gray-200 text-gray-800 hover:bg-gray-300',
       },
@@ -152,12 +155,12 @@ export default defineConfig({
           <h3 class="text-2xl font-bold mb-lg">高度なCSS関数サポート</h3>
 
           <!-- レスポンシブスペーシング -->
-          <div class="p-[clamp(1rem,4vw,3rem)] bg-gray-100 rounded-lg mb-md">
+          <div class="p-[clamp(1rem,4vw,3rem)] bg-gray-100 -lg mb-md">
             <p>レスポンシブパディング: clamp(1rem, 4vw, 3rem)</p>
           </div>
 
           <!-- 計算値 -->
-          <div class="h-[calc(100vh-200px)] bg-blue-50 rounded-lg p-md">
+          <div class="h-[calc(100vh-200px)] bg-blue-50 -lg p-md">
             <p>計算された高さ: calc(100vh - 200px)</p>
           </div>
         </section>

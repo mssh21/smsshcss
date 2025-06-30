@@ -3,7 +3,7 @@ import { OrderConfig } from '../core/types';
 // Order専用のエスケープ関数
 function escapeOrderValue(val: string): string {
   // CSS数学関数およびCSS関数を検出する正規表現
-  const cssFunctions = /\b(calc|min|max|clamp|var)\s*\(/;
+  const cssFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
   // CSS関数の場合は特別処理
   if (cssFunctions.test(val)) {

@@ -1,16 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CSSPurger } from '../core/purger';
 import type { PurgeConfig } from '../core/types';
-import fs from 'fs';
 
 // モックファイルシステム
-vi.mock('fs');
+vi.mock('fs/promises', () => ({
+  readFile: vi.fn(),
+  stat: vi.fn(),
+}));
 vi.mock('fast-glob', () => ({
   default: vi.fn(),
 }));
 
-const mockFs = vi.mocked(fs);
 const mockGlob = vi.mocked((await import('fast-glob')).default);
+const mockReadFile = vi.mocked((await import('fs/promises')).readFile);
+const mockStat = vi.mocked((await import('fs/promises')).stat);
 
 describe('CSSPurger', () => {
   let purger: CSSPurger;
@@ -27,6 +30,23 @@ describe('CSSPurger', () => {
 
     // モックをリセット
     vi.clearAllMocks();
+
+    // fs/promises モックの設定
+    mockReadFile.mockImplementation(async (filePath: string) => {
+      const path = filePath.toString();
+      if (path.includes('test.html')) {
+        return '<div class="p-4 m-2 text-center">Test</div>';
+      }
+      if (path.includes('component.tsx')) {
+        return '<div className="flex items-center">Component</div>';
+      }
+      if (path.includes('error.html')) {
+        throw new Error('File not found');
+      }
+      return '<div class="btn btn-primary">Content</div>';
+    });
+
+    mockStat.mockResolvedValue({ size: 100 } as fs.Stats);
   });
 
   describe('extractClassNames', () => {
@@ -310,17 +330,6 @@ describe('CSSPurger', () => {
     it('ソースファイルを解析してクラス名を抽出する', async () => {
       // モックの設定
       mockGlob.mockResolvedValue(['test.html', 'component.tsx']);
-      mockFs.readFileSync.mockImplementation((_filePath: string | Buffer | URL) => {
-        const path = _filePath.toString();
-        if (path.includes('test.html')) {
-          return '<div class="p-4 m-2 text-center">Test</div>';
-        }
-        if (path.includes('component.tsx')) {
-          return '<div className="flex items-center">Component</div>';
-        }
-        return '';
-      });
-      mockFs.statSync.mockReturnValue({ size: 100 } as fs.Stats);
 
       const result = await purger.analyzeSourceFiles();
 
@@ -345,10 +354,6 @@ describe('CSSPurger', () => {
 
     it('ファイル読み込みエラーを適切に処理する', async () => {
       mockGlob.mockResolvedValue(['error.html']);
-      mockFs.readFileSync.mockImplementation(() => {
-        throw new Error('File not found');
-      });
-      mockFs.statSync.mockReturnValue({ size: 0 } as fs.Stats);
 
       const result = await purger.analyzeSourceFiles();
       // エラーが発生した場合、ファイルはスキップされるため空配列になる
@@ -390,10 +395,9 @@ describe('CSSPurger', () => {
       const files = Array.from({ length: 100 }, (_, i) => `file${i}.html`);
       mockGlob.mockResolvedValue(files);
 
-      mockFs.readFileSync.mockImplementation((_filePath: string | Buffer | URL) => {
-        return '<div class="btn btn-primary">Content</div>';
-      });
-      mockFs.statSync.mockReturnValue({ size: 1000 } as fs.Stats);
+      // 大量ファイルテスト用にモックを更新
+      mockReadFile.mockResolvedValue('<div class="btn btn-primary">Content</div>');
+      mockStat.mockResolvedValue({ size: 1000 } as fs.Stats);
 
       const startTime = Date.now();
       const result = await purger.analyzeSourceFiles();

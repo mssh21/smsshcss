@@ -221,7 +221,7 @@ describe('CI Tests', () => {
     const configs = [
       testConfigs.minimal,
       testConfigs.withPurge,
-      testConfigs.withTheme,
+      testConfigs.withApply,
       testConfigs.full,
     ];
 

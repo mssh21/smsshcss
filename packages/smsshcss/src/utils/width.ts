@@ -1,5 +1,9 @@
 import { SizeConfig } from '../core/types';
-import { defaultSizeConfig, escapeValue, formatCSSFunctionValue } from '../core/sizeConfig';
+import {
+  defaultSizeConfig,
+  escapeSizeValue,
+  formatSizeCSSFunctionValue,
+} from '../config/sizeConfig';
 
 // 後方互換性のためのエイリアス
 export type WidthConfig = SizeConfig;
@@ -21,24 +25,24 @@ const customValuePattern = /\b(w|min-w|max-w)-\[([^\]]+)\]/g;
 // カスタムWidthクラスを生成
 function generateCustomWidthClass(prefix: string, value: string): string | null {
   // CSS数学関数を検出する正規表現（基本的な関数のみ）
-  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+  const cssMathFunctions = /\b(calc|min|max|clamp|minmax)\s*\(/;
 
   // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
-  const originalValue = cssMathFunctions.test(value) ? formatCSSFunctionValue(value) : value;
+  const originalValue = cssMathFunctions.test(value) ? formatSizeCSSFunctionValue(value) : value;
 
   // width プロパティの処理
   if (prefix === 'w') {
-    return `.w-\\[${escapeValue(value)}\\] { width: ${originalValue}; }`;
+    return `.w-\\[${escapeSizeValue(value)}\\] { width: ${originalValue}; }`;
   }
 
   // min-width プロパティの処理
   if (prefix === 'min-w') {
-    return `.min-w-\\[${escapeValue(value)}\\] { min-width: ${originalValue}; }`;
+    return `.min-w-\\[${escapeSizeValue(value)}\\] { min-width: ${originalValue}; }`;
   }
 
   // max-width プロパティの処理
   if (prefix === 'max-w') {
-    return `.max-w-\\[${escapeValue(value)}\\] { max-width: ${originalValue}; }`;
+    return `.max-w-\\[${escapeSizeValue(value)}\\] { max-width: ${originalValue}; }`;
   }
 
   return null;

@@ -1,14 +1,42 @@
 # @smsshcss/vite
 
-SmsshCSSのViteプラグイン。CSSユーティリティクラスを自動生成し、プロジェクトに統合します。開発時は高速で、本番時はパージ機能により最適化されたCSSを提供します。
+> 🏗️ **Single Source of Truth アーキテクチャ** 対応
 
-## 🚀 v2.2.0 新機能
+SmsshCSSのViteプラグイン。CSSユーティリティクラスを自動生成し、プロジェクトに統合します。コアパッケージとの統合設定システムにより、一貫性のある設定管理を実現。開発時は高速で、本番時はパージ機能により最適化されたCSSを提供します。
 
-- **Apply設定**: よく使うユーティリティクラスの組み合わせを定義可能
-- **キャッシュ機能**: ファイル変更時のみ再生成、大幅なパフォーマンス向上
-- **デバッグモード**: 詳細なログ出力で開発をサポート
-- **最適化されたファイルスキャン**: 並列処理によるファイル処理の高速化
-- **統合されたカスタムクラス抽出**: コード重複を削減し、メンテナンス性を向上
+## ✨ 主要機能
+
+- **🏗️ 統合設定システム**: コアパッケージから設定を自動取得、設定の重複を排除
+- **🎯 Apply設定**: よく使うユーティリティクラスの組み合わせを定義可能
+- **⚡ キャッシュ機能**: ファイル変更時のみ再生成、大幅なパフォーマンス向上
+- **🔍 デバッグモード**: 詳細なログ出力で開発をサポート
+- **🚀 最適化されたファイルスキャン**: 並列処理によるファイル処理の高速化
+- **🔄 動的設定同期**: コア設定の変更が自動的にViteプラグインに反映
+
+## 🏗️ Single Source of Truth 統合
+
+このViteプラグインは、`smsshcss`コアパッケージとシームレスに統合され、**設定の重複を完全に排除**します：
+
+### 自動設定同期
+
+```typescript
+// コアパッケージで設定を変更
+// packages/smsshcss/src/config/spacingConfig.ts
+export const defaultSpacingConfig = {
+  md: '1.5rem', // 変更: 1.25rem → 1.5rem
+  // ...
+};
+
+// Viteプラグインでは自動的に反映される（ハードコード不要）
+// .m-md { margin: 1.5rem; } ← 自動的に更新
+```
+
+### 統合の利点
+
+- **✅ 一元管理**: すべての設定値がコアパッケージで管理
+- **✅ 自動同期**: コア設定の変更が即座に反映
+- **✅ 型安全性**: TypeScriptによる設定値の型チェック
+- **✅ ゼロ重複**: ハードコードされた設定値が存在しない
 
 ## インストール
 
@@ -48,8 +76,8 @@ export default defineConfig({
   plugins: [
     smsshcss({
       // リセットCSSとベースCSSの設定
-      includeReset: true,
-      includeBase: true,
+      includeResetCSS: true,
+      includeBaseCSS: true,
 
       // スキャンするファイルパターン
       content: [
@@ -83,19 +111,20 @@ export default defineConfig({
       },
 
       // Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+      // コア設定の値が自動的に適用されます
       apply: {
-        'btn-primary': 'p-md bg-blue-500 text-white rounded hover:bg-blue-600',
-        card: 'p-lg bg-white rounded-lg shadow-md',
+        'btn-primary': 'p-md bg-blue-500 text-white  hover:bg-blue-600',
+        card: 'p-lg bg-white -lg shadow-md',
         container: 'max-w-7xl mx-auto px-lg',
       },
 
       // パージレポートの表示
       showPurgeReport: true,
 
-      // キャッシュ機能（v2.2.0+）
+      // キャッシュ機能（v2.3.0+）
       cache: true,
 
-      // デバッグモード（v2.2.0+）
+      // デバッグモード（v2.3.0+）
       debug: process.env.NODE_ENV === 'development',
     }),
   ],
@@ -118,13 +147,13 @@ interface SmsshCSSViteOptions {
    * リセットCSSを含めるかどうか
    * @default true
    */
-  includeReset?: boolean;
+  includeResetCSS?: boolean;
 
   /**
    * ベースCSSを含めるかどうか
    * @default true
    */
-  includeBase?: boolean;
+  includeBaseCSS?: boolean;
 
   /**
    * パージ設定
@@ -180,12 +209,12 @@ Apply設定を使用すると、よく使うユーティリティクラスの組
 smsshcss({
   apply: {
     // ボタンのスタイル
-    btn: 'p-md rounded cursor-pointer transition-all',
+    btn: 'p-md  cursor-pointer transition-all',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
     'btn-secondary': 'btn bg-gray-300 text-gray-700 hover:bg-gray-400',
 
     // カードコンポーネント
-    card: 'p-lg bg-white rounded-lg shadow-md',
+    card: 'p-lg bg-white -lg shadow-md',
     'card-header': 'mb-md pb-md border-b',
 
     // レイアウト
@@ -198,13 +227,129 @@ smsshcss({
 **Apply設定の利点：**
 
 - 🎨 **一貫性**: プロジェクト全体で統一されたスタイル
+
+## 🎛️ コア設定との連携
+
+### 自動設定取得
+
+Viteプラグインは`smsshcss`コアパッケージの設定を自動的に取得し、すべてのユーティリティクラスを動的に生成します：
+
+```typescript
+// ❌ 従来の方法（重複・不整合の原因）
+const viteConfig = {
+  plugins: [
+    smsshcss({
+      // ハードコードされた設定（非推奨）
+      customStyles: {
+        '.m-md': 'margin: 1.25rem', // コア設定と重複
+      },
+    }),
+  ],
+};
+
+// ✅ 現在の方法（Single Source of Truth）
+const viteConfig = {
+  plugins: [
+    smsshcss({
+      // コア設定から自動的に生成される
+      // .m-md { margin: 1.25rem; } ← defaultSpacingConfig.mdから取得
+      // .text-blue-500 { color: hsl(214 85% 55% / 1); } ← defaultColorConfig['blue-500']から取得
+    }),
+  ],
+};
+```
+
+### カスタムテーマ設定
+
+コアパッケージの設定を拡張する場合：
+
+```typescript
+// カスタム設定ファイル
+// config/smsshcss.config.ts
+import { defaultConfig } from 'smsshcss';
+
+export const projectConfig = {
+  ...defaultConfig,
+  spacing: {
+    ...defaultConfig.spacing,
+    'brand-xs': '0.375rem',
+    'brand-xl': '2.5rem',
+  },
+  color: {
+    ...defaultConfig.color,
+    'brand-primary': 'hsl(220 100% 50% / 1)',
+    'brand-secondary': 'hsl(160 100% 45% / 1)',
+  },
+};
+
+// vite.config.ts
+import { defineConfig } from 'vite';
+import smsshcss from '@smsshcss/vite';
+import { projectConfig } from './config/smsshcss.config';
+
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      // プロジェクト固有の設定を適用
+      apply: {
+        // カスタム設定を使用したクラス
+        'project-btn': 'p-brand-xs bg-brand-primary text-white',
+        'project-card': 'p-brand-xl bg-white border border-gray-200',
+      },
+    }),
+  ],
+});
+```
+
+### 動的設定の利点
+
+```typescript
+// コアパッケージで設定を更新
+export const defaultSpacingConfig = {
+  md: '1.5rem', // 1.25rem から変更
+  // ...
+};
+
+// ↓ 自動的に以下のCSSが更新される
+// .m-md { margin: 1.5rem; }     ← 自動更新
+// .p-md { padding: 1.5rem; }    ← 自動更新
+// .gap-md { gap: 1.5rem; }      ← 自動更新
+
+// Apply設定も自動的に更新される
+apply: {
+  'card': 'p-md bg-white', // p-mdが1.5remで生成される
+}
+```
+
+### 型安全な設定管理
+
+```typescript
+import type { DefaultConfig } from 'smsshcss';
+
+// TypeScript支援による型安全な設定
+// カスタム値は任意値記法で指定できます
+// 例：m-[20px], bg-[#ff0000], text-[clamp(1rem,4vw,3rem)]
+
+export default defineConfig({
+  plugins: [
+    smsshcss({
+      // apply設定でカスタムクラスを定義
+      apply: {
+        'btn-custom': 'px-md py-sm bg-blue-500 text-white ',
+        container: 'max-w-6xl mx-auto px-md',
+      },
+    }),
+  ],
+});
+```
+
 - ♻️ **再利用性**: よく使うパターンを簡単に再利用
 - 📝 **可読性**: 意味のあるクラス名でコードが読みやすく
 - 🚀 **効率性**: 複数のユーティリティクラスを1つのクラスで適用
 
 ## 🚀 パフォーマンス機能
 
-### ⚡ キャッシュ機能（v2.2.0+）
+### ⚡ キャッシュ機能（v2.3.0+）
 
 自動的にファイルの変更を検知し、変更されたファイルのみを再処理します：
 
@@ -225,7 +370,7 @@ smsshcss({
 - 🧹 自動的な古いキャッシュの削除（10分ごと）
 - 🎯 プロダクションビルド時の自動キャッシュリセット
 
-### 🐛 デバッグモード（v2.2.0+）
+### 🐛 デバッグモード（v2.3.0+）
 
 詳細なログ出力で開発をサポート：
 

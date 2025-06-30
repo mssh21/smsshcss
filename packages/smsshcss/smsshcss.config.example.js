@@ -1,5 +1,6 @@
 /**
  * SmsshCSS Configuration Example
+ * Updated for v2.3.0 with enhanced validation and versioning support
  *
  * このファイルをコピーして `smsshcss.config.js` として使用してください
  *
@@ -10,17 +11,25 @@
  */
 
 module.exports = {
+  // バージョン情報（v2.3.0から追加）
+  // 設定の互換性チェックとマイグレーション支援に使用されます
+  version: '2.3.0',
+
   // 📁 スキャン対象のファイルパターン
   content: [
-    'index.html',
-    'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
-    'components/**/*.{js,ts,jsx,tsx,vue}',
-    'pages/**/*.{js,ts,jsx,tsx,vue}',
+    './src/**/*.{html,js,jsx,ts,tsx,vue,svelte}',
+    './pages/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx}',
     // '**/*.html', // すべてのHTMLファイル（パフォーマンスに注意）
   ],
 
   // 🔒 常に含める CSS クラス（パージされない）
   safelist: [
+    'btn',
+    'btn-primary',
+    'container',
+    /^grid-cols-/, // 正規表現も使用可能
     // 動的に生成されるクラス
     'm-2xl',
     'p-2xl',
@@ -49,23 +58,18 @@ module.exports = {
     enabled: process.env.NODE_ENV === 'production', // 本番環境でのみ有効化
 
     // パージ対象のファイル（通常はcontentと同じ）
-    content: [
-      'index.html',
-      'src/**/*.{html,js,ts,jsx,tsx,vue,svelte}',
-      'components/**/*.{js,ts,jsx,tsx,vue}',
-    ],
+    content: ['./src/**/*.{html,js,jsx,ts,tsx,vue,svelte}', './public/**/*.html'],
 
     // 保護対象のクラス（削除されない）
     safelist: [
-      'm-2xl',
-      'p-2xl',
-      'gap-2xl',
-      /^hover:/, // hover系の疑似クラス
-      /^focus:/, // focus系の疑似クラス
+      'dynamic-class-*',
+      /^toast-/, // 動的に追加されるクラス
     ],
 
     // 除外対象のクラス（強制的に削除）
     blocklist: [
+      'unused-class',
+      'debug-*',
       'm-2xs', // 使用しない小さすぎるマージン
       'p-2xs', // 使用しない小さすぎるパディング
       'gap-2xs', // 使用しない小さすぎるギャップ
@@ -88,33 +92,40 @@ module.exports = {
          */
         extractor: (content) => {
           // Vue.jsのテンプレート内のクラス抽出
-          const matches = content.match(/class\s*=\s*["']([^"']*)["']/g) || [];
-          return matches
-            .map((match) => match.replace(/class\s*=\s*["']/, '').replace(/["']$/, ''))
-            .join(' ')
-            .split(/\s+/);
+          const classes = [];
+          const classMatches = content.match(/class\s*=\s*["']([^"']*?)["']/g);
+          if (classMatches) {
+            classMatches.forEach((match) => {
+              const classList = match.match(/["']([^"']*?)["']/);
+              if (classList) {
+                classes.push(...classList[1].split(/\s+/).filter(Boolean));
+              }
+            });
+          }
+          return classes;
         },
       },
     ],
   },
 
   // 🎨 Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+  // theme機能は廃止されました。カスタム値は任意値記法をご利用ください。
   apply: {
     // レイアウト系コンポーネント
     'main-layout': 'w-lg mx-auto px-lg block',
-    container: 'max-w-[var(--container-width)] mx-auto px-sm md:px-md lg:px-lg',
+    container: 'max-w-7xl mx-auto ',
     section: 'py-xl md:py-2xl',
 
     // カード系コンポーネント
-    card: 'p-md',
+    card: 'bg-white shadow -lg p-6',
     'card-header': 'pb-sm mb-sm',
     'card-body': 'py-sm',
     'card-footer': 'pt-sm mt-sm',
 
     // ボタン系コンポーネント
-    btn: 'inline-block px-md py-sm',
-    'btn-primary': 'btn',
-    'btn-secondary': 'btn',
+    btn: ' font-medium transition-colors',
+    'btn-primary': 'bg-blue-500 text-white hover:bg-blue-600',
+    'btn-secondary': 'bg-gray-200 text-gray-800 hover:bg-gray-300',
 
     // フォーム系コンポーネント
     'form-group': 'mb-md',
@@ -145,8 +156,10 @@ module.exports = {
 
   // 🛠️ 開発者向けオプション
   development: {
+    // 開発時はパージを無効化してビルド速度を向上
+    purge: { enabled: false },
     // 詳細なログ出力
-    verbose: process.env.NODE_ENV === 'development',
+    verbose: true,
 
     // バリデーションの有効化
     enableValidation: true,

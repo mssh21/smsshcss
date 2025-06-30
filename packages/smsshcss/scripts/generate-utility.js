@@ -25,35 +25,83 @@ function generateUtilityTemplate(utilityName, options = {}) {
     cssProperty = utilityName,
     prefix = utilityName.charAt(0),
     defaultValues = {},
+    configType = 'SizeConfig',
+    configFile = 'sizeConfig',
+    customVariants = [],
   } = options;
 
-  return `import { SizeConfig } from '../core/types';
-import { escapeValue, formatCSSFunctionValue } from '../core/sizeConfig';
-import { generateUtilityClasses, processCSSValue } from './index';
+  const camelUtilityName = toCamelCase(utilityName);
+  const pascalUtilityName = toPascalCase(utilityName);
+
+  const configName = `default${capitalizeFirst(configFile.replace('Config', ''))}`; // defaultSize, defaultColor etc.
+  const escapeFunctionName = getEscapeFunctionName(configFile);
+  const formatFunctionName = getFormatFunctionName(configFile);
+
+  const customValuePatternString = generateCustomValuePattern(
+    prefix,
+    hasDirections,
+    customVariants
+  );
+  const customClassLogicString = generateCustomClassLogic(
+    cssProperty,
+    prefix,
+    hasDirections,
+    customVariants,
+    escapeFunctionName
+  );
+  const variantFunctionsString = generateVariantFunctions(
+    camelUtilityName,
+    cssProperty,
+    prefix,
+    customVariants,
+    configType,
+    hasDirections
+  );
+  const variantCallsString =
+    customVariants.length > 0
+      ? customVariants
+          .map((v) => `generate${capitalizeFirst(v.name)}Classes(config)`)
+          .join(',\n    ')
+      : `generate${pascalUtilityName}Classes(config)`;
+
+  return `import { ${configType} } from '../core/types';
+import {
+  ${configName},${escapeFunctionName ? `\n  ${escapeFunctionName},` : ''}${formatFunctionName ? `\n  ${formatFunctionName},` : ''}
+} from '../config/${configFile}';
+import { generateUtilityClasses } from './index';
 
 /**
  * Default ${utilityName} configuration
  */
-export const default${capitalizeFirst(utilityName)}: Record<string, string> = ${JSON.stringify(defaultValues, null, 2)};
+export const default${pascalUtilityName}: ${configType} = {
+  ...${configName}${
+    Object.keys(defaultValues).length > 0
+      ? `,\n  ${Object.entries(defaultValues)
+          .map(([k, v]) => `${k}: '${v}'`)
+          .join(',\n  ')}`
+      : ''
+  }
+};
 
 /**
  * Custom value pattern for ${utilityName} classes
  */
-const customValuePattern = /\\b(${prefix}${hasDirections ? '[trlbxy]?' : ''})-\\[([^\\]]+)\\]/g;
+const customValuePattern = ${customValuePatternString};
 
 /**
  * Generate custom ${utilityName} class from prefix and value
  */
-function generateCustom${capitalizeFirst(utilityName)}Class(prefix: string, value: string): string | null {
-  const originalValue = processCSSValue(value);
+function generateCustom${pascalUtilityName}Class(prefix: string, value: string): string | null {
+  ${formatFunctionName ? `const cssMathFunctions = /\\b(calc|min|max|clamp|minmax)\\s*\\(/;` : ''}
+  const originalValue = ${formatFunctionName ? `cssMathFunctions.test(value) ? ${formatFunctionName}(value) : value` : 'value'};
   
-  ${hasDirections ? generateDirectionalLogic(cssProperty, prefix) : generateSimpleLogic(cssProperty, prefix)}
+  ${customClassLogicString}
 }
 
 /**
  * Extract custom ${utilityName} classes from HTML content
  */
-export function extractCustom${capitalizeFirst(utilityName)}Classes(content: string): string[] {
+export function extractCustom${pascalUtilityName}Classes(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
 
@@ -61,7 +109,7 @@ export function extractCustom${capitalizeFirst(utilityName)}Classes(content: str
     const prefix = match[1];
     const value = match[2];
 
-    const cssClass = generateCustom${capitalizeFirst(utilityName)}Class(prefix, value);
+    const cssClass = generateCustom${pascalUtilityName}Class(prefix, value);
     if (cssClass) {
       customClasses.push(cssClass);
     }
@@ -70,56 +118,165 @@ export function extractCustom${capitalizeFirst(utilityName)}Classes(content: str
   return customClasses;
 }
 
-/**
- * Generate ${utilityName} utility classes
- */
-export function generate${capitalizeFirst(utilityName)}Classes(config: Record<string, string> = default${capitalizeFirst(utilityName)}): string {
-  return generateUtilityClasses(
-    {
-      prefix: '${prefix}',
-      property: '${cssProperty}',
-      hasDirections: ${hasDirections},
-      supportsArbitraryValues: ${supportsArbitraryValues}
-    },
-    config
-  );
-}
+${variantFunctionsString}
 
 /**
  * Generate all ${utilityName} classes with custom configuration support
  */
-export function generateAll${capitalizeFirst(utilityName)}Classes(customConfig?: Record<string, string>): string {
-  const config = customConfig ? { ...default${capitalizeFirst(utilityName)}, ...customConfig } : default${capitalizeFirst(utilityName)};
-  return generate${capitalizeFirst(utilityName)}Classes(config);
+export function generateAll${pascalUtilityName}Classes(customConfig?: ${configType}): string {
+  const config = customConfig ? { ...default${pascalUtilityName}, ...customConfig } : default${pascalUtilityName};
+  return [
+    ${variantCallsString}
+  ].join('\\n\\n');
 }
 `;
+}
+
+/**
+ * カスタム値パターンの生成
+ */
+function generateCustomValuePattern(prefix, hasDirections, customVariants) {
+  if (customVariants.length > 0) {
+    const prefixes = customVariants.map((v) => v.prefix).join('|');
+    return `/\\b(${prefixes})${hasDirections ? '[trlbxy]?' : ''}-\\[([^\\]]+)\\]/g`;
+  }
+  return `/\\b(${prefix}${hasDirections ? '[trlbxy]?' : ''})-\\[([^\\]]+)\\]/g`;
+}
+
+/**
+ * カスタムクラス生成ロジック
+ */
+function generateCustomClassLogic(
+  cssProperty,
+  prefix,
+  hasDirections,
+  customVariants,
+  escapeFunctionName
+) {
+  if (customVariants.length > 0) {
+    return (
+      customVariants
+        .map(
+          (variant) => `
+  if (prefix === '${variant.prefix}') {
+    return \`.${variant.prefix}-\\[\${${escapeFunctionName ? `${escapeFunctionName}(value)` : 'value'}}\\] { ${variant.property}: \${originalValue}; }\`;
+  }`
+        )
+        .join('\n') + '\n\n  return null;'
+    );
+  }
+
+  if (hasDirections) {
+    return generateDirectionalLogic(cssProperty, prefix, escapeFunctionName);
+  } else {
+    return generateSimpleLogic(cssProperty, prefix, escapeFunctionName);
+  }
+}
+
+/**
+ * バリアント関数の生成
+ */
+function generateVariantFunctions(
+  utilityName,
+  cssProperty,
+  prefix,
+  customVariants,
+  configType,
+  hasDirections
+) {
+  const pascalUtilityName = toPascalCase(utilityName);
+
+  if (customVariants.length === 0) {
+    return `/**
+ * Generate ${utilityName} utility classes
+ */
+export function generate${pascalUtilityName}Classes(config: ${configType} = default${pascalUtilityName}): string {
+  return generateUtilityClasses(
+    {
+      prefix: '${prefix}',
+      property: '${cssProperty}',
+      hasDirections: ${hasDirections || false},
+      supportsArbitraryValues: true
+    },
+    config
+  );
+}`;
+  }
+
+  return customVariants
+    .map(
+      (variant) => `/**
+ * Generate ${variant.name} utility classes
+ */
+export function generate${capitalizeFirst(variant.name)}Classes(config: ${configType} = default${pascalUtilityName}): string {
+  return generateUtilityClasses(
+    {
+      prefix: '${variant.prefix}',
+      property: '${variant.property}',
+      hasDirections: false,
+      supportsArbitraryValues: true
+    },
+    config
+  );
+}`
+    )
+    .join('\n\n');
+}
+
+/**
+ * エスケープ関数名を取得
+ */
+function getEscapeFunctionName(configFile) {
+  const mapping = {
+    sizeConfig: 'escapeSizeValue',
+    colorConfig: 'escapeColorValue',
+    spacingConfig: 'escapeSpacingValue',
+    fontSizeConfig: 'escapeFontSizeValue',
+  };
+  return mapping[configFile] || null;
+}
+
+/**
+ * フォーマット関数名を取得
+ */
+function getFormatFunctionName(configFile) {
+  const mapping = {
+    sizeConfig: 'formatSizeCSSFunctionValue',
+    colorConfig: 'formatColorCSSFunctionValue',
+    spacingConfig: null,
+    fontSizeConfig: null,
+  };
+  return mapping[configFile] || null;
 }
 
 /**
  * 方向性のあるプロパティ用のロジック生成
  * @param {string} cssProperty
  * @param {string} prefix
+ * @param {string} escapeFunctionName
  * @returns {string}
  */
-function generateDirectionalLogic(cssProperty, prefix) {
+function generateDirectionalLogic(cssProperty, prefix, escapeFunctionName) {
+  const escapeValue = escapeFunctionName ? `${escapeFunctionName}(value)` : 'value';
+
   return `
   const direction = prefix.slice(${prefix.length});
   
   switch (direction) {
     case 't':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-top: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-top: \${originalValue}; }\`;
     case 'r':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-right: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-right: \${originalValue}; }\`;
     case 'b':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-bottom: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-bottom: \${originalValue}; }\`;
     case 'l':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-left: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-left: \${originalValue}; }\`;
     case 'x':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-left: \${originalValue}; ${cssProperty}-right: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-left: \${originalValue}; ${cssProperty}-right: \${originalValue}; }\`;
     case 'y':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}-top: \${originalValue}; ${cssProperty}-bottom: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}-top: \${originalValue}; ${cssProperty}-bottom: \${originalValue}; }\`;
     case '':
-      return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}: \${originalValue}; }\`;
+      return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}: \${originalValue}; }\`;
     default:
       return null;
   }
@@ -130,10 +287,12 @@ function generateDirectionalLogic(cssProperty, prefix) {
  * シンプルなプロパティ用のロジック生成
  * @param {string} cssProperty
  * @param {string} prefix
+ * @param {string} escapeFunctionName
  * @returns {string}
  */
-function generateSimpleLogic(cssProperty, prefix) {
-  return `return \`.\${prefix}-\\[\${escapeValue(value)}\\] { ${cssProperty}: \${originalValue}; }\`;`;
+function generateSimpleLogic(cssProperty, prefix, escapeFunctionName) {
+  const escapeValue = escapeFunctionName ? `${escapeFunctionName}(value)` : 'value';
+  return `return \`.\${prefix}-\\[\${${escapeValue}}\\] { ${cssProperty}: \${originalValue}; }\`;`;
 }
 
 /**
@@ -143,35 +302,61 @@ function generateSimpleLogic(cssProperty, prefix) {
  * @returns {string}
  */
 function generateTestTemplate(utilityName, options = {}) {
-  const { hasDirections = false, prefix = utilityName.charAt(0) } = options;
+  const { hasDirections = false, prefix = utilityName.charAt(0), customVariants = [] } = options;
 
-  return `import { 
-  generate${capitalizeFirst(utilityName)}Classes,
-  extractCustom${capitalizeFirst(utilityName)}Classes,
-  default${capitalizeFirst(utilityName)}
-} from '../${utilityName}';
+  const pascalUtilityName = toPascalCase(utilityName);
 
-describe('${capitalizeFirst(utilityName)} Utilities', () => {
-  describe('generate${capitalizeFirst(utilityName)}Classes', () => {
-    it('should generate basic ${utilityName} classes', () => {
-      const result = generate${capitalizeFirst(utilityName)}Classes();
+  const importList =
+    customVariants.length > 0
+      ? customVariants.map((v) => `generate${capitalizeFirst(v.name)}Classes`).join(',\n  ')
+      : `generate${pascalUtilityName}Classes`;
+
+  const generateTestCases =
+    customVariants.length > 0
+      ? customVariants
+          .map(
+            (variant) => `
+    it('should generate ${variant.name} classes', () => {
+      const result = generate${capitalizeFirst(variant.name)}Classes();
       
       // 基本クラスの確認
-      Object.keys(default${capitalizeFirst(utilityName)}).forEach(size => {
-        expect(result).toContain(\`.\${prefix}-\${size}\`);
+      Object.keys(default${pascalUtilityName}).forEach(size => {
+        expect(result).toContain(\`.\${variant.prefix}-\${size}\`);
       });
-    });
+    });`
+          )
+          .join('\n')
+      : `
+    it('should generate basic ${utilityName} classes', () => {
+      const result = generate${pascalUtilityName}Classes();
+      
+      // 基本クラスの確認
+      Object.keys(default${pascalUtilityName}).forEach(size => {
+        expect(result).toContain(\`.${prefix}-\${size}\`);
+      });
+    });`;
+
+  return `import { 
+  ${importList},
+  extractCustom${pascalUtilityName}Classes,
+  generateAll${pascalUtilityName}Classes,
+  default${pascalUtilityName}
+} from '../${utilityName}';
+
+describe('${pascalUtilityName} Utilities', () => {
+  describe('generate${pascalUtilityName}Classes', () => {
+    ${generateTestCases}
 
     ${
       hasDirections
         ? `
     it('should generate directional ${utilityName} classes', () => {
-      const result = generate${capitalizeFirst(utilityName)}Classes();
+      const result = generate${pascalUtilityName}Classes();
       
       const directions = ['t', 'r', 'b', 'l', 'x', 'y'];
       directions.forEach(dir => {
-        Object.keys(default${capitalizeFirst(utilityName)}).forEach(size => {
-          expect(result).toContain(\`.\${prefix}\${dir}-\${size}\`);
+        Object.keys(default${pascalUtilityName}).forEach(size => {
+          expect(result).toContain(\`.${prefix}\${dir}-\${size}\`);
         });
       });
     });
@@ -181,16 +366,16 @@ describe('${capitalizeFirst(utilityName)} Utilities', () => {
 
     it('should support custom configuration', () => {
       const customConfig = { custom: '10px' };
-      const result = generate${capitalizeFirst(utilityName)}Classes(customConfig);
+      const result = generate${pascalUtilityName}Classes(customConfig);
       
       expect(result).toContain('.${prefix}-custom');
     });
   });
 
-  describe('extractCustom${capitalizeFirst(utilityName)}Classes', () => {
+  describe('extractCustom${pascalUtilityName}Classes', () => {
     it('should extract custom ${utilityName} classes', () => {
       const html = '<div class="${prefix}-[20px]">test</div>';
-      const result = extractCustom${capitalizeFirst(utilityName)}Classes(html);
+      const result = extractCustom${pascalUtilityName}Classes(html);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toContain('20px');
@@ -201,7 +386,7 @@ describe('${capitalizeFirst(utilityName)} Utilities', () => {
         ? `
     it('should extract directional custom ${utilityName} classes', () => {
       const html = '<div class="${prefix}t-[15px]">test</div>';
-      const result = extractCustom${capitalizeFirst(utilityName)}Classes(html);
+      const result = extractCustom${pascalUtilityName}Classes(html);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toContain('15px');
@@ -209,6 +394,18 @@ describe('${capitalizeFirst(utilityName)} Utilities', () => {
     `
         : ''
     }
+  });
+
+  describe('generateAll${pascalUtilityName}Classes', () => {
+    it('should generate all ${utilityName} classes', () => {
+      const result = generateAll${pascalUtilityName}Classes();
+      
+      ${
+        customVariants.length > 0
+          ? customVariants.map((v) => `expect(result).toContain('.${v.prefix}-');`).join('\n      ')
+          : `expect(result).toContain('.${prefix}-');`
+      }
+    });
   });
 });
 `;
@@ -224,26 +421,65 @@ function capitalizeFirst(str) {
 }
 
 /**
+ * ハイフンを含む文字列をキャメルケースに変換
+ * @param {string} str
+ * @returns {string}
+ */
+function toCamelCase(str) {
+  return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+}
+
+/**
+ * ハイフンを含む文字列をパスカルケースに変換
+ * @param {string} str
+ * @returns {string}
+ */
+function toPascalCase(str) {
+  return capitalizeFirst(toCamelCase(str));
+}
+
+/**
  * メイン実行関数
  * @returns {void}
  */
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0) {
+  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
     console.log(`
 Usage: node scripts/generate-utility.js <utilityName> [options]
 
 Options:
-  --directions          Enable directional support (t, r, b, l, x, y)
-  --no-arbitrary       Disable arbitrary value support
-  --css-property=<name> Set custom CSS property name
-  --prefix=<prefix>     Set custom class prefix
-  --default-values=<json> Set default values as JSON string
+  --directions                Enable directional support (t, r, b, l, x, y)
+  --no-arbitrary             Disable arbitrary value support
+  --css-property=<name>      Set custom CSS property name
+  --prefix=<prefix>          Set custom class prefix
+  --config-type=<type>       Set configuration type (SizeConfig, ColorConfig, etc.)
+  --config-file=<file>       Set configuration file name (sizeConfig, colorConfig, etc.)
+  --default-values=<json>    Set default values as JSON string
+  --variants=<json>          Set custom variants as JSON array
 
 Examples:
-  node scripts/generate-utility.js color --css-property=color --prefix=text
-  node scripts/generate-utility.js border --directions --default-values='{"sm":"1px","md":"2px"}'
+  # 基本的なユーティリティ
+  node scripts/generate-utility.js border \\
+    --css-property=border-width \\
+    --prefix=border \\
+    --config-type=SizeConfig \\
+    --config-file=sizeConfig
+
+  # 色系ユーティリティ（複数バリアント）
+  node scripts/generate-utility.js text-color \\
+    --config-type=ColorConfig \\
+    --config-file=colorConfig \\
+    --variants='[{"name":"text","prefix":"text","property":"color"},{"name":"bg","prefix":"bg","property":"background-color"}]'
+
+  # 方向指定ありのユーティリティ
+  node scripts/generate-utility.js margin \\
+    --directions \\
+    --css-property=margin \\
+    --prefix=m \\
+    --config-type=SizeConfig \\
+    --config-file=spacingConfig
 `);
     process.exit(1);
   }
@@ -254,7 +490,10 @@ Examples:
     supportsArbitraryValues: !args.includes('--no-arbitrary'),
     cssProperty: getArgValue(args, '--css-property') || utilityName,
     prefix: getArgValue(args, '--prefix') || utilityName.charAt(0),
+    configType: getArgValue(args, '--config-type') || 'SizeConfig',
+    configFile: getArgValue(args, '--config-file') || 'sizeConfig',
     defaultValues: JSON.parse(getArgValue(args, '--default-values') || '{}'),
+    customVariants: JSON.parse(getArgValue(args, '--variants') || '[]'),
   };
 
   // ファイルパス
@@ -279,7 +518,8 @@ Examples:
   console.log(`   1. Add export to src/utils/index.ts`);
   console.log(`   2. Add to generator.ts imports and generation`);
   console.log(`   3. Add to types.ts if needed`);
-  console.log(`   4. Run tests: npm test ${utilityName}`);
+  console.log(`   4. Add to apply-plugins/index.ts if needed`);
+  console.log(`   5. Run tests: npm test ${utilityName}`);
 }
 
 /**

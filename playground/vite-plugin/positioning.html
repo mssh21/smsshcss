@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmsshCSS Positioning Utilities Test</title>
+    <link rel="stylesheet" href="./src/style.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #f5f5f5;
+      }
+
+      .demo-container {
+        position: relative;
+        height: 400px;
+        background: white;
+        border: 2px dashed #ccc;
+        margin: 2rem 0;
+        overflow: hidden;
+      }
+
+      .demo-box {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #007acc, #0099ff);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .section {
+        margin: 3rem 0;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+      }
+
+      .section h2 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #007acc;
+        padding-bottom: 0.5rem;
+      }
+
+      .code {
+        background: #f8f9fa;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: 'SF Mono', Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        color: #d73a49;
+      }
+
+      .warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SmsshCSS Positioning Utilities Test</h1>
+    <p>This page tests various positioning utilities including custom arbitrary values.</p>
+
+    <div class="section">
+      <h2>Basic Position Classes</h2>
+      <div class="demo-container">
+        <div class="demo-box static">static</div>
+        <div class="demo-box relative" style="margin-left: 100px">relative</div>
+        <div class="demo-box absolute" style="position: absolute; top: 100px; left: 200px">
+          absolute
+        </div>
+        <div class="demo-box fixed" style="position: fixed; top: 20px; right: 20px; z-index: 1000">
+          fixed
+        </div>
+      </div>
+      <div class="warning">
+        <strong>Classes tested:</strong>
+        <code class="code">static</code>, <code class="code">relative</code>,
+        <code class="code">absolute</code>, <code class="code">fixed</code>,
+        <code class="code">sticky</code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Custom Top/Right/Bottom/Left Values</h2>
+      <div class="demo-container">
+        <div class="demo-box absolute top-[10px] left-[10px]">T10 L10</div>
+        <div class="demo-box absolute top-[10px] right-[20px]">T10 R20</div>
+        <div class="demo-box absolute bottom-[30px] left-[40px]">B30 L40</div>
+        <div class="demo-box absolute bottom-[30px] right-[50px]">B30 R50</div>
+      </div>
+      <div class="warning">
+        <strong>Classes tested:</strong>
+        <code class="code">top-[10px]</code>, <code class="code">right-[20px]</code>,
+        <code class="code">bottom-[30px]</code>,
+        <code class="code">left-[40px]</code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Inset Utilities</h2>
+      <div class="demo-container">
+        <div class="demo-box absolute inset-[20px]" style="width: auto; height: auto">
+          inset-[20px]
+        </div>
+      </div>
+      <div class="demo-container">
+        <div
+          class="demo-box absolute inset-x-[30px] top-[10px] bottom-[10px]"
+          style="width: auto; height: auto"
+        >
+          inset-x-[30px]
+        </div>
+      </div>
+      <div class="demo-container">
+        <div
+          class="demo-box absolute inset-y-[40px] left-[10px] right-[10px]"
+          style="width: auto; height: auto"
+        >
+          inset-y-[40px]
+        </div>
+      </div>
+      <div class="warning">
+        <strong>Classes tested:</strong>
+        <code class="code">inset-[20px]</code>, <code class="code">inset-x-[30px]</code>,
+        <code class="code">inset-y-[40px]</code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Complex Values</h2>
+      <div class="demo-container">
+        <div class="demo-box absolute top-[calc(50%-40px)] left-[calc(50%-40px)]">calc()</div>
+        <div class="demo-box absolute top-[1rem] right-[2rem]">rem</div>
+        <div class="demo-box absolute bottom-[10%] left-[10%]">%</div>
+      </div>
+      <div class="warning">
+        <strong>Classes tested:</strong>
+        <code class="code">top-[calc(50%-40px)]</code>,
+        <code class="code">left-[calc(50%-40px)]</code>, <code class="code">top-[1rem]</code>,
+        <code class="code">right-[2rem]</code>, <code class="code">bottom-[10%]</code>,
+        <code class="code">left-[10%]</code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Sticky Positioning</h2>
+      <p>Scroll down to see the sticky element in action:</p>
+      <div style="height: 200px; overflow-y: auto; border: 1px solid #ddd; background: #f9f9f9">
+        <div style="height: 100px; background: #e9ecef; padding: 1rem">
+          Content before sticky element
+        </div>
+        <div class="demo-box sticky top-[0px]" style="width: 100%; border-radius: 0">
+          sticky top-[0px]
+        </div>
+        <div style="height: 300px; background: #f8f9fa; padding: 1rem">
+          Content after sticky element - scroll to see sticky behavior
+        </div>
+      </div>
+      <div class="warning">
+        <strong>Classes tested:</strong>
+        <code class="code">sticky</code>,
+        <code class="code">top-[0px]</code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Testing Instructions</h2>
+      <ol>
+        <li>Open your browser's developer tools</li>
+        <li>Inspect the elements above to verify the CSS is being applied correctly</li>
+        <li>
+          Check that custom positioning values like <code class="code">top-[10px]</code> generate
+          proper CSS
+        </li>
+        <li>Verify that inset utilities work as expected</li>
+        <li>Test the sticky positioning by scrolling the container above</li>
+      </ol>
+    </div>
+
+    <script type="module" src="./src/main.ts"></script>
+    <script>
+      // Check generated CSS in console
+      window.addEventListener('load', () => {
+        console.log('=== SmsshCSS Positioning Debug ===');
+
+        const stylesheets = Array.from(document.styleSheets);
+        stylesheets.forEach((sheet, index) => {
+          try {
+            const rules = Array.from(sheet.cssRules || sheet.rules || []);
+            const positioningRules = rules.filter(
+              (rule) =>
+                rule.selectorText &&
+                (rule.selectorText.includes('top-[') ||
+                  rule.selectorText.includes('bottom-[') ||
+                  rule.selectorText.includes('left-[') ||
+                  rule.selectorText.includes('right-[') ||
+                  rule.selectorText.includes('inset-['))
+            );
+
+            if (positioningRules.length > 0) {
+              console.log(
+                `Stylesheet ${index} - Positioning rules found:`,
+                positioningRules.length
+              );
+              positioningRules.forEach((rule) => {
+                console.log(`  ${rule.selectorText} { ${rule.style.cssText} }`);
+              });
+            }
+          } catch (e) {
+            console.log(`Cannot access stylesheet ${index}:`, e.message);
+          }
+        });
+
+        // Check if specific classes exist
+        const testClasses = ['top-[10px]', 'bottom-[30px]', 'left-[40px]', 'right-[20px]'];
+        testClasses.forEach((className) => {
+          const elements = document.getElementsByClassName(className);
+          console.log(`Elements with class "${className}":`, elements.length);
+          if (elements.length > 0) {
+            const computedStyle = window.getComputedStyle(elements[0]);
+            console.log(`  Computed styles:`, {
+              position: computedStyle.position,
+              top: computedStyle.top,
+              right: computedStyle.right,
+              bottom: computedStyle.bottom,
+              left: computedStyle.left,
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

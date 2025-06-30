@@ -8,9 +8,34 @@ import { extractCustomZIndexClasses } from '../z-index';
 import { extractCustomOrderClasses } from '../order';
 import { extractCustomColorClasses } from '../color';
 import { extractCustomFontSizeClasses } from '../font-size';
+import { extractCustomPositioningClasses } from '../positioning';
 import { customValueSamples } from '../../__tests__/setup';
 
 describe('Custom Value Extraction Functions', () => {
+  describe('extractCustomPositioningClasses', () => {
+    describe('Basic Custom Values', () => {
+      it('should extract position custom values', () => {
+        const content =
+          '<div class="top-[10px] right-[20px] bottom-[30px] left-[40px] inset-[10px] inset-x-[10px] inset-y-[20px] inset-[30px]">Test</div>';
+        const result = extractCustomPositioningClasses(content);
+
+        expect(result).toHaveLength(8);
+        expect(result).toContain('.top-\\[10px\\] { top: 10px; }');
+        expect(result).toContain('.right-\\[20px\\] { right: 20px; }');
+        expect(result).toContain('.bottom-\\[30px\\] { bottom: 30px; }');
+        expect(result).toContain('.left-\\[40px\\] { left: 40px; }');
+        expect(result).toContain(
+          '.inset-\\[10px\\] { top: 10px; right: 10px; bottom: 10px; left: 10px; }'
+        );
+        expect(result).toContain('.inset-x-\\[10px\\] { left: 10px; right: 10px; }');
+        expect(result).toContain('.inset-y-\\[20px\\] { top: 20px; bottom: 20px; }');
+        expect(result).toContain(
+          '.inset-\\[30px\\] { top: 30px; right: 30px; bottom: 30px; left: 30px; }'
+        );
+      });
+    });
+  });
+
   describe('extractCustomSpacingClasses', () => {
     describe('Basic Custom Values', () => {
       it('should extract margin custom values', () => {
@@ -19,8 +44,8 @@ describe('Custom Value Extraction Functions', () => {
 
         expect(result).toHaveLength(3);
         expect(result).toContain('.m-\\[20px\\] { margin: 20px; }');
-        expect(result).toContain('.mt-\\[1rem\\] { margin-top: 1rem; }');
-        expect(result).toContain('.mx-\\[2em\\] { margin-left: 2em; margin-right: 2em; }');
+        expect(result).toContain('.mt-\\[1rem\\] { margin-block-start: 1rem; }');
+        expect(result).toContain('.mx-\\[2em\\] { margin-inline: 2em; }');
       });
 
       it('should extract padding custom values', () => {
@@ -29,8 +54,8 @@ describe('Custom Value Extraction Functions', () => {
 
         expect(result).toHaveLength(3);
         expect(result).toContain('.p-\\[15px\\] { padding: 15px; }');
-        expect(result).toContain('.pt-\\[0\\.5rem\\] { padding-top: 0.5rem; }');
-        expect(result).toContain('.py-\\[3em\\] { padding-top: 3em; padding-bottom: 3em; }');
+        expect(result).toContain('.pt-\\[0\\.5rem\\] { padding-block-start: 0.5rem; }');
+        expect(result).toContain('.py-\\[3em\\] { padding-block: 3em; }');
       });
 
       it('should extract gap custom values', () => {
@@ -84,7 +109,7 @@ describe('Custom Value Extraction Functions', () => {
           '.p-\\[clamp\\(1rem\\,4vw\\,3rem\\)\\] { padding: clamp(1rem, 4vw, 3rem); }'
         );
         expect(result).toContain(
-          '.my-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { margin-top: clamp(0.5rem, 2vw, 2rem); margin-bottom: clamp(0.5rem, 2vw, 2rem); }'
+          '.my-\\[clamp\\(0\\.5rem\\,2vw\\,2rem\\)\\] { margin-block: clamp(0.5rem, 2vw, 2rem); }'
         );
       });
     });

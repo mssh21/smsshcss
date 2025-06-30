@@ -1,7 +1,7 @@
 // Flexbox専用のエスケープ関数
 export function escapeFlexValue(val: string): string {
   // CSS数学関数を検出する正規表現（基本的な関数のみ）
-  const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
+  const cssMathFunctions = /\b(calc|min|max|clamp|minmax)\s*\(/;
 
   // CSS数学関数の場合は特別処理（カンマもエスケープする）
   if (cssMathFunctions.test(val)) {

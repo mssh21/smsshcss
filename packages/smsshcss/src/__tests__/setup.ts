@@ -1,19 +1,74 @@
-import { vi } from 'vitest';
-import fs from 'fs';
+import { vi, beforeEach } from 'vitest';
 
 // テスト環境の設定
 process.env.NODE_ENV = 'test';
 
-// ファイルシステムのモック
-vi.mock('fs');
-vi.mock('fs-extra');
-vi.mock('fast-glob', () => ({
-  default: vi.fn(),
+// Mock fs module
+vi.mock('fs', () => ({
+  readFileSync: vi.fn(),
+  readFile: vi.fn(),
+  statSync: vi.fn(),
+  stat: vi.fn(),
+  existsSync: vi.fn(),
+  default: {
+    readFileSync: vi.fn(),
+    readFile: vi.fn(),
+    statSync: vi.fn(),
+    stat: vi.fn(),
+    existsSync: vi.fn(),
+  },
 }));
 
-// TypeScript型キャストのヘルパー
+// Mock fs/promises module
+vi.mock('fs/promises', () => ({
+  readFile: vi.fn(),
+  stat: vi.fn(),
+  default: {
+    readFile: vi.fn(),
+    stat: vi.fn(),
+  },
+}));
+
+// Mock util.promisify - より直接的なアプローチ
+vi.mock('util', () => ({
+  promisify: vi.fn(() => vi.fn()),
+}));
+
+// Mock glob
+vi.mock('glob', () => ({
+  sync: vi.fn(),
+  glob: vi.fn(),
+  default: {
+    sync: vi.fn(),
+    glob: vi.fn(),
+  },
+}));
+
+// Mock fast-glob - both default and named exports
+vi.mock('fast-glob', () => {
+  const mockFn = vi.fn();
+  return {
+    default: mockFn,
+    __esModule: true,
+  };
+});
+
+// モック関数をインポート
+import fs from 'fs';
+import * as fsPromises from 'fs/promises';
+import glob from 'glob';
+import fastGlob from 'fast-glob';
+import { promisify } from 'util';
+
+// モック変数をエクスポート
 export const mockFs = vi.mocked(fs);
-export const mockGlob = vi.mocked((await import('fast-glob')).default);
+export const mockFsPromises = vi.mocked(fsPromises);
+export const mockGlob = vi.mocked(glob);
+export const mockFastGlob = vi.mocked(fastGlob);
+export const mockPromisify = vi.mocked(promisify);
+
+// テスト環境の設定を再設定
+process.env.NODE_ENV = 'test';
 
 // 共通のモックファイル内容
 export const mockFileContents = {
@@ -25,6 +80,83 @@ export const mockFileContents = {
   'reset.css': '* { margin: 0; padding: 0; }',
   'base.css': 'body { font-family: sans-serif; }',
 };
+
+// Default mock implementations
+beforeEach(() => {
+  // Clear all mocks
+  vi.clearAllMocks();
+
+  // fs モック設定
+  vi.mocked(fs.existsSync).mockReturnValue(false); // CSSファイル読み込みをスキップ
+  vi.mocked(fs.readFileSync).mockImplementation((path: string | Buffer | URL) => {
+    const filePath = path.toString();
+    if (filePath.includes('reset.css')) {
+      return '/* Reset CSS */\n* { margin: 0; padding: 0; }';
+    }
+    if (filePath.includes('base.css')) {
+      return '/* Base CSS */\nbody { font-family: sans-serif; }';
+    }
+    if (filePath.includes('test')) {
+      return '<div class="p-4 m-2">Test content</div>';
+    }
+    return '';
+  });
+  vi.mocked(fs.statSync).mockReturnValue({
+    size: 1000,
+    isFile: () => true,
+    isDirectory: () => false,
+  } as fs.Stats);
+
+  // fs/promises モック設定
+  vi.mocked(fsPromises.readFile).mockImplementation(async (path: string | Buffer | URL) => {
+    const filePath = path.toString();
+    if (filePath.includes('reset.css')) {
+      return '/* Reset CSS */\n* { margin: 0; padding: 0; }';
+    }
+    if (filePath.includes('base.css')) {
+      return '/* Base CSS */\nbody { font-family: sans-serif; }';
+    }
+    if (filePath.includes('test')) {
+      return '<div class="p-4 m-2">Test content</div>';
+    }
+    return '';
+  });
+  vi.mocked(fsPromises.stat).mockResolvedValue({
+    size: 1000,
+    isFile: () => true,
+    isDirectory: () => false,
+  } as fs.Stats);
+
+  // promisify モック設定 - readFile用の適切なモック
+  mockPromisify.mockImplementation((fn: unknown) => {
+    if (fn === fs.readFile) {
+      return vi.fn().mockImplementation(async (path: string | Buffer | URL, _encoding?: string) => {
+        const filePath = path.toString();
+        if (filePath.includes('test.html')) return mockFileContents['test.html'];
+        if (filePath.includes('component.tsx')) return mockFileContents['component.tsx'];
+        if (filePath.includes('app.vue')) return mockFileContents['app.vue'];
+        if (filePath.includes('reset.css')) return mockFileContents['reset.css'];
+        if (filePath.includes('base.css')) return mockFileContents['base.css'];
+        return '';
+      });
+    }
+    if (fn === fs.stat) {
+      return vi.fn().mockImplementation(async (_path: string | Buffer | URL) => {
+        return { size: 100 };
+      });
+    }
+    return vi.fn().mockResolvedValue('');
+  });
+
+  // glob モック設定
+  vi.mocked(glob.sync).mockReturnValue(['src/test.html', 'src/component.tsx']);
+  vi.mocked(glob.glob).mockResolvedValue(['src/test.html', 'src/component.tsx']);
+
+  // fast-glob モック設定
+  vi.mocked(fastGlob).mockImplementation(async (_patterns: unknown, _options?: unknown) => {
+    return ['src/test.html', 'src/component.tsx'];
+  });
+});
 
 // CSS検証用のユーティリティ関数
 export const cssValidators = {
@@ -69,11 +201,14 @@ export const cssValidators = {
 export function setupDefaultMocks(): void {
   vi.clearAllMocks();
 
-  // デフォルトのglob結果
-  mockGlob.mockResolvedValue(['src/test.html', 'src/component.tsx']);
+  // デフォルトのglob結果 - パージテスト用にテストファイルを返す
+  vi.mocked(fastGlob).mockImplementation(async (_patterns: unknown, _options?: unknown) => {
+    return ['src/test.html', 'src/component.tsx'];
+  });
+  vi.mocked(glob.sync).mockReturnValue(['src/test.html', 'src/component.tsx']);
 
   // デフォルトのファイル読み込み
-  mockFs.readFileSync.mockImplementation((path: string | Buffer | URL) => {
+  vi.mocked(fs.readFileSync).mockImplementation((path: string | Buffer | URL) => {
     const pathStr = path.toString();
 
     if (pathStr.includes('test.html')) return mockFileContents['test.html'];
@@ -86,12 +221,28 @@ export function setupDefaultMocks(): void {
   });
 
   // デフォルトのファイル統計
-  mockFs.statSync.mockReturnValue({ size: 100 } as fs.Stats);
+  vi.mocked(fs.statSync).mockReturnValue({ size: 100 } as fs.Stats);
 
-  // ファイル存在チェック
-  mockFs.existsSync.mockImplementation((path: string | Buffer | URL) => {
-    const pathStr = path.toString();
-    return pathStr.includes('.css') || pathStr.includes('.html') || pathStr.includes('.tsx');
+  // ファイル存在チェック - CSSファイル読み込みをスキップ
+  vi.mocked(fs.existsSync).mockReturnValue(false);
+
+  // promisify モック設定 - readFile用の適切なモック
+  vi.mocked(promisify).mockImplementation((fn: unknown) => {
+    if (fn === fs.readFile) {
+      return vi.fn().mockImplementation(async (path: string | Buffer | URL, _encoding?: string) => {
+        const filePath = path.toString();
+        if (filePath.includes('test.html')) return mockFileContents['test.html'];
+        if (filePath.includes('component.tsx')) return mockFileContents['component.tsx'];
+        if (filePath.includes('app.vue')) return mockFileContents['app.vue'];
+        if (filePath.includes('reset.css')) return mockFileContents['reset.css'];
+        if (filePath.includes('base.css')) return mockFileContents['base.css'];
+        return '';
+      });
+    }
+    if (fn === fs.stat) {
+      return vi.fn().mockResolvedValue({ size: 100 });
+    }
+    return vi.fn().mockResolvedValue('');
   });
 }
 
@@ -113,7 +264,7 @@ export const testConfigs = {
       safelist: ['safe-class'],
     },
   },
-  withTheme: {
+  withApply: {
     content: ['src/**/*.html'],
     apply: {
       'main-layout': 'w-lg mx-auto px-lg gap-x-md gap-y-lg gap-lg',
@@ -174,3 +325,5 @@ export const customValueSamples = {
     </div>
   `,
 };
+
+// Export mocks for use in tests are already defined above

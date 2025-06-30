@@ -1,19 +1,19 @@
 import { SpacingDirection, SpacingProperty, SizeConfig } from '../core/types';
-import { defaultSpacingValues, escapeValue } from '../core/sizeConfig';
+import { defaultSpacingConfig, escapeSpacingValue } from '../config/spacingConfig';
 import { validateArbitraryValue, isSafeArbitraryValue } from '../core/arbitrary-value-validator';
 
 // 後方互換性のためのエイリアス
 export type SpacingConfig = SizeConfig;
-export const defaultSpacing: SpacingConfig = defaultSpacingValues;
+export const defaultSpacing: SpacingConfig = defaultSpacingConfig;
 
 const directionMap: Record<SpacingDirection, string> = {
   '': '',
-  t: '-top',
-  r: '-right',
-  b: '-bottom',
-  l: '-left',
-  x: '-left',
-  y: '-top',
+  t: '-block-start',
+  r: '-inline-end',
+  b: '-block-end',
+  l: '-inline-start',
+  x: '-inline',
+  y: '-block',
 };
 
 // カスタム値クラスを検出する正規表現
@@ -43,17 +43,17 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
 
     // gap プロパティの処理
     if (prefix === 'gap') {
-      return `.gap-\\[${escapeValue(value)}\\] { gap: ${sanitizedValue}; }`;
+      return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { gap: ${sanitizedValue}; }`;
     }
 
     // gap-x (column-gap) プロパティの処理
     if (prefix === 'gap-x') {
-      return `.gap-x-\\[${escapeValue(value)}\\] { column-gap: ${sanitizedValue}; }`;
+      return `.gap-x-\\[${escapeSpacingValue(value)}\\] { column-gap: ${sanitizedValue}; }`;
     }
 
     // gap-y (row-gap) プロパティの処理
     if (prefix === 'gap-y') {
-      return `.gap-y-\\[${escapeValue(value)}\\] { row-gap: ${sanitizedValue}; }`;
+      return `.gap-y-\\[${escapeSpacingValue(value)}\\] { row-gap: ${sanitizedValue}; }`;
     }
 
     const property = prefix.startsWith('m') ? 'margin' : 'padding';
@@ -63,21 +63,21 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
 
     switch (direction) {
       case 't':
-        cssProperty = `${property}-top`;
+        cssProperty = `${property}-block-start`;
         break;
       case 'r':
-        cssProperty = `${property}-right`;
+        cssProperty = `${property}-inline-end`;
         break;
       case 'b':
-        cssProperty = `${property}-bottom`;
+        cssProperty = `${property}-block-end`;
         break;
       case 'l':
-        cssProperty = `${property}-left`;
+        cssProperty = `${property}-inline-start`;
         break;
       case 'x':
-        return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-left: ${sanitizedValue}; ${property}-right: ${sanitizedValue}; }`;
+        return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { ${property}-inline: ${sanitizedValue}; }`;
       case 'y':
-        return `.${prefix}-\\[${escapeValue(value)}\\] { ${property}-top: ${sanitizedValue}; ${property}-bottom: ${sanitizedValue}; }`;
+        return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { ${property}-block: ${sanitizedValue}; }`;
       case '':
         // 全方向
         break;
@@ -86,7 +86,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
         return null;
     }
 
-    return `.${prefix}-\\[${escapeValue(value)}\\] { ${cssProperty}: ${sanitizedValue}; }`;
+    return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { ${cssProperty}: ${sanitizedValue}; }`;
   } catch (error) {
     console.error(`❌ Error generating spacing class for ${prefix}[${value}]:`, error);
     return null;
@@ -147,14 +147,10 @@ export function generateSpacingClasses(
     Object.entries(directionMap).forEach(([dir, suffix]) => {
       if (dir === 'x') {
         // Handle x direction (left and right)
-        classes.push(
-          `.${property[0]}x-${size} { ${property}-left: ${value}; ${property}-right: ${value}; }`
-        );
+        classes.push(`.${property[0]}x-${size} { ${property}-inline: ${value}; }`);
       } else if (dir === 'y') {
         // Handle y direction (top and bottom)
-        classes.push(
-          `.${property[0]}y-${size} { ${property}-top: ${value}; ${property}-bottom: ${value}; }`
-        );
+        classes.push(`.${property[0]}y-${size} { ${property}-block: ${value}; }`);
       } else if (dir !== '') {
         // Handle individual directions
         classes.push(`.${property[0]}${dir}-${size} { ${property}${suffix}: ${value}; }`);
@@ -166,12 +162,12 @@ export function generateSpacingClasses(
   const arbitraryValueTemplate = `
 /* Arbitrary value classes */
 .${property[0]}-\\[\\$\\{value\\}\\] { ${property}: var(--value); }
-.${property[0]}t-\\[\\$\\{value\\}\\] { ${property}-top: var(--value); }
-.${property[0]}r-\\[\\$\\{value\\}\\] { ${property}-right: var(--value); }
-.${property[0]}b-\\[\\$\\{value\\}\\] { ${property}-bottom: var(--value); }
-.${property[0]}l-\\[\\$\\{value\\}\\] { ${property}-left: var(--value); }
-.${property[0]}x-\\[\\$\\{value\\}\\] { ${property}-left: var(--value); ${property}-right: var(--value); }
-.${property[0]}y-\\[\\$\\{value\\}\\] { ${property}-top: var(--value); ${property}-bottom: var(--value); }
+.${property[0]}t-\\[\\$\\{value\\}\\] { ${property}-block-start: var(--value); }
+.${property[0]}r-\\[\\$\\{value\\}\\] { ${property}-inline-end: var(--value); }
+.${property[0]}b-\\[\\$\\{value\\}\\] { ${property}-block-end: var(--value); }
+.${property[0]}l-\\[\\$\\{value\\}\\] { ${property}-inline-start: var(--value); }
+.${property[0]}x-\\[\\$\\{value\\}\\] { ${property}-inline: var(--value); }
+.${property[0]}y-\\[\\$\\{value\\}\\] { ${property}-block: var(--value); }
 `;
 
   // 任意の値のクラステンプレートを追加
