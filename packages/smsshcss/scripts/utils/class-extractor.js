@@ -24,12 +24,18 @@ const CATEGORY_PATTERNS = {
 const CUSTOM_VALUE_PATTERN = /[a-zA-Z]+-\[[^\]]+\]/g;
 
 /**
+ * 任意値テンプレートパターン(${value}を含むもの)
+ */
+const ARBITRARY_VALUE_TEMPLATE_PATTERN = /\\\[\\\$\\\{value\\\}\\\]/;
+
+/**
  * CSSからユーティリティクラスを抽出してカテゴリ分け
  */
 function extractUtilityClasses(css) {
   const classNames = Array.from(extractClassNames(css));
   const categories = {};
   const customValues = [];
+  const templateClasses = [];
 
   // カテゴリの初期化
   Object.keys(CATEGORY_PATTERNS).forEach((category) => {
@@ -38,6 +44,12 @@ function extractUtilityClasses(css) {
   categories.unknown = [];
 
   classNames.forEach((className) => {
+    // 任意値テンプレートクラスをチェック（先にチェックして除外）
+    if (ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)) {
+      templateClasses.push(className);
+      return;
+    }
+
     // カスタム値チェック
     if (CUSTOM_VALUE_PATTERN.test(className)) {
       customValues.push(className);
@@ -60,9 +72,10 @@ function extractUtilityClasses(css) {
   });
 
   return {
-    classes: classNames,
+    classes: classNames.filter((className) => !ARBITRARY_VALUE_TEMPLATE_PATTERN.test(className)), // テンプレートクラスを除外
     categories,
     customValues,
+    templateClasses, // テンプレートクラスを別途記録
   };
 }
 
@@ -172,6 +185,9 @@ function generateDetailedReport(extracted) {
   lines.push('=== Utility Classes Extraction Report ===');
   lines.push(`Total classes: ${extracted.classes.length}`);
   lines.push(`Custom value classes: ${extracted.customValues.length}`);
+  lines.push(
+    `Template classes (excluded): ${extracted.templateClasses ? extracted.templateClasses.length : 0}`
+  );
 
   lines.push('\nClasses by category:');
   Object.entries(extracted.categories).forEach(([category, classes]) => {
@@ -188,6 +204,15 @@ function generateDetailedReport(extracted) {
   if (extracted.customValues.length > 0) {
     lines.push('\nCustom value classes:');
     lines.push(`  ${extracted.customValues.join(', ')}`);
+  }
+
+  if (extracted.templateClasses && extracted.templateClasses.length > 0) {
+    lines.push('\nTemplate classes (excluded from counts):');
+    if (extracted.templateClasses.length <= 10) {
+      lines.push(`  ${extracted.templateClasses.join(', ')}`);
+    } else {
+      lines.push(`  ${extracted.templateClasses.slice(0, 10).join(', ')}...`);
+    }
   }
 
   return lines.join('\n');
