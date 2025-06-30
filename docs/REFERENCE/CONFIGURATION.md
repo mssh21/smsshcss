@@ -37,7 +37,7 @@ A map of reusable component classes. The keys are the class names, and the value
 // smsshcss.config.js
 module.exports = {
   apply: {
-    btn: 'inline-block px-md py-sm -md cursor-pointer',
+    btn: 'inline-block px-md py-sm',
     'btn-primary': 'btn bg-blue-500 text-white hover:bg-blue-600',
   },
 };

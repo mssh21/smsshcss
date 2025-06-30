@@ -12,7 +12,6 @@ Welcome to the official documentation for SmsshCSS. Here you will find all the i
 
 - **[Configuration](./REFERENCE/CONFIGURATION.md):** A detailed reference for all the available configuration options.
 - **[Utility Classes](./REFERENCE/UTILITY_CLASSES.md):** A comprehensive list of all the utility classes and their usage.
-- **[API Reference](./REFERENCE/API_REFERENCE.md):** A reference for the SmsshCSS JavaScript API.
 
 ## Internal
 

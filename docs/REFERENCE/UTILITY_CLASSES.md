@@ -68,7 +68,6 @@ Set the width and height of elements.
 
 ```html
 <div class="w-full h-screen">...</div>
-<div class="w-1/2">...</div>
 <div class="max-w-lg">...</div>
 <div class="h-[calc(100vh-4rem)]">...</div>
 ```
@@ -142,7 +141,7 @@ Control the positioning of elements.
 
 ```html
 <div class="relative">
-  <div class="absolute top-0 right-0">...</div>
+  <div class="absolute top-[0] right-[100px]">...</div>
 </div>
 ```
 
@@ -171,7 +170,7 @@ Control how content overflows an element's box.
 ### Example
 
 ```html
-<div class="overflow-y-auto h-64">...</div>
+<div class="overflow-y-auto h-xl">...</div>
 ```
 
 ## Order
