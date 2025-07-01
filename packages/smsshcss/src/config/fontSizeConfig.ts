@@ -11,50 +11,50 @@ export const defaultFontSizeConfig: FontSizeConfig = {
   '4xl': '2.75rem', // 44px
 };
 
-// CSS値内の特殊文字をエスケープ（クラス名用）
+// Escape special characters in CSS values (for class names)
 export const escapeFontSizeValue = (val: string): string => {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  // Regular expression to detect CSS math functions (basic functions only)
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
-  // CSS数学関数の場合は特別処理（カンマもエスケープする）
+  // Special handling for CSS math functions (also escape commas)
   if (cssMathFunctions.test(val)) {
     return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
   }
-  // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+  // Special handling for CSS variables (var(--name)) - don't escape hyphens
   if (val.includes('var(--')) {
     return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
   }
-  // 通常の値の場合は-も含めてエスケープ
+  // For normal values, escape including hyphens
   return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
 };
 
-// CSS関数内の値を再帰的にフォーマットする関数
+// Function to recursively format values within CSS functions
 export const formatFontSizeCSSFunctionValue = (input: string): string => {
-  // CSS関数を再帰的に処理（基本的な関数のみ）
+  // Recursively process CSS functions (basic functions only)
   return input.replace(
     /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
     (match, funcName, inner) => {
-      // 内部の関数を再帰的に処理
+      // Recursively process inner functions
       const processedInner = formatFontSizeCSSFunctionValue(inner);
 
-      // 演算子とカンマの周りにスペースを適切に配置
+      // Properly place spaces around operators and commas
       const formattedInner = processedInner
-        // まず全てのスペースを正規化
+        // First normalize all spaces
         .replace(/\s+/g, ' ')
         .trim()
-        // カンマの処理（カンマの後にスペース、前のスペースは削除）
+        // Handle commas (space after comma, remove space before)
         .replace(/\s*,\s*/g, ', ')
-        // 演算子の処理（前後にスペース）
+        // Handle operators (spaces before and after)
         .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-          // マイナス記号が負の値かどうかを判定
+          // Determine if minus sign is a negative value
           if (operator === '-') {
-            // 現在の位置より前の文字を取得
+            // Get characters before current position
             const beforeMatch = str.substring(0, offset);
-            // 直前の非空白文字を取得
+            // Get the last non-whitespace character
             const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
             const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
 
-            // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+            // For negative values (start of string, after parentheses, after comma, after other operators)
             if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/]/.test(prevChar)) {
               return '-';
             }

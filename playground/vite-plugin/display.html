@@ -7,7 +7,7 @@
     <title>SmsshCSS - Display Classes Test</title>
   </head>
   <body>
-    <!-- ヒーローヘッダー -->
+    <!-- Hero Header -->
     <header class="hero-header mb-[40px]">
       <div class="hero-background">
         <div class="hero-content">
@@ -17,8 +17,8 @@
             <div class="hero-version-badge">v2.0.0</div>
           </div>
           <p class="hero-subtitle">
-            要素の表示タイプを制御<br />
-            <span class="hero-subtitle-highlight">Block, Inline, Flex, Grid, None等</span>
+            Control element display types<br />
+            <span class="hero-subtitle-highlight">Block, Inline, Flex, Grid, None, etc.</span>
           </p>
           <div class="hero-features">
             <span class="hero-feature-badge">🟦 Block/Inline</span>
@@ -33,23 +33,23 @@
     <main class="main-layout">
       <!-- Navigation -->
       <nav class="demo-nav mb-[30px]">
-        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+        <a href="./index.html" class="nav-link">← Back to Test Page List</a>
       </nav>
 
-      <!-- 基本的なDisplay値 -->
+      <!-- Basic Display Values -->
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">🟦 基本的なDisplay値</h2>
+        <h2 class="demo-title p-[20px]">🟦 Basic Display Values</h2>
         <div class="demo-content p-[30px]">
           <h3 class="text-[18px] font-bold mb-[20px]">Block vs Inline vs Inline-Block</h3>
           <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
             <div class="block p-[10px] bg-blue-500 text-white rounded-[4px] mb-[10px]">
-              block - 幅いっぱいに広がる
+              block - expands to full width
             </div>
             <span class="inline p-[10px] bg-red-500 text-white rounded-[4px] mr-[10px]">
-              inline - コンテンツ幅
+              inline - content width
             </span>
             <span class="inline p-[10px] bg-green-500 text-white rounded-[4px]">
-              inline - 横並び
+              inline - side by side
             </span>
             <div class="mt-[10px]">
               <span class="inline-block p-[10px] bg-purple-500 text-white rounded-[4px] mr-[10px]">
@@ -65,15 +65,15 @@
             <div class="code-example">
               <h4 class="code-title">HTML</h4>
               <pre class="code-block">
-&lt;div class="block"&gt;block - 幅いっぱいに広がる&lt;/div&gt;
-&lt;span class="inline"&gt;inline - コンテンツ幅&lt;/span&gt;
-&lt;span class="inline"&gt;inline - 横並び&lt;/span&gt;
+&lt;div class="block"&gt;block - expands to full width&lt;/div&gt;
+&lt;span class="inline"&gt;inline - content width&lt;/span&gt;
+&lt;span class="inline"&gt;inline - side by side&lt;/span&gt;
 &lt;span class="inline-block"&gt;inline-block&lt;/span&gt;
 &lt;span class="inline-block"&gt;inline-block&lt;/span&gt;</pre
               >
             </div>
             <div class="code-example">
-              <h4 class="code-title">生成されるCSS</h4>
+              <h4 class="code-title">Generated CSS</h4>
               <pre class="code-block">
 .block { display: block; }
 .inline { display: inline; }
@@ -106,7 +106,7 @@
           </div>
 
           <div class="code-example">
-            <h4 class="code-title">生成されるCSS</h4>
+            <h4 class="code-title">Generated CSS</h4>
             <pre class="code-block">
 .flex { display: block flex; }
 .inline-flex { display: inline flex; }</pre
@@ -117,24 +117,24 @@
 
       <!-- Hidden/None -->
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">🚫 要素を隠す</h2>
+        <h2 class="demo-title p-[20px]">🚫 Hide Elements</h2>
         <div class="demo-content p-[30px]">
           <h3 class="text-[18px] font-bold mb-[20px]">none vs hidden</h3>
           <div class="mb-[30px] p-[20px] bg-gray-100 rounded-[8px]">
             <div class="p-[10px] bg-gray-500 text-white rounded-[4px] mb-[10px]">
-              表示される要素
+              Visible element
             </div>
             <div class="none p-[10px] bg-red-500 text-white rounded-[4px] mb-[10px]">
-              none - この要素は表示されません
+              none - This element is not displayed
             </div>
             <div class="hidden p-[10px] bg-red-500 text-white rounded-[4px] mb-[10px]">
-              hidden - この要素も表示されません
+              hidden - This element is also not displayed
             </div>
-            <div class="p-[10px] bg-gray-500 text-white rounded-[4px]">再び表示される要素</div>
+            <div class="p-[10px] bg-gray-500 text-white rounded-[4px]">Element visible again</div>
           </div>
 
           <div class="code-example">
-            <h4 class="code-title">生成されるCSS</h4>
+            <h4 class="code-title">Generated CSS</h4>
             <pre class="code-block">
 .none { display: none; }
 .hidden { display: none; }</pre
@@ -143,13 +143,13 @@
         </div>
       </section>
 
-      <!-- 全Displayクラス一覧 -->
+      <!-- Complete Display Classes List -->
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">📋 利用可能なDisplayクラス一覧</h2>
+        <h2 class="demo-title p-[20px]">📋 Available Display Classes List</h2>
         <div class="demo-content p-[30px]">
           <div class="grid grid-cols-[3] gap-[20px]">
             <div class="info-card">
-              <h4 class="info-card-title">基本Display</h4>
+              <h4 class="info-card-title">Basic Display</h4>
               <div class="info-card-content">
                 <ul class="info-list">
                   <li>block → display: block;</li>
@@ -163,7 +163,7 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">レイアウト</h4>
+              <h4 class="info-card-title">Layout</h4>
               <div class="info-card-content">
                 <ul class="info-list">
                   <li>flex → display: block flex;</li>
@@ -176,7 +176,7 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">Table系</h4>
+              <h4 class="info-card-title">Table Types</h4>
               <div class="info-card-content">
                 <ul class="info-list">
                   <li>table → display: block table;</li>
@@ -195,7 +195,7 @@
 
     <footer class="main-footer mt-[60px] p-[40px]">
       <p class="m-[0px]">🖥️ Display Classes - SmsshCSS Vite Plugin</p>
-      <p class="footer-subtitle m-[0px] mt-[10px]">要素の表示タイプを制御</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">Control element display types</p>
     </footer>
 
     <script type="module" src="/src/main.ts"></script>

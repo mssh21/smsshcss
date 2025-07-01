@@ -16,7 +16,7 @@ describe('SmsshCSS Main API', () => {
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
 
-      // 基本的なCSSクラスが含まれていることを確認
+      // Verify that basic CSS classes are included
       expect(result).toMatch(/\.[\w-]+\s*\{[^}]*\}/);
     });
 
@@ -34,7 +34,7 @@ describe('SmsshCSS Main API', () => {
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
 
-      // Apply関連のCSSが含まれていることを確認
+      // Verify that Apply-related CSS is included
       expect(result).toContain('.btn-primary');
     });
 
@@ -53,7 +53,7 @@ describe('SmsshCSS Main API', () => {
       expect(typeof result).toBe('string');
       expect(result.length).toBeGreaterThan(0);
 
-      // フル設定でのCSS生成を確認（基本的なチェックのみ）
+      // Verify CSS generation with full configuration (basic check only)
     });
   });
 
@@ -69,7 +69,7 @@ describe('SmsshCSS Main API', () => {
 
       const report = await generatePurgeReport(config);
 
-      // パージが有効な場合はレポートが生成される
+      // Report is generated when purging is enabled
       expect(report).toBeTruthy();
       if (report) {
         expect(report.totalClasses).toBeGreaterThanOrEqual(0);
@@ -88,7 +88,7 @@ describe('SmsshCSS Main API', () => {
 
       const report = await generatePurgeReport(config);
 
-      // パージが無効な場合はnullが返される
+      // Returns null when purging is disabled
       expect(report).toBeNull();
     });
 
@@ -99,7 +99,7 @@ describe('SmsshCSS Main API', () => {
 
       const report = await generatePurgeReport(config);
 
-      // パージ設定がない場合はnullが返される
+      // Returns null when purge config is not provided
       expect(report).toBeNull();
     });
   });
@@ -143,7 +143,7 @@ describe('SmsshCSS Main API', () => {
         content: [],
       };
 
-      // 空のコンテンツ配列は設定検証でエラーになることを確認
+      // Verify that empty content array causes error in configuration validation
       await expect(generateCSS(config)).rejects.toThrow(
         /Content array must contain at least one pattern/
       );
@@ -200,7 +200,7 @@ describe('SmsshCSS Main API', () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      // 2秒以内で完了することを確認（非同期なので若干余裕を持たせる）
+      // Verify completion within 2 seconds (allow some margin for async operations)
       expect(duration).toBeLessThan(2000);
     });
 
@@ -219,7 +219,7 @@ describe('SmsshCSS Main API', () => {
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');
 
-      // 大規模な設定でも合理的な時間で処理されることを確認
+      // Verify that large configurations are processed in reasonable time
       expect(endTime - startTime).toBeLessThan(3000);
     });
   });

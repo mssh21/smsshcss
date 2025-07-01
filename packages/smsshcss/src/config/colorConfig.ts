@@ -1,8 +1,8 @@
 import { ColorConfig } from '../core/types';
 
 /**
- * Width/Height用のサイズ設定
- * より大きな値を基本とし、レイアウト要素に適している
+ * Size configuration for Width/Height
+ * Uses larger values as base, suitable for layout elements
  */
 export const defaultColorConfig: ColorConfig = {
   transparent: 'transparent',

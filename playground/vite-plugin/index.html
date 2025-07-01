@@ -4,238 +4,249 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SmsshCSS Vite Plugin - テストページ一覧</title>
+    <title>SmsshCSS Vite Plugin - Test Page List</title>
   </head>
   <body>
-    <!-- ヒーローヘッダー -->
+    <!-- Hero Header -->
     <header class="hero-header mb-[80px] flex-[1] overflow-scroll">
       <div class="hero-background">
         <div class="hero-content">
-          <!-- メインタイトル部分 -->
+          <!-- Main Title Section -->
           <div class="hero-title-section">
             <div class="hero-icon">🎨</div>
             <h1 class="hero-title">SmsshCSS Vite Plugin</h1>
             <div class="hero-version-badge">v2.0.0</div>
           </div>
 
-          <!-- サブタイトル -->
+          <!-- Subtitle -->
           <p class="hero-subtitle">
-            ユーティリティクラス別テストページ<br />
-            <span class="hero-subtitle-highlight">フィボナッチ数列ベース + カスタム値対応</span>
+            Test pages by utility class<br />
+            <span class="hero-subtitle-highlight"
+              >Fibonacci sequence based + Custom value support</span
+            >
           </p>
 
-          <!-- 統計情報 -->
+          <!-- Statistics -->
           <div class="hero-stats">
             <div class="hero-stat-item">
               <div class="hero-stat-number" id="class-count">200+</div>
-              <div class="hero-stat-label">ユーティリティクラス</div>
+              <div class="hero-stat-label">Utility Classes</div>
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat-item">
               <div class="hero-stat-number">50+</div>
-              <div class="hero-stat-label">Apply設定</div>
+              <div class="hero-stat-label">Apply Settings</div>
             </div>
             <div class="hero-stat-divider"></div>
             <div class="hero-stat-item">
               <div class="hero-stat-number">13</div>
-              <div class="hero-stat-label">テストページ</div>
+              <div class="hero-stat-label">Test Pages</div>
             </div>
           </div>
 
-          <!-- 機能バッジ -->
+          <!-- Feature Badges -->
           <div class="hero-features">
-            <span class="hero-feature-badge">📏 フィボナッチ数列</span>
+            <span class="hero-feature-badge">📏 Fibonacci Sequence</span>
             <span class="hero-feature-badge">🎯 Gap-X/Gap-Y</span>
-            <span class="hero-feature-badge">⚡ Apply設定</span>
-            <span class="hero-feature-badge">🔧 カスタム値</span>
-            <span class="hero-feature-badge">🔍 デバッグ対応</span>
+            <span class="hero-feature-badge">⚡ Apply Settings</span>
+            <span class="hero-feature-badge">🔧 Custom Values</span>
+            <span class="hero-feature-badge">🔍 Debug Support</span>
           </div>
         </div>
       </div>
     </header>
     <main class="main-layout flex flex-col gap-[40px]">
-      <!-- テストページ一覧 -->
+      <!-- Test Page List -->
       <section class="demo-section">
-        <h2 class="demo-title p-[20px]">📚 テストページ一覧</h2>
+        <h2 class="demo-title p-[20px]">📚 Test Page List</h2>
         <div class="demo-content p-[30px]">
           <div class="grid gap-[20px] grid-cols-[4]">
             <!-- Spacing -->
             <div class="test-card">
               <h3 class="test-card-title">🎯 Spacing Classes</h3>
               <p class="test-card-desc">
-                マージン・パディングクラス<br />フィボナッチ数列ベース (5px-55px)
+                Margin and padding classes<br />Fibonacci sequence based (5px-55px)
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">基本サイズ</span>
-                <span class="feature-tag">方向別</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Basic Sizes</span>
+                <span class="feature-tag">Directional</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./spacing.html" class="test-card-link">テストページを開く →</a>
+              <a href="./spacing.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Gap -->
             <div class="test-card">
               <h3 class="test-card-title">📏 Gap Classes</h3>
-              <p class="test-card-desc">Flexbox/Grid ギャップクラス<br />Gap-X/Gap-Y対応</p>
+              <p class="test-card-desc">Flexbox/Grid gap classes<br />Gap-X/Gap-Y support</p>
               <div class="test-card-features">
                 <span class="feature-tag">Flexbox</span>
                 <span class="feature-tag">Grid</span>
-                <span class="feature-tag">X/Y分離</span>
+                <span class="feature-tag">X/Y Separation</span>
               </div>
-              <a href="./gap.html" class="test-card-link">テストページを開く →</a>
+              <a href="./gap.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Width/Height -->
             <div class="test-card">
               <h3 class="test-card-title">📐 Width/Height Classes</h3>
-              <p class="test-card-desc">幅・高さクラス<br />フィボナッチ数列 + パーセンテージ</p>
+              <p class="test-card-desc">
+                Width and height classes<br />Fibonacci sequence + percentages
+              </p>
               <div class="test-card-features">
-                <span class="feature-tag">基本サイズ</span>
-                <span class="feature-tag">パーセンテージ</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Basic Sizes</span>
+                <span class="feature-tag">Percentages</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./width-height.html" class="test-card-link">テストページを開く →</a>
+              <a href="./width-height.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Display -->
             <div class="test-card">
               <h3 class="test-card-title">🖥️ Display Classes</h3>
-              <p class="test-card-desc">表示クラス<br />Block, Flex, Grid, Hidden等</p>
+              <p class="test-card-desc">Display classes<br />Block, Flex, Grid, Hidden, etc.</p>
               <div class="test-card-features">
                 <span class="feature-tag">Block/Inline</span>
                 <span class="feature-tag">Flex/Grid</span>
                 <span class="feature-tag">Hidden</span>
               </div>
-              <a href="./display.html" class="test-card-link">テストページを開く →</a>
+              <a href="./display.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Flexbox -->
             <div class="test-card">
               <h3 class="test-card-title">🔄 Flexbox Classes</h3>
-              <p class="test-card-desc">Flexboxレイアウトクラス<br />Direction, Justify, Align等</p>
+              <p class="test-card-desc">
+                Flexbox layout classes<br />Direction, Justify, Align, etc.
+              </p>
               <div class="test-card-features">
                 <span class="feature-tag">Direction</span>
                 <span class="feature-tag">Justify</span>
                 <span class="feature-tag">Align</span>
               </div>
-              <a href="./flexbox.html" class="test-card-link">テストページを開く →</a>
+              <a href="./flexbox.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Grid -->
             <div class="test-card">
               <h3 class="test-card-title">🎯 Grid Classes</h3>
-              <p class="test-card-desc">CSS Gridレイアウトクラス<br />Columns, Span, Start/End等</p>
+              <p class="test-card-desc">
+                CSS Grid layout classes<br />Columns, Span, Start/End, etc.
+              </p>
               <div class="test-card-features">
                 <span class="feature-tag">Columns</span>
                 <span class="feature-tag">Span</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./grid.html" class="test-card-link">テストページを開く →</a>
+              <a href="./grid.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Positioning -->
             <div class="test-card">
               <h3 class="test-card-title">📍 Positioning Classes</h3>
               <p class="test-card-desc">
-                ポジション制御クラス<br />Static, Relative, Absolute, Fixed等
+                Position control classes<br />Static, Relative, Absolute, Fixed, etc.
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">基本Position</span>
+                <span class="feature-tag">Basic Position</span>
                 <span class="feature-tag">Inset</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./positioning.html" class="test-card-link">テストページを開く →</a>
+              <a href="./positioning.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Color -->
             <div class="test-card">
               <h3 class="test-card-title">🎨 Color Classes</h3>
-              <p class="test-card-desc">カラークラス</p>
+              <p class="test-card-desc">Color classes</p>
               <div class="test-card-features">
-                <span class="feature-tag">基本色</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Basic Colors</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./color.html" class="test-card-link">テストページを開く →</a>
+              <a href="./color.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Apply Settings -->
             <div class="test-card">
               <h3 class="test-card-title">⚡ Apply Settings</h3>
-              <p class="test-card-desc">Apply設定デモ<br />50+ 組み合わせクラス</p>
+              <p class="test-card-desc">Apply settings demo<br />50+ combination classes</p>
               <div class="test-card-features">
                 <span class="feature-tag">Layout</span>
                 <span class="feature-tag">Components</span>
                 <span class="feature-tag">Typography</span>
               </div>
-              <a href="./apply.html" class="test-card-link">テストページを開く →</a>
+              <a href="./apply.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Z-Index -->
             <div class="test-card">
               <h3 class="test-card-title">📚 Z-Index Classes</h3>
-              <p class="test-card-desc">要素の重ね順制御<br />Z-Index 0-50 + Auto + カスタム値</p>
+              <p class="test-card-desc">
+                Element stacking order control<br />Z-Index 0-50 + Auto + custom values
+              </p>
               <div class="test-card-features">
-                <span class="feature-tag">レイヤリング</span>
-                <span class="feature-tag">0-50段階</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Layering</span>
+                <span class="feature-tag">0-50 Levels</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./z-index.html" class="test-card-link">テストページを開く →</a>
+              <a href="./z-index.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Order -->
             <div class="test-card">
               <h3 class="test-card-title">🔢 Order Classes</h3>
               <p class="test-card-desc">
-                FlexboxとGridでの表示順序制御<br />order-1〜order-12 + カスタム値対応
+                Display order control in Flexbox and Grid<br />order-1 to order-12 + custom value
+                support
               </p>
               <div class="test-card-features">
                 <span class="feature-tag">Order 1-12</span>
                 <span class="feature-tag">First/Last</span>
-                <span class="feature-tag">カスタム値</span>
+                <span class="feature-tag">Custom Values</span>
               </div>
-              <a href="./order.html" class="test-card-link">テストページを開く →</a>
+              <a href="./order.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Overflow -->
             <div class="test-card">
               <h3 class="test-card-title">📦 Overflow Classes</h3>
               <p class="test-card-desc">
-                要素のオーバーフロー制御<br />Auto, Hidden, Scroll, Clip + X/Y方向
+                Element overflow control<br />Auto, Hidden, Scroll, Clip + X/Y directions
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">基本制御</span>
-                <span class="feature-tag">X/Y分離</span>
+                <span class="feature-tag">Basic Control</span>
+                <span class="feature-tag">X/Y Separation</span>
                 <span class="feature-tag">Clip</span>
               </div>
-              <a href="./overflow.html" class="test-card-link">テストページを開く →</a>
+              <a href="./overflow.html" class="test-card-link">Open Test Page →</a>
             </div>
 
             <!-- Font Size -->
             <div class="test-card">
               <h3 class="test-card-title">📝 Font Size Classes</h3>
               <p class="test-card-desc">
-                フォントサイズ制御<br />フィボナッチ数列ベース + カスタム値対応
+                Font size control<br />Fibonacci sequence based + custom value support
               </p>
               <div class="test-card-features">
-                <span class="feature-tag">Size階層</span>
-                <span class="feature-tag">フィボナッチ</span>
-                <span class="feature-tag">レスポンシブ</span>
+                <span class="feature-tag">Size Hierarchy</span>
+                <span class="feature-tag">Fibonacci</span>
+                <span class="feature-tag">Responsive</span>
               </div>
-              <a href="./font-size.html" class="test-card-link">テストページを開く →</a>
+              <a href="./font-size.html" class="test-card-link">Open Test Page →</a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 設定情報 -->
+      <!-- Configuration Information -->
       <section class="demo-section">
-        <h2 class="demo-title p-[20px]">⚙️ 設定情報</h2>
+        <h2 class="demo-title p-[20px]">⚙️ Configuration Information</h2>
         <div class="demo-content p-[30px]">
           <div class="grid gap-[30px] grid-cols-[4]">
             <div class="info-card">
               <h4 class="info-card-title">📊 Spacing System</h4>
               <div class="info-card-content">
-                <p><strong>フィボナッチ数列ベース:</strong></p>
+                <p><strong>Fibonacci sequence based:</strong></p>
                 <ul class="info-list">
                   <li>2xs: 5px</li>
                   <li>xs: 8px</li>
@@ -250,20 +261,20 @@
             <div class="info-card">
               <h4 class="info-card-title">🎛️ Debug Settings</h4>
               <div class="info-card-content">
-                <p><strong>開発モード設定:</strong></p>
+                <p><strong>Development mode settings:</strong></p>
                 <ul class="info-list">
                   <li>debug: true</li>
                   <li>purge.enabled: false</li>
-                  <li>詳細ログ出力</li>
-                  <li>全クラス利用可能</li>
+                  <li>Detailed log output</li>
+                  <li>All classes available</li>
                 </ul>
               </div>
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">🔗 テストページ状況</h4>
+              <h4 class="info-card-title">🔗 Test Page Status</h4>
               <div class="info-card-content">
-                <p><strong>利用可能なページ:</strong></p>
+                <p><strong>Available pages:</strong></p>
                 <ul class="info-list">
                   <li>Spacing Classes ✅</li>
                   <li>Gap Classes ✅</li>
@@ -285,16 +296,16 @@
         </div>
       </section>
 
-      <!-- クイックアクセス -->
+      <!-- Quick Access -->
       <section class="demo-section">
-        <h2 class="demo-title p-[20px]">🚀 クイックアクセス</h2>
+        <h2 class="demo-title p-[20px]">🚀 Quick Access</h2>
         <div class="demo-content p-[30px]">
           <div class="flex gap-[20px] flex-wrap">
-            <button class="quick-btn" onclick="openAllPages()">全ページを開く</button>
+            <button class="quick-btn" onclick="openAllPages()">Open All Pages</button>
             <button class="quick-btn" onclick="window.smsshcssDebug?.listAllClasses()">
-              デバッグログ表示
+              Show Debug Log
             </button>
-            <button class="quick-btn" onclick="showSystemInfo()">システム情報表示</button>
+            <button class="quick-btn" onclick="showSystemInfo()">Show System Info</button>
             <a href="https://github.com/your-repo/smsshcss" class="quick-btn" target="_blank"
               >GitHub</a
             >
@@ -303,8 +314,10 @@
       </section>
     </main>
     <footer class="main-footer mt-[80px] p-[40px]">
-      <p class="m-[0px]">🎨 SmsshCSS Vite Plugin - テストページ一覧</p>
-      <p class="footer-subtitle m-[0px] mt-[10px]">各ユーティリティクラスを個別にテスト可能</p>
+      <p class="m-[0px]">🎨 SmsshCSS Vite Plugin - Test Page List</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">
+        Individual testing available for each utility class
+      </p>
     </footer>
     <script type="module" src="/src/main.ts"></script>
     <script>
@@ -343,7 +356,7 @@
         };
 
         console.log('🖥️ System Information:', info);
-        alert('システム情報をコンソールに出力しました');
+        alert('System information has been output to console');
       }
     </script>
   </body>

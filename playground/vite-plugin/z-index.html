@@ -16,14 +16,14 @@
             <div class="hero-version-badge">v2.0.0</div>
           </div>
           <p class="hero-subtitle">
-            要素の重ね順制御<br />
-            <span class="hero-subtitle-highlight">Z-Index 0-50 + Auto + カスタム値対応</span>
+            Element stacking order control<br />
+            <span class="hero-subtitle-highlight">Z-Index 0-50 + Auto + custom value support</span>
           </p>
           <div class="hero-features">
-            <span class="hero-feature-badge">📚 レイヤリング</span>
-            <span class="hero-feature-badge">🔢 0-50段階</span>
-            <span class="hero-feature-badge">🎛️ Auto制御</span>
-            <span class="hero-feature-badge">🎯 カスタム値</span>
+            <span class="hero-feature-badge">📚 Layering</span>
+            <span class="hero-feature-badge">🔢 0-50 Levels</span>
+            <span class="hero-feature-badge">🎛️ Auto Control</span>
+            <span class="hero-feature-badge">🎯 Custom Values</span>
           </div>
         </div>
       </div>
@@ -31,18 +31,20 @@
 
     <main class="main-layout">
       <nav class="demo-nav mb-[30px]">
-        <a href="./index.html" class="nav-link">← テストページ一覧に戻る</a>
+        <a href="./index.html" class="nav-link">← Back to Test Page List</a>
       </nav>
 
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">📚 基本的なZ-Index値</h2>
+        <h2 class="demo-title p-[20px]">📚 Basic Z-Index Values</h2>
         <div class="demo-content p-[30px]">
-          <h3 class="text-[18px] font-bold mb-[20px]">デフォルト値での重ね順制御</h3>
+          <h3 class="text-[18px] font-bold mb-[20px]">
+            Stacking order control with default values
+          </h3>
           <div class="mb-[30px] relative h-[200px] bg-gray-100 rounded-[8px] p-[20px]">
             <div
               class="absolute top-[20px] left-[20px] w-[100px] h-[60px] bg-red-500 text-white p-[10px] rounded-[4px] z-0"
             >
-              z-0 (底)
+              z-0 (bottom)
             </div>
             <div
               class="absolute top-[40px] left-[60px] w-[100px] h-[60px] bg-green-500 text-white p-[10px] rounded-[4px] z-10"
@@ -67,12 +69,12 @@
             <div
               class="absolute top-[120px] left-[220px] w-[100px] h-[60px] bg-pink-500 text-white p-[10px] rounded-[4px] z-50"
             >
-              z-50 (最上位)
+              z-50 (top)
             </div>
           </div>
 
           <div class="code-example">
-            <h4 class="code-title">生成されるCSS</h4>
+            <h4 class="code-title">Generated CSS</h4>
             <pre class="code-block">
 .z-0 { z-index: 0; }
 .z-10 { z-index: 10; }
@@ -86,38 +88,38 @@
       </section>
 
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">🎛️ Auto制御</h2>
+        <h2 class="demo-title p-[20px]">🎛️ Auto Control</h2>
         <div class="demo-content p-[30px]">
-          <h3 class="text-[18px] font-bold mb-[20px]">z-auto での自動制御</h3>
+          <h3 class="text-[18px] font-bold mb-[20px]">Automatic control with z-auto</h3>
           <div class="mb-[30px] relative h-[150px] bg-gray-100 rounded-[8px] p-[20px]">
             <div
               class="absolute top-[20px] left-[20px] w-[120px] h-[60px] bg-indigo-500 text-white p-[10px] rounded-[4px] z-auto"
             >
-              z-auto<br />（自動スタック）
+              z-auto<br />（auto stack）
             </div>
             <div
               class="absolute top-[50px] left-[80px] w-[120px] h-[60px] bg-teal-500 text-white p-[10px] rounded-[4px] z-auto"
             >
-              z-auto<br />（DOM順）
+              z-auto<br />（DOM order）
             </div>
             <div
               class="absolute top-[80px] left-[140px] w-[120px] h-[60px] bg-orange-500 text-white p-[10px] rounded-[4px] z-10"
             >
-              z-10<br />（明示的）
+              z-10<br />（explicit）
             </div>
           </div>
 
           <div class="code-example">
-            <h4 class="code-title">生成されるCSS</h4>
+            <h4 class="code-title">Generated CSS</h4>
             <pre class="code-block">.z-auto { z-index: auto; }</pre>
           </div>
         </div>
       </section>
 
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">🎯 カスタム値</h2>
+        <h2 class="demo-title p-[20px]">🎯 Custom Values</h2>
         <div class="demo-content p-[30px]">
-          <h3 class="text-[18px] font-bold mb-[20px]">任意の値でのZ-Index制御</h3>
+          <h3 class="text-[18px] font-bold mb-[20px]">Z-Index control with arbitrary values</h3>
           <div class="mb-[30px] relative h-[180px] bg-gray-100 rounded-[8px] p-[20px]">
             <div
               class="absolute top-[20px] left-[20px] w-[100px] h-[60px] bg-gray-500 text-white p-[10px] rounded-[4px] z-[1]"
@@ -132,12 +134,12 @@
             <div
               class="absolute top-[60px] left-[100px] w-[100px] h-[60px] bg-lime-500 text-black p-[10px] rounded-[4px] z-[-1]"
             >
-              z-[-1]<br />（負の値）
+              z-[-1]<br />（negative value）
             </div>
             <div
               class="absolute top-[80px] left-[140px] w-[120px] h-[60px] bg-rose-500 text-white p-[10px] rounded-[4px] z-[9999]"
             >
-              z-[9999]<br />（最上位）
+              z-[9999]<br />（top level）
             </div>
           </div>
 
@@ -147,12 +149,12 @@
               <pre class="code-block">
 &lt;div class="z-[1]"&gt;z-[1]&lt;/div&gt;
 &lt;div class="z-[100]"&gt;z-[100]&lt;/div&gt;
-&lt;div class="z-[-1]"&gt;z-[-1] (負の値)&lt;/div&gt;
-&lt;div class="z-[9999]"&gt;z-[9999] (最上位)&lt;/div&gt;</pre
+&lt;div class="z-[-1]"&gt;z-[-1] (negative value)&lt;/div&gt;
+&lt;div class="z-[9999]"&gt;z-[9999] (top level)&lt;/div&gt;</pre
               >
             </div>
             <div class="code-example">
-              <h4 class="code-title">生成されるCSS</h4>
+              <h4 class="code-title">Generated CSS</h4>
               <pre class="code-block">
 .z-\[1\] { z-index: 1; }
 .z-\[100\] { z-index: 100; }
@@ -165,58 +167,58 @@
       </section>
 
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">🎪 実用的な例</h2>
+        <h2 class="demo-title p-[20px]">🎪 Practical Examples</h2>
         <div class="demo-content p-[30px]">
-          <h3 class="text-[18px] font-bold mb-[20px]">よくある使用場面</h3>
+          <h3 class="text-[18px] font-bold mb-[20px]">Common usage scenarios</h3>
           <div class="grid grid-cols-[2] gap-[20px] mb-[30px]">
             <div class="p-[15px] bg-gray-100 rounded-[8px]">
-              <h4 class="text-[14px] font-bold mb-[10px]">モーダル・オーバーレイ</h4>
+              <h4 class="text-[14px] font-bold mb-[10px]">Modal Overlay</h4>
               <div class="relative h-[120px] bg-white rounded-[4px] overflow-hidden">
                 <div class="p-[10px] bg-blue-100">
-                  <p class="text-[14px]">メインコンテンツ</p>
-                  <p class="text-[12px] text-gray-600">通常のページ内容</p>
+                  <p class="text-[14px]">Main Content</p>
+                  <p class="text-[12px] text-gray-600">Normal page content</p>
                 </div>
                 <div
                   class="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
                 >
                   <div class="bg-white p-[15px] rounded-[4px] z-50">
-                    <p class="text-[12px] font-bold">モーダル (z-50)</p>
-                    <p class="text-[10px] text-gray-600">背景: z-40</p>
+                    <p class="text-[12px] font-bold">Modal (z-50)</p>
+                    <p class="text-[10px] text-gray-600">Background: z-40</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="p-[15px] bg-gray-100 rounded-[8px]">
-              <h4 class="text-[14px] font-bold mb-[10px]">ドロップダウンメニュー</h4>
+              <h4 class="text-[14px] font-bold mb-[10px]">Dropdown Menu</h4>
               <div class="relative h-[120px] bg-white rounded-[4px] p-[10px]">
                 <div class="inline-block relative">
                   <button class="p-[8px] bg-blue-500 text-white rounded-[4px] text-[12px]">
-                    メニュー
+                    Menu
                   </button>
                   <div
                     class="absolute top-full left-0 mt-[2px] bg-white border border-gray-300 rounded-[4px] shadow-lg z-30 min-w-[80px]"
                   >
-                    <div class="p-[8px] text-[12px] hover:bg-gray-100">項目1</div>
-                    <div class="p-[8px] text-[12px] hover:bg-gray-100">項目2</div>
-                    <div class="p-[8px] text-[12px] hover:bg-gray-100">項目3</div>
+                    <div class="p-[8px] text-[12px] hover:bg-gray-100">Item 1</div>
+                    <div class="p-[8px] text-[12px] hover:bg-gray-100">Item 2</div>
+                    <div class="p-[8px] text-[12px] hover:bg-gray-100">Item 3</div>
                   </div>
                 </div>
                 <div class="mt-[10px] p-[8px] bg-gray-200 rounded-[4px] z-10">
-                  <p class="text-[12px]">背景コンテンツ (z-10)</p>
+                  <p class="text-[12px]">Background content (z-10)</p>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="code-example">
-            <h4 class="code-title">実用例のCSS</h4>
+            <h4 class="code-title">Example CSS</h4>
             <pre class="code-block">
-/* モーダル例 */
+/* Modal example */
 .modal-overlay { z-index: 40; }  /* z-40 */
 .modal-content { z-index: 50; }  /* z-50 */
 
-/* ドロップダウン例 */
+/* Dropdown example */
 .dropdown-menu { z-index: 30; }  /* z-30 */</pre
             >
           </div>
@@ -224,11 +226,11 @@
       </section>
 
       <section class="demo-section mb-[40px]">
-        <h2 class="demo-title p-[20px]">📋 利用可能なZ-Indexクラス一覧</h2>
+        <h2 class="demo-title p-[20px]">📋 Available Z-Index Classes List</h2>
         <div class="demo-content p-[30px]">
           <div class="grid grid-cols-[3] gap-[20px]">
             <div class="info-card">
-              <h4 class="info-card-title">デフォルト値</h4>
+              <h4 class="info-card-title">Default Values</h4>
               <div class="info-card-content">
                 <ul class="info-list">
                   <li>z-0 → z-index: 0;</li>
@@ -243,7 +245,7 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">カスタム値</h4>
+              <h4 class="info-card-title">Custom Values</h4>
               <div class="info-card-content">
                 <ul class="info-list">
                   <li>z-[1] → z-index: 1;</li>
@@ -258,15 +260,15 @@
             </div>
 
             <div class="info-card">
-              <h4 class="info-card-title">よくある値</h4>
+              <h4 class="info-card-title">Common Values</h4>
               <div class="info-card-content">
                 <ul class="info-list">
-                  <li><strong>背景・基本:</strong> z-0, z-10</li>
-                  <li><strong>コンテンツ:</strong> z-20, z-30</li>
-                  <li><strong>オーバーレイ:</strong> z-40</li>
-                  <li><strong>モーダル:</strong> z-50</li>
-                  <li><strong>ツールチップ:</strong> z-[100]</li>
-                  <li><strong>最上位:</strong> z-[9999]</li>
+                  <li><strong>Background/Basic:</strong> z-0, z-10</li>
+                  <li><strong>Content:</strong> z-20, z-30</li>
+                  <li><strong>Overlay:</strong> z-40</li>
+                  <li><strong>Modal:</strong> z-50</li>
+                  <li><strong>Tooltip:</strong> z-[100]</li>
+                  <li><strong>Top level:</strong> z-[9999]</li>
                 </ul>
               </div>
             </div>
@@ -277,7 +279,7 @@
 
     <footer class="main-footer mt-[60px] p-[40px]">
       <p class="m-[0px]">📚 Z-Index Classes - SmsshCSS Vite Plugin</p>
-      <p class="footer-subtitle m-[0px] mt-[10px]">要素の重ね順を制御</p>
+      <p class="footer-subtitle m-[0px] mt-[10px]">Control element stacking order</p>
     </footer>
 
     <script type="module" src="/src/main.ts"></script>

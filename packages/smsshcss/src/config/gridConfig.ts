@@ -1,8 +1,8 @@
 import { SizeConfig } from '../core/types';
 
 /**
- * Grid用のサイズ設定
- * Grid columns/rows の値を定義
+ * Grid size configuration
+ * Define values for Grid columns/rows
  */
 export const defaultGridConfig: SizeConfig = {
   none: '0',
@@ -22,33 +22,33 @@ export const defaultGridConfig: SizeConfig = {
 };
 
 /**
- * カスタムGridクラス値を処理するヘルパー関数
+ * Helper function to process custom Grid class values
  * @param size - Grid size value
  * @returns Grid template value or null
  */
 export function getGridValueFromConfig(size: string): string | null {
   if (!size) return null;
 
-  // 設定ファイルの値をチェック
+  // Check values in config file
   if (defaultGridConfig[size]) {
     return defaultGridConfig[size];
   }
 
-  // 数値の場合は repeat() で包む
+  // If numeric, wrap with repeat()
   if (/^\d+$/.test(size)) {
     return `repeat(${size}, minmax(0, 1fr))`;
   }
 
-  // カスタム値（[値]形式）の場合
+  // For custom values ([value] format)
   if (size.startsWith('[') && size.endsWith(']')) {
     let customValue = size.slice(1, -1);
 
-    // 数値の場合
+    // If numeric
     if (/^\d+$/.test(customValue)) {
       return `repeat(${customValue}, minmax(0, 1fr))`;
     }
 
-    // カンマ区切りのテンプレート値の場合、カンマをスペースに変換
+    // For comma-separated template values, convert commas to spaces
     if (customValue.includes(',')) {
       customValue = customValue.replace(/,/g, ' ');
     }

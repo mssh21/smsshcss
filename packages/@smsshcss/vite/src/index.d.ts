@@ -61,7 +61,7 @@ export interface SmsshCSSViteOptions {
 export function smsshcss(options?: SmsshCSSViteOptions): Plugin;
 
 /**
- * CSS生成とパージを行うユーティリティ関数
+ * Utility function for CSS generation and purging
  * @param options Configuration options
  * @returns Generated CSS string with purging applied
  */

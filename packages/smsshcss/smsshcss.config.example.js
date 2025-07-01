@@ -21,7 +21,7 @@ module.exports = {
     './pages/**/*.{js,jsx,ts,tsx}',
     './components/**/*.{js,jsx,ts,tsx}',
     './app/**/*.{js,jsx,ts,tsx}',
-    // '**/*.html', // すべてのHTMLファイル（パフォーマンスに注意）
+    // '**/*.html', // All HTML files (note performance impact)
   ],
 
   // 🔒 CSS classes to always include (not purged)
@@ -29,8 +29,8 @@ module.exports = {
     'btn',
     'btn-primary',
     'container',
-    /^grid-cols-/, // 正規表現も使用可能
-    // 動的に生成されるクラス
+    /^grid-cols-/, // Regular expressions can also be used
+    // Dynamically generated classes
     'm-2xl',
     'p-2xl',
     'mt-2xl',
@@ -41,10 +41,10 @@ module.exports = {
     'gap-x-2xl',
     'gap-y-2xl',
 
-    // 正規表現パターン
+    // Regular expression patterns
     /^hover:p-/,
     /^focus:m-/,
-    /^sm:/, // レスポンシブクラス（将来の実装）
+    /^sm:/, // Responsive classes (future implementation)
     /^md:/,
     /^lg:/,
   ],

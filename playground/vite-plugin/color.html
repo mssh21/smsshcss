@@ -8,10 +8,10 @@
   </head>
   <body>
     <div class="main-layout">
-      <!-- ナビゲーション -->
+      <!-- Navigation -->
       <nav class="page-nav mb-[40px]">
         <div class="flex gap-[20px] items-center">
-          <a href="./index.html" class="nav-link">← ホーム</a>
+          <a href="./index.html" class="nav-link">← Home</a>
           <div class="nav-divider"></div>
           <a href="./spacing.html" class="nav-link">Spacing</a>
           <div class="nav-divider"></div>
@@ -21,13 +21,13 @@
 
       <header class="mb-[40px]">
         <h1 class="page-title">🎨 Color Classes</h1>
-        <p class="page-subtitle">CSSカラークラス - 基本色、カスタム値、</p>
+        <p class="page-subtitle">CSS Color Classes - Basic colors, custom values,</p>
       </header>
 
       <main class="grid gap-[30px]">
-        <!-- 1. 基本色 -->
+        <!-- 1. Basic Colors -->
         <section class="demo-section">
-          <h2 class="demo-title p-[20px]">テキスト色</h2>
+          <h2 class="demo-title p-[20px]">Text Colors</h2>
           <div class="demo-content p-[30px]">
             <div class="grid gap-2xs">
               <div class="text-black">text-black</div>
@@ -47,9 +47,9 @@
           </div>
         </section>
 
-        <!-- 2. カスタム値 -->
+        <!-- 2. Custom Values -->
         <section class="demo-section">
-          <h2 class="demo-title p-[20px]">背景色</h2>
+          <h2 class="demo-title p-[20px]">Background Colors</h2>
           <div class="demo-content p-[30px]">
             <div class="flex gap-xl flex-wrap">
               <div class="flex gap-2xs items-center flex-col">
@@ -77,7 +77,7 @@
         </section>
 
         <section class="demo-section">
-          <h2 class="demo-title p-[20px]">ボーダーカラー</h2>
+          <h2 class="demo-title p-[20px]">Border Colors</h2>
           <div class="demo-content p-[30px]">
             <div class="flex gap-xl flex-wrap">
               <div class="flex gap-2xs items-center flex-col">
@@ -216,19 +216,19 @@
         </section>
       </main>
 
-      <!-- ページフッター -->
+      <!-- Page Footer -->
       <footer class="page-footer mt-[60px] p-[30px]">
         <div class="flex gap-[20px] items-center justify-between flex-wrap">
           <div>
-            <p class="m-[0px] font-medium">🎨 Color Classes テスト完了</p>
+            <p class="m-[0px] font-medium">🎨 Color Classes Test Complete</p>
             <p class="m-[0px] mt-[5px] text-sm opacity-70">
-              基本色 + カスタム値（HEX、RGB、HSL、CSS変数）対応
+              Basic colors + custom values (HEX, RGB, HSL, CSS variables) support
             </p>
           </div>
           <div class="flex gap-[15px]">
             <a href="./spacing.html" class="page-nav-btn">← Spacing</a>
-            <a href="./width-height.html" class="page-nav-btn">次: Width/Height →</a>
-            <a href="./index.html" class="page-nav-btn">ホーム</a>
+            <a href="./width-height.html" class="page-nav-btn">Next: Width/Height →</a>
+            <a href="./index.html" class="page-nav-btn">Home</a>
           </div>
         </div>
       </footer>
@@ -249,10 +249,10 @@
           .filter((cls, index, arr) => arr.indexOf(cls) === index)
           .sort();
 
-        // デバッグ情報をコンソールに出力
+        // Output debug information to console
         console.log('Found color classes:', allClasses);
 
-        // 色クラス表示用の要素があれば更新
+        // Update color class display element if it exists
         const container = document.getElementById('color-classes');
         if (container) {
           container.innerHTML = allClasses
@@ -261,7 +261,7 @@
         }
       }
 
-      // ページ読み込み時に実行
+      // Execute when page loads
       document.addEventListener('DOMContentLoaded', showColorClasses);
     </script>
   </body>

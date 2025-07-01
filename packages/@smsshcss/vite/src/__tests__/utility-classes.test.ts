@@ -5,14 +5,14 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
   let plugin: ReturnType<typeof smsshcss>;
 
   beforeEach(async () => {
-    // 軽量な設定でプラグインを初期化
+    // Initialize plugin with lightweight configuration
     plugin = smsshcss({
       content: ['src/__tests__/test-content.html'],
       includeResetCSS: false,
       includeBaseCSS: false,
       apply: {},
       purge: {
-        enabled: false, // パージ機能を無効にしてすべてのクラスを生成
+        enabled: false, // Disable purge to generate all classes
       },
       debug: true,
     });
@@ -46,7 +46,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
   describe('Display Classes', () => {
     it('should generate display utility classes', async () => {
       const result = await plugin.transform('', 'test.css');
-      // デバッグ出力は必要に応じて有効化してください
+      // Enable debug output as needed
       // fs.writeFileSync(path.resolve(__dirname, '../debug-output-plugin.txt'), result?.code || '', 'utf-8');
       expect(result?.code).toContain('.flex { display: block flex; }');
       expect(result?.code).toContain('.grid { display: block grid; }');
@@ -74,7 +74,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
   describe('Height Classes', () => {
     it('should generate height utility classes', async () => {
       const result = await plugin.transform('', 'test.css');
-      // デバッグ出力は必要に応じて有効化してください
+      // Enable debug output as needed
       // fs.writeFileSync(path.resolve(__dirname, '../debug-output-plugin.txt'), result?.code || '', 'utf-8');
       expect(result?.code).toContain('.h-2xs { height: 1rem; }');
       expect(result?.code).toContain('.h-xs { height: 1.5rem; }');
@@ -242,7 +242,7 @@ describe('SmsshCSS Vite Plugin - Utility Classes Generation', () => {
       });
       const applyResult = await applyPlugin.transform('', 'test.css');
 
-      // Apply設定が動作することを確認（基本的なユーティリティクラスが生成される）
+      // Verify that Apply settings work (basic utility classes are generated)
       expect(applyResult?.code).toBeDefined();
       expect(typeof applyResult?.code).toBe('string');
     });

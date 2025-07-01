@@ -25,22 +25,22 @@ import { createHash } from 'crypto';
 
 export interface SmsshCSSViteOptions {
   /**
-   * スキャンするファイルパターン
+   * File patterns to scan
    * @default ['index.html', 'src/(all-subdirs)/(all-files).{html,js,ts,jsx,tsx,vue,svelte,astro}']
    */
   content?: string[];
   /**
-   * リセットCSSを含めるかどうか
+   * Whether to include reset CSS
    * @default true
    */
   includeResetCSS?: boolean;
   /**
-   * ベースCSSを含めるかどうか
+   * Whether to include base CSS
    * @default true
    */
   includeBaseCSS?: boolean;
   /**
-   * パージ設定
+   * Purge settings
    */
   purge?: {
     enabled?: boolean;
@@ -51,34 +51,34 @@ export interface SmsshCSSViteOptions {
     variables?: boolean;
   };
   /**
-   * Apply設定（よく使うユーティリティクラスの組み合わせを定義）
+   * Apply settings (define frequently used utility class combinations)
    */
   apply?: Record<string, string>;
   /**
-   * 開発時にパージレポートを表示するかどうか
+   * Whether to show purge report during development
    * @default false
    */
   showPurgeReport?: boolean;
   /**
-   * CSS minifyを有効にするかどうか
+   * Whether to enable CSS minify
    * @default true
    */
   minify?: boolean;
   /**
-   * キャッシュを有効にするかどうか
+   * Whether to enable cache
    * @default true
    */
   cache?: boolean;
   /**
-   * デバッグログを有効にするかどうか
+   * Whether to enable debug log
    * @default false
    */
   debug?: boolean;
 }
 
 /**
- * ファイルパターンがマッチするかどうかを判定
- * micromatchを使用してglobパターンを正確に処理
+ * Check if file pattern matches
+ * Use micromatch to accurately process glob patterns
  */
 function matchesPattern(filePath: string, patterns: string[]): boolean {
   const normalizedPath = filePath.replace(/\\/g, '/');
@@ -86,7 +86,7 @@ function matchesPattern(filePath: string, patterns: string[]): boolean {
 }
 
 /**
- * キャッシュクラス
+ * Cache class
  */
 class CSSCache {
   private cache = new Map<string, { content: string; hash: string; timestamp: number }>();
@@ -97,14 +97,14 @@ class CSSCache {
   }
 
   /**
-   * ファイル内容のハッシュを生成
+   * Generate hash from file content
    */
   private generateHash(content: string): string {
     return createHash('md5').update(content).digest('hex');
   }
 
   /**
-   * キャッシュから取得
+   * Get from cache
    */
   get(key: string, content: string): string | null {
     if (!this.enabled) return null;
@@ -122,7 +122,7 @@ class CSSCache {
   }
 
   /**
-   * キャッシュに保存
+   * Save to cache
    */
   set(key: string, content: string, result: string): void {
     if (!this.enabled) return;
@@ -136,14 +136,14 @@ class CSSCache {
   }
 
   /**
-   * キャッシュをクリア
+   * Clear cache
    */
   clear(): void {
     this.cache.clear();
   }
 
   /**
-   * 古いキャッシュエントリを削除
+   * Remove old cache entries
    */
   cleanup(maxAge = 60 * 60 * 1000): void {
     const now = Date.now();
@@ -156,7 +156,7 @@ class CSSCache {
 }
 
 /**
- * ファイルからカスタムクラスを抽出する統合関数
+ * Integrated function to extract custom classes from files
  */
 async function extractAllCustomClassesFromFiles(
   content: string[],
@@ -173,7 +173,7 @@ async function extractAllCustomClassesFromFiles(
   }
 
   try {
-    // ファイルパターンをまとめて処理
+    // Process all file patterns together
     const allFiles = new Set<string>();
     const extractionPromises: Promise<void>[] = [];
 
@@ -203,20 +203,20 @@ async function extractAllCustomClassesFromFiles(
       );
     }
 
-    // 全てのglobパターンを並列実行
+    // Execute all glob patterns in parallel
     await Promise.all(extractionPromises);
 
     if (debug) {
       console.log(`[smsshcss] Total files found: ${allFiles.size}`, Array.from(allFiles));
     }
 
-    // ファイルを並列処理
+    // Process files in parallel
     const filePromises = Array.from(allFiles).map(async (file) => {
       try {
         const filePath = path.resolve(process.cwd(), file);
         const cacheKey = `file:${filePath}`;
 
-        // キャッシュから取得または読み込み
+        // Get from cache or read
         let fileContent: string;
         if (fileCache.has(filePath)) {
           fileContent = fileCache.get(filePath)!;
@@ -225,13 +225,13 @@ async function extractAllCustomClassesFromFiles(
           fileCache.set(filePath, fileContent);
         }
 
-        // キャッシュされた結果をチェック
+        // Check cached result
         const cachedResult = cache.get(cacheKey, fileContent);
         if (cachedResult) {
           return JSON.parse(cachedResult) as string[];
         }
 
-        // 各種カスタムクラスを抽出
+        // Extract various custom classes
         const extractionResults = [
           extractCustomSpacingClasses(fileContent),
           extractCustomWidthClasses(fileContent),
@@ -254,7 +254,7 @@ async function extractAllCustomClassesFromFiles(
           console.log(fileClasses.slice(0, 3).map((cls) => cls.substring(0, 100)));
         }
 
-        // 結果をキャッシュ
+        // Cache the result
         cache.set(cacheKey, fileContent, JSON.stringify(fileClasses));
 
         return fileClasses;
@@ -272,7 +272,7 @@ async function extractAllCustomClassesFromFiles(
 
     const results = await Promise.all(filePromises);
 
-    // 重複を除去して結果をマージ
+    // Remove duplicates and merge results
     for (const fileClasses of results) {
       for (const cssClass of fileClasses) {
         if (!seenClasses.has(cssClass)) {
@@ -326,7 +326,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
     configResolved(config): void {
       isProduction = config.command === 'build';
 
-      // minifyオプションがfalseの場合、ViteのCSS minifyを無効化
+      // Disable Vite's CSS minify if minify option is false
       if (!minify && isProduction) {
         if (config.build && config.build.cssMinify !== false) {
           config.build.cssMinify = false;
@@ -338,7 +338,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
         }
       }
 
-      // プロダクションビルド時はキャッシュをリセット
+      // Reset cache during production build
       if (isProduction) {
         cssCache.clear();
       }
@@ -352,55 +352,55 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
     configureServer(devServer: ViteDevServer): void {
       /**
-       * ファイルが監視対象かどうかを判定
+       * Check if file is being watched
        */
       const shouldReload = (file: string): boolean => {
         return matchesPattern(file, content);
       };
 
       /**
-       * CSSモジュールをリロード
+       * Reload CSS modules
        */
       const reloadCSSModules = async (file: string): Promise<void> => {
         if (debug) {
           console.log(`[smsshcss] File changed: ${file}, regenerating CSS...`);
         }
 
-        // CSSモジュールを見つけて無効化
+        // Find and invalidate CSS modules
         const cssModules = Array.from(devServer.moduleGraph.idToModuleMap.values()).filter(
           (module) => module.id?.endsWith('.css')
         );
 
-        // CSSモジュールをリロード
+        // Reload CSS modules
         for (const cssModule of cssModules) {
           devServer.moduleGraph.invalidateModule(cssModule);
           devServer.reloadModule(cssModule);
         }
       };
 
-      // ファイルの変更を監視
+      // Watch for file changes
       devServer.watcher.on('change', async (file) => {
         if (shouldReload(file)) {
           await reloadCSSModules(file);
         }
       });
 
-      // 新しいファイルが追加された場合も監視
+      // Also watch when new files are added
       devServer.watcher.on('add', async (file) => {
         if (shouldReload(file)) {
           await reloadCSSModules(file);
         }
       });
 
-      // 定期的にキャッシュをクリーンアップ
+      // Periodically clean up cache
       const cleanupInterval = setInterval(
         () => {
           cssCache.cleanup();
         },
         10 * 60 * 1000
-      ); // 10分ごと
+      ); // Every 10 minutes
 
-      // サーバー終了時にクリーンアップ間隔をクリア
+      // Clear cleanup interval when server ends
       devServer.watcher.on('close', () => {
         clearInterval(cleanupInterval);
         if (debug) {
@@ -414,14 +414,14 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 
       let css = code;
 
-      // SmsshCSSの設定を構築
+      // Build SmsshCSS configuration
       const smsshConfig: SmsshCSSConfig = {
         content,
         includeResetCSS,
         includeBaseCSS,
         apply,
         purge: {
-          enabled: isProduction ? purge.enabled : false, // 開発時はパージを無効化
+          enabled: isProduction ? purge.enabled : false, // Disable purge during development
           content,
           ...purge,
         },
@@ -432,7 +432,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
         const configHash = createHash('md5').update(JSON.stringify(smsshConfig)).digest('hex');
         const cacheKey = `css:${configHash}:${isProduction ? 'prod' : 'dev'}`;
 
-        // キャッシュから取得を試行
+        // Try to get from cache
         const cachedCSS = cssCache.get(cacheKey, JSON.stringify(smsshConfig));
         if (cachedCSS && !isProduction) {
           generatedCSS = cachedCSS;
@@ -442,7 +442,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
             if (showPurgeReport) {
               const report = await generatePurgeReport(smsshConfig);
               if (report) {
-                // Purgeレポートの出力は残しても良いが、不要ならここも削除可
+                // Purge report output can be kept, but can be removed if not needed
               }
             }
           } else {
@@ -451,7 +451,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
           cssCache.set(cacheKey, JSON.stringify(smsshConfig), generatedCSS);
         }
 
-        // カスタムクラスを動的に抽出して追加
+        // Dynamically extract and add custom classes
         const customClasses = await extractAllCustomClassesFromFiles(content, cssCache, debug);
         if (customClasses.length > 0) {
           if (generatedCSS.includes('/* Custom Value Classes */')) {
@@ -475,7 +475,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
       };
     },
 
-    // ビルド終了時の後処理
+    // Post-processing when build completes
     closeBundle(): void {
       if (debug) {
         console.log('[smsshcss] Build completed, clearing cache...');
@@ -486,7 +486,7 @@ export function smsshcss(options: SmsshCSSViteOptions = {}): Plugin {
 }
 
 /**
- * CSS生成とパージを行うユーティリティ関数
+ * Utility function for CSS generation and purging
  */
 export async function generateCSSWithPurge(options: SmsshCSSViteOptions = {}): Promise<string> {
   const {
@@ -514,5 +514,5 @@ export async function generateCSSWithPurge(options: SmsshCSSViteOptions = {}): P
 
 export default smsshcss;
 
-// 互換性のためのエイリアス
+// Alias for compatibility
 export { smsshcss as smsshcssVite };

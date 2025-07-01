@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 新しいユーティリティクラスを生成するためのスクリプト
+ * Script to generate new utility classes
  * Usage: node scripts/generate-utility.js <utilityName> [options]
  */
 
@@ -13,7 +13,7 @@ const path = require('path');
 const TEMPLATE_DIRECTORY = path.join(__dirname, '../src/utils');
 
 /**
- * ユーティリティテンプレート
+ * Utility template
  * @param {string} utilityName
  * @param {object} options
  * @returns {string}
@@ -133,7 +133,7 @@ export function generateAll${pascalUtilityName}Classes(customConfig?: ${configTy
 }
 
 /**
- * カスタム値パターンの生成
+ * Generate custom value pattern
  */
 function generateCustomValuePattern(prefix, hasDirections, customVariants) {
   if (customVariants.length > 0) {
@@ -144,7 +144,7 @@ function generateCustomValuePattern(prefix, hasDirections, customVariants) {
 }
 
 /**
- * カスタムクラス生成ロジック
+ * Custom class generation logic
  */
 function generateCustomClassLogic(
   cssProperty,
@@ -174,7 +174,7 @@ function generateCustomClassLogic(
 }
 
 /**
- * バリアント関数の生成
+ * Generate variant functions
  */
 function generateVariantFunctions(
   utilityName,
@@ -224,7 +224,7 @@ export function generate${capitalizeFirst(variant.name)}Classes(config: ${config
 }
 
 /**
- * エスケープ関数名を取得
+ * Get escape function name
  */
 function getEscapeFunctionName(configFile) {
   const mapping = {
@@ -237,7 +237,7 @@ function getEscapeFunctionName(configFile) {
 }
 
 /**
- * フォーマット関数名を取得
+ * Get format function name
  */
 function getFormatFunctionName(configFile) {
   const mapping = {
@@ -250,7 +250,7 @@ function getFormatFunctionName(configFile) {
 }
 
 /**
- * 方向性のあるプロパティ用のロジック生成
+ * Generate logic for directional properties
  * @param {string} cssProperty
  * @param {string} prefix
  * @param {string} escapeFunctionName
@@ -284,7 +284,7 @@ function generateDirectionalLogic(cssProperty, prefix, escapeFunctionName) {
 }
 
 /**
- * シンプルなプロパティ用のロジック生成
+ * Generate logic for simple properties
  * @param {string} cssProperty
  * @param {string} prefix
  * @param {string} escapeFunctionName
@@ -296,7 +296,7 @@ function generateSimpleLogic(cssProperty, prefix, escapeFunctionName) {
 }
 
 /**
- * テストファイルテンプレート
+ * Test file template
  * @param {string} utilityName
  * @param {object} options
  * @returns {string}
@@ -319,7 +319,7 @@ function generateTestTemplate(utilityName, options = {}) {
     it('should generate ${variant.name} classes', () => {
       const result = generate${capitalizeFirst(variant.name)}Classes();
       
-      // 基本クラスの確認
+      // Check basic classes
       Object.keys(default${pascalUtilityName}).forEach(size => {
         expect(result).toContain(\`.\${variant.prefix}-\${size}\`);
       });
@@ -330,7 +330,7 @@ function generateTestTemplate(utilityName, options = {}) {
     it('should generate basic ${utilityName} classes', () => {
       const result = generate${pascalUtilityName}Classes();
       
-      // 基本クラスの確認
+      // Check basic classes
       Object.keys(default${pascalUtilityName}).forEach(size => {
         expect(result).toContain(\`.${prefix}-\${size}\`);
       });
@@ -412,7 +412,7 @@ describe('${pascalUtilityName} Utilities', () => {
 }
 
 /**
- * 文字列の最初の文字を大文字にする
+ * Capitalize the first character of a string
  * @param {string} str
  * @returns {string}
  */
@@ -421,7 +421,7 @@ function capitalizeFirst(str) {
 }
 
 /**
- * ハイフンを含む文字列をキャメルケースに変換
+ * Convert hyphenated string to camelCase
  * @param {string} str
  * @returns {string}
  */
@@ -430,7 +430,7 @@ function toCamelCase(str) {
 }
 
 /**
- * ハイフンを含む文字列をパスカルケースに変換
+ * Convert hyphenated string to PascalCase
  * @param {string} str
  * @returns {string}
  */
@@ -439,7 +439,7 @@ function toPascalCase(str) {
 }
 
 /**
- * メイン実行関数
+ * Main execution function
  * @returns {void}
  */
 function main() {
@@ -460,20 +460,20 @@ Options:
   --variants=<json>          Set custom variants as JSON array
 
 Examples:
-  # 基本的なユーティリティ
+  # Basic utilities
   node scripts/generate-utility.js border \\
     --css-property=border-width \\
     --prefix=border \\
     --config-type=SizeConfig \\
     --config-file=sizeConfig
 
-  # 色系ユーティリティ（複数バリアント）
+  # Color utilities (multiple variants)
   node scripts/generate-utility.js text-color \\
     --config-type=ColorConfig \\
     --config-file=colorConfig \\
     --variants='[{"name":"text","prefix":"text","property":"color"},{"name":"bg","prefix":"bg","property":"background-color"}]'
 
-  # 方向指定ありのユーティリティ
+  # Utilities with directional support
   node scripts/generate-utility.js margin \\
     --directions \\
     --css-property=margin \\
@@ -496,14 +496,14 @@ Examples:
     customVariants: JSON.parse(getArgValue(args, '--variants') || '[]'),
   };
 
-  // ファイルパス
+  // File paths
   const utilityFile = path.join(TEMPLATE_DIRECTORY, `${utilityName}.ts`);
   const testFile = path.join(TEMPLATE_DIRECTORY, '__tests__', `${utilityName}.test.ts`);
 
-  // ファイル生成
+  // File generation
   fs.writeFileSync(utilityFile, generateUtilityTemplate(utilityName, options));
 
-  // テストディレクトリが存在しない場合は作成
+  // Create test directory if it doesn't exist
   const testDir = path.dirname(testFile);
   if (!fs.existsSync(testDir)) {
     fs.mkdirSync(testDir, { recursive: true });
@@ -523,7 +523,7 @@ Examples:
 }
 
 /**
- * 引数から値を取得
+ * Get value from arguments
  * @param {string[]} args
  * @param {string} flag
  * @returns {string|null}
@@ -533,7 +533,7 @@ function getArgValue(args, flag) {
   return arg ? arg.split('=')[1] : null;
 }
 
-// スクリプト実行
+// Script execution
 if (require.main === module) {
   main();
 }

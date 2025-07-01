@@ -1,7 +1,7 @@
 const { parse, walk } = require('css-tree');
 
 /**
- * CSSからクラス名を抽出
+ * Extract class names from CSS
  */
 function extractClassNames(css) {
   const classes = new Set();
@@ -25,7 +25,7 @@ function extractClassNames(css) {
 }
 
 /**
- * CSSルールの詳細解析
+ * Detailed analysis of CSS rules
  */
 function parseCSS(css) {
   const result = {
@@ -71,10 +71,10 @@ function parseCSS(css) {
 }
 
 /**
- * セレクター部分を文字列として生成
+ * Generate selector part as string
  */
 function generateSelectorString(prelude) {
-  // 簡易的な実装 - 実際のプロジェクトでは css-tree の generate 関数を使用
+  // Simple implementation - use css-tree's generate function in actual projects
   const selectors = [];
 
   walk(prelude, function (node) {
@@ -89,10 +89,10 @@ function generateSelectorString(prelude) {
 }
 
 /**
- * CSS値を文字列として生成
+ * Generate CSS value as string
  */
 function generateValueString(value) {
-  // 簡易的な実装
+  // Simple implementation
   if (value && value.children) {
     const values = [];
 
@@ -114,7 +114,7 @@ function generateValueString(value) {
 }
 
 /**
- * 特定のクラス名パターンにマッチするセレクターを検索
+ * Search for selectors that match specific class name patterns
  */
 function findMatchingSelectors(css, pattern) {
   const parsed = parseCSS(css);
@@ -122,7 +122,7 @@ function findMatchingSelectors(css, pattern) {
 }
 
 /**
- * クラス名のプロパティ値を取得
+ * Get property values for class names
  */
 function getClassProperties(css, className) {
   const parsed = parseCSS(css);
@@ -131,7 +131,7 @@ function getClassProperties(css, className) {
 }
 
 /**
- * CSS統計情報を取得
+ * Get CSS statistics
  */
 function getCSSStats(css) {
   const parsed = parseCSS(css);
