@@ -5,7 +5,7 @@ import {
   formatSizeCSSFunctionValue,
 } from '../config/sizeConfig';
 
-// 後方互換性のためのエイリアス
+// Alias for backward compatibility
 export type WidthConfig = SizeConfig;
 export const defaultWidth: WidthConfig = {
   ...defaultSizeConfig,
@@ -19,28 +19,28 @@ export const defaultWidth: WidthConfig = {
   cqmax: '100cqmax',
 };
 
-// カスタム値クラスを検出する正規表現
+// Regular expression to detect custom value classes
 const customValuePattern = /\b(w|min-w|max-w)-\[([^\]]+)\]/g;
 
-// カスタムWidthクラスを生成
+// Generate custom Width classes
 function generateCustomWidthClass(prefix: string, value: string): string | null {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  // Regular expression to detect CSS math functions (basic functions only)
   const cssMathFunctions = /\b(calc|min|max|clamp|minmax)\s*\(/;
 
-  // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+  // Restore original value (for CSS values) - properly restore spaces for CSS math functions
   const originalValue = cssMathFunctions.test(value) ? formatSizeCSSFunctionValue(value) : value;
 
-  // width プロパティの処理
+  // Handle width property
   if (prefix === 'w') {
     return `.w-\\[${escapeSizeValue(value)}\\] { width: ${originalValue}; }`;
   }
 
-  // min-width プロパティの処理
+  // Handle min-width property
   if (prefix === 'min-w') {
     return `.min-w-\\[${escapeSizeValue(value)}\\] { min-width: ${originalValue}; }`;
   }
 
-  // max-width プロパティの処理
+  // Handle max-width property
   if (prefix === 'max-w') {
     return `.max-w-\\[${escapeSizeValue(value)}\\] { max-width: ${originalValue}; }`;
   }
@@ -48,7 +48,7 @@ function generateCustomWidthClass(prefix: string, value: string): string | null 
   return null;
 }
 
-// HTMLファイルからカスタム値クラスを抽出
+// Extract custom value classes from HTML files
 export function extractCustomWidthClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
@@ -57,7 +57,7 @@ export function extractCustomWidthClasses(content: string): string[] {
     const prefix = match[1];
     const value = match[2];
 
-    // CSSクラスを生成
+    // Generate CSS class
     const cssClass = generateCustomWidthClass(prefix, value);
     if (cssClass) {
       customClasses.push(cssClass);
@@ -91,7 +91,7 @@ export function generateWidthClasses(config: WidthConfig = defaultWidth): string
     classes.push(`.max-w-${size} { max-width: ${value}; }`);
   });
 
-  // 任意の値のwidthクラスを追加
+  // Add arbitrary value width classes
   classes.push(`
 /* Arbitrary width values */
 .w-\\[\\$\\{value\\}\\] { width: var(--value); }

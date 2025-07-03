@@ -1,6 +1,6 @@
-// Grid Template Columns と Rows のカスタムテーマサポート
+// Custom theme support for Grid Template Columns and Rows
 
 export function generateGridTemplateClasses(): string {
-  // カスタムグリッドテンプレートはサポートしなくなったため、空の文字列を返す
+  // Custom grid templates are no longer supported, so return empty string
   return '';
 }

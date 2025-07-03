@@ -1,4 +1,4 @@
-// 共通のサイズ設定インターフェース
+// Common size configuration interface
 export interface SizeConfig {
   none: string;
   '2xs': string;
@@ -33,7 +33,7 @@ export interface SizeConfig {
   [key: string]: string | undefined;
 }
 
-// カラー設定
+// Color configuration
 export interface ColorConfig {
   [key: string]: string;
 }
@@ -42,17 +42,17 @@ export interface FontSizeConfig {
   [key: string]: string;
 }
 
-// SpacingConfigをSizeConfigのエイリアスとして定義（後方互換性のため）
+// Define SpacingConfig as alias for SizeConfig (for backward compatibility)
 export type SpacingConfig = SizeConfig;
 
-// WidthConfigをSizeConfigのエイリアスとして定義（後方互換性のため）
+// Define WidthConfig as alias for SizeConfig (for backward compatibility)
 export type WidthConfig = SizeConfig;
 
-// HeightConfig用のインターフェース
+// Interface for HeightConfig
 export interface HeightConfig extends SizeConfig {
-  svh?: string; // スモールビューポートハイト
-  lvh?: string; // ラージビューポートハイト
-  dh?: string; // 動的ハイト（将来の仕様）
+  svh?: string; // Small viewport height
+  lvh?: string; // Large viewport height
+  dh?: string; // Dynamic height (future specification)
 }
 
 export interface PurgeConfig {
@@ -222,7 +222,7 @@ export interface GridFlowConfig {
   'grid-flow-col-dense'?: string;
 }
 
-// 後方互換性のためのGridConfig
+// GridConfig for backward compatibility
 export type GridConfig = GridColumnsConfig &
   GridRowsConfig &
   ColumnSpanConfig &
@@ -232,28 +232,28 @@ export type GridConfig = GridColumnsConfig &
   GridFlowConfig;
 
 /**
- * SmsshCSS設定タイプ
+ * SmsshCSS configuration type
  */
 export interface SmsshCSSConfig {
-  /** 設定ファイルのバージョン（v2.3.0から対応） */
+  /** Configuration file version (supported from v2.3.0) */
   version?: string;
 
-  /** CSSクラスをスキャンするファイルパターンの配列 */
+  /** Array of file patterns to scan for CSS classes */
   content: string[];
 
-  /** パージされないクラスのリスト */
+  /** List of classes that won't be purged */
   safelist?: (string | RegExp)[];
 
-  /** リセットCSSを含めるか */
+  /** Whether to include reset CSS */
   includeResetCSS?: boolean;
 
-  /** ベースCSSを含めるか */
+  /** Whether to include base CSS */
   includeBaseCSS?: boolean;
 
-  /** クラスを削除する設定 */
+  /** Configuration for class removal */
   purge?: PurgeConfig;
 
-  /** クラスを適用する設定 */
+  /** Configuration for class application */
   apply?: ApplyConfig;
 }
 
@@ -355,7 +355,7 @@ export type FontSizeConfig = {
 
 // コンポーネントクラスの設定
 export interface ApplyConfig {
-  [className: string]: string; // クラス名: 適用するユーティリティクラス
+  [className: string]: string; // Class name: utility classes to apply
 }
 
 // 任意値の型安全性を向上させる新しい型定義

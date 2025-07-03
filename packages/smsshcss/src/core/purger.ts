@@ -38,7 +38,7 @@ export class CSSRuleParser {
 
   private skipWhitespaceAndComments(): void {
     let loopCount = 0;
-    const maxLoops = 10000; // 無限ループ防止
+    const maxLoops = 10000; // Prevent infinite loop
 
     while (this.position < this.css.length && loopCount < maxLoops) {
       const char = this.css[this.position];
@@ -79,7 +79,7 @@ export class CSSRuleParser {
     let inString = false;
     let stringChar = '';
     let loopCount = 0;
-    const maxLoops = text.length + 1000; // 無限ループ防止
+    const maxLoops = text.length + 1000; // Prevent infinite loop
 
     while (position < text.length && loopCount < maxLoops) {
       const char = text[position];
@@ -240,12 +240,12 @@ export class CSSPurger {
   }
 
   /**
-   * ソースファイルを解析してクラス名を抽出
+   * Analyze source files and extract class names
    */
   async analyzeSourceFiles(): Promise<
     Array<{ file: string; classesFound: string[]; size: number }>
   > {
-    this.startTime = Date.now(); // 処理開始時間を記録
+    this.startTime = Date.now(); // Record processing start time
 
     if (!this.config.enabled) {
       debugPurger('Purging disabled, skipping analysis');

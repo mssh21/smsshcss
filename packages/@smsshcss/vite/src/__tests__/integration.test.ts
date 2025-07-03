@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-// 統合テスト用のヘルパー関数とユーティリティ
+// Integration test helpers and utilities
 interface IntegrationTestHelpers {
   createProjectStructure: (structure: ProjectStructure) => void;
   createReactComponent: (name: string, classes: string[]) => void;
@@ -184,7 +184,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
     it('should handle a typical React project structure', async () => {
       const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'react-test-'));
 
-      // Reactプロジェクトの典型的なファイル構造を作成
+      // Create a typical file structure for a React project
       const files = [
         { path: 'src/App.tsx', content: '<div className="flex m-md p-lg">React App</div>' },
         {
@@ -214,19 +214,19 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'react-project.css');
 
-      // 基本クラスが生成されている
+      // Basic classes are generated
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
 
-      // カスタム値クラスが生成されている
+      // Custom value classes are generated
       if (helpers.hasCustomValueSection(result?.code || '')) {
         expect(result?.code).toContain('.m-\\[md\\] { margin: md; }');
         expect(result?.code).toContain('.p-\\[lg\\] { padding: lg; }');
         expect(result?.code).toContain('.gap-\\[md\\] { gap: md; }');
       }
 
-      // クリーンアップ
+      // Cleanup
       fs.rmSync(tempDir, { recursive: true, force: true });
     });
 
@@ -285,12 +285,12 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'mixed-classes.css');
 
-      // 標準クラス
+      // Standard classes
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
 
-      // カスタム値クラス
+      // Custom value classes
       if (helpers.hasCustomValueSection(result?.code || '')) {
         expect(result?.code).toContain('.w-\\[100px\\] { width: 100px; }');
         expect(result?.code).toContain('.h-\\[200px\\] { height: 200px; }');
@@ -298,7 +298,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
         expect(result?.code).toContain('.p-\\[20px\\] { padding: 20px; }');
       }
 
-      // クリーンアップ
+      // Cleanup
       fs.rmSync(tempDir, { recursive: true, force: true });
     });
   });
@@ -312,7 +312,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'arbitrary-values.css');
 
-      // 基本的なユーティリティクラスが含まれていることを確認
+      // Basic utility classes are included
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
@@ -324,8 +324,8 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'empty-config.css');
 
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
-      expect(result?.code).toContain('/* reset.css */'); // デフォルトで含まれる
-      expect(result?.code).toContain('/* base.css */'); // デフォルトで含まれる
+      expect(result?.code).toContain('/* reset.css */');
+      expect(result?.code).toContain('/* base.css */');
     });
   });
 
@@ -337,7 +337,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'fs-error.css');
 
-      // 標準クラスは生成される
+      // Standard classes are generated
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
@@ -350,7 +350,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'glob-error.css');
 
-      // globエラーが発生しても標準クラスは生成される
+      // Standard classes are generated even if glob errors occur
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
@@ -361,10 +361,10 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
     it('should handle large-scale projects efficiently', async () => {
       const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'large-scale-'));
 
-      // 大規模プロジェクトをシミュレート
+      // Simulate a large-scale project
       const files: Array<{ path: string; content: string }> = [];
 
-      // 100個のコンポーネントファイルを作成
+      // Create 100 component files
       for (let i = 0; i < 100; i++) {
         files.push({
           path: `src/components/Component${i}.tsx`,
@@ -399,10 +399,10 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
 
-      // パフォーマンスチェック
-      expect(endTime - startTime).toBeLessThan(10000); // 10秒以内
+      // Performance check
+      expect(endTime - startTime).toBeLessThan(10000);
 
-      // クリーンアップ
+      // Cleanup
       fs.rmSync(tempDir, { recursive: true, force: true });
     });
 
@@ -503,7 +503,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const classesPerFile = 5;
 
       for (const fileCount of fileCounts) {
-        // 新しい一時ディレクトリを作成
+        // Create a new temporary directory
         const performanceTempDir = fs.mkdtempSync(
           path.join(os.tmpdir(), `perf-test-${fileCount}-`)
         );
@@ -520,13 +520,13 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
             return await plugin.transform('', `perf-${fileCount}.css`);
           });
 
-          // ファイル数に比例した妥当な処理時間であることを確認
-          const expectedMaxTime = fileCount * 100; // ファイル1つあたり100ms
+          // Verify that the processing time is reasonable proportional to the number of files
+          const expectedMaxTime = fileCount * 100;
           expect(duration).toBeLessThan(expectedMaxTime);
 
           console.log(`Performance test - ${fileCount} files: ${duration}ms`);
         } finally {
-          // クリーンアップ
+          // Cleanup
           if (fs.existsSync(performanceTempDir)) {
             fs.rmSync(performanceTempDir, { recursive: true, force: true });
           }
@@ -535,7 +535,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
     });
 
     it('should handle memory efficiently with large class count', async () => {
-      helpers.createLargeProject(20, 50); // 20ファイル、各50クラス
+      helpers.createLargeProject(20, 50);
 
       const plugin = smsshcss({
         content: [`${tempDir}/**/*.tsx`],
@@ -549,7 +549,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const memoryIncrease = endMemory - startMemory;
 
       expect(result?.code).toBeDefined();
-      expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024); // 100MB未満
+      expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024);
 
       console.log(`Memory increase: ${Math.round((memoryIncrease / 1024 / 1024) * 100) / 100}MB`);
     });
@@ -571,7 +571,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const result = await plugin.transform('', 'production.css');
 
       expect(result?.code).toBeDefined();
-      // カスタム値クラスが存在する
+      // Custom value classes exist
       if (result?.code.includes('/* Custom Value Classes */')) {
         // expect(result?.code).toContain('.p-\[20px\] { padding: 20px; }');
         // expect(result?.code).toContain('.gap-\[16px\] { gap: 16px; }');
@@ -582,14 +582,14 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
     });
 
     it('should handle production optimizations', async () => {
-      // 開発モード
+      // Development mode
       const devPlugin = smsshcss({
         includeResetCSS: true,
         includeBaseCSS: true,
         minify: false,
       });
 
-      // プロダクションモード
+      // Production mode
       const prodPlugin = smsshcss({
         includeResetCSS: false,
         includeBaseCSS: false,
@@ -599,11 +599,11 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       const devResult = await devPlugin.transform('', 'dev-optimization.css');
       const prodResult = await prodPlugin.transform('', 'prod-optimization.css');
 
-      // 開発版には含まれている
+      // Development version contains
       expect(devResult?.code).toContain('/* reset.css */');
       expect(devResult?.code).toContain('/* base.css */');
 
-      // プロダクション版には含まれていない
+      // Production version does not contain
       expect(prodResult?.code).not.toContain('/* reset.css */');
       expect(prodResult?.code).not.toContain('/* base.css */');
     });
@@ -619,7 +619,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
         content: [`${tempDir}/**/*.tsx`],
       });
 
-      // 同時に複数のtransformを実行
+      // Execute multiple transforms concurrently
       const promises = [
         plugin.transform('', 'concurrent1.css'),
         plugin.transform('', 'concurrent2.css'),
@@ -628,7 +628,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const results = await Promise.all(promises);
 
-      // 全ての結果が正常
+      // All results are valid
       results.forEach((result) => {
         expect(result?.code).toBeDefined();
         expect(result?.code).toContain('.p-\\[10px\\] { padding: 10px; }');
@@ -644,14 +644,14 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
         content: [`${tempDir}/**/*.tsx`],
       });
 
-      // 最初のビルド
+      // First build
       const firstResult = await plugin.transform('', 'watch-test.css');
       expect(firstResult?.code).toContain('.p-\\[15px\\] { padding: 15px; }');
 
-      // ファイルを変更
+      // Change file
       helpers.createReactComponent('WatchTestUpdated', ['p-[25px]', 'gap-[10px]']);
 
-      // 2回目のビルド
+      // Second build
       const secondResult = await plugin.transform('', 'watch-test.css');
       expect(secondResult?.code).toContain('.p-\\[15px\\] { padding: 15px; }');
       expect(secondResult?.code).toContain('.p-\\[25px\\] { padding: 25px; }');
@@ -661,13 +661,13 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
     it('should handle empty and invalid files gracefully', async () => {
       const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'empty-invalid-'));
 
-      // 空のファイル
+      // Empty file
       fs.writeFileSync(path.join(tempDir, 'empty.html'), '');
 
-      // 無効なHTML
+      // Invalid HTML
       fs.writeFileSync(path.join(tempDir, 'invalid.html'), '<div class="">Invalid</div>');
 
-      // 正常なファイル
+      // Valid file
       fs.writeFileSync(path.join(tempDir, 'valid.html'), '<div class="flex m-md">Valid</div>');
 
       const plugin = smsshcss({
@@ -681,7 +681,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');
 
-      // クリーンアップ
+      // Cleanup
       fs.rmSync(tempDir, { recursive: true, force: true });
     });
   });
@@ -702,7 +702,7 @@ describe('SmsshCSS Vite Plugin - Integration Tests', () => {
 
       const result = await plugin.transform('', 'extreme-config.css');
 
-      // カスタム値クラスとapply設定が正しく動作することを確認
+      // Verify that custom value classes and apply settings work correctly
       expect(result?.code).toContain('/* SmsshCSS Generated Styles */');
       expect(result?.code).toContain('/* reset.css */');
       expect(result?.code).toContain('/* base.css */');

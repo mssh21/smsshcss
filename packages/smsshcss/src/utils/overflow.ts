@@ -1,6 +1,6 @@
 import { OverflowConfig } from '../core/types';
 
-// デフォルトのOverflow設定
+// Default Overflow configuration
 const defaultOverflow: OverflowConfig = {
   // Overflow
   'overflow-auto': 'auto',
@@ -24,7 +24,7 @@ const defaultOverflow: OverflowConfig = {
   'overflow-y-clip': 'clip',
 };
 
-// プロパティマッピング
+// Property mapping
 const propertyMap: Record<string, string> = {
   // Overflow properties
   'overflow-auto': 'overflow',
@@ -49,12 +49,12 @@ const propertyMap: Record<string, string> = {
 };
 
 export function generateOverflowClasses(customConfig?: OverflowConfig): string {
-  // デフォルトテーマとカスタムテーマをマージ
+  // Merge default theme and custom theme
   const config = customConfig ? { ...defaultOverflow, ...customConfig } : defaultOverflow;
 
   const classes: string[] = [];
 
-  // 基本的なOverflowクラスを生成
+  // Generate basic Overflow classes
   Object.entries(config).forEach(([key, value]) => {
     const property = propertyMap[key];
     if (property) {
@@ -67,10 +67,10 @@ export function generateOverflowClasses(customConfig?: OverflowConfig): string {
 
 /**
  * Extract custom overflow classes from HTML content
- * Overflow は主に定義済みクラスを使用するため、現在はカスタム値をサポートしていません
+ * Overflow mainly uses predefined classes, so custom values are not currently supported
  */
 export function extractCustomOverflowClasses(_content: string): string[] {
-  // Overflowは現在カスタム値をサポートしていないため、空の配列を返す
-  // 将来的にoverflow-[custom-value]のようなサポートが必要な場合はここで実装
+  // Overflow doesn't currently support custom values, so return empty array
+  // Implement here if future support for overflow-[custom-value] is needed
   return [];
 }

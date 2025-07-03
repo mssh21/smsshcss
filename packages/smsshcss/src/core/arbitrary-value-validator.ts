@@ -9,7 +9,7 @@ import {
 import { globalCache, PerformanceCache } from './performance-cache';
 
 /**
- * 型安全性を向上させた任意値バリデーター（キャッシュ機能付き）
+ * Type-safe arbitrary value validator with caching functionality
  */
 export class ArbitraryValueValidator {
   private config: ArbitraryValueConfig;
@@ -21,13 +21,13 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * 任意値を検証し、サニタイズする（キャッシュ機能付き）
+   * Validate and sanitize arbitrary values (with caching functionality)
    */
   validate(value: ArbitraryValue, property?: string): ArbitraryValueValidationResult {
-    // キャッシュキーを生成
+    // Generate cache key
     const cacheKey = this.generateCacheKey(value, property);
 
-    // キャッシュから結果を取得
+    // Get result from cache
     const cachedResult = this.cache.getValidationResult(cacheKey);
     if (cachedResult) {
       if (this.config.debug) {
@@ -40,17 +40,17 @@ export class ArbitraryValueValidator {
       console.log(`[ArbitraryValueValidator] Cache miss for: ${value}`);
     }
 
-    // キャッシュにない場合は新しく検証
+    // If not in cache, perform new validation
     const result = this.performValidation(value, property);
 
-    // 結果をキャッシュに保存
+    // Save result to cache
     this.cache.setValidationResult(cacheKey, result);
 
     return result;
   }
 
   /**
-   * 実際のバリデーション処理
+   * Actual validation processing
    */
   private performValidation(
     value: ArbitraryValue,
@@ -61,14 +61,14 @@ export class ArbitraryValueValidator {
     let sanitizedValue = value;
 
     try {
-      // 基本的なバリデーション
+      // Basic validation
       const basicValidation = this.performBasicValidation(value);
       if (!basicValidation.isValid) {
         errors.push(...basicValidation.errors);
         return { isValid: false, errors, sanitizedValue: value, warnings };
       }
 
-      // セキュリティチェック
+      // Security check
       if (this.config.enableSecurityCheck) {
         const securityResult = this.performSecurityCheck(value);
         if (!securityResult.isValid) {
@@ -77,21 +77,21 @@ export class ArbitraryValueValidator {
         }
       }
 
-      // CSS関数の検証
+      // CSS function validation
       const functionValidation = this.validateCSSFunctions(value);
       if (!functionValidation.isValid) {
         errors.push(...functionValidation.errors);
       }
       warnings.push(...functionValidation.warnings);
 
-      // 単位の検証
+      // Unit validation
       const unitValidation = this.validateUnits(value);
       warnings.push(...unitValidation.warnings);
 
-      // 値のサニタイズ
+      // Value sanitization
       sanitizedValue = this.sanitizeValue(value);
 
-      // デバッグログ
+      // Debug log
       if (this.config.debug) {
         console.log(`[ArbitraryValueValidator] Validated: ${value} -> ${sanitizedValue}`);
       }
@@ -114,7 +114,7 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * キャッシュキーを生成
+   * Generate cache key
    */
   private generateCacheKey(value: string, property?: string): string {
     const configHash = this.generateConfigHash();
@@ -122,7 +122,7 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * 設定のハッシュを生成
+   * Generate configuration hash
    */
   private generateConfigHash(): string {
     const configStr = JSON.stringify({
@@ -132,7 +132,7 @@ export class ArbitraryValueValidator {
       maxLength: this.config.maxLength,
     });
 
-    // 簡易ハッシュ生成
+    // Simple hash generation
     let hash = 0;
     for (let i = 0; i < configStr.length; i++) {
       const char = configStr.charCodeAt(i);
@@ -143,24 +143,24 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * 基本的なバリデーション
+   * Basic validation
    */
   private performBasicValidation(value: string): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    // 空値チェック
+    // Empty value check
     if (!value || value.trim() === '') {
       errors.push('Value cannot be empty');
       return { isValid: false, errors };
     }
 
-    // 長さチェック
+    // Length check
     if (value.length > this.config.maxLength) {
       errors.push(`Value exceeds maximum length of ${this.config.maxLength} characters`);
       return { isValid: false, errors };
     }
 
-    // 基本的な文字チェック
+    // Basic character check
     if (value.includes('\n') || value.includes('\r')) {
       errors.push('Value cannot contain line breaks');
       return { isValid: false, errors };
@@ -170,12 +170,12 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * セキュリティチェック
+   * Security check
    */
   private performSecurityCheck(value: string): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    // 危険なパターンの検出
+    // Detect dangerous patterns
     const dangerousPatterns = [
       {
         pattern: /javascript:/i,
@@ -217,7 +217,7 @@ export class ArbitraryValueValidator {
   }
 
   /**
-   * CSS関数の検証
+   * CSS function validation
    */
   private validateCSSFunctions(value: string): {
     isValid: boolean;
@@ -227,7 +227,7 @@ export class ArbitraryValueValidator {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    // CSS関数を検出 - ハイフンを含む関数名も適切にキャプチャ
+    // Detect CSS functions - properly capture function names including hyphens
     const functionPattern = /([a-zA-Z][\w-]*)\s*\(/g;
     const matches = [...value.matchAll(functionPattern)];
 
@@ -238,7 +238,7 @@ export class ArbitraryValueValidator {
       }
     }
 
-    // 括弧のバランスチェック
+    // Parentheses balance check
     const openParens = (value.match(/\(/g) || []).length;
     const closeParens = (value.match(/\)/g) || []).length;
 

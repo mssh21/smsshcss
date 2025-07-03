@@ -1,26 +1,26 @@
 import { SizeConfig } from '../core/types';
 
 /**
- * Spacing（margin/padding/gap）用のサイズ設定
- * フィボナッチ数列ベースで細かなスペーシング制御に適している
- * 基本単位: 4px (0.25rem)
+ * Size configuration for Spacing (margin/padding/gap)
+ * Based on Fibonacci sequence, suitable for fine spacing control
+ * Base unit: 4px (0.25rem)
  */
 export const defaultSpacingConfig: SizeConfig = {
-  // フィボナッチ数列ベースのスペーシング（基本単位: 4px = 0.25rem）
-  // フィボナッチ数列の値を使用しつつ、直感的な命名を採用
+  // Fibonacci sequence-based spacing (base unit: 4px = 0.25rem)
+  // Uses Fibonacci sequence values while adopting intuitive naming
   none: '0',
   auto: 'auto',
-  '2xs': '0.25rem', // 0.25rem (4px)  (フィボナッチ: 1)
-  xs: '0.5rem', // 0.5rem (8px)  (フィボナッチ: 2)
-  sm: '0.75rem', // 0.75rem (12px) (フィボナッチ: 3)
-  md: '1.25rem', // 1.25rem (20px) (フィボナッチ: 5)
-  lg: '2rem', // 2rem (32px) (フィボナッチ: 8)
-  xl: '3.25rem', // 3.25rem (52px) (フィボナッチ: 13)
-  '2xl': '5.25rem', // 5.25rem (84px) (フィボナッチ: 21)
-  '3xl': '8.5rem', // 8.5rem (136px) (フィボナッチ: 34)
-  '4xl': '13.75rem', // 13.75rem (220px) (フィボナッチ: 55)
-  '5xl': '22.25rem', // 22.25rem (356px) (フィボナッチ: 89)
-  '6xl': '36rem', // 36rem (576px) (フィボナッチ: 144)
+  '2xs': '0.25rem', // 0.25rem (4px)  (Fibonacci: 1)
+  xs: '0.5rem', // 0.5rem (8px)  (Fibonacci: 2)
+  sm: '0.75rem', // 0.75rem (12px) (Fibonacci: 3)
+  md: '1.25rem', // 1.25rem (20px) (Fibonacci: 5)
+  lg: '2rem', // 2rem (32px) (Fibonacci: 8)
+  xl: '3.25rem', // 3.25rem (52px) (Fibonacci: 13)
+  '2xl': '5.25rem', // 5.25rem (84px) (Fibonacci: 21)
+  '3xl': '8.5rem', // 8.5rem (136px) (Fibonacci: 34)
+  '4xl': '13.75rem', // 13.75rem (220px) (Fibonacci: 55)
+  '5xl': '22.25rem', // 22.25rem (356px) (Fibonacci: 89)
+  '6xl': '36rem', // 36rem (576px) (Fibonacci: 144)
   '7xl': '48rem', // 48rem (768px)
   '8xl': '64rem', // 64rem (1024px)
   '9xl': '80rem', // 80rem (1280px)
@@ -29,50 +29,50 @@ export const defaultSpacingConfig: SizeConfig = {
   '12xl': '128rem', // 128rem (2048px)
 };
 
-// CSS値内の特殊文字をエスケープ（クラス名用）
+// Escape special characters in CSS values (for class names)
 export const escapeSpacingValue = (val: string): string => {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  // Regular expression to detect CSS math functions (basic functions only)
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
-  // CSS数学関数の場合は特別処理（カンマもエスケープする）
+  // Special handling for CSS math functions (also escape commas)
   if (cssMathFunctions.test(val)) {
     return val.replace(/[()[\]{}+\-*/.\\%,]/g, '\\$&');
   }
-  // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+  // Special handling for CSS variables (var(--name)) - don't escape hyphens
   if (val.includes('var(--')) {
     return val.replace(/[()[\]{}+*/.\\%]/g, '\\$&');
   }
-  // 通常の値の場合は-も含めてエスケープ
+  // For normal values, escape including hyphens
   return val.replace(/[()[\]{}+\-*/.\\%]/g, '\\$&');
 };
 
-// CSS関数内の値を再帰的にフォーマットする関数
+// Function to recursively format values within CSS functions
 export const formatSpacingCSSFunctionValue = (input: string): string => {
-  // CSS関数を再帰的に処理（基本的な関数のみ）
+  // Recursively process CSS functions (basic functions only)
   return input.replace(
     /(calc|min|max|clamp)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
     (match, funcName, inner) => {
-      // 内部の関数を再帰的に処理
+      // Recursively process inner functions
       const processedInner = formatSpacingCSSFunctionValue(inner);
 
-      // 演算子とカンマの周りにスペースを適切に配置
+      // Properly place spaces around operators and commas
       const formattedInner = processedInner
-        // まず全てのスペースを正規化
+        // First normalize all spaces
         .replace(/\s+/g, ' ')
         .trim()
-        // カンマの処理（カンマの後にスペース、前のスペースは削除）
+        // Handle commas (space after comma, remove spaces before)
         .replace(/\s*,\s*/g, ', ')
-        // 演算子の処理（前後にスペース）
+        // Handle operators (spaces before and after)
         .replace(/\s*([+\-*/])\s*/g, (match, operator, offset, str) => {
-          // マイナス記号が負の値かどうかを判定
+          // Determine if minus sign is a negative value
           if (operator === '-') {
-            // 現在の位置より前の文字を取得
+            // Get characters before current position
             const beforeMatch = str.substring(0, offset);
-            // 直前の非空白文字を取得
+            // Get the last non-whitespace character
             const prevNonSpaceMatch = beforeMatch.match(/(\S)\s*$/);
             const prevChar = prevNonSpaceMatch ? prevNonSpaceMatch[1] : '';
 
-            // 負の値の場合（文字列の開始、括弧の後、カンマの後、他の演算子の後）
+            // For negative values (start of string, after parentheses, after comma, after other operators)
             if (!prevChar || prevChar === '(' || prevChar === ',' || /[+\-*/\s]/.test(prevChar)) {
               return '-';
             }

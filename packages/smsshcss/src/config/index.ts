@@ -1,25 +1,25 @@
 // =============================================================================
 // SmsshCSS Core Configuration Index
 // =============================================================================
-// このファイルはすべてのデフォルト設定の統合エクスポートを提供します
-// Single Source of Truth として機能し、他のパッケージがこの設定を
-// 直接インポートして利用できます
+// This file provides unified exports for all default configurations
+// Acts as a Single Source of Truth, allowing other packages to
+// directly import and use this configuration
 
-// 個別の設定をインポート
+// Import individual configurations
 import { defaultColorConfig } from './colorConfig';
 import { defaultFontSizeConfig } from './fontSizeConfig';
 import { defaultSpacingConfig } from './spacingConfig';
 import { defaultSizeConfig } from './sizeConfig';
 import { defaultGridConfig } from './gridConfig';
 
-// 個別の設定をエクスポート
+// Export individual configurations
 export { defaultColorConfig } from './colorConfig';
 export { defaultFontSizeConfig } from './fontSizeConfig';
 export { defaultSpacingConfig } from './spacingConfig';
 export { defaultSizeConfig } from './sizeConfig';
 export { defaultGridConfig } from './gridConfig';
 
-// すべての設定を統合したデフォルト設定オブジェクト
+// Default configuration object integrating all settings
 export const defaultConfig = {
   color: defaultColorConfig,
   fontSize: defaultFontSizeConfig,
@@ -28,13 +28,13 @@ export const defaultConfig = {
   grid: defaultGridConfig,
 } as const;
 
-// 型定義もエクスポート
+// Also export type definitions
 export type { ColorConfig, FontSizeConfig, SizeConfig, GridConfig } from '../core/types';
 
-// 設定の統合型
+// Unified configuration type
 export type DefaultConfig = typeof defaultConfig;
 
-// 設定値取得のヘルパー関数
+// Helper functions for getting configuration values
 export function getColorValue(colorKey: string): string | undefined {
   return defaultConfig.color[colorKey];
 }
