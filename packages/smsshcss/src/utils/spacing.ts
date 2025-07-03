@@ -2,7 +2,7 @@ import { SpacingDirection, SpacingProperty, SizeConfig } from '../core/types';
 import { defaultSpacingConfig, escapeSpacingValue } from '../config/spacingConfig';
 import { validateArbitraryValue, isSafeArbitraryValue } from '../core/arbitrary-value-validator';
 
-// 後方互換性のためのエイリアス
+// Alias for backward compatibility
 export type SpacingConfig = SizeConfig;
 export const defaultSpacing: SpacingConfig = defaultSpacingConfig;
 
@@ -16,13 +16,13 @@ const directionMap: Record<SpacingDirection, string> = {
   y: '-block',
 };
 
-// カスタム値クラスを検出する正規表現
+// Regular expression to detect custom value classes
 const customValuePattern = /\b([mp][trlbxy]?|gap(?:-[xy])?)-\[([^\]]+)\]/g;
 
-// カスタムスペーシングクラスを生成（バリデーション強化版）
+// Generate custom spacing classes (enhanced validation version)
 function generateCustomSpacingClass(prefix: string, value: string): string | null {
   try {
-    // 新しいバリデーターを使用して値を検証
+    // Validate value using new validator
     const validationResult = validateArbitraryValue(value, `spacing.${prefix}`);
 
     if (!validationResult.isValid) {
@@ -31,33 +31,33 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       return null;
     }
 
-    // 警告があれば表示
+    // Display warnings if any
     if (validationResult.warnings.length > 0) {
       console.warn(
         `⚠️  Spacing warnings for ${prefix}[${value}]: ${validationResult.warnings.join(', ')}`
       );
     }
 
-    // サニタイズされた値を使用
+    // Use sanitized value
     const sanitizedValue = validationResult.sanitizedValue;
 
-    // gap プロパティの処理
+    // Handle gap property
     if (prefix === 'gap') {
       return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { gap: ${sanitizedValue}; }`;
     }
 
-    // gap-x (column-gap) プロパティの処理
+    // Handle gap-x (column-gap) property
     if (prefix === 'gap-x') {
       return `.gap-x-\\[${escapeSpacingValue(value)}\\] { column-gap: ${sanitizedValue}; }`;
     }
 
-    // gap-y (row-gap) プロパティの処理
+    // Handle gap-y (row-gap) property
     if (prefix === 'gap-y') {
       return `.gap-y-\\[${escapeSpacingValue(value)}\\] { row-gap: ${sanitizedValue}; }`;
     }
 
     const property = prefix.startsWith('m') ? 'margin' : 'padding';
-    const direction = prefix.slice(1); // 'm' or 'p' を除いた部分
+    const direction = prefix.slice(1); // Remove 'm' or 'p' part
 
     let cssProperty = property;
 
@@ -79,7 +79,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
       case 'y':
         return `.${prefix}-\\[${escapeSpacingValue(value)}\\] { ${property}-block: ${sanitizedValue}; }`;
       case '':
-        // 全方向
+        // All directions
         break;
       default:
         console.warn(`⚠️  Unknown spacing direction: ${direction}`);
@@ -93,7 +93,7 @@ function generateCustomSpacingClass(prefix: string, value: string): string | nul
   }
 }
 
-// HTMLファイルからカスタム値クラスを抽出（エラーハンドリング強化版）
+// Extract custom value classes from HTML files (enhanced error handling version)
 export function extractCustomSpacingClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
@@ -104,13 +104,13 @@ export function extractCustomSpacingClasses(content: string): string[] {
     const value = match[2];
 
     try {
-      // セキュリティチェック
+      // Security check
       if (!isSafeArbitraryValue(value)) {
         errors.push(`Unsafe spacing value detected: ${prefix}[${value}]`);
         continue;
       }
 
-      // CSSクラスを生成
+      // Generate CSS class
       const cssClass = generateCustomSpacingClass(prefix, value);
       if (cssClass) {
         customClasses.push(cssClass);
@@ -123,7 +123,7 @@ export function extractCustomSpacingClasses(content: string): string[] {
     }
   }
 
-  // エラーがあれば警告を表示
+  // Display warnings if there are errors
   if (errors.length > 0) {
     console.warn('⚠️  Spacing extraction errors:');
     errors.forEach((error) => console.warn(`  • ${error}`));
@@ -158,7 +158,7 @@ export function generateSpacingClasses(
     });
   });
 
-  // 任意の値のクラスを生成
+  // Generate arbitrary value classes
   const arbitraryValueTemplate = `
 /* Arbitrary value classes */
 .${property[0]}-\\[\\$\\{value\\}\\] { ${property}: var(--value); }
@@ -170,7 +170,7 @@ export function generateSpacingClasses(
 .${property[0]}y-\\[\\$\\{value\\}\\] { ${property}-block: var(--value); }
 `;
 
-  // 任意の値のクラステンプレートを追加
+  // Add arbitrary value class template
   classes.push(arbitraryValueTemplate);
 
   return classes.join('\n');
@@ -186,7 +186,7 @@ export function generateGapClasses(config: SpacingConfig = defaultSpacing): stri
     classes.push(`.gap-y-${size} { row-gap: ${value}; }`);
   });
 
-  // 任意の値のgapクラスを追加
+  // Add arbitrary value gap classes
   classes.push(`
 /* Arbitrary gap values */
 .gap-\\[\\$\\{value\\}\\] { gap: var(--value); }

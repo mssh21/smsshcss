@@ -30,10 +30,10 @@ describe('CSSGenerator', () => {
         expect(typeof result).toBe('string');
         expect(result.length).toBeGreaterThan(0);
 
-        // CSSの基本構造を確認
+        // Check the basic structure of the CSS
         expect(result).toMatch(/\.[\w-]+\s*\{[^}]*\}/);
 
-        // モックデータに基づいて期待されるクラスが含まれていることを確認
+        // Check that expected classes based on mock data are included
         expect(result).toContain('.p-md');
         expect(result).toContain('.m-sm');
         expect(result).toContain('.block');
@@ -49,8 +49,8 @@ describe('CSSGenerator', () => {
         const result = await generator.generateFullCSS();
 
         expect(result).toBeTruthy();
-        // Reset CSS関連のスタイルが含まれている可能性を確認
-        // 実装に依存するため、存在チェックまたは特定のパターンをチェック
+        // Check if reset CSS related styles are included
+        // Depending on implementation, check for existence or specific patterns
         expect(result).toMatch(/margin\s*:\s*0|padding\s*:\s*0|\*\s*\{/);
       });
 
@@ -66,7 +66,7 @@ describe('CSSGenerator', () => {
         expect(result).toBeTruthy();
         expect(typeof result).toBe('string');
         expect(result.length).toBeGreaterThan(0);
-        // Base CSSが有効な場合のテストは実装に依存するので基本的なチェックのみ
+        // Only basic check for base CSS as it depends on implementation
       });
     });
 
@@ -95,7 +95,7 @@ describe('CSSGenerator', () => {
         const result = await generator.generateFullCSS();
 
         expect(result).toBeTruthy();
-        // Apply設定が適用されているかをチェック
+        // Check if apply configuration is applied
         expect(result).toContain('main-layout');
       });
     });
@@ -111,7 +111,7 @@ describe('CSSGenerator', () => {
 
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');
-      // 無効なパターンでも基本的なCSSが生成されることを確認
+      // Confirm that basic CSS is generated even for invalid patterns
       expect(result.length).toBeGreaterThan(0);
     });
 
@@ -120,7 +120,7 @@ describe('CSSGenerator', () => {
         content: [],
       };
 
-      // 空のコンテンツ配列は設定検証でエラーになることを確認
+      // Confirm that an empty content array causes a validation error
       expect(() => new CSSGenerator(config)).toThrow(
         /Content array must contain at least one pattern/
       );
@@ -141,6 +141,7 @@ describe('CSSGenerator', () => {
 
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');
+      // Confirm that partial custom theme is applied
       // カスタムテーマが部分的に適用されていることを確認
       if (result.includes('2rem')) {
         expect(result).toContain('2rem');

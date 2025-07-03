@@ -1,21 +1,21 @@
 import { ArbitraryValueValidationResult } from '../core/types';
 
 /**
- * パフォーマンス最適化のためのキャッシュ機能
+ * Cache functionality for performance optimization
  */
 export class PerformanceCache {
   private validationCache = new Map<string, ArbitraryValueValidationResult>();
   private cssClassCache = new Map<string, string>();
   private contentExtractionCache = new Map<string, string[]>();
 
-  // キャッシュの統計情報
+  // Cache statistics
   private cacheStats = {
     hits: 0,
     misses: 0,
     evictions: 0,
   };
 
-  // キャッシュサイズの制限
+  // Cache size limits
   private readonly maxCacheSize: number;
   private readonly maxContentCacheSize: number;
 
@@ -25,7 +25,7 @@ export class PerformanceCache {
   }
 
   /**
-   * バリデーション結果をキャッシュから取得
+   * Get validation result from cache
    */
   getValidationResult(key: string): ArbitraryValueValidationResult | null {
     if (this.validationCache.has(key)) {
@@ -37,7 +37,7 @@ export class PerformanceCache {
   }
 
   /**
-   * バリデーション結果をキャッシュに保存
+   * Save validation result to cache
    */
   setValidationResult(key: string, result: ArbitraryValueValidationResult): void {
     this.evictIfNeeded(this.validationCache, this.maxCacheSize);
@@ -45,7 +45,7 @@ export class PerformanceCache {
   }
 
   /**
-   * CSSクラスをキャッシュから取得
+   * Get CSS class from cache
    */
   getCSSClass(key: string): string | null {
     if (this.cssClassCache.has(key)) {
@@ -57,7 +57,7 @@ export class PerformanceCache {
   }
 
   /**
-   * CSSクラスをキャッシュに保存
+   * Save CSS class to cache
    */
   setCSSClass(key: string, cssClass: string): void {
     this.evictIfNeeded(this.cssClassCache, this.maxCacheSize);
@@ -65,7 +65,7 @@ export class PerformanceCache {
   }
 
   /**
-   * コンテンツ抽出結果をキャッシュから取得
+   * Get content extraction result from cache
    */
   getContentExtraction(contentHash: string): string[] | null {
     if (this.contentExtractionCache.has(contentHash)) {
@@ -77,7 +77,7 @@ export class PerformanceCache {
   }
 
   /**
-   * コンテンツ抽出結果をキャッシュに保存
+   * Save content extraction result to cache
    */
   setContentExtraction(contentHash: string, classes: string[]): void {
     this.evictIfNeeded(this.contentExtractionCache, this.maxContentCacheSize);
@@ -85,11 +85,11 @@ export class PerformanceCache {
   }
 
   /**
-   * キャッシュサイズが制限を超えた場合に古いエントリを削除
+   * Remove old entries when cache size exceeds limit
    */
   private evictIfNeeded<T>(cache: Map<string, T>, maxSize: number): void {
     if (cache.size >= maxSize) {
-      // LRU style: 最初のエントリを削除
+      // LRU style: remove first entry
       const firstKey = cache.keys().next().value;
       if (firstKey) {
         cache.delete(firstKey);
@@ -99,7 +99,7 @@ export class PerformanceCache {
   }
 
   /**
-   * すべてのキャッシュをクリア
+   * Clear all caches
    */
   clear(): void {
     this.validationCache.clear();
@@ -109,7 +109,7 @@ export class PerformanceCache {
   }
 
   /**
-   * キャッシュの統計情報を取得
+   * Get cache statistics
    */
   getStats(): {
     hits: number;
@@ -139,7 +139,7 @@ export class PerformanceCache {
   }
 
   /**
-   * キャッシュの統計情報を表示
+   * Display cache statistics
    */
   printStats(): void {
     const stats = this.getStats();
@@ -156,20 +156,20 @@ export class PerformanceCache {
 }
 
 /**
- * コンテンツのハッシュを生成（簡易版）
+ * Generate content hash (simplified version)
  */
 export function generateContentHash(content: string): string {
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
     const char = content.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash; // 32bit integerに変換
+    hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash).toString(36);
 }
 
 /**
- * メモ化関数を作成
+ * Create memoization function
  */
 export function memoize<TArgs extends unknown[], TReturn>(
   fn: (...args: TArgs) => TReturn,
@@ -191,7 +191,7 @@ export function memoize<TArgs extends unknown[], TReturn>(
 }
 
 /**
- * 非同期メモ化関数を作成
+ * Create async memoization function
  */
 export function memoizeAsync<TArgs extends unknown[], TReturn>(
   fn: (...args: TArgs) => Promise<TReturn>,
@@ -209,7 +209,7 @@ export function memoizeAsync<TArgs extends unknown[], TReturn>(
     const promise = fn(...args);
     cache.set(key, promise);
 
-    // エラーの場合はキャッシュから削除
+    // Remove from cache on error
     promise.catch(() => {
       cache.delete(key);
     });
@@ -219,7 +219,7 @@ export function memoizeAsync<TArgs extends unknown[], TReturn>(
 }
 
 /**
- * バッチ処理のためのユーティリティ
+ * Utility for batch processing
  */
 export class BatchProcessor<TInput, TOutput> {
   private queue: Array<{
@@ -243,7 +243,7 @@ export class BatchProcessor<TInput, TOutput> {
   }
 
   /**
-   * アイテムを処理キューに追加
+   * Add item to processing queue
    */
   add(item: TInput): Promise<TOutput> {
     return new Promise((resolve, reject) => {

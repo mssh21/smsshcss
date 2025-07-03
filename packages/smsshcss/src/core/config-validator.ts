@@ -2,7 +2,7 @@ import { SmsshCSSConfig } from './types';
 import { z } from 'zod';
 
 /**
- * 設定バリデーションの結果
+ * Configuration validation result
  */
 export interface ValidationResult {
   isValid: boolean;
@@ -12,7 +12,7 @@ export interface ValidationResult {
 }
 
 /**
- * バリデーションエラー
+ * Validation error
  */
 export interface ValidationError {
   type: 'error';
@@ -23,7 +23,7 @@ export interface ValidationError {
 }
 
 /**
- * バリデーション警告
+ * Validation warning
  */
 export interface ValidationWarning {
   type: 'warning';
@@ -34,7 +34,7 @@ export interface ValidationWarning {
 }
 
 /**
- * 設定ファイルのバージョン管理
+ * Configuration file version management
  */
 export interface ConfigVersionInfo {
   version: string;
@@ -44,30 +44,30 @@ export interface ConfigVersionInfo {
 }
 
 /**
- * SmsshCSS設定のZodスキーマ
+ * SmsshCSS configuration Zod schema
  */
 const SmsshCSSConfigSchema = z
   .object({
-    // バージョン情報（新規追加）
+    // Version information (newly added)
     version: z.string().optional().default('2.3.0'),
 
-    // 必須項目
+    // Required items
     content: z.array(z.string()).min(1, 'Content array must contain at least one pattern'),
 
-    // オプション項目
+    // Optional items
     includeResetCSS: z.boolean().optional().default(true),
     includeBaseCSS: z.boolean().optional().default(true),
 
-    // セーフリスト
+    // Safelist
     safelist: z
       .array(z.union([z.string(), z.instanceof(RegExp)]))
       .optional()
       .default([]),
 
-    // Apply設定
+    // Apply configuration
     apply: z.record(z.string(), z.string()).optional(),
 
-    // パージ設定
+    // Purge configuration
     purge: z
       .object({
         enabled: z.boolean().optional().default(false),
@@ -96,7 +96,7 @@ const SmsshCSSConfigSchema = z
   })
   .refine(
     (data) => {
-      // パージが有効な場合、コンテンツが必要
+      // Content is required when purge is enabled
       if (data.purge?.enabled === true) {
         return data.purge.content && data.purge.content.length > 0;
       }
@@ -109,7 +109,7 @@ const SmsshCSSConfigSchema = z
   );
 
 /**
- * サポートされているバージョンとの互換性チェック
+ * Check compatibility with supported versions
  */
 export function checkVersionCompatibility(configVersion?: string): ConfigVersionInfo {
   const currentVersion = '2.3.0';
@@ -128,14 +128,14 @@ export function checkVersionCompatibility(configVersion?: string): ConfigVersion
 }
 
 /**
- * SmsshCSSConfig の妥当性をZodでチェックする
+ * Check SmsshCSSConfig validity using Zod
  */
 export function validateConfig(config: SmsshCSSConfig): ValidationResult {
   const errors: ValidationError[] = [];
   const warnings: ValidationWarning[] = [];
   const suggestions: string[] = [];
 
-  // バージョン互換性チェック
+  // Version compatibility check
   const versionInfo = checkVersionCompatibility(
     (config as Record<string, unknown>).version as string | undefined
   );
@@ -154,14 +154,14 @@ export function validateConfig(config: SmsshCSSConfig): ValidationResult {
   }
 
   try {
-    // Zodスキーマでバリデーション
+    // Validate with Zod schema
     const result = SmsshCSSConfigSchema.parse(config);
 
-    // 追加のカスタムバリデーション
+    // Additional custom validation
     validateAdvancedRules(result, warnings, suggestions);
   } catch (zodError) {
     if (zodError instanceof z.ZodError) {
-      // Zodエラーを変換
+      // Convert Zod errors
       zodError.errors.forEach((error) => {
         errors.push({
           type: 'error',
@@ -181,7 +181,7 @@ export function validateConfig(config: SmsshCSSConfig): ValidationResult {
     }
   }
 
-  // 基本的なベストプラクティスチェック
+  // Basic best practices check
   validateBestPractices(config, warnings, suggestions);
 
   return {
@@ -193,14 +193,14 @@ export function validateConfig(config: SmsshCSSConfig): ValidationResult {
 }
 
 /**
- * 高度なバリデーションルール
+ * Advanced validation rules
  */
 function validateAdvancedRules(
   config: z.infer<typeof SmsshCSSConfigSchema>,
   warnings: ValidationWarning[],
   _suggestions: string[]
 ): void {
-  // コンテンツパターンの妥当性チェック
+  // Content pattern validity check
   config.content.forEach((pattern, index) => {
     if (!pattern.includes('*') && !pattern.includes('.')) {
       warnings.push({
@@ -212,7 +212,7 @@ function validateAdvancedRules(
       });
     }
 
-    // パフォーマンス警告
+    // Performance warning
     if (pattern === '**/*' || pattern === '**/*.*') {
       warnings.push({
         type: 'warning',
@@ -224,7 +224,7 @@ function validateAdvancedRules(
     }
   });
 
-  // Apply設定の詳細チェック
+  // Detailed Apply configuration check
   if (config.apply) {
     Object.entries(config.apply).forEach(([key, value]) => {
       if (value.trim() === '') {
@@ -236,7 +236,7 @@ function validateAdvancedRules(
         });
       }
 
-      // 循環参照チェック
+      // Circular reference check
       if (value.includes(`@apply ${key}`)) {
         warnings.push({
           type: 'warning',

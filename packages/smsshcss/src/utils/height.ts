@@ -18,28 +18,28 @@ export const defaultHeight: HeightConfig = {
   cqmax: '100cqmax',
 };
 
-// カスタム値クラスを検出する正規表現
+// Regular expression to detect custom value classes
 const customValuePattern = /\b(h|min-h|max-h)-\[([^\]]+)\]/g;
 
-// カスタムHeightクラスを生成
+// Generate custom Height classes
 function generateCustomHeightClass(prefix: string, value: string): string | null {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  // Regular expression to detect CSS math functions (basic functions only)
   const cssMathFunctions = /\b(calc|min|max|clamp)\s*\(/;
 
-  // 元の値を復元（CSS値用）- CSS数学関数の場合はスペースを適切に復元
+  // Restore original value (for CSS values) - properly restore spaces for CSS math functions
   const originalValue = cssMathFunctions.test(value) ? formatSizeCSSFunctionValue(value) : value;
 
-  // height プロパティの処理
+  // Handle height property
   if (prefix === 'h') {
     return `.h-\\[${escapeSizeValue(value)}\\] { height: ${originalValue}; }`;
   }
 
-  // min-height プロパティの処理
+  // Handle min-height property
   if (prefix === 'min-h') {
     return `.min-h-\\[${escapeSizeValue(value)}\\] { min-height: ${originalValue}; }`;
   }
 
-  // max-height プロパティの処理
+  // Handle max-height property
   if (prefix === 'max-h') {
     return `.max-h-\\[${escapeSizeValue(value)}\\] { max-height: ${originalValue}; }`;
   }
@@ -47,7 +47,7 @@ function generateCustomHeightClass(prefix: string, value: string): string | null
   return null;
 }
 
-// HTMLファイルからカスタム値クラスを抽出
+// Extract custom value classes from HTML files
 export function extractCustomHeightClasses(content: string): string[] {
   const matches = content.matchAll(customValuePattern);
   const customClasses: string[] = [];
@@ -56,7 +56,7 @@ export function extractCustomHeightClasses(content: string): string[] {
     const prefix = match[1];
     const value = match[2];
 
-    // CSSクラスを生成
+    // Generate CSS class
     const cssClass = generateCustomHeightClass(prefix, value);
     if (cssClass) {
       customClasses.push(cssClass);
@@ -90,7 +90,7 @@ export function generateHeightClasses(config: HeightConfig = defaultHeight): str
     classes.push(`.max-h-${size} { max-height: ${value}; }`);
   });
 
-  // 任意の値のheightクラスを追加
+  // Add arbitrary value height classes
   classes.push(`
 /* Arbitrary height values */
 .h-\\[\\$\\{value\\}\\] { height: var(--value); }

@@ -166,63 +166,63 @@ export const defaultColorConfig: ColorConfig = {
   'amber-900': 'hsl(35 70% 12% / 1)',
 };
 
-// CSS値内の特殊文字をエスケープ（クラス名用）
+// Escape special characters in CSS values (for class names)
 export const escapeColorValue = (val: string): string => {
-  // CSS数学関数を検出する正規表現（基本的な関数のみ）
+  // Regular expression to detect CSS math functions (basic functions only)
   const cssMathFunctions = /\b(rgb|rgba|hsl|hsla)\s*\(/;
 
-  // 新しいカラー関数（hwb, lab, oklab, lch, oklch）を検出する正規表現
+  // Regular expression to detect new color functions (hwb, lab, oklab, lch, oklch)
   const newColorFunctions = /\b(hwb|lab|oklab|lch|oklch)\s*\(/;
 
-  // 新しいカラー関数の場合は特別処理（ハイフンをエスケープしない、カンマもエスケープする）
+  // Special handling for new color functions (don't escape hyphens, but escape commas)
   if (newColorFunctions.test(val)) {
     return val.replace(/[()[\]{}+*/.\\%,#]/g, '\\$&');
   }
 
-  // 従来のCSS数学関数の場合は特別処理（カンマもエスケープする）
+  // Special handling for traditional CSS math functions (also escape commas)
   if (cssMathFunctions.test(val)) {
     return val.replace(/[()[\]{}+\-*/.\\%,#]/g, '\\$&');
   }
-  // CSS変数（var(--name)）の場合は特別処理 - ハイフンはエスケープしない
+  // Special handling for CSS variables (var(--name)) - don't escape hyphens
   if (val.includes('var(--')) {
     return val.replace(/[()[\]{}+*/.\\%#]/g, '\\$&');
   }
 
-  // 通常の値の場合は-も含めてエスケープ（#も追加）
+  // For normal values, escape including hyphens (also add #)
   return val.replace(/[()[\]{}+\-*/.\\%#]/g, '\\$&');
 };
 
-// CSS関数内の値を再帰的にフォーマットする関数
+// Function to recursively format values within CSS functions
 export const formatColorCSSFunctionValue = (input: string): string => {
-  // CSS関数を再帰的に処理（基本的な関数のみ）
+  // Recursively process CSS functions (basic functions only)
   return input.replace(
     /(rgb|rgba|hsl|hsla|hwb|lab|oklab|lch|oklch)\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,
     (match, funcName, inner) => {
-      // 内部の関数を再帰的に処理
+      // Recursively process inner functions
       const processedInner = formatColorCSSFunctionValue(inner);
 
-      // 特定の関数（hwb, lab, oklab, lch, oklch）の場合はカンマをスペースに変換
+      // For specific functions (hwb, lab, oklab, lch, oklch), convert commas to spaces
       if (['hwb', 'lab', 'oklab', 'lch', 'oklch'].includes(funcName)) {
         const formattedInner = processedInner
-          // まず全てのスペースを正規化
+          // First normalize all spaces
           .replace(/\s+/g, ' ')
           .trim()
-          // カンマをスペースに変換
+          // Convert commas to spaces
           .replace(/\s*,\s*/g, ' ')
-          // スラッシュの処理（スラッシュの前にスペース、スラッシュの後にスペース）
+          // Handle slashes (space before slash, space after slash)
           .replace(/\s*\/\s*/g, ' / ');
 
         return `${funcName}(${formattedInner})`;
       }
 
-      // 従来の関数（rgb, rgba, hsl, hsla）の場合はカンマを保持
+      // For traditional functions (rgb, rgba, hsl, hsla), preserve commas
       const formattedInner = processedInner
-        // まず全てのスペースを正規化
+        // First normalize all spaces
         .replace(/\s+/g, ' ')
         .trim()
-        // カンマの処理（カンマの後にスペース、前のスペースは削除）
+        // Handle commas (space after comma, remove spaces before)
         .replace(/\s*,\s*/g, ', ')
-        // スラッシュの処理（スラッシュの前にスペース、スラッシュの後にスペース）
+        // Handle slashes (space before slash, space after slash)
         .replace(/\s*\/\s*/g, ' / ');
 
       return `${funcName}(${formattedInner})`;

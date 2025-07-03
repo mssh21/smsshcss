@@ -16,7 +16,6 @@ import { validateConfig, formatValidationResult } from './config-validator';
 import { CSSPurger } from './purger';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { glob } from 'glob';
 import { generateApplyClasses } from '../utils';
 import { debugGenerator, logWarning } from '../utils/debug';
@@ -26,14 +25,14 @@ import '../utils/apply-plugins';
 const readFile = promisify(fs.readFile);
 
 /**
- * CSS Generator のオプション
+ * CSS Generator Options
  */
 export interface GeneratorOptions {
-  /** 開発モード（詳細なログとバリデーション） */
+  /** Development mode (detailed logs and validation) */
   development?: boolean;
-  /** バリデーションを無効にする */
+  /** Disable validation */
   skipValidation?: boolean;
-  /** 警告を表示しない */
+  /** Suppress warnings */
   suppressWarnings?: boolean;
 }
 
@@ -58,7 +57,7 @@ export class CSSGenerator {
 
     debugGenerator('Options merged:', JSON.stringify(this.options, null, 2));
 
-    // 開発モードまたは明示的に指定された場合、設定をバリデーション
+    // Validate configuration if in development mode or explicitly specified
     if (!this.options.skipValidation) {
       this.validateConfiguration();
     }
@@ -66,7 +65,7 @@ export class CSSGenerator {
     this.resetCSS = '';
     this.baseCSS = '';
 
-    // パージが明示的に有効な場合、またはパージ設定があってenabledがfalseでない場合はパージャーを初期化
+    // Initialize purger if purge is explicitly enabled, or if purge settings exist and enabled is not false
     if (
       this.config.purge?.enabled === true ||
       (this.config.purge && this.config.purge.enabled !== false && this.config.purge.content)
@@ -80,7 +79,7 @@ export class CSSGenerator {
   }
 
   /**
-   * CSSファイルを非同期で初期化
+   * Initialize CSS files asynchronously
    */
   private async initializeCSSFiles(): Promise<void> {
     const [resetCSS, baseCSS] = await Promise.all([this.loadResetCSS(), this.loadBaseCSS()]);
@@ -90,7 +89,7 @@ export class CSSGenerator {
   }
 
   /**
-   * 設定の妥当性をチェックし、問題があれば警告またはエラーを出力
+   * Check configuration validity and output warnings or errors if there are issues
    */
   private validateConfiguration(): void {
     const result = validateConfig(this.config);
@@ -109,7 +108,7 @@ export class CSSGenerator {
   }
 
   private async loadResetCSS(): Promise<string> {
-    // 複数のパスパターンを試す
+    // Try multiple path patterns
     const possiblePaths = this.getCSSFilePaths('reset.css');
     const errors: string[] = [];
 
@@ -137,7 +136,7 @@ export class CSSGenerator {
   }
 
   private async loadBaseCSS(): Promise<string> {
-    // 複数のパスパターンを試す
+    // Try multiple path patterns
     const possiblePaths = this.getCSSFilePaths('base.css');
     const errors: string[] = [];
 
@@ -165,48 +164,13 @@ export class CSSGenerator {
   }
 
   private getCSSFilePaths(filename: string): string[] {
-    const paths: string[] = [];
-
-    // ESMファーストのパス解決
-    let currentDir: string;
-
-    try {
-      // import.meta.urlを使用してESM環境でパスを解決
-      if (typeof import.meta !== 'undefined' && import.meta.url) {
-        const currentFile = fileURLToPath(import.meta.url);
-        currentDir = path.dirname(currentFile);
-      } else {
-        // フォールバック: プロセスの作業ディレクトリを基準
-        currentDir = path.join(process.cwd(), 'dist');
-      }
-    } catch {
-      // 最終フォールバック
-      currentDir = path.join(process.cwd(), 'dist');
-    }
-
-    // 様々なパスパターンを追加（ESMベース）
-    paths.push(
-      // ビルド後のパス（同じディレクトリ）
-      path.join(currentDir, filename),
-      // 開発時のパス（stylesディレクトリ）
-      path.join(currentDir, '../styles', filename),
-      // srcディレクトリからの相対パス
-      path.join(currentDir, '../../src/styles', filename),
-      // プロジェクトルートからの相対パス
-      path.join(process.cwd(), 'packages/smsshcss/src/styles', filename),
-      // node_modulesからの相対パス
-      path.join(process.cwd(), 'node_modules/smsshcss/dist', filename),
-      path.join(process.cwd(), 'node_modules/smsshcss/src/styles', filename),
-      // 追加のフォールバックパス
-      path.join(process.cwd(), 'src/styles', filename),
-      path.join(process.cwd(), 'styles', filename)
-    );
-
-    return paths;
+    // Directly specify absolute path from project root directory
+    const absolutePathToStyles = path.join(process.cwd(), 'packages', 'smsshcss', 'src', 'styles');
+    return [path.join(absolutePathToStyles, filename)];
   }
 
   public async generate(): Promise<GeneratedCSS> {
-    // CSSファイルを初期化（まだ初期化されていない場合）
+    // Initialize CSS files (if not already initialized)
     if (!this.resetCSS && !this.baseCSS) {
       await this.initializeCSSFiles();
     }
@@ -236,35 +200,35 @@ export class CSSGenerator {
     let base = this.config.includeBaseCSS ? this.baseCSS : '';
     let reset = this.config.includeResetCSS ? this.resetCSS : '';
 
-    // カスタムクラスを動的に抽出して追加
+    // Dynamically extract and add custom classes
     const customClasses = await this.extractCustomClassesFromFiles(this.config.content);
     if (customClasses.length > 0) {
       utilities = `${utilities}\n\n/* Custom Value Classes */\n${customClasses.join('\n')}`;
     }
 
-    // applyクラスを生成
+    // Generate apply classes
     const apply = generateApplyClasses(this.config.apply);
     console.log('[Generator] apply variable value:', JSON.stringify(apply));
     console.log('[Generator] apply variable length:', apply.length);
 
-    // パージ処理を実行
+    // Execute purge processing
     if (this.purger) {
       console.log('[Generator] Before purge - apply length:', apply.length);
       console.log('[Generator] Before purge - apply value:', JSON.stringify(apply));
 
       const fileAnalysis = await this.purger.analyzeSourceFiles();
 
-      // 各CSSセクションをパージ
+      // Purge each CSS section
       utilities = this.purger.purgeCSS(utilities);
       base = this.purger.purgeCSS(base);
       reset = this.purger.purgeCSS(reset);
-      // Applyクラスは設定で明示的に定義されたクラスなので、パージ処理から除外
+      // Apply classes are explicitly defined classes in the configuration, so exclude from purge processing
       // apply = this.purger.purgeCSS(apply);
 
       console.log('[Generator] After purge - apply length:', apply.length);
       console.log('[Generator] After purge - apply value:', JSON.stringify(apply));
 
-      // レポートを生成・表示
+      // Generate and display report
       const report = this.purger.generateReport(fileAnalysis);
       this.purger.printReport(report);
     }
@@ -302,14 +266,14 @@ export class CSSGenerator {
     };
   }
 
-  // ファイルからカスタムクラスを非同期で抽出
+  // Asynchronously extract custom classes from files
   private async extractCustomClassesFromFiles(content: string[]): Promise<string[]> {
     const allCustomClasses: string[] = [];
     const seenClasses = new Set<string>();
-    const fileCache = new Map<string, string>(); // ファイル内容のキャッシュ
+    const fileCache = new Map<string, string>(); // File content cache
 
     try {
-      // ファイルパターンをまとめて処理
+      // Process file patterns together
       const allFiles = new Set<string>();
 
       for (const pattern of content) {
@@ -329,12 +293,12 @@ export class CSSGenerator {
         }
       }
 
-      // ファイルを並列処理
+      // Process files in parallel
       const filePromises = Array.from(allFiles).map(async (file) => {
         try {
           const filePath = path.resolve(process.cwd(), file);
 
-          // キャッシュから取得または読み込み
+          // Get from cache or read
           let fileContent: string;
           if (fileCache.has(filePath)) {
             fileContent = fileCache.get(filePath)!;
@@ -343,7 +307,7 @@ export class CSSGenerator {
             fileCache.set(filePath, fileContent);
           }
 
-          // 各種カスタムクラスを抽出（同期関数なのでPromise.resolveは不要）
+          // Extract various custom classes (no Promise.resolve needed since these are synchronous functions)
           const [
             spacingClasses,
             widthClasses,
@@ -390,7 +354,7 @@ export class CSSGenerator {
 
       const results = await Promise.all(filePromises);
 
-      // 重複を除去して結果をマージ
+      // Remove duplicates and merge results
       for (const fileClasses of results) {
         for (const cssClass of fileClasses) {
           if (!seenClasses.has(cssClass)) {
@@ -416,19 +380,19 @@ export class CSSGenerator {
   }
 
   /**
-   * パージレポートのみを生成（CSS生成なし）
+   * Generate purge report only (no CSS generation)
    */
   public async generatePurgeReport(): Promise<PurgeReport | null> {
     if (!this.purger) {
       return null;
     }
 
-    // CSSファイルを初期化（まだ初期化されていない場合）
+    // Initialize CSS files (if not already initialized)
     if (!this.resetCSS && !this.baseCSS) {
       await this.initializeCSSFiles();
     }
 
-    // パージャーのstartTimeを設定
+    // Set purger's startTime
     (this.purger as { startTime: number }).startTime = Date.now();
 
     const fileAnalysis = await this.purger.analyzeSourceFiles();
@@ -448,10 +412,10 @@ export class CSSGenerator {
       generateFontSizeClasses(),
     ].join('\n\n');
 
-    // applyクラスを生成
+    // Generate apply classes
     const apply = generateApplyClasses(this.config.apply);
 
-    // 全CSSを結合してパージャーに渡す
+    // Combine all CSS and pass to purger
     const fullCSS = [
       this.config.includeResetCSS ? this.resetCSS : '',
       this.config.includeBaseCSS ? this.baseCSS : '',
